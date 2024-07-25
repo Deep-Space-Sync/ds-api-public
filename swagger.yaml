@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Deep Space API
   version: 1.0.0
-basePath: /api/v1
+basePath: https://client.deepspacesync.com/api/v1/
 schemes:
 - https
 securityDefinitions:
@@ -10,9 +10,6 @@ securityDefinitions:
     authorizationUrl: ''
     flow: implicit
     type: oauth2
-    x-google-issuer: deep-space
-    x-google-jwks_uri: https://ds-api-jwks-endpoint-rl25kq7e7a-ts.a.run.app/.well-known/jwks.json
-    x-google-audiences: default,navis
 paths:
   /login:
     post:
