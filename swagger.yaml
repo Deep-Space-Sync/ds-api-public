@@ -41,14 +41,6 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
-  /regions:
-    get:
-      summary: Get supported regions
-      description: Returns list of api-supported regions
-      operationId: getRegions
-      responses:
-        200:
-          description: list of supported regions
   /workspaces:
     get:
       summary: Get list of workspaces and associated projects
