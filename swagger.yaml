@@ -28,6 +28,10 @@ paths:
         in: header
         required: true
         type: string
+      - name: region
+        in: header
+        required: true
+        type: string
       responses:
         200:
           description: JWT
