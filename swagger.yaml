@@ -239,63 +239,6 @@ paths:
           description: Internal Server Error
         400:
           description: Bad Request
-  /workspaces/{workspaceId}/projects/{projectId}/data/{data_classification}/{data_source}/{export_type}/{export_version}:
-    post:
-      summary: Upload data to Deep Space from supported formats
-      operationId: uploaddata
-      tags:
-      - Upload Data
-      consumes:
-      - multipart/form-data
-      parameters:
-      - name: workspaceId
-        in: path
-        required: true
-        type: string
-      - name: projectId
-        in: path
-        required: true
-        type: integer
-      - name: data_classification
-        in: path
-        required: true
-        type: string
-        description: The classification of the data
-      - name: data_source
-        in: path
-        required: true
-        type: string
-        description: The source of the data
-      - name: export_type
-        in: path
-        required: true
-        type: string
-        description: The type of export
-      - name: export_version
-        in: path
-        required: true
-        type: string
-        description: The version of the export
-      - name: file
-        in: formData
-        required: true
-        type: string
-        description: The file to upload
-      security:
-      - JWT: []
-      responses:
-        200:
-          description: crawlId of successfully loaded data
-          schema:
-            type: string
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-        400:
-          description: Bad Request
-        422:
-          description: Unprocessable Entity
   /workspaces/{workspaceId}/projects/{projectId}/parameters:
     get:
       summary: Get parameters for project
