@@ -41,6 +41,12 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+    options:
+      description: returns headers required for CORS support
+      operationId: loginWithOptions
+      responses:
+        200:
+          description: A successful response
   /workspaces:
     get:
       summary: Get list of workspaces and associated projects
