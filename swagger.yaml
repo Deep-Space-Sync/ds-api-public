@@ -18,7 +18,7 @@ paths:
         parameter to specify access permissions
       operationId: getWorkspaces
       tags:
-      - Workspaces
+      - Info
       parameters:
       - name: permissions
         in: query
@@ -175,7 +175,7 @@ paths:
       description: Get list of unique parameters from all parameter sets for a project
       operationId: getParameters
       tags:
-      - Parameters
+      - Navis Integration
       parameters:
       - name: workspaceId
         in: path
