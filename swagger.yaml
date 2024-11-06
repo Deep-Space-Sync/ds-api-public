@@ -11,59 +11,6 @@ securityDefinitions:
     flow: implicit
     type: oauth2
 paths:
-  /workspaces:
-    get:
-      summary: Get list of workspaces and associated projects
-      description: Returns all workspaces and projects a user has access to with optional
-        parameter to specify access permissions
-      operationId: getWorkspaces
-      tags:
-      - Info
-      parameters:
-      - name: permissions
-        in: query
-        required: false
-        type: string
-        enum:
-        - isProjectManager
-        - isProjectViewer
-        - isRevitUser
-      security:
-      - JWT: []
-      responses:
-        200:
-          description: Successful response with a list of workspaces and projects
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                workspace:
-                  description: ds_workspace_name corresponding to dataset name
-                  type: string
-                  example: ds_12345678_9123_4567_8912_123456789123
-                workspace_name:
-                  type: string
-                  example: My Workspace Name
-                projects:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      project_id:
-                        type: integer
-                        example: 1
-                      project_name:
-                        type: string
-                        example: My Project Name
-        401:
-          description: Unauthorized
-        400:
-          description: Bad Request due to invalid parameters
-        204:
-          description: No content to return
-        500:
-          description: Internal Server Error
   /workspaces/{workspaceId}/projects/{projectId}/sourcefiles:
     get:
       summary: Get sourcefies by projectid
