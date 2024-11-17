@@ -11,6 +11,107 @@ securityDefinitions:
     flow: implicit
     type: oauth2
 paths:
+  /login:
+    post:
+      summary: Login to get JWT token
+      description: Validates Deep Space username and password and returns JWT token
+        for API
+      operationId: login
+      tags:
+      - Authentication
+      parameters:
+      - name: username
+        in: header
+        required: true
+        type: string
+      - name: password
+        in: header
+        required: true
+        type: string
+      - name: region
+        in: header
+        required: true
+        type: string
+      responses:
+        200:
+          description: JWT
+          schema:
+            type: string
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /regions:
+    get:
+      tags:
+      - Info
+      summary: Get supported regions
+      description: Returns list of api-supported regions
+      operationId: getRegions
+      parameters:
+      - in: query
+        name: fields
+        description: Comma-separated list of fields to include in the response
+        required: false
+        type: string
+      responses:
+        200:
+          description: list of supported regions
+  /workspaces:
+    get:
+      summary: Get list of workspaces and associated projects
+      description: Returns all workspaces and projects a user has access to with optional
+        parameters for extra info
+      operationId: getWorkspaces
+      tags:
+      - Info
+      parameters:
+      - name: includeDetails
+        description: Includes additional details in response
+        in: query
+        required: false
+        type: boolean
+      - name: includePermissions
+        description: Includes permissions in response
+        in: query
+        required: false
+        type: boolean
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successful response with a list of workspaces and projects
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                workspace:
+                  description: ds_workspace_name corresponding to dataset name
+                  type: string
+                  example: ds_12345678_9123_4567_8912_123456789123
+                workspace_name:
+                  type: string
+                  example: My Workspace Name
+                projects:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      project_id:
+                        type: integer
+                        example: 1
+                      project_name:
+                        type: string
+                        example: My Project Name
+        401:
+          description: Unauthorized
+        400:
+          description: Bad Request due to invalid parameters
+        204:
+          description: No content to return
+        500:
+          description: Internal Server Error
   /workspaces/{workspaceId}/projects/{projectId}/sourcefiles:
     get:
       summary: Get sourcefies by projectid
@@ -85,6 +186,70 @@ paths:
           description: Bad Request
         500:
           description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/data/any:
+    post:
+      summary: Upload any data to Deep Space
+      description: Generic endpoint to upload csv data in any format to Deep Space
+        in EAV format.
+      operationId: uploadanydata
+      tags:
+      - Upload Data
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: file
+        in: formData
+        required: true
+        type: string
+        description: The CSV file to upload
+      - name: data_classification
+        in: formData
+        required: true
+        type: string
+        description: The unique identifying name to categorise the data type
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: ingest_id of successfully loaded data
+          schema:
+            type: string
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/data:
+    get:
+      summary: Get list of data classifications
+      operationId: getDataClassifications
+      tags:
+      - Upload Data
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A list of supported data classifications
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
   /workspaces/{workspaceId}/projects/{projectId}/data/{data_classification}:
     get:
       summary: Get list of data sources
@@ -116,6 +281,63 @@ paths:
           description: Internal Server Error
         400:
           description: Bad Request
+  /workspaces/{workspaceId}/projects/{projectId}/data/{data_classification}/{data_source}/{export_type}/{export_version}:
+    post:
+      summary: Upload data to Deep Space from supported formats
+      operationId: uploaddata
+      tags:
+      - Upload Data
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: data_classification
+        in: path
+        required: true
+        type: string
+        description: The classification of the data
+      - name: data_source
+        in: path
+        required: true
+        type: string
+        description: The source of the data
+      - name: export_type
+        in: path
+        required: true
+        type: string
+        description: The type of export
+      - name: export_version
+        in: path
+        required: true
+        type: string
+        description: The version of the export
+      - name: file
+        in: formData
+        required: true
+        type: string
+        description: The file to upload
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: crawlId of successfully loaded data
+          schema:
+            type: string
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+        400:
+          description: Bad Request
+        422:
+          description: Unprocessable Entity
   /workspaces/{workspaceId}/projects/{projectId}/parameters:
     get:
       summary: Get parameters for project
@@ -137,6 +359,329 @@ paths:
       responses:
         200:
           description: A list of parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/milestone:
+    get:
+      tags:
+      - Configuration
+      summary: Get list of current milestones
+      operationId: getMilestones
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A list of current milestones
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+    post:
+      tags:
+      - Configuration
+      summary: Create new milestone
+      operationId: postMilestone
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - milestone_name
+          - milestone_data
+          properties:
+            filename:
+              type: string
+              description: The name of the milestone
+            discipline:
+              type: string
+              description: The date of the milestone, expected format 'yyyy-mm-dd'
+      security:
+      - JWT: []
+      responses:
+        201:
+          description: Successfully created new milestone
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/actions:
+    post:
+      tags:
+      - Actions
+      summary: Create new action
+      operationId: createAction
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - actionType
+          - name
+          properties:
+            actionType:
+              type: string
+              description: The type of action - "Task", "RFI", "Risk", "Opportunity",
+                "Lesson Learnt"
+            name:
+              type: string
+              description: Name of the action
+            description:
+              type: string
+              description: Description of the action
+            dueDate:
+              type: string
+              description: Due date of the action, expected format 'yyyy-mm-dd'
+            rating:
+              type: string
+              description: Rating of the action - "Low", "Medium", "High"
+            currentApp:
+              type: string
+              description: App that the action was created from
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successfully created new action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+    patch:
+      tags:
+      - Actions
+      summary: Update fields in existing action
+      operationId: updateAction
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - action_id
+          properties:
+            action_id:
+              type: integer
+              description: id of existing action to update
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successfully updated action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+    get:
+      tags:
+      - Actions
+      summary: Get actions
+      operationId: getActions
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: currentApp
+        in: query
+        required: false
+        type: string
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successfully created new action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/cde:
+    post:
+      tags:
+      - Upload Data
+      summary: Get signed urls for cde
+      operationId: getCde
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successfully returns CDE urls
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/teams:
+    get:
+      tags:
+      - Info
+      summary: Get list of teams
+      operationId: getTeams
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: list of teams
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/jobs/{job_id}:
+    post:
+      tags:
+      - Jobs
+      summary: Start a new job
+      operationId: startJob
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: job_id
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        202:
+          description: Job started, returns job guid
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/jobs:
+    get:
+      tags:
+      - Jobs
+      summary: Get supported jobs
+      operationId: getJobs
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        202:
+          description: Job started, returns job guid
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/jobs/{job_guid}/status:
+    get:
+      tags:
+      - Jobs
+      summary: Get job status
+      operationId: getJobStatus
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: job_guid
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        202:
+          description: Returns job status
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects:
+    get:
+      summary: Get projects in a workspace
+      operationId: getProjects
+      tags:
+      - Info
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Project details
         401:
           description: Unauthorized
         500:
