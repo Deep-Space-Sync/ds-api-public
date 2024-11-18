@@ -629,6 +629,11 @@ paths:
         in: path
         required: true
         type: integer
+      - name: app
+        description: Get jobs associated with a specific app
+        in: query
+        required: false
+        type: string
       security:
       - JWT: []
       responses:
