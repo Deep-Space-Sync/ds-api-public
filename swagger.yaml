@@ -765,3 +765,62 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+  /workspaces/{workspaceId}/companies:
+    get:
+      summary: Get companies in a workspaces
+      description: Returns all companies for a workspace
+      operationId: getWorkspaceCompanies
+      tags:
+      - Companies
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+    post:
+      summary: Create company in a workspaces
+      description: Creates a new company in a workspace. Requires workspace manager
+        permissions
+      operationId: postWorkspaceCompanies
+      tags:
+      - Companies
+      consumes:
+      - application/json
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - company_name
+          - company_abbreviation
+          properties:
+            company_name:
+              type: string
+              description: The name of the company
+            company_abbreviation:
+              type: string
+              description: The abbreviation of the company name
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
