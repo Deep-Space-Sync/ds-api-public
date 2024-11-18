@@ -719,3 +719,49 @@ paths:
           description: Bad Request
         500:
           description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/users:
+    get:
+      summary: Get users in a project
+      description: Returns all users and user details for a project
+      operationId: getProjectUsers
+      tags:
+      - Users
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/users:
+    get:
+      summary: Get users in a workspaces
+      description: Returns all users and user details for a workspace
+      operationId: getWorkspaceUsers
+      tags:
+      - Users
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
