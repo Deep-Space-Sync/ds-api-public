@@ -577,6 +577,10 @@ paths:
         in: path
         required: true
         type: integer
+      - name: includeDetails
+        in: query
+        required: false
+        type: boolean
       security:
       - JWT: []
       responses:
