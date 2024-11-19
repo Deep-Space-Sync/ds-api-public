@@ -632,6 +632,49 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/teams/{teamId}:
+    patch:
+      tags:
+      - Teams
+      summary: Edit a team
+      operationId: patchTeam
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: teamId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            discipline:
+              type: string
+              description: The name of the team
+            pri_abbrev:
+              type: string
+              description: The abbreviation of the team
+            company_id:
+              type: integer
+              description: The company id of the team (see GET /companies)
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: team edited
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
   /workspaces/{workspaceId}/projects/{projectId}/jobs/{job_id}:
     post:
       tags:
