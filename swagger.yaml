@@ -833,6 +833,103 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+    post:
+      summary: Invite user to a project
+      description: Creates a user if not already exista and invites to project
+      operationId: postProjectUsers
+      tags:
+      - Users
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - email
+          - name
+          - team_bim_id
+          properties:
+            email:
+              type: string
+              description: The email of the user
+            name:
+              type: string
+              description: The name of the user like First Last
+            team_bim_id:
+              type: integer
+              description: The team id to add the user to on the project
+            isProjectManager:
+              type: boolean
+              description: bool indicating whether the user is a project manager (default
+                false)
+            isProjectViewer:
+              type: boolean
+              description: bool indicating whether the user is a project viewer (default
+                false)
+            isRevitUsers:
+              type: boolean
+              description: bool indicating whether the user is a revit user (default
+                false)
+            isWorkspaceManager:
+              type: boolean
+              description: bool indicating whether the user is a workspace manager
+                (default false)
+            isWorkspaceDashboardViewer:
+              type: boolean
+              description: bool indicating whether the user is a workspace viewer
+                (default false)
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/users/{userId}:
+    get:
+      summary: Get user in a project
+      description: Returns user and details for specified project
+      operationId: getProjectUser
+      tags:
+      - Users
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: userId
+        in: path
+        required: true
+        type: string
+      - name: outsetaToken
+        in: query
+        required: false
+        type: string
+        description: bool indicating whether to retrieve outseta token
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
   /workspaces/{workspaceId}/users:
     get:
       summary: Get users in a workspaces
@@ -845,6 +942,76 @@ paths:
         in: path
         required: true
         type: string
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+    post:
+      summary: Invite user to a workspace
+      description: Creates user if not already exista and invites to workspace
+      operationId: postWorkspaceUsers
+      tags:
+      - Users
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - email
+          - name
+          properties:
+            email:
+              type: string
+              description: The email of the user
+            name:
+              type: string
+              description: The name of the user like First Last
+            isWorkspaceManager:
+              type: boolean
+              description: bool indicating whether the user is a workspace manager
+                (default false)
+            isWorkspaceDashboardViewer:
+              type: boolean
+              description: bool indicating whether the user is a workspace viewer
+                (default false)
+            projects:
+              type: array
+              description: array of project to add the user to in workspace
+              items:
+                type: object
+                required:
+                - project_id
+                - team_bim_id
+                properties:
+                  project_id:
+                    type: integer
+                    description: The project id to add the user to
+                  team_bim_id:
+                    type: integer
+                    description: The team id to add the user to on the project
+                  isProjectManager:
+                    type: boolean
+                    description: bool indicating whether the user is a project manager
+                      (default false)
+                  isProjectViewer:
+                    type: boolean
+                    description: bool indicating whether the user is a project viewer
+                      (default false)
+                  isRevitUser:
+                    type: boolean
+                    description: bool indicating whether the user is a revit user
+                      (default false)
       security:
       - JWT: []
       responses:
