@@ -1238,3 +1238,70 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+  /workspaces/{workspaceId}/projects/${projectId}/outseta:
+    post:
+      summary: Create an outseta account for a project
+      operationId: postProjectOutseta
+      x-min-permissions: admin
+      tags:
+      - Create
+      consumes:
+      - application/json
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - primary_contact_email
+          - billing_stage
+          - project_weekly_notifications
+          - ds_license_type
+          properties:
+            primary_contact_email:
+              type: string
+              description: Primary contact (Outseta) for the project
+            billing_stage:
+              type: string
+              description: The billing stage of the project (Outseta)
+            project_weekly_notifications:
+              type: object
+              description: dictionary of days of the week as bools
+              properties:
+                Monday:
+                  type: boolean
+                Tuesday:
+                  type: boolean
+                Wednesday:
+                  type: boolean
+                Thursday:
+                  type: boolean
+                Friday:
+                  type: boolean
+                Saturday:
+                  type: boolean
+                Sunday:
+                  type: boolean
+            ds_license_type:
+              type: string
+              description: The license type of the project
+      security:
+      - JWT: []
+      responses:
+        201:
+          description: Account successfully created
+        401:
+          description: Insufficent permissions
+        400:
+          description: Bad Request
+        500:
+          description: Internal Server Error
