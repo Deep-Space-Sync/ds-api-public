@@ -1152,6 +1152,7 @@ paths:
     post:
       summary: Run a schema migration
       operationId: runMigration
+      x-min-permissions: admin
       tags:
       - Migrations
       parameters:
