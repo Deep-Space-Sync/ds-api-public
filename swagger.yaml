@@ -1217,3 +1217,24 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+  /workspaces/{workspaceId}/powerbi:
+    post:
+      summary: Get a new power bi workspace
+      operationId: postPowerBiWorkspace
+      x-min-permissions: admin
+      tags:
+      - Power BI
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
