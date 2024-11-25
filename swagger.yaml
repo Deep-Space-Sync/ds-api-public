@@ -1159,6 +1159,26 @@ paths:
         in: path
         required: true
         type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - region
+          - workspace
+          - functiondata
+          properties:
+            region:
+              type: string
+              description: The region of the workspace
+            workspace:
+              type: string
+              description: The workspace to run the migration on
+            functiondata:
+              type: object
+              description: The data to pass to the migration function (see migration
+                documentation)
       security:
       - JWT: []
       responses:
