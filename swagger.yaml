@@ -1148,3 +1148,23 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+  /migrations/{migrationId}:
+    post:
+      summary: Run a schema migration
+      operationId: runMigration
+      tags:
+      - Migrations
+      parameters:
+      - name: migrationId
+        in: path
+        required: true
+        type: string
+      security:
+      - JWT: []
+      responses:
+        207:
+          description: Migration ran, see response for details
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
