@@ -946,11 +946,55 @@ paths:
         in: path
         required: true
         type: string
-      - name: outsetaToken
-        in: query
-        required: false
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+    patch:
+      summary: Edit a user in a project
+      description: Edit project-level attributes of a user
+      operationId: patchProjectUsers
+      tags:
+      - Users
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
         type: string
-        description: bool indicating whether to retrieve outseta token
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: userId
+        in: path
+        required: true
+        type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            team_bim_id:
+              type: integer
+              description: The team id to add the user to on the project
+            isProjectManager:
+              type: boolean
+              description: bool indicating whether the user is a project manager (default
+                false)
+            isProjectViewer:
+              type: boolean
+              description: bool indicating whether the user is a project viewer (default
+                false)
+            isRevitUsers:
+              type: boolean
+              description: bool indicating whether the user is a revit user (default
+                false)
       security:
       - JWT: []
       responses:
@@ -1042,6 +1086,45 @@ paths:
                     type: boolean
                     description: bool indicating whether the user is a revit user
                       (default false)
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/users/{userId}:
+    patch:
+      summary: Edit a user in a workspace
+      description: Edit workspace-level attributes of a user
+      operationId: patchWorkspaceUsers
+      tags:
+      - Users
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: userId
+        in: path
+        required: true
+        type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            isWorkspaceManager:
+              type: boolean
+              description: bool indicating whether the user isWorkspaceManager (default
+                false)
+            isWorkspaceDashboardViewer:
+              type: boolean
+              description: bool indicating whether the user isWorkspaceDashboardViewer
+                (default false)
       security:
       - JWT: []
       responses:
