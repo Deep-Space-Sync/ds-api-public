@@ -438,7 +438,7 @@ paths:
           type: object
           required:
           - milestone_name
-          - milestone_data
+          - milestone_date
           properties:
             filename:
               type: string
