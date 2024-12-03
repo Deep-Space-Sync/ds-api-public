@@ -862,6 +862,42 @@ paths:
           description: Bad Request
         500:
           description: Internal Server Error
+    patch:
+      summary: Update a project
+      operationId: updateProject
+      tags:
+      - Project
+      consumes:
+      - application/json
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            project_name:
+              type: string
+              description: Name for the project
+      security:
+      - JWT: []
+      responses:
+        201:
+          description: Project successfully archived
+        401:
+          description: Insufficent permissions to archive project
+        400:
+          description: Bad Request
+        500:
+          description: Internal Server Error
   /workspaces/{workspaceId}/projects/{projectId}/users:
     get:
       summary: Get users in a project
