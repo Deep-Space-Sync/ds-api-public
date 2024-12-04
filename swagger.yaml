@@ -1424,7 +1424,7 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
-  /workspaces/{workspaceId}/projects/{projectId}/powerbi/apps/refresh/{appName}:
+  /workspaces/{workspaceId}/projects/{projectId}/powerbi/refresh/apps/{appName}:
     post:
       summary: Refresh Power BI app in project
       operationId: refreshPowerBiApp
@@ -1456,7 +1456,7 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
-  /workspaces/{workspaceId}/projects/{projectId}/powerbi/apps/refresh:
+  /workspaces/{workspaceId}/projects/{projectId}/powerbi/refresh/apps:
     get:
       summary: Get power bi apps & latest refresh dates in a project
       operationId: getPowerBiApps
