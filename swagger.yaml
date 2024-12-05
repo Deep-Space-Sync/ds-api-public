@@ -1090,6 +1090,13 @@ paths:
               type: boolean
               description: bool indicating whether the user is a revit user (default
                 false)
+            isProjectTeam:
+              type: boolean
+              description: bool indicating whether the user is a project team member
+                (default false)
+            name:
+              type: string
+              description: The name of the user like First Last
       security:
       - JWT: []
       responses:
