@@ -1238,7 +1238,7 @@ paths:
           description: Internal Server Error
     post:
       summary: Resend invite email to user in workspace
-      operationId: postWorkspaceUsers
+      operationId: postWorkspaceUserId
       tags:
       - Users
       parameters:
