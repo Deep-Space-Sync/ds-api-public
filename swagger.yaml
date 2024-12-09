@@ -583,11 +583,80 @@ paths:
         in: path
         required: true
         type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - files
+          properties:
+            files:
+              type: array
+              description: A list of file objects
+              items:
+                type: object
+                required:
+                - filename
+                - filetype
+                properties:
+                  filename:
+                    type: string
+                    description: The name of the file
+                  filetype:
+                    type: string
+                    description: The type of the file
+            cde_type:
+              type: string
+              description: The type of CDE upload
       security:
       - JWT: []
       responses:
         200:
           description: Successfully returns CDE urls
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/cde/process:
+    post:
+      tags:
+      - Upload Data
+      summary: Process files uploaded to CDE
+      operationId: processCDE
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - files
+          properties:
+            files:
+              type: array
+              description: A list of file objects
+              items:
+                type: object
+                required:
+                - cde_id
+                properties:
+                  cde_id:
+                    type: integer
+                    description: The CDE ID of the file
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successfully processed files
         401:
           description: Unauthorized
         500:
