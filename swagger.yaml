@@ -1929,3 +1929,89 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/correspondence:
+    post:
+      summary: Log a correspondence in Deep Space
+      operationId: logCorrespondence
+      tags:
+      - Correspondence Logging
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - subject
+          - date_sent
+          - text_content
+          - html_content
+          - sender_email
+          - sender_name
+          - recipients
+          properties:
+            subject:
+              type: string
+              description: The email subject
+            date_sent:
+              type: string
+              description: datetime in ISO format
+            text_content:
+              type: string
+              description: The text content of the email
+            html_content:
+              type: string
+              description: The html content of the email
+            sender_email:
+              type: string
+              description: The email of the sender
+            sender_name:
+              type: string
+              description: The name of the sender
+            attachments:
+              type: array
+              description: array of attachment objects
+              items:
+                type: object
+                required:
+                - cde_id
+                properties:
+                  cde_id:
+                    type: integer
+                    description: The CDE ID corresponding to attachment
+            recipients:
+              type: array
+              description: array of recipient objects
+              items:
+                type: object
+                required:
+                - email
+                - name
+                - type
+                properties:
+                  email:
+                    type: string
+                    description: The email of the recipient
+                  name:
+                    type: string
+                    description: The name of the recipient
+                  type:
+                    type: string
+                    description: The type of recipient ('to', 'cc', 'bcc')
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
