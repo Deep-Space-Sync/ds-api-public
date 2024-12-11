@@ -498,6 +498,17 @@ paths:
             currentApp:
               type: string
               description: App that the action was created from
+            attachments:
+              type: array
+              description: A list of attachment objects
+              items:
+                type: object
+                required:
+                - cde_id
+                properties:
+                  cde_id:
+                    type: integer
+                    description: CDE id corresponding to file
       security:
       - JWT: []
       responses:
@@ -559,6 +570,115 @@ paths:
         in: query
         required: false
         type: string
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successfully created new action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/comments:
+    get:
+      tags:
+      - Actions
+      summary: Get comments for an action
+      operationId: getActionComments
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: actionId
+        in: path
+        required: true
+        type: integer
+      - name: withAttachments
+        in: query
+        required: false
+        type: boolean
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successfully created new action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+    post:
+      tags:
+      - Actions
+      summary: Create comment for an action
+      operationId: postActionComment
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: actionId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - comment
+          properties:
+            comment:
+              type: string
+              description: The comment to add
+            attachments:
+              type: array
+              description: A list of attachment objects
+              items:
+                type: object
+                required:
+                - cde_id
+                properties:
+                  cde_id:
+                    type: integer
+                    description: CDE id corresponding to file
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successfully created new action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/attachments:
+    get:
+      tags:
+      - Actions
+      summary: Get attachments for an action
+      operationId: getActionAttachments
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: actionId
+        in: path
+        required: true
+        type: integer
       security:
       - JWT: []
       responses:
