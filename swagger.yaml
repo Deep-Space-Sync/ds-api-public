@@ -823,6 +823,52 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+    post:
+      tags:
+      - Actions
+      summary: Add attachments to action
+      operationId: postActionAttachments
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: actionId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - attachments
+          properties:
+            attachments:
+              type: array
+              description: A list of attachment objects
+              items:
+                type: object
+                required:
+                - cde_id
+                properties:
+                  cde_id:
+                    type: integer
+                    description: CDE id corresponding to file
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successfully got attachments
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
   /workspaces/{workspaceId}/projects/{projectId}/cde:
     post:
       tags:
