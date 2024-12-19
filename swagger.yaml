@@ -1229,6 +1229,26 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+  /jobs/{job_id}:
+    post:
+      tags:
+      - Jobs
+      summary: Start a new job at global-level
+      operationId: startJobGlobal
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        202:
+          description: Job started, returns job guid
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
   /workspaces/{workspaceId}/projects/{projectId}/jobs:
     get:
       tags:
