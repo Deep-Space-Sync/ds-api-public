@@ -1946,6 +1946,95 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/powerbi/filters:
+    get:
+      summary: Get filters for power bi
+      operationId: getPbiFilters
+      tags:
+      - Power BI
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Filters for pbi
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/powerbi/apps/deploy:
+    post:
+      summary: Deploy power bi app
+      operationId: deployPbiApp
+      tags:
+      - Power BI
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - id_dashboard_deployment_job
+          - content_pack
+          properties:
+            id_dashboard_deployment_job:
+              type: integer
+            content_pack:
+              type: string
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Deployment initiated
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/powerbi/apps/syncback/{appName}:
+    post:
+      summary: Run syncback for power bi app
+      operationId: syncbackPbiApp
+      tags:
+      - Power BI
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: appName
+        in: path
+        required: true
+        type: string
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Syncback complete
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
   /workspaces/{workspaceId}/projects/{projectId}/powerbi/refresh/apps/{appName}:
     post:
       summary: Refresh Power BI app in project
@@ -1972,6 +2061,36 @@ paths:
           description: App refresh initiated
         204:
           description: App refresh not iniated for some reason (eg. already in progress)
+        404:
+          description: App not found in project
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/powerbi/apps/embedded/{appName}:
+    get:
+      summary: Get PBI Embedded App
+      operationId: getEmbeddedPbiApp
+      tags:
+      - Power BI
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: appName
+        in: path
+        required: true
+        type: string
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: App returned
         404:
           description: App not found in project
         401:
