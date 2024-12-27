@@ -1152,7 +1152,7 @@ paths:
       - name: file
         in: formData
         required: true
-        type: file
+        type: string
         description: The file to upload
       security:
       - JWT: []
