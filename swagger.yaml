@@ -1974,6 +1974,7 @@ paths:
     post:
       summary: Deploy power bi app
       operationId: deployPbiApp
+      x-min-permissions: admin
       tags:
       - Power BI
       parameters:
