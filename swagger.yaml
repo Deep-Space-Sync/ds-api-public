@@ -1134,6 +1134,35 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/teams/bulk:
+    post:
+      tags:
+      - Teams
+      summary: Bulk edit teams with template
+      operationId: postTeamsBulk
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: file
+        in: formData
+        required: true
+        type: file
+        description: The file to upload
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: updates complete
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
   /workspaces/{workspaceId}/projects/{projectId}/teams/{teamId}:
     patch:
       tags:
