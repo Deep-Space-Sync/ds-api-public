@@ -1970,7 +1970,7 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
-  /workspaces/{workspaceId}/projects/{projectId}/powerbi/apps/deploy:
+  /workspaces/{workspaceId}/projects/{projectId}/powerbi/deploy/apps:
     post:
       summary: Deploy power bi app
       operationId: deployPbiApp
@@ -2007,7 +2007,7 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
-  /workspaces/{workspaceId}/projects/{projectId}/powerbi/apps/syncback/{appName}:
+  /workspaces/{workspaceId}/projects/{projectId}/powerbi/syncback/apps/{appName}:
     post:
       summary: Run syncback for power bi app
       operationId: syncbackPbiApp
@@ -2067,7 +2067,7 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
-  /workspaces/{workspaceId}/projects/{projectId}/powerbi/apps/embedded/{appName}:
+  /workspaces/{workspaceId}/projects/{projectId}/powerbi/embedded/apps/{appName}:
     get:
       summary: Get PBI Embedded App
       operationId: getEmbeddedPbiApp
