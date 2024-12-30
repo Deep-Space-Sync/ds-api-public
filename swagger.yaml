@@ -1937,6 +1937,11 @@ paths:
         in: path
         required: true
         type: string
+      - name: includeIsProjectManagerFlag
+        in: query
+        required: false
+        type: boolean
+        description: Include isProjectManager flag in response
       security:
       - JWT: []
       responses:
