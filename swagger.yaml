@@ -2710,3 +2710,62 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/resources:
+    post:
+      summary: Create a resource
+      operationId: postResources
+      x-min-permissions: isRevitUser
+      tags:
+      - Resources
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - resource_name
+          properties:
+            resource_name:
+              type: string
+              description: The name of the resource
+            resource_type:
+              type: string
+              description: The type of the resource, defaults to unknown if not provided
+              enum:
+              - person
+              - team
+              - company
+            parent_resource_id:
+              type: integer
+              description: The parent resource id
+            resource_mapping:
+              type: object
+              description: The resource mapping
+              properties:
+                related_table:
+                  type: string
+                  description: The related table, based on resource_type
+                related_column:
+                  type: string
+                  description: The related column, based on resource_type
+                related_key:
+                  type: string
+                  description: The related key
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
