@@ -2666,6 +2666,53 @@ paths:
         500:
           description: Internal Server Error
   /workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/associations/{associationIdentifier}:
+    get:
+      summary: Find an association
+      operationId: getActionAssociation
+      x-min-permissions: isRevitUser
+      tags:
+      - Actions
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: actionId
+        in: path
+        required: true
+        type: integer
+      - name: associationIdentifier
+        in: path
+        required: true
+        type: string
+      - name: association_source_table_key
+        in: query
+        required: false
+        type: string
+        description: The association_source_table_key
+      - name: association_row_table_key
+        in: query
+        required: false
+        type: string
+        description: The association_row_table_key
+      - name: association_type
+        in: query
+        required: false
+        type: string
+        description: The association type
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
     post:
       summary: Add an association to an action
       operationId: postActionAssociation
