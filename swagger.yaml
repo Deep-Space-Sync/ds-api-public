@@ -2899,3 +2899,101 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+  /workspaces/{workspaceId}/projects/{projectId}/wbs:
+    post:
+      summary: Create a WBS
+      operationId: postWBS
+      x-min-permissions: isProjectManager
+      tags:
+      - WBS
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+          - wbs_name
+          properties:
+            wbs_name:
+              type: string
+              description: The name of the wbs
+            parent_wbs_id:
+              type: integer
+              description: The parent WBS id
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+    patch:
+      summary: Edit a WBS
+      operationId: patchWBS
+      x-min-permissions: isProjectManager
+      tags:
+      - WBS
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            wbs_name:
+              type: string
+              description: The name of the wbs
+            parent_wbs_id:
+              type: integer
+              description: The parent WBS id
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+    get:
+      summary: Get WBS
+      operationId: getWBS
+      tags:
+      - Resources
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
