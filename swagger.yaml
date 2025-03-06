@@ -1072,6 +1072,34 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+    delete:
+      tags:
+      - Upload Data
+      summary: Invalidate CDE Entry
+      description: Invalidates a CDE entry for failed uploads
+      operationId: invalidateCdeEntry
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        type: string
+      - name: projectId
+        in: path
+        required: true
+        type: integer
+      - name: cdeId
+        in: path
+        required: true
+        type: integer
+      security:
+      - JWT: []
+      responses:
+        200:
+          description: Successfully invalidated CDE entry
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
   /workspaces/{workspaceId}/projects/{projectId}/cde/process:
     post:
       tags:
