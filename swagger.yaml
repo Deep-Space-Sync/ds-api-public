@@ -22,15 +22,19 @@ paths:
       parameters:
       - name: username
         in: header
-        required: true
+        required: false
         type: string
       - name: password
         in: header
-        required: true
+        required: false
         type: string
       - name: region
         in: header
-        required: true
+        required: false
+        type: string
+      - name: kinde_access_token
+        in: header
+        required: false
         type: string
       responses:
         200:
