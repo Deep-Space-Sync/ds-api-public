@@ -32,7 +32,7 @@ paths:
         in: header
         required: false
         type: string
-      - name: kinde_access_token
+      - name: token
         in: header
         required: false
         type: string
