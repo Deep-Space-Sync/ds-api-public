@@ -1,5 +1,6 @@
 basePath: https://client.deepspacesync.com/api/v1/
 info:
+  description: Deep Space API
   title: Deep Space API
   version: 2.0.0
 paths:
