@@ -6,7 +6,7 @@ info:
 paths:
   /api/v1/actions/associations:
     get:
-      operationId: getAssociations
+      operationId: v1_getAssociations
       responses:
         200:
           description: Successful response
@@ -22,7 +22,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v1/jobs/{job_id}:
     post:
-      operationId: startJobGlobal
+      operationId: v1_startJobGlobal
       parameters:
       - in: path
         name: job_id
@@ -76,7 +76,7 @@ paths:
       - Authentication
   /api/v1/migrations/{migrationId}:
     post:
-      operationId: runMigration
+      operationId: v1_runMigration
       parameters:
       - in: path
         name: migrationId
@@ -118,7 +118,7 @@ paths:
   /api/v1/regions:
     get:
       description: Returns list of api-supported regions
-      operationId: getRegions
+      operationId: v1_getRegions
       parameters:
       - description: Comma-separated list of fields to include in the response
         in: query
@@ -131,10 +131,31 @@ paths:
       summary: Get supported regions
       tags:
       - Info
+  /api/v1/secret/{secretName}:
+    get:
+      operationId: v1_getSecret
+      parameters:
+      - in: path
+        name: secretName
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get a secret
+      tags:
+      - Admin
+      x-min-permissions: admin
   /api/v1/users:
     post:
       description: Creates a user if not already exists in Outseta only
-      operationId: postOutsetauser
+      operationId: v1_postOutsetauser
       parameters:
       - in: body
         name: body
@@ -168,7 +189,7 @@ paths:
     get:
       description: Returns all workspaces and projects a user has access to with optional
         parameters for extra info
-      operationId: getWorkspaces
+      operationId: v1_getWorkspaces
       parameters:
       - description: Includes additional details in response
         in: query
@@ -222,7 +243,7 @@ paths:
   /api/v1/workspaces/{workspaceId}/companies:
     get:
       description: Returns all companies for a workspace
-      operationId: getWorkspaceCompanies
+      operationId: v1_getWorkspaceCompanies
       parameters:
       - in: path
         name: workspaceId
@@ -245,7 +266,7 @@ paths:
       - application/json
       description: Creates a new company in a workspace. Requires workspace manager
         permissions
-      operationId: postWorkspaceCompanies
+      operationId: v1_postWorkspaceCompanies
       parameters:
       - in: path
         name: workspaceId
@@ -282,7 +303,7 @@ paths:
     patch:
       consumes:
       - application/json
-      operationId: patchWorkspaceCompanies
+      operationId: v1_patchWorkspaceCompanies
       parameters:
       - in: path
         name: workspaceId
@@ -318,7 +339,7 @@ paths:
       - Companies
   /api/v1/workspaces/{workspaceId}/jobs/{job_id}:
     post:
-      operationId: startJobWorkspace
+      operationId: v1_startJobWorkspace
       parameters:
       - in: path
         name: workspaceId
@@ -342,7 +363,7 @@ paths:
       - Jobs
   /api/v1/workspaces/{workspaceId}/powerbi:
     post:
-      operationId: postPowerBiWorkspace
+      operationId: v1_postPowerBiWorkspace
       parameters:
       - in: path
         name: workspaceId
@@ -363,7 +384,7 @@ paths:
       x-min-permissions: admin
   /api/v1/workspaces/{workspaceId}/projects:
     get:
-      operationId: getProjects
+      operationId: v1_getProjects
       parameters:
       - in: path
         name: workspaceId
@@ -386,11 +407,81 @@ paths:
       summary: Get projects in a workspace
       tags:
       - Info
+    post:
+      consumes:
+      - application/json
+      operationId: v1_postProject
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            billing_stage:
+              description: The billing stage of the project (Outseta)
+              type: string
+            ds_license_type:
+              description: The license type of the project
+              type: string
+            hosting_region:
+              description: The hosting region of the project
+              type: string
+            primary_contact_email:
+              description: Primary contact (Outseta) for the project
+              type: string
+            project_name:
+              description: The name of the project
+              type: string
+            project_weekly_notifications:
+              description: dictionary of days of the week as bools
+              properties:
+                Friday:
+                  type: boolean
+                Monday:
+                  type: boolean
+                Saturday:
+                  type: boolean
+                Sunday:
+                  type: boolean
+                Thursday:
+                  type: boolean
+                Tuesday:
+                  type: boolean
+                Wednesday:
+                  type: boolean
+              type: object
+          required:
+          - project_name
+          - primary_contact_email
+          - billing_stage
+          - hosting_region
+          - ds_license_type
+          type: object
+      responses:
+        201:
+          description: Project successfully created
+        400:
+          description: Bad Request
+        401:
+          description: Insufficent permissions to create project
+        403:
+          description: Forbidden to create project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create a new project
+      tags:
+      - Project
   /api/v1/workspaces/{workspaceId}/projects/{projectId}:
     delete:
       consumes:
       - application/json
-      operationId: archiveProject
+      operationId: v1_archiveProject
       parameters:
       - in: path
         name: workspaceId
@@ -415,7 +506,7 @@ paths:
       tags:
       - Project
     get:
-      operationId: getProject
+      operationId: v1_getProject
       parameters:
       - in: path
         name: workspaceId
@@ -447,7 +538,7 @@ paths:
     patch:
       consumes:
       - application/json
-      operationId: updateProject
+      operationId: v1_updateProject
       parameters:
       - in: path
         name: workspaceId
@@ -482,7 +573,7 @@ paths:
       - Project
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/actions:
     get:
-      operationId: getActions
+      operationId: v1_getActions
       parameters:
       - in: path
         name: workspaceId
@@ -509,7 +600,7 @@ paths:
       tags:
       - Actions
     patch:
-      operationId: updateAction
+      operationId: v1_updateAction
       parameters:
       - in: path
         name: workspaceId
@@ -543,7 +634,7 @@ paths:
       tags:
       - Actions
     post:
-      operationId: createAction
+      operationId: v1_createAction
       parameters:
       - in: path
         name: workspaceId
@@ -598,7 +689,7 @@ paths:
       - Actions
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}:
     get:
-      operationId: getSingleAction
+      operationId: v1_getSingleAction
       parameters:
       - in: path
         name: workspaceId
@@ -625,7 +716,7 @@ paths:
       tags:
       - Actions
     patch:
-      operationId: updateSingleAction
+      operationId: v1_updateSingleAction
       parameters:
       - in: path
         name: workspaceId
@@ -657,7 +748,7 @@ paths:
       - Actions
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/associations/{associationIdentifier}:
     get:
-      operationId: getActionAssociation
+      operationId: v1_getActionAssociation
       parameters:
       - in: path
         name: workspaceId
@@ -704,7 +795,7 @@ paths:
       - Actions
       x-min-permissions: isRevitUser
     post:
-      operationId: postActionAssociation
+      operationId: v1_postActionAssociation
       parameters:
       - in: path
         name: workspaceId
@@ -749,7 +840,7 @@ paths:
       x-min-permissions: isRevitUser
   ? /api/v1/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/associations/{associationIdentifier}/{associationId}
   : delete:
-      operationId: deleteActionAssociation
+      operationId: v1_deleteActionAssociation
       parameters:
       - in: path
         name: workspaceId
@@ -787,7 +878,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/attachments:
     get:
-      operationId: getActionAttachments
+      operationId: v1_getActionAttachments
       parameters:
       - in: path
         name: workspaceId
@@ -814,7 +905,7 @@ paths:
       tags:
       - Actions
     post:
-      operationId: postActionAttachments
+      operationId: v1_postActionAttachments
       parameters:
       - in: path
         name: workspaceId
@@ -861,7 +952,7 @@ paths:
       - Actions
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/comments:
     get:
-      operationId: getActionComments
+      operationId: v1_getActionComments
       parameters:
       - in: path
         name: workspaceId
@@ -892,7 +983,7 @@ paths:
       tags:
       - Actions
     post:
-      operationId: postActionComment
+      operationId: v1_postActionComment
       parameters:
       - in: path
         name: workspaceId
@@ -942,7 +1033,7 @@ paths:
       - Actions
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/comments/{commentId}:
     get:
-      operationId: getActionComment
+      operationId: v1_getActionComment
       parameters:
       - in: path
         name: workspaceId
@@ -978,7 +1069,7 @@ paths:
       - Actions
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/comments/{commentId}/attachments:
     post:
-      operationId: postActionCommentAttachments
+      operationId: v1_postActionCommentAttachments
       parameters:
       - in: path
         name: workspaceId
@@ -1029,7 +1120,7 @@ paths:
       - Actions
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/watchers:
     get:
-      operationId: getActionWatchers
+      operationId: v1_getActionWatchers
       parameters:
       - in: path
         name: workspaceId
@@ -1056,7 +1147,7 @@ paths:
       tags:
       - Actions
     post:
-      operationId: postActionWatcher
+      operationId: v1_postActionWatcher
       parameters:
       - in: path
         name: workspaceId
@@ -1095,7 +1186,7 @@ paths:
       - Actions
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/watchers/{watcherId}:
     delete:
-      operationId: deleteActionWatcher
+      operationId: v1_deleteActionWatcher
       parameters:
       - in: path
         name: workspaceId
@@ -1128,7 +1219,7 @@ paths:
       - Actions
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/activity:
     get:
-      operationId: getUserActivity
+      operationId: v1_getUserActivity
       parameters:
       - in: path
         name: workspaceId
@@ -1152,7 +1243,7 @@ paths:
       - Admin
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/cde:
     get:
-      operationId: getCdeDocs
+      operationId: v1_getCdeDocs
       parameters:
       - in: path
         name: workspaceId
@@ -1175,7 +1266,7 @@ paths:
       tags:
       - Get Data
     post:
-      operationId: postCde
+      operationId: v1_postCde
       parameters:
       - in: path
         name: workspaceId
@@ -1225,7 +1316,7 @@ paths:
       - Upload Data
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/cde/process:
     post:
-      operationId: processCDE
+      operationId: v1_processCDE
       parameters:
       - in: path
         name: workspaceId
@@ -1269,7 +1360,7 @@ paths:
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/cde/{cdeId}:
     delete:
       description: Invalidates a CDE entry for failed uploads
-      operationId: invalidateCdeEntry
+      operationId: v1_invalidateCdeEntry
       parameters:
       - in: path
         name: workspaceId
@@ -1296,7 +1387,7 @@ paths:
       tags:
       - Upload Data
     get:
-      operationId: getCdeFile
+      operationId: v1_getCdeFile
       parameters:
       - in: path
         name: workspaceId
@@ -1322,9 +1413,78 @@ paths:
       summary: Get signed url to access cde file
       tags:
       - Get Data
+  /api/v1/workspaces/{workspaceId}/projects/{projectId}/cloudstoragebucket:
+    get:
+      description: Creates a new cloud storage bucket
+      operationId: v1_getCloudStorageBucket
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Created Cloud Storage Bucket Name
+          schema:
+            type: string
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create a cloud storage bucket for single-use and return its name
+      tags:
+      - Navis Integration
+    post:
+      consumes:
+      - application/json
+      description: Creates a new cloud storage bucket for a project and initialises
+        files expected to arrive in bucket.
+      operationId: v1_postCloudStorageBucket
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            collectorKeys:
+              description: A list of collector keys (strings)
+            fileIds:
+              description: A list of file ids (integers)
+          required:
+          - collectorKeys
+          - fileIds
+          type: object
+      responses:
+        200:
+          description: Created Cloud Storage Bucket Name
+          schema:
+            type: string
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create a cloud storage bucket for expected files and return its name
+      tags:
+      - Navis Integration
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/correspondence:
     post:
-      operationId: logCorrespondence
+      operationId: v1_logCorrespondence
       parameters:
       - in: path
         name: workspaceId
@@ -1410,7 +1570,7 @@ paths:
       - Correspondence Logging
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/data:
     get:
-      operationId: getDataClassifications
+      operationId: v1_getDataClassifications
       parameters:
       - in: path
         name: workspaceId
@@ -1438,7 +1598,7 @@ paths:
       - multipart/form-data
       description: Generic endpoint to upload csv data in any format to Deep Space
         in EAV format.
-      operationId: uploadanydata
+      operationId: v1_uploadanydata
       parameters:
       - in: path
         name: workspaceId
@@ -1474,7 +1634,7 @@ paths:
       - Upload Data
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/data/{data_classification}:
     get:
-      operationId: getDataSources
+      operationId: v1_getDataSources
       parameters:
       - in: path
         name: workspaceId
@@ -1507,7 +1667,7 @@ paths:
   : post:
       consumes:
       - multipart/form-data
-      operationId: uploaddata
+      operationId: v1_uploaddata
       parameters:
       - in: path
         name: workspaceId
@@ -1560,9 +1720,66 @@ paths:
       summary: Upload data to Deep Space from supported formats
       tags:
       - Upload Data
+  /api/v1/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}/navis/{collectorKey}:
+    post:
+      consumes:
+      - application/json
+      operationId: v1_navisfileupload
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: The file id
+        in: path
+        name: fileId
+        required: true
+        type: string
+      - description: The collector key
+        in: path
+        name: collectorKey
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            bucket_name:
+              description: The name of the cloud storage bucket
+            crawlKey:
+              description: The crawl key
+            end_time:
+              description: 'Datetime value of end of navis extraction - expected format:
+                %d/%m/%Y %I:%M:%S %p'
+            start_time:
+              description: 'Datetime value of start of navis extraction - expected
+                format: %d/%m/%Y %I:%M:%S %p'
+          required:
+          - start_time
+          - end_time
+          - bucket_name
+          - crawlKey
+          type: object
+      responses:
+        200:
+          description: Successfully uploaded navis data
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Upload navis data to Deep Space at the file level
+      tags:
+      - Navis Integration
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/integrations:
     get:
-      operationId: getProjectIntegrations
+      operationId: v1_getProjectIntegrations
       parameters:
       - in: path
         name: workspaceId
@@ -1587,7 +1804,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}:
     get:
-      operationId: getProjectIntegrationFields
+      operationId: v1_getProjectIntegrationFields
       parameters:
       - in: path
         name: workspaceId
@@ -1615,7 +1832,7 @@ paths:
       - External Integrations
       x-min-permissions: isRevitUser
     patch:
-      operationId: patchProjectIntegration
+      operationId: v1_patchProjectIntegration
       parameters:
       - in: path
         name: workspaceId
@@ -1658,7 +1875,7 @@ paths:
       - External Integrations
       x-min-permissions: isRevitUser
     post:
-      operationId: postProjectIntegration
+      operationId: v1_postProjectIntegration
       parameters:
       - in: path
         name: workspaceId
@@ -1694,7 +1911,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}/refresh:
     post:
-      operationId: postProjectIntegrationRefresh
+      operationId: v1_postProjectIntegrationRefresh
       parameters:
       - in: path
         name: workspaceId
@@ -1723,7 +1940,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}/sync:
     post:
-      operationId: postProjectIntegrationSync
+      operationId: v1_postProjectIntegrationSync
       parameters:
       - in: path
         name: workspaceId
@@ -1752,7 +1969,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/jobs:
     get:
-      operationId: getJobs
+      operationId: v1_getJobs
       parameters:
       - in: path
         name: workspaceId
@@ -1781,7 +1998,7 @@ paths:
       - Jobs
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/jobs/{job_guid}/status:
     get:
-      operationId: getJobStatus
+      operationId: v1_getJobStatus
       parameters:
       - in: path
         name: workspaceId
@@ -1809,7 +2026,7 @@ paths:
       - Jobs
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/jobs/{job_id}:
     post:
-      operationId: startJob
+      operationId: v1_startJob
       parameters:
       - in: path
         name: workspaceId
@@ -1837,7 +2054,7 @@ paths:
       - Jobs
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/link/{linkType}:
     get:
-      operationId: getProjectLinkType
+      operationId: v1_getProjectLinkType
       parameters:
       - in: path
         name: workspaceId
@@ -1867,7 +2084,7 @@ paths:
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/logout/{userId}:
     post:
       description: Used to track logout times, mainly for concurrent seat licenses
-      operationId: logoutUser
+      operationId: v1_logoutUser
       parameters:
       - in: path
         name: workspaceId
@@ -1896,7 +2113,7 @@ paths:
       - Users
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/milestone:
     get:
-      operationId: getMilestones
+      operationId: v1_getMilestones
       parameters:
       - in: path
         name: workspaceId
@@ -1919,7 +2136,7 @@ paths:
       tags:
       - Milestones
     post:
-      operationId: postMilestone
+      operationId: v1_postMilestone
       parameters:
       - in: path
         name: workspaceId
@@ -1956,11 +2173,63 @@ paths:
       summary: Create new milestone
       tags:
       - Milestones
+  /api/v1/workspaces/{workspaceId}/projects/{projectId}/navis/{collectorKey}:
+    post:
+      consumes:
+      - application/json
+      operationId: v1_navisprojectupload
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: The collector key
+        in: path
+        name: collectorKey
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            bucket_name:
+              description: The name of the cloud storage bucket
+            crawlKey:
+              description: The crawl key
+            end_time:
+              description: 'Datetime value of end of navis extraction - expected format:
+                %d/%m/%Y %I:%M:%S %p'
+            start_time:
+              description: 'Datetime value of start of navis extraction - expected
+                format: %d/%m/%Y %I:%M:%S %p'
+          required:
+          - start_time
+          - end_time
+          - bucket_name
+          - crawlKey
+          type: object
+      responses:
+        200:
+          description: Successfully uploaded navis data
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Upload navis data to Deep Space at the project level
+      tags:
+      - Navis Integration
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/outseta:
     patch:
       consumes:
       - application/json
-      operationId: patchProjectOutseta
+      operationId: v1_patchProjectOutseta
       parameters:
       - in: path
         name: workspaceId
@@ -1999,7 +2268,7 @@ paths:
     post:
       consumes:
       - application/json
-      operationId: postProjectOutseta
+      operationId: v1_postProjectOutseta
       parameters:
       - in: path
         name: workspaceId
@@ -2065,7 +2334,7 @@ paths:
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/parameters:
     get:
       description: Get list of unique parameters from all parameter sets for a project
-      operationId: getParameters
+      operationId: v1_getParameters
       parameters:
       - in: path
         name: workspaceId
@@ -2089,7 +2358,7 @@ paths:
       - Info
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/powerbi/apps/{contentPack}:
     post:
-      operationId: postPowerBiApps
+      operationId: v1_postPowerBiApps
       parameters:
       - in: path
         name: workspaceId
@@ -2118,7 +2387,7 @@ paths:
       x-min-permissions: admin
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/powerbi/deploy/apps:
     post:
-      operationId: deployPbiApp
+      operationId: v1_deployPbiApp
       parameters:
       - in: path
         name: workspaceId
@@ -2156,7 +2425,7 @@ paths:
       x-min-permissions: admin
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/powerbi/embedded/apps/{appName}:
     get:
-      operationId: getEmbeddedPbiApp
+      operationId: v1_getEmbeddedPbiApp
       parameters:
       - in: path
         name: workspaceId
@@ -2186,7 +2455,7 @@ paths:
       - Power BI
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/powerbi/filters:
     get:
-      operationId: getPbiFilters
+      operationId: v1_getPbiFilters
       parameters:
       - in: path
         name: workspaceId
@@ -2210,7 +2479,7 @@ paths:
       - Power BI
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/powerbi/refresh/apps:
     get:
-      operationId: getPowerBiApps
+      operationId: v1_getPowerBiApps
       parameters:
       - in: path
         name: workspaceId
@@ -2234,7 +2503,7 @@ paths:
       - Power BI
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/powerbi/refresh/apps/{appName}:
     post:
-      operationId: refreshPowerBiApp
+      operationId: v1_refreshPowerBiApp
       parameters:
       - in: path
         name: workspaceId
@@ -2266,7 +2535,7 @@ paths:
       - Power BI
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/powerbi/syncback/apps/{appName}:
     post:
-      operationId: syncbackPbiApp
+      operationId: v1_syncbackPbiApp
       parameters:
       - in: path
         name: workspaceId
@@ -2294,7 +2563,7 @@ paths:
       - Power BI
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/resources:
     get:
-      operationId: getResources
+      operationId: v1_getResources
       parameters:
       - in: path
         name: workspaceId
@@ -2318,7 +2587,7 @@ paths:
       - Resources
       x-min-permissions: isRevitUser
     post:
-      operationId: postResources
+      operationId: v1_postResources
       parameters:
       - in: path
         name: workspaceId
@@ -2378,7 +2647,7 @@ paths:
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/sourcefiles:
     get:
       description: Returns all sourcefiles details for a project
-      operationId: getSourceFiles
+      operationId: v1_getSourceFiles
       parameters:
       - in: path
         name: workspaceId
@@ -2405,7 +2674,7 @@ paths:
       - application/json
       description: Creates a new sourcefile in a project with provided filename and
         discipline
-      operationId: postSourceFiles
+      operationId: v1_postSourceFiles
       parameters:
       - in: path
         name: workspaceId
@@ -2451,7 +2720,7 @@ paths:
       - Files
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/teams:
     get:
-      operationId: getTeams
+      operationId: v1_getTeams
       parameters:
       - in: path
         name: workspaceId
@@ -2478,7 +2747,7 @@ paths:
       tags:
       - Teams
     post:
-      operationId: postTeam
+      operationId: v1_postTeam
       parameters:
       - in: path
         name: workspaceId
@@ -2521,7 +2790,7 @@ paths:
       - Teams
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/teams/bulk:
     post:
-      operationId: postTeamsBulk
+      operationId: v1_postTeamsBulk
       parameters:
       - in: path
         name: workspaceId
@@ -2550,7 +2819,7 @@ paths:
       - Teams
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/teams/{teamId}:
     patch:
-      operationId: patchTeam
+      operationId: v1_patchTeam
       parameters:
       - in: path
         name: workspaceId
@@ -2593,7 +2862,7 @@ paths:
       - Teams
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/tokens/{tokenId}:
     get:
-      operationId: getProjectTokens
+      operationId: v1_getProjectTokens
       parameters:
       - in: path
         name: workspaceId
@@ -2627,7 +2896,7 @@ paths:
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/users:
     get:
       description: Returns all users and user details for a project
-      operationId: getProjectUsers
+      operationId: v1_getProjectUsers
       parameters:
       - in: path
         name: workspaceId
@@ -2651,7 +2920,7 @@ paths:
       - Users
     post:
       description: Creates a user if not already exista and invites to project
-      operationId: postProjectUsers
+      operationId: v1_postProjectUsers
       parameters:
       - in: path
         name: workspaceId
@@ -2715,7 +2984,7 @@ paths:
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/users/{userId}:
     get:
       description: Returns user and details for specified project
-      operationId: getProjectUser
+      operationId: v1_getProjectUser
       parameters:
       - in: path
         name: workspaceId
@@ -2743,7 +3012,7 @@ paths:
       - Users
     patch:
       description: Edit project-level attributes of a user
-      operationId: patchProjectUsers
+      operationId: v1_patchProjectUsers
       parameters:
       - in: path
         name: workspaceId
@@ -2799,7 +3068,7 @@ paths:
       - Users
   /api/v1/workspaces/{workspaceId}/projects/{projectId}/wbs:
     get:
-      operationId: getWBS
+      operationId: v1_getWBS
       parameters:
       - in: path
         name: workspaceId
@@ -2822,7 +3091,7 @@ paths:
       tags:
       - Resources
     patch:
-      operationId: patchWBS
+      operationId: v1_patchWBS
       parameters:
       - in: path
         name: workspaceId
@@ -2858,7 +3127,7 @@ paths:
       - WBS
       x-min-permissions: isProjectManager
     post:
-      operationId: postWBS
+      operationId: v1_postWBS
       parameters:
       - in: path
         name: workspaceId
@@ -2897,7 +3166,7 @@ paths:
       x-min-permissions: isProjectManager
   /api/v1/workspaces/{workspaceId}/resources:
     get:
-      operationId: getResourcesWS
+      operationId: v1_getResourcesWS
       parameters:
       - in: path
         name: workspaceId
@@ -2919,7 +3188,7 @@ paths:
   /api/v1/workspaces/{workspaceId}/users:
     get:
       description: Returns all users and user details for a workspace
-      operationId: getWorkspaceUsers
+      operationId: v1_getWorkspaceUsers
       parameters:
       - in: path
         name: workspaceId
@@ -2939,7 +3208,7 @@ paths:
       - Users
     post:
       description: Creates user if not already exista and invites to workspace
-      operationId: postWorkspaceUsers
+      operationId: v1_postWorkspaceUsers
       parameters:
       - in: path
         name: workspaceId
@@ -3010,7 +3279,7 @@ paths:
   /api/v1/workspaces/{workspaceId}/users/{userId}:
     patch:
       description: Edit workspace-level attributes of a user
-      operationId: patchWorkspaceUsers
+      operationId: v1_patchWorkspaceUsers
       parameters:
       - in: path
         name: workspaceId
@@ -3047,7 +3316,7 @@ paths:
       tags:
       - Users
     post:
-      operationId: postWorkspaceUserId
+      operationId: v1_postWorkspaceUserId
       parameters:
       - in: path
         name: workspaceId
@@ -3071,7 +3340,7 @@ paths:
       - Users
   /api/v2/actions/associations:
     get:
-      operationId: getAssociations
+      operationId: v2_getAssociations
       responses:
         200:
           description: Successful response
@@ -3087,7 +3356,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v2/jobs/{job_id}:
     post:
-      operationId: startJobGlobal
+      operationId: v2_startJobGlobal
       parameters:
       - in: path
         name: job_id
@@ -3107,7 +3376,7 @@ paths:
       - Jobs
   /api/v2/migrations/{migrationId}:
     post:
-      operationId: runMigration
+      operationId: v2_runMigration
       parameters:
       - in: path
         name: migrationId
@@ -3149,7 +3418,7 @@ paths:
   /api/v2/regions:
     get:
       description: Returns list of api-supported regions
-      operationId: getRegions
+      operationId: v2_getRegions
       parameters:
       - description: Comma-separated list of fields to include in the response
         in: query
@@ -3162,10 +3431,31 @@ paths:
       summary: Get supported regions
       tags:
       - Info
+  /api/v2/secret/{secretName}:
+    get:
+      operationId: v2_getSecret
+      parameters:
+      - in: path
+        name: secretName
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a secret
+      tags:
+      - Admin
+      x-min-permissions: admin
   /api/v2/users:
     post:
       description: Creates a user if not already exists in Outseta only
-      operationId: postOutsetauser
+      operationId: v2_postOutsetauser
       parameters:
       - in: body
         name: body
@@ -3199,7 +3489,7 @@ paths:
     get:
       description: Returns all workspaces and projects a user has access to with optional
         parameters for extra info
-      operationId: getWorkspaces
+      operationId: v2_getWorkspaces
       parameters:
       - description: Includes additional details in response
         in: query
@@ -3253,7 +3543,7 @@ paths:
   /api/v2/workspaces/{workspaceId}/companies:
     get:
       description: Returns all companies for a workspace
-      operationId: getWorkspaceCompanies
+      operationId: v2_getWorkspaceCompanies
       parameters:
       - in: path
         name: workspaceId
@@ -3276,7 +3566,7 @@ paths:
       - application/json
       description: Creates a new company in a workspace. Requires workspace manager
         permissions
-      operationId: postWorkspaceCompanies
+      operationId: v2_postWorkspaceCompanies
       parameters:
       - in: path
         name: workspaceId
@@ -3313,7 +3603,7 @@ paths:
     patch:
       consumes:
       - application/json
-      operationId: patchWorkspaceCompanies
+      operationId: v2_patchWorkspaceCompanies
       parameters:
       - in: path
         name: workspaceId
@@ -3349,7 +3639,7 @@ paths:
       - Companies
   /api/v2/workspaces/{workspaceId}/jobs/{job_id}:
     post:
-      operationId: startJobWorkspace
+      operationId: v2_startJobWorkspace
       parameters:
       - in: path
         name: workspaceId
@@ -3373,7 +3663,7 @@ paths:
       - Jobs
   /api/v2/workspaces/{workspaceId}/powerbi:
     post:
-      operationId: postPowerBiWorkspace
+      operationId: v2_postPowerBiWorkspace
       parameters:
       - in: path
         name: workspaceId
@@ -3394,7 +3684,7 @@ paths:
       x-min-permissions: admin
   /api/v2/workspaces/{workspaceId}/projects:
     get:
-      operationId: getProjects
+      operationId: v2_getProjects
       parameters:
       - in: path
         name: workspaceId
@@ -3417,11 +3707,81 @@ paths:
       summary: Get projects in a workspace
       tags:
       - Info
+    post:
+      consumes:
+      - application/json
+      operationId: v2_postProject
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            billing_stage:
+              description: The billing stage of the project (Outseta)
+              type: string
+            ds_license_type:
+              description: The license type of the project
+              type: string
+            hosting_region:
+              description: The hosting region of the project
+              type: string
+            primary_contact_email:
+              description: Primary contact (Outseta) for the project
+              type: string
+            project_name:
+              description: The name of the project
+              type: string
+            project_weekly_notifications:
+              description: dictionary of days of the week as bools
+              properties:
+                Friday:
+                  type: boolean
+                Monday:
+                  type: boolean
+                Saturday:
+                  type: boolean
+                Sunday:
+                  type: boolean
+                Thursday:
+                  type: boolean
+                Tuesday:
+                  type: boolean
+                Wednesday:
+                  type: boolean
+              type: object
+          required:
+          - project_name
+          - primary_contact_email
+          - billing_stage
+          - hosting_region
+          - ds_license_type
+          type: object
+      responses:
+        201:
+          description: Project successfully created
+        400:
+          description: Bad Request
+        401:
+          description: Insufficent permissions to create project
+        403:
+          description: Forbidden to create project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a new project
+      tags:
+      - Project
   /api/v2/workspaces/{workspaceId}/projects/{projectId}:
     delete:
       consumes:
       - application/json
-      operationId: archiveProject
+      operationId: v2_archiveProject
       parameters:
       - in: path
         name: workspaceId
@@ -3446,7 +3806,7 @@ paths:
       tags:
       - Project
     get:
-      operationId: getProject
+      operationId: v2_getProject
       parameters:
       - in: path
         name: workspaceId
@@ -3478,7 +3838,7 @@ paths:
     patch:
       consumes:
       - application/json
-      operationId: updateProject
+      operationId: v2_updateProject
       parameters:
       - in: path
         name: workspaceId
@@ -3513,7 +3873,7 @@ paths:
       - Project
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/actions:
     get:
-      operationId: getActions
+      operationId: v2_getActions
       parameters:
       - in: path
         name: workspaceId
@@ -3540,7 +3900,7 @@ paths:
       tags:
       - Actions
     patch:
-      operationId: updateAction
+      operationId: v2_updateAction
       parameters:
       - in: path
         name: workspaceId
@@ -3574,7 +3934,7 @@ paths:
       tags:
       - Actions
     post:
-      operationId: createAction
+      operationId: v2_createAction
       parameters:
       - in: path
         name: workspaceId
@@ -3629,7 +3989,7 @@ paths:
       - Actions
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}:
     get:
-      operationId: getSingleAction
+      operationId: v2_getSingleAction
       parameters:
       - in: path
         name: workspaceId
@@ -3656,7 +4016,7 @@ paths:
       tags:
       - Actions
     patch:
-      operationId: updateSingleAction
+      operationId: v2_updateSingleAction
       parameters:
       - in: path
         name: workspaceId
@@ -3688,7 +4048,7 @@ paths:
       - Actions
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/associations/{associationIdentifier}:
     get:
-      operationId: getActionAssociation
+      operationId: v2_getActionAssociation
       parameters:
       - in: path
         name: workspaceId
@@ -3735,7 +4095,7 @@ paths:
       - Actions
       x-min-permissions: isRevitUser
     post:
-      operationId: postActionAssociation
+      operationId: v2_postActionAssociation
       parameters:
       - in: path
         name: workspaceId
@@ -3780,7 +4140,7 @@ paths:
       x-min-permissions: isRevitUser
   ? /api/v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/associations/{associationIdentifier}/{associationId}
   : delete:
-      operationId: deleteActionAssociation
+      operationId: v2_deleteActionAssociation
       parameters:
       - in: path
         name: workspaceId
@@ -3818,7 +4178,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/attachments:
     get:
-      operationId: getActionAttachments
+      operationId: v2_getActionAttachments
       parameters:
       - in: path
         name: workspaceId
@@ -3845,7 +4205,7 @@ paths:
       tags:
       - Actions
     post:
-      operationId: postActionAttachments
+      operationId: v2_postActionAttachments
       parameters:
       - in: path
         name: workspaceId
@@ -3892,7 +4252,7 @@ paths:
       - Actions
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/comments:
     get:
-      operationId: getActionComments
+      operationId: v2_getActionComments
       parameters:
       - in: path
         name: workspaceId
@@ -3923,7 +4283,7 @@ paths:
       tags:
       - Actions
     post:
-      operationId: postActionComment
+      operationId: v2_postActionComment
       parameters:
       - in: path
         name: workspaceId
@@ -3973,7 +4333,7 @@ paths:
       - Actions
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/comments/{commentId}:
     get:
-      operationId: getActionComment
+      operationId: v2_getActionComment
       parameters:
       - in: path
         name: workspaceId
@@ -4009,7 +4369,7 @@ paths:
       - Actions
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/comments/{commentId}/attachments:
     post:
-      operationId: postActionCommentAttachments
+      operationId: v2_postActionCommentAttachments
       parameters:
       - in: path
         name: workspaceId
@@ -4060,7 +4420,7 @@ paths:
       - Actions
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/watchers:
     get:
-      operationId: getActionWatchers
+      operationId: v2_getActionWatchers
       parameters:
       - in: path
         name: workspaceId
@@ -4087,7 +4447,7 @@ paths:
       tags:
       - Actions
     post:
-      operationId: postActionWatcher
+      operationId: v2_postActionWatcher
       parameters:
       - in: path
         name: workspaceId
@@ -4126,7 +4486,7 @@ paths:
       - Actions
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/watchers/{watcherId}:
     delete:
-      operationId: deleteActionWatcher
+      operationId: v2_deleteActionWatcher
       parameters:
       - in: path
         name: workspaceId
@@ -4159,7 +4519,7 @@ paths:
       - Actions
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/activity:
     get:
-      operationId: getUserActivity
+      operationId: v2_getUserActivity
       parameters:
       - in: path
         name: workspaceId
@@ -4183,7 +4543,7 @@ paths:
       - Admin
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/cde:
     get:
-      operationId: getCdeDocs
+      operationId: v2_getCdeDocs
       parameters:
       - in: path
         name: workspaceId
@@ -4206,7 +4566,7 @@ paths:
       tags:
       - Get Data
     post:
-      operationId: postCde
+      operationId: v2_postCde
       parameters:
       - in: path
         name: workspaceId
@@ -4256,7 +4616,7 @@ paths:
       - Upload Data
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/cde/process:
     post:
-      operationId: processCDE
+      operationId: v2_processCDE
       parameters:
       - in: path
         name: workspaceId
@@ -4300,7 +4660,7 @@ paths:
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/cde/{cdeId}:
     delete:
       description: Invalidates a CDE entry for failed uploads
-      operationId: invalidateCdeEntry
+      operationId: v2_invalidateCdeEntry
       parameters:
       - in: path
         name: workspaceId
@@ -4327,7 +4687,7 @@ paths:
       tags:
       - Upload Data
     get:
-      operationId: getCdeFile
+      operationId: v2_getCdeFile
       parameters:
       - in: path
         name: workspaceId
@@ -4353,9 +4713,78 @@ paths:
       summary: Get signed url to access cde file
       tags:
       - Get Data
+  /api/v2/workspaces/{workspaceId}/projects/{projectId}/cloudstoragebucket:
+    get:
+      description: Creates a new cloud storage bucket
+      operationId: v2_getCloudStorageBucket
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Created Cloud Storage Bucket Name
+          schema:
+            type: string
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a cloud storage bucket for single-use and return its name
+      tags:
+      - Navis Integration
+    post:
+      consumes:
+      - application/json
+      description: Creates a new cloud storage bucket for a project and initialises
+        files expected to arrive in bucket.
+      operationId: v2_postCloudStorageBucket
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            collectorKeys:
+              description: A list of collector keys (strings)
+            fileIds:
+              description: A list of file ids (integers)
+          required:
+          - collectorKeys
+          - fileIds
+          type: object
+      responses:
+        200:
+          description: Created Cloud Storage Bucket Name
+          schema:
+            type: string
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a cloud storage bucket for expected files and return its name
+      tags:
+      - Navis Integration
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/correspondence:
     post:
-      operationId: logCorrespondence
+      operationId: v2_logCorrespondence
       parameters:
       - in: path
         name: workspaceId
@@ -4441,7 +4870,7 @@ paths:
       - Correspondence Logging
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/data:
     get:
-      operationId: getDataClassifications
+      operationId: v2_getDataClassifications
       parameters:
       - in: path
         name: workspaceId
@@ -4469,7 +4898,7 @@ paths:
       - multipart/form-data
       description: Generic endpoint to upload csv data in any format to Deep Space
         in EAV format.
-      operationId: uploadanydata
+      operationId: v2_uploadanydata
       parameters:
       - in: path
         name: workspaceId
@@ -4505,7 +4934,7 @@ paths:
       - Upload Data
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/data/{data_classification}:
     get:
-      operationId: getDataSources
+      operationId: v2_getDataSources
       parameters:
       - in: path
         name: workspaceId
@@ -4538,7 +4967,7 @@ paths:
   : post:
       consumes:
       - multipart/form-data
-      operationId: uploaddata
+      operationId: v2_uploaddata
       parameters:
       - in: path
         name: workspaceId
@@ -4591,9 +5020,66 @@ paths:
       summary: Upload data to Deep Space from supported formats
       tags:
       - Upload Data
+  /api/v2/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}/navis/{collectorKey}:
+    post:
+      consumes:
+      - application/json
+      operationId: v2_navisfileupload
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: The file id
+        in: path
+        name: fileId
+        required: true
+        type: string
+      - description: The collector key
+        in: path
+        name: collectorKey
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            bucket_name:
+              description: The name of the cloud storage bucket
+            crawlKey:
+              description: The crawl key
+            end_time:
+              description: 'Datetime value of end of navis extraction - expected format:
+                %d/%m/%Y %I:%M:%S %p'
+            start_time:
+              description: 'Datetime value of start of navis extraction - expected
+                format: %d/%m/%Y %I:%M:%S %p'
+          required:
+          - start_time
+          - end_time
+          - bucket_name
+          - crawlKey
+          type: object
+      responses:
+        200:
+          description: Successfully uploaded navis data
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upload navis data to Deep Space at the file level
+      tags:
+      - Navis Integration
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/integrations:
     get:
-      operationId: getProjectIntegrations
+      operationId: v2_getProjectIntegrations
       parameters:
       - in: path
         name: workspaceId
@@ -4618,7 +5104,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}:
     get:
-      operationId: getProjectIntegrationFields
+      operationId: v2_getProjectIntegrationFields
       parameters:
       - in: path
         name: workspaceId
@@ -4646,7 +5132,7 @@ paths:
       - External Integrations
       x-min-permissions: isRevitUser
     patch:
-      operationId: patchProjectIntegration
+      operationId: v2_patchProjectIntegration
       parameters:
       - in: path
         name: workspaceId
@@ -4689,7 +5175,7 @@ paths:
       - External Integrations
       x-min-permissions: isRevitUser
     post:
-      operationId: postProjectIntegration
+      operationId: v2_postProjectIntegration
       parameters:
       - in: path
         name: workspaceId
@@ -4725,7 +5211,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}/refresh:
     post:
-      operationId: postProjectIntegrationRefresh
+      operationId: v2_postProjectIntegrationRefresh
       parameters:
       - in: path
         name: workspaceId
@@ -4754,7 +5240,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}/sync:
     post:
-      operationId: postProjectIntegrationSync
+      operationId: v2_postProjectIntegrationSync
       parameters:
       - in: path
         name: workspaceId
@@ -4783,7 +5269,7 @@ paths:
       x-min-permissions: isRevitUser
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/jobs:
     get:
-      operationId: getJobs
+      operationId: v2_getJobs
       parameters:
       - in: path
         name: workspaceId
@@ -4812,7 +5298,7 @@ paths:
       - Jobs
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/jobs/{job_guid}/status:
     get:
-      operationId: getJobStatus
+      operationId: v2_getJobStatus
       parameters:
       - in: path
         name: workspaceId
@@ -4840,7 +5326,7 @@ paths:
       - Jobs
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/jobs/{job_id}:
     post:
-      operationId: startJob
+      operationId: v2_startJob
       parameters:
       - in: path
         name: workspaceId
@@ -4868,7 +5354,7 @@ paths:
       - Jobs
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/link/{linkType}:
     get:
-      operationId: getProjectLinkType
+      operationId: v2_getProjectLinkType
       parameters:
       - in: path
         name: workspaceId
@@ -4898,7 +5384,7 @@ paths:
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/logout/{userId}:
     post:
       description: Used to track logout times, mainly for concurrent seat licenses
-      operationId: logoutUser
+      operationId: v2_logoutUser
       parameters:
       - in: path
         name: workspaceId
@@ -4927,7 +5413,7 @@ paths:
       - Users
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/milestone:
     get:
-      operationId: getMilestones
+      operationId: v2_getMilestones
       parameters:
       - in: path
         name: workspaceId
@@ -4950,7 +5436,7 @@ paths:
       tags:
       - Milestones
     post:
-      operationId: postMilestone
+      operationId: v2_postMilestone
       parameters:
       - in: path
         name: workspaceId
@@ -4987,11 +5473,63 @@ paths:
       summary: Create new milestone
       tags:
       - Milestones
+  /api/v2/workspaces/{workspaceId}/projects/{projectId}/navis/{collectorKey}:
+    post:
+      consumes:
+      - application/json
+      operationId: v2_navisprojectupload
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: The collector key
+        in: path
+        name: collectorKey
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            bucket_name:
+              description: The name of the cloud storage bucket
+            crawlKey:
+              description: The crawl key
+            end_time:
+              description: 'Datetime value of end of navis extraction - expected format:
+                %d/%m/%Y %I:%M:%S %p'
+            start_time:
+              description: 'Datetime value of start of navis extraction - expected
+                format: %d/%m/%Y %I:%M:%S %p'
+          required:
+          - start_time
+          - end_time
+          - bucket_name
+          - crawlKey
+          type: object
+      responses:
+        200:
+          description: Successfully uploaded navis data
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upload navis data to Deep Space at the project level
+      tags:
+      - Navis Integration
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/outseta:
     patch:
       consumes:
       - application/json
-      operationId: patchProjectOutseta
+      operationId: v2_patchProjectOutseta
       parameters:
       - in: path
         name: workspaceId
@@ -5030,7 +5568,7 @@ paths:
     post:
       consumes:
       - application/json
-      operationId: postProjectOutseta
+      operationId: v2_postProjectOutseta
       parameters:
       - in: path
         name: workspaceId
@@ -5096,7 +5634,7 @@ paths:
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/parameters:
     get:
       description: Get list of unique parameters from all parameter sets for a project
-      operationId: getParameters
+      operationId: v2_getParameters
       parameters:
       - in: path
         name: workspaceId
@@ -5120,7 +5658,7 @@ paths:
       - Info
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/apps/{contentPack}:
     post:
-      operationId: postPowerBiApps
+      operationId: v2_postPowerBiApps
       parameters:
       - in: path
         name: workspaceId
@@ -5149,7 +5687,7 @@ paths:
       x-min-permissions: admin
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/deploy/apps:
     post:
-      operationId: deployPbiApp
+      operationId: v2_deployPbiApp
       parameters:
       - in: path
         name: workspaceId
@@ -5187,7 +5725,7 @@ paths:
       x-min-permissions: admin
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/embedded/apps/{appName}:
     get:
-      operationId: getEmbeddedPbiApp
+      operationId: v2_getEmbeddedPbiApp
       parameters:
       - in: path
         name: workspaceId
@@ -5217,7 +5755,7 @@ paths:
       - Power BI
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/filters:
     get:
-      operationId: getPbiFilters
+      operationId: v2_getPbiFilters
       parameters:
       - in: path
         name: workspaceId
@@ -5241,7 +5779,7 @@ paths:
       - Power BI
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/refresh/apps:
     get:
-      operationId: getPowerBiApps
+      operationId: v2_getPowerBiApps
       parameters:
       - in: path
         name: workspaceId
@@ -5265,7 +5803,7 @@ paths:
       - Power BI
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/refresh/apps/{appName}:
     post:
-      operationId: refreshPowerBiApp
+      operationId: v2_refreshPowerBiApp
       parameters:
       - in: path
         name: workspaceId
@@ -5297,7 +5835,7 @@ paths:
       - Power BI
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/syncback/apps/{appName}:
     post:
-      operationId: syncbackPbiApp
+      operationId: v2_syncbackPbiApp
       parameters:
       - in: path
         name: workspaceId
@@ -5325,7 +5863,7 @@ paths:
       - Power BI
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/resources:
     get:
-      operationId: getResources
+      operationId: v2_getResources
       parameters:
       - in: path
         name: workspaceId
@@ -5349,7 +5887,7 @@ paths:
       - Resources
       x-min-permissions: isRevitUser
     post:
-      operationId: postResources
+      operationId: v2_postResources
       parameters:
       - in: path
         name: workspaceId
@@ -5409,7 +5947,7 @@ paths:
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/sourcefiles:
     get:
       description: Returns all sourcefiles details for a project
-      operationId: getSourceFiles
+      operationId: v2_getSourceFiles
       parameters:
       - in: path
         name: workspaceId
@@ -5436,7 +5974,7 @@ paths:
       - application/json
       description: Creates a new sourcefile in a project with provided filename and
         discipline
-      operationId: postSourceFiles
+      operationId: v2_postSourceFiles
       parameters:
       - in: path
         name: workspaceId
@@ -5482,7 +6020,7 @@ paths:
       - Files
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/teams:
     get:
-      operationId: getTeams
+      operationId: v2_getTeams
       parameters:
       - in: path
         name: workspaceId
@@ -5509,7 +6047,7 @@ paths:
       tags:
       - Teams
     post:
-      operationId: postTeam
+      operationId: v2_postTeam
       parameters:
       - in: path
         name: workspaceId
@@ -5552,7 +6090,7 @@ paths:
       - Teams
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/teams/bulk:
     post:
-      operationId: postTeamsBulk
+      operationId: v2_postTeamsBulk
       parameters:
       - in: path
         name: workspaceId
@@ -5581,7 +6119,7 @@ paths:
       - Teams
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/teams/{teamId}:
     patch:
-      operationId: patchTeam
+      operationId: v2_patchTeam
       parameters:
       - in: path
         name: workspaceId
@@ -5624,7 +6162,7 @@ paths:
       - Teams
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/tokens/{tokenId}:
     get:
-      operationId: getProjectTokens
+      operationId: v2_getProjectTokens
       parameters:
       - in: path
         name: workspaceId
@@ -5658,7 +6196,7 @@ paths:
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/users:
     get:
       description: Returns all users and user details for a project
-      operationId: getProjectUsers
+      operationId: v2_getProjectUsers
       parameters:
       - in: path
         name: workspaceId
@@ -5682,7 +6220,7 @@ paths:
       - Users
     post:
       description: Creates a user if not already exista and invites to project
-      operationId: postProjectUsers
+      operationId: v2_postProjectUsers
       parameters:
       - in: path
         name: workspaceId
@@ -5746,7 +6284,7 @@ paths:
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/users/{userId}:
     get:
       description: Returns user and details for specified project
-      operationId: getProjectUser
+      operationId: v2_getProjectUser
       parameters:
       - in: path
         name: workspaceId
@@ -5774,7 +6312,7 @@ paths:
       - Users
     patch:
       description: Edit project-level attributes of a user
-      operationId: patchProjectUsers
+      operationId: v2_patchProjectUsers
       parameters:
       - in: path
         name: workspaceId
@@ -5830,7 +6368,7 @@ paths:
       - Users
   /api/v2/workspaces/{workspaceId}/projects/{projectId}/wbs:
     get:
-      operationId: getWBS
+      operationId: v2_getWBS
       parameters:
       - in: path
         name: workspaceId
@@ -5853,7 +6391,7 @@ paths:
       tags:
       - Resources
     patch:
-      operationId: patchWBS
+      operationId: v2_patchWBS
       parameters:
       - in: path
         name: workspaceId
@@ -5889,7 +6427,7 @@ paths:
       - WBS
       x-min-permissions: isProjectManager
     post:
-      operationId: postWBS
+      operationId: v2_postWBS
       parameters:
       - in: path
         name: workspaceId
@@ -5928,7 +6466,7 @@ paths:
       x-min-permissions: isProjectManager
   /api/v2/workspaces/{workspaceId}/resources:
     get:
-      operationId: getResourcesWS
+      operationId: v2_getResourcesWS
       parameters:
       - in: path
         name: workspaceId
@@ -5950,7 +6488,7 @@ paths:
   /api/v2/workspaces/{workspaceId}/users:
     get:
       description: Returns all users and user details for a workspace
-      operationId: getWorkspaceUsers
+      operationId: v2_getWorkspaceUsers
       parameters:
       - in: path
         name: workspaceId
@@ -5970,7 +6508,7 @@ paths:
       - Users
     post:
       description: Creates user if not already exista and invites to workspace
-      operationId: postWorkspaceUsers
+      operationId: v2_postWorkspaceUsers
       parameters:
       - in: path
         name: workspaceId
@@ -6041,7 +6579,7 @@ paths:
   /api/v2/workspaces/{workspaceId}/users/{userId}:
     patch:
       description: Edit workspace-level attributes of a user
-      operationId: patchWorkspaceUsers
+      operationId: v2_patchWorkspaceUsers
       parameters:
       - in: path
         name: workspaceId
@@ -6078,7 +6616,7 @@ paths:
       tags:
       - Users
     post:
-      operationId: postWorkspaceUserId
+      operationId: v2_postWorkspaceUserId
       parameters:
       - in: path
         name: workspaceId
