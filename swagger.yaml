@@ -6641,7 +6641,7 @@ paths:
 schemes:
 - https
 securityDefinitions:
-  JWT:
+  JWT_v1:
     authorizationUrl: ''
     flow: implicit
     type: oauth2
