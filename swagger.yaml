@@ -115,6 +115,22 @@ paths:
       tags:
       - Migrations
       x-min-permissions: admin
+  /v1/powerbi-xmla/system-tables:
+    get:
+      operationId: v2_uploadSystemTables
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Retrieve system tables from Power BI XMLA
+      tags:
+      - Power BI
+      x-min-permissions: admin
   /v1/regions:
     get:
       description: Returns list of api-supported regions
@@ -3414,6 +3430,22 @@ paths:
       summary: Run a schema migration
       tags:
       - Migrations
+      x-min-permissions: admin
+  /v2/powerbi-xmla/system-tables:
+    get:
+      operationId: v2_uploadSystemTables
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Retrieve system tables from Power BI XMLA
+      tags:
+      - Power BI
       x-min-permissions: admin
   /v2/regions:
     get:
