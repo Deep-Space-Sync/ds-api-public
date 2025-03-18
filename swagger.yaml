@@ -117,7 +117,7 @@ paths:
       x-min-permissions: admin
   /v1/powerbi-xmla/system-tables:
     get:
-      operationId: v2_uploadSystemTables
+      operationId: v1_v2_uploadSystemTables
       responses:
         200:
           description: A successful response
@@ -3433,7 +3433,7 @@ paths:
       x-min-permissions: admin
   /v2/powerbi-xmla/system-tables:
     get:
-      operationId: v2_uploadSystemTables
+      operationId: v2_v2_uploadSystemTables
       responses:
         200:
           description: A successful response
