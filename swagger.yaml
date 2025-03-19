@@ -115,9 +115,14 @@ paths:
       tags:
       - Migrations
       x-min-permissions: admin
-  /v1/powerbi-xmla/system-tables:
+  /v1/powerbi-xmla/system-table/{reportName}:
     get:
       operationId: v1_uploadSystemTables
+      parameters:
+      - in: path
+        name: reportName
+        required: true
+        type: string
       responses:
         200:
           description: A successful response
@@ -3431,9 +3436,14 @@ paths:
       tags:
       - Migrations
       x-min-permissions: admin
-  /v2/powerbi-xmla/system-tables:
+  /v2/powerbi-xmla/system-table/{reportName}:
     get:
       operationId: v2_uploadSystemTables
+      parameters:
+      - in: path
+        name: reportName
+        required: true
+        type: string
       responses:
         200:
           description: A successful response
