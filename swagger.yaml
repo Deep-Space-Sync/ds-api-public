@@ -20,6 +20,27 @@ paths:
       tags:
       - Actions
       x-min-permissions: isRevitUser
+  /v1/data-sync/system-table/{reportName}:
+    get:
+      operationId: v1_syncSystemTableToGithub
+      parameters:
+      - in: path
+        name: reportName
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Sync data from GCS to GitHub
+      tags:
+      - Power BI
+      x-min-permissions: admin
   /v1/jobs/{job_id}:
     post:
       operationId: v1_startJobGlobal
@@ -3375,6 +3396,27 @@ paths:
       tags:
       - Actions
       x-min-permissions: isRevitUser
+  /v2/data-sync/system-table/{reportName}:
+    get:
+      operationId: v2_syncSystemTableToGithub
+      parameters:
+      - in: path
+        name: reportName
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Sync data from GCS to GitHub
+      tags:
+      - Power BI
+      x-min-permissions: admin
   /v2/jobs/{job_id}:
     post:
       operationId: v2_startJobGlobal
