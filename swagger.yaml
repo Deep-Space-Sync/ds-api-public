@@ -2686,6 +2686,28 @@ paths:
       tags:
       - Resources
       x-min-permissions: isRevitUser
+  /v1/workspaces/{workspaceId}/projects/{projectId}/sectors:
+    get:
+      operationId: v1_getSectors
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get Sectors
   /v1/workspaces/{workspaceId}/projects/{projectId}/sourcefiles:
     get:
       description: Returns all sourcefiles details for a project
@@ -6028,6 +6050,28 @@ paths:
       tags:
       - Resources
       x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/sectors:
+    get:
+      operationId: v2_getSectors
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Sectors
   /v2/workspaces/{workspaceId}/projects/{projectId}/sourcefiles:
     get:
       description: Returns all sourcefiles details for a project
