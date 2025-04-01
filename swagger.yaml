@@ -1722,15 +1722,14 @@ paths:
         required: true
         schema:
           properties:
-            properties:
-              approval_by_company_id:
-                description: Internal identifier for the approving company
-              approval_status:
-                description: Status of the approval
-              cost_num:
-                description: ID of the cost the approval is for
-              note:
-                description: Note added to the approval
+            approval_by_company_id:
+              description: Internal identifier for the approving company
+            approval_status:
+              description: Status of the approval
+            cost_num:
+              description: ID of the cost the approval is for
+            note:
+              description: Note added to the approval
           required:
           - cost_num
           type: object
@@ -1941,15 +1940,14 @@ paths:
         required: true
         schema:
           properties:
-            properties:
-              approval_by_company_id:
-                description: Internal identifier for the approving company
-              approval_status:
-                description: Status of the approval
-              cost_num:
-                description: ID of the cost the approval is for
-              note:
-                description: Note added to the approval
+            approval_by_company_id:
+              description: Internal identifier for the approving company
+            approval_status:
+              description: Status of the approval
+            cost_num:
+              description: ID of the cost the approval is for
+            note:
+              description: Note added to the approval
           required:
           - cost_num
           type: object
@@ -2160,15 +2158,14 @@ paths:
         required: true
         schema:
           properties:
-            properties:
-              approval_by_company_id:
-                description: Internal identifier for the approving company
-              approval_status:
-                description: Status of the approval
-              cost_num:
-                description: ID of the cost the approval is for
-              note:
-                description: Note added to the approval
+            approval_by_company_id:
+              description: Internal identifier for the approving company
+            approval_status:
+              description: Status of the approval
+            cost_num:
+              description: ID of the cost the approval is for
+            note:
+              description: Note added to the approval
           required:
           - cost_num
           type: object
@@ -7813,15 +7810,14 @@ paths:
         required: true
         schema:
           properties:
-            properties:
-              approval_by_company_id:
-                description: Internal identifier for the approving company
-              approval_status:
-                description: Status of the approval
-              cost_num:
-                description: ID of the cost the approval is for
-              note:
-                description: Note added to the approval
+            approval_by_company_id:
+              description: Internal identifier for the approving company
+            approval_status:
+              description: Status of the approval
+            cost_num:
+              description: ID of the cost the approval is for
+            note:
+              description: Note added to the approval
           required:
           - cost_num
           type: object
@@ -8032,15 +8028,14 @@ paths:
         required: true
         schema:
           properties:
-            properties:
-              approval_by_company_id:
-                description: Internal identifier for the approving company
-              approval_status:
-                description: Status of the approval
-              cost_num:
-                description: ID of the cost the approval is for
-              note:
-                description: Note added to the approval
+            approval_by_company_id:
+              description: Internal identifier for the approving company
+            approval_status:
+              description: Status of the approval
+            cost_num:
+              description: ID of the cost the approval is for
+            note:
+              description: Note added to the approval
           required:
           - cost_num
           type: object
@@ -8251,15 +8246,14 @@ paths:
         required: true
         schema:
           properties:
-            properties:
-              approval_by_company_id:
-                description: Internal identifier for the approving company
-              approval_status:
-                description: Status of the approval
-              cost_num:
-                description: ID of the cost the approval is for
-              note:
-                description: Note added to the approval
+            approval_by_company_id:
+              description: Internal identifier for the approving company
+            approval_status:
+              description: Status of the approval
+            cost_num:
+              description: ID of the cost the approval is for
+            note:
+              description: Note added to the approval
           required:
           - cost_num
           type: object
