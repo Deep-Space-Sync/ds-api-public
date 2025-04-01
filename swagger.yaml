@@ -1767,7 +1767,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/claims/${costApprovalId}:
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/claims/{costApprovalId}:
     get:
       operationId: v1_getCostClaimApprovalById
       parameters:
@@ -1985,7 +1985,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/invoices/${costApprovalId}:
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/invoices/{costApprovalId}:
     get:
       operationId: v1_getCostInvoiceApprovalById
       parameters:
@@ -2203,7 +2203,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/variation-requests/${costApprovalId}:
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/variation-requests/{costApprovalId}:
     get:
       operationId: v1_getCostVariationRequestApprovalById
       parameters:
@@ -2524,7 +2524,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/claims/deposit/${costClaimId}:
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/claims/deposit/{costClaimId}:
     get:
       operationId: v1_getCostDepositClaimById
       parameters:
@@ -2823,7 +2823,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/claims/progress/${costClaimId}:
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/claims/progress/{costClaimId}:
     get:
       operationId: v1_getCostProgressClaimById
       parameters:
@@ -3149,7 +3149,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/invoices/${costInvoiceId}:
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/invoices/{costInvoiceId}:
     get:
       operationId: v1_getCostInvoiceById
       parameters:
@@ -3536,7 +3536,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase/${costOrderId}:
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase/{costOrderId}:
     get:
       operationId: v1_getCostPurchaseOrderById
       parameters:
@@ -3842,7 +3842,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/orders/variation/${costOrderId}:
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/orders/variation/{costOrderId}:
     get:
       operationId: v1_getCostVariationOrderById
       parameters:
@@ -4167,7 +4167,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests/${costVariationReqId}:
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests/{costVariationReqId}:
     get:
       operationId: v1_getCostVariationRequestById
       parameters:
@@ -7855,7 +7855,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/claims/${costApprovalId}:
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/claims/{costApprovalId}:
     get:
       operationId: v2_getCostClaimApprovalById
       parameters:
@@ -8073,7 +8073,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/invoices/${costApprovalId}:
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/invoices/{costApprovalId}:
     get:
       operationId: v2_getCostInvoiceApprovalById
       parameters:
@@ -8291,7 +8291,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/variation-requests/${costApprovalId}:
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/variation-requests/{costApprovalId}:
     get:
       operationId: v2_getCostVariationRequestApprovalById
       parameters:
@@ -8612,7 +8612,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims/deposit/${costClaimId}:
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims/deposit/{costClaimId}:
     get:
       operationId: v2_getCostDepositClaimById
       parameters:
@@ -8911,7 +8911,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims/progress/${costClaimId}:
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims/progress/{costClaimId}:
     get:
       operationId: v2_getCostProgressClaimById
       parameters:
@@ -9237,7 +9237,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/invoices/${costInvoiceId}:
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/invoices/{costInvoiceId}:
     get:
       operationId: v2_getCostInvoiceById
       parameters:
@@ -9624,7 +9624,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase/${costOrderId}:
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase/{costOrderId}:
     get:
       operationId: v2_getCostPurchaseOrderById
       parameters:
@@ -9930,7 +9930,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/variation/${costOrderId}:
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/variation/{costOrderId}:
     get:
       operationId: v2_getCostVariationOrderById
       parameters:
@@ -10255,7 +10255,7 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests/${costVariationReqId}:
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests/{costVariationReqId}:
     get:
       operationId: v2_getCostVariationRequestById
       parameters:
