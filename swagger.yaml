@@ -3753,7 +3753,7 @@ paths:
       tags:
       - Cost
     post:
-      operationId: v1_postCostPurchaseOrder
+      operationId: v1_postCostVariationOrder
       parameters:
       - in: path
         name: workspaceId
@@ -3838,7 +3838,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v1: []
-      summary: Create Purchase Order
+      summary: Create Variation Order
       tags:
       - Cost
       x-min-permissions: isCostUser
@@ -4239,7 +4239,7 @@ paths:
       - Cost
       x-min-permissions: isCostUser
     patch:
-      operationId: v1_patchCostInvoiceById
+      operationId: v1_patchCostVariationReqById
       parameters:
       - in: path
         name: workspaceId
@@ -4327,7 +4327,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v1: []
-      summary: Edit Invoice By Id
+      summary: Edit Variation Request By Id
       tags:
       - Cost
       x-min-permissions: isCostUser
@@ -9841,7 +9841,7 @@ paths:
       tags:
       - Cost
     post:
-      operationId: v2_postCostPurchaseOrder
+      operationId: v2_postCostVariationOrder
       parameters:
       - in: path
         name: workspaceId
@@ -9926,7 +9926,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Create Purchase Order
+      summary: Create Variation Order
       tags:
       - Cost
       x-min-permissions: isCostUser
@@ -10327,7 +10327,7 @@ paths:
       - Cost
       x-min-permissions: isCostUser
     patch:
-      operationId: v2_patchCostInvoiceById
+      operationId: v2_patchCostVariationReqById
       parameters:
       - in: path
         name: workspaceId
@@ -10415,7 +10415,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Edit Invoice By Id
+      summary: Edit Variation Request By Id
       tags:
       - Cost
       x-min-permissions: isCostUser
