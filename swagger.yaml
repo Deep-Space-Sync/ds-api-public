@@ -3997,6 +3997,40 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/user:
+    get:
+      operationId: v1_getCostUserDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              id_company:
+                description: Company id
+              is_primary_company:
+                description: Bool representing if user is primary company
+              username:
+                description: Email of user that made request
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get Cost User details
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests:
     get:
       operationId: v1_getCostVariationRequests
@@ -10082,6 +10116,40 @@ paths:
       security:
       - JWT_v2: []
       summary: Edit Variation Order By Id
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/user:
+    get:
+      operationId: v2_getCostUserDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              id_company:
+                description: Company id
+              is_primary_company:
+                description: Bool representing if user is primary company
+              username:
+                description: Email of user that made request
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Cost User details
       tags:
       - Cost
       x-min-permissions: isCostUser
