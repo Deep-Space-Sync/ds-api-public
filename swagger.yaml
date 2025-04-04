@@ -5488,14 +5488,103 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v1: []
-      summary: Get sourcefies by projectid
+      summary: Get sourcefiles by project ID
+      tags:
+      - Files
+    patch:
+      consumes:
+      - application/json
+      description: Edit a file in a project with provided idSourceFiles and update
+        various properties.
+      operationId: v1_patchSourceFile
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            Active:
+              description: Flag indicating if this sourcefile is active.
+              enum:
+              - 0
+              - 1
+              type: integer
+            FileName:
+              description: The new filename. Must be unique within the workspace.
+              type: string
+            IsControlFile:
+              description: Flag indicating if this is the control file.
+              enum:
+              - 0
+              - 1
+              type: integer
+            IsRoomDefining:
+              description: Flag indicating if this file is room defining.
+              enum:
+              - 0
+              - 1
+              type: integer
+            building_id:
+              description: The new building ID.
+              type: integer
+            file_discipline:
+              description: The new discipline value.
+              type: string
+            idSourceFiles:
+              description: The unique identifier of the sourcefile to update.
+              type: integer
+            is_tracking_model:
+              description: Flag indicating if this is a tracking model.
+              enum:
+              - 0
+              - 1
+              type: integer
+            is_zone_model:
+              description: Flag indicating if this is a zone model.
+              enum:
+              - 0
+              - 1
+              type: integer
+            team_bim_id:
+              description: The new team BIM ID.
+              type: integer
+          required:
+          - idSourceFiles
+          type: object
+      responses:
+        200:
+          description: Sourcefile updated successfully
+          schema:
+            description: The ID of the updated sourcefile.
+            type: string
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: No record updated. Possibly invalid idSourceFiles or projectid.
+        409:
+          description: Filename already exists
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Edit a source file in a project
       tags:
       - Files
     post:
       consumes:
       - application/json
-      description: Creates a new sourcefile in a project with provided filename and
-        discipline
+      description: Creates a new sourcefile in a project with the provided filename
+        and discipline
       operationId: v1_postSourceFiles
       parameters:
       - in: path
@@ -5524,15 +5613,10 @@ paths:
       responses:
         201:
           description: Sourcefile successfully created
-          schema:
-            description: idSourceFiles
-            type: string
         400:
           description: Bad Request
         401:
           description: Unauthorized
-        409:
-          description: Filename already exists
         500:
           description: Internal Server Error
       security:
@@ -11610,14 +11694,103 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get sourcefies by projectid
+      summary: Get sourcefiles by project ID
+      tags:
+      - Files
+    patch:
+      consumes:
+      - application/json
+      description: Edit a file in a project with provided idSourceFiles and update
+        various properties.
+      operationId: v2_patchSourceFile
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            Active:
+              description: Flag indicating if this sourcefile is active.
+              enum:
+              - 0
+              - 1
+              type: integer
+            FileName:
+              description: The new filename. Must be unique within the workspace.
+              type: string
+            IsControlFile:
+              description: Flag indicating if this is the control file.
+              enum:
+              - 0
+              - 1
+              type: integer
+            IsRoomDefining:
+              description: Flag indicating if this file is room defining.
+              enum:
+              - 0
+              - 1
+              type: integer
+            building_id:
+              description: The new building ID.
+              type: integer
+            file_discipline:
+              description: The new discipline value.
+              type: string
+            idSourceFiles:
+              description: The unique identifier of the sourcefile to update.
+              type: integer
+            is_tracking_model:
+              description: Flag indicating if this is a tracking model.
+              enum:
+              - 0
+              - 1
+              type: integer
+            is_zone_model:
+              description: Flag indicating if this is a zone model.
+              enum:
+              - 0
+              - 1
+              type: integer
+            team_bim_id:
+              description: The new team BIM ID.
+              type: integer
+          required:
+          - idSourceFiles
+          type: object
+      responses:
+        200:
+          description: Sourcefile updated successfully
+          schema:
+            description: The ID of the updated sourcefile.
+            type: string
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: No record updated. Possibly invalid idSourceFiles or projectid.
+        409:
+          description: Filename already exists
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit a source file in a project
       tags:
       - Files
     post:
       consumes:
       - application/json
-      description: Creates a new sourcefile in a project with provided filename and
-        discipline
+      description: Creates a new sourcefile in a project with the provided filename
+        and discipline
       operationId: v2_postSourceFiles
       parameters:
       - in: path
@@ -11646,15 +11819,10 @@ paths:
       responses:
         201:
           description: Sourcefile successfully created
-          schema:
-            description: idSourceFiles
-            type: string
         400:
           description: Bad Request
         401:
           description: Unauthorized
-        409:
-          description: Filename already exists
         500:
           description: Internal Server Error
       security:
