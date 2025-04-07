@@ -5533,16 +5533,16 @@ paths:
         \ or multiple source files in a project. **Single update** requires `idSourceFiles`\
         \ to be present; **batch update** requires `sourceFilesId` (array) and `fileDetail`\
         \ (object).  \n- **Single Update**  \n  Required: `idSourceFiles`.  \n  Optional\
-        \ fields to update include `FileName`, `IsControlFile`, `building_id`, `discipline`\
-        \ (file_discipline),\n  `team_bim_id`, `is_tracking_model`, `IsRoomDefining`,\
-        \ `is_zone_model`, `Active`.  \n  - If `FileName` is provided, it must be\
-        \ unique within the workspace.  \n  - If `IsControlFile` is set to `1`, any\
-        \ other file in the same project with `IsControlFile = 1`\n    will be reset\
-        \ to `0`.\n\n- **Batch Update**  \n  Required: `sourceFilesId` (array of integers)\
-        \ and `fileDetail` (object).  \n  Optional fields to update are `file_discipline`,\
-        \ `team_bim_id`, `building_id`, `is_tracking_model`,\n  `IsRoomDefining`,\
-        \ `is_zone_model`, `Active`.  \n  - `FileName` and `IsControlFile` are **not**\
-        \ updated in batch mode.  \n"
+        \ fields to update include `FileName`, `IsControlFile`, `building_id`, `file_discipline`,\n\
+        \  `team_bim_id`, `is_tracking_model`, `IsRoomDefining`, `is_zone_model`,\
+        \ `Active`.  \n  - If `FileName` is provided, it must be unique within the\
+        \ workspace.  \n  - If `IsControlFile` is set to `1`, any other file in the\
+        \ same project with `IsControlFile = 1`\n    will be reset to `0`.\n\n- **Batch\
+        \ Update**  \n  Required: `sourceFilesId` (array of integers) and `fileDetail`\
+        \ (object).  \n  Optional fields to update are `file_discipline`, `team_bim_id`,\
+        \ `building_id`, `is_tracking_model`,\n  `IsRoomDefining`, `is_zone_model`,\
+        \ `Active`.  \n  - `FileName` and `IsControlFile` are **not** updated in batch\
+        \ mode.  \n"
       operationId: v1_patchSourceFile
       parameters:
       - description: The workspace name or identifier
@@ -5609,7 +5609,7 @@ paths:
                 building_id:
                   description: The new building ID for all selected files.
                   type: integer
-                discipline:
+                file_discipline:
                   description: The new discipline for all selected files.
                   type: string
                 is_tracking_model:
@@ -11838,16 +11838,16 @@ paths:
         \ or multiple source files in a project. **Single update** requires `idSourceFiles`\
         \ to be present; **batch update** requires `sourceFilesId` (array) and `fileDetail`\
         \ (object).  \n- **Single Update**  \n  Required: `idSourceFiles`.  \n  Optional\
-        \ fields to update include `FileName`, `IsControlFile`, `building_id`, `discipline`\
-        \ (file_discipline),\n  `team_bim_id`, `is_tracking_model`, `IsRoomDefining`,\
-        \ `is_zone_model`, `Active`.  \n  - If `FileName` is provided, it must be\
-        \ unique within the workspace.  \n  - If `IsControlFile` is set to `1`, any\
-        \ other file in the same project with `IsControlFile = 1`\n    will be reset\
-        \ to `0`.\n\n- **Batch Update**  \n  Required: `sourceFilesId` (array of integers)\
-        \ and `fileDetail` (object).  \n  Optional fields to update are `file_discipline`,\
-        \ `team_bim_id`, `building_id`, `is_tracking_model`,\n  `IsRoomDefining`,\
-        \ `is_zone_model`, `Active`.  \n  - `FileName` and `IsControlFile` are **not**\
-        \ updated in batch mode.  \n"
+        \ fields to update include `FileName`, `IsControlFile`, `building_id`, `file_discipline`,\n\
+        \  `team_bim_id`, `is_tracking_model`, `IsRoomDefining`, `is_zone_model`,\
+        \ `Active`.  \n  - If `FileName` is provided, it must be unique within the\
+        \ workspace.  \n  - If `IsControlFile` is set to `1`, any other file in the\
+        \ same project with `IsControlFile = 1`\n    will be reset to `0`.\n\n- **Batch\
+        \ Update**  \n  Required: `sourceFilesId` (array of integers) and `fileDetail`\
+        \ (object).  \n  Optional fields to update are `file_discipline`, `team_bim_id`,\
+        \ `building_id`, `is_tracking_model`,\n  `IsRoomDefining`, `is_zone_model`,\
+        \ `Active`.  \n  - `FileName` and `IsControlFile` are **not** updated in batch\
+        \ mode.  \n"
       operationId: v2_patchSourceFile
       parameters:
       - description: The workspace name or identifier
@@ -11914,7 +11914,7 @@ paths:
                 building_id:
                   description: The new building ID for all selected files.
                   type: integer
-                discipline:
+                file_discipline:
                   description: The new discipline for all selected files.
                   type: string
                 is_tracking_model:
