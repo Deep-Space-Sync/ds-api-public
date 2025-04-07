@@ -2312,6 +2312,39 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/attachments/{costObjectType}/{costObjectNum}:
+    post:
+      operationId: v1_postCostAttachments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costObjectType
+        required: true
+        type: string
+      - in: path
+        name: costObjectNum
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create Cost Attachment
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/claims:
     get:
       operationId: v1_getCostClaims
@@ -8515,6 +8548,39 @@ paths:
       security:
       - JWT_v2: []
       summary: Edit Variation Request Approval By Id
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/attachments/{costObjectType}/{costObjectNum}:
+    post:
+      operationId: v2_postCostAttachments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costObjectType
+        required: true
+        type: string
+      - in: path
+        name: costObjectNum
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Cost Attachment
       tags:
       - Cost
       x-min-permissions: isCostUser
