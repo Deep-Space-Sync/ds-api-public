@@ -5504,11 +5504,13 @@ paths:
       description: Returns all sourcefiles details for a project
       operationId: v1_getSourceFiles
       parameters:
-      - in: path
+      - description: The workspace name or identifier
+        in: path
         name: workspaceId
         required: true
         type: string
-      - in: path
+      - description: The project identifier
+        in: path
         name: projectId
         required: true
         type: integer
@@ -5527,15 +5529,29 @@ paths:
     patch:
       consumes:
       - application/json
-      description: Edit a file in a project with provided idSourceFiles and update
-        various properties.
+      description: "This endpoint allows partial updates for a single source file\
+        \ or multiple source files in a project. **Single update** requires `idSourceFiles`\
+        \ to be present; **batch update** requires `sourceFilesId` (array) and `fileDetail`\
+        \ (object).  \n- **Single Update**  \n  Required: `idSourceFiles`.  \n  Optional\
+        \ fields to update include `FileName`, `IsControlFile`, `building_id`, `discipline`\
+        \ (file_discipline),\n  `team_bim_id`, `is_tracking_model`, `IsRoomDefining`,\
+        \ `is_zone_model`, `Active`.  \n  - If `FileName` is provided, it must be\
+        \ unique within the workspace.  \n  - If `IsControlFile` is set to `1`, any\
+        \ other file in the same project with `IsControlFile = 1`\n    will be reset\
+        \ to `0`.\n\n- **Batch Update**  \n  Required: `sourceFilesId` (array of integers)\
+        \ and `fileDetail` (object).  \n  Optional fields to update are `file_discipline`,\
+        \ `team_bim_id`, `building_id`, `is_tracking_model`,\n  `IsRoomDefining`,\
+        \ `is_zone_model`, `Active`.  \n  - `FileName` and `IsControlFile` are **not**\
+        \ updated in batch mode.  \n"
       operationId: v1_patchSourceFile
       parameters:
-      - in: path
+      - description: The workspace name or identifier
+        in: path
         name: workspaceId
         required: true
         type: string
-      - in: path
+      - description: The project identifier
+        in: path
         name: projectId
         required: true
         type: integer
@@ -5543,6 +5559,10 @@ paths:
         name: body
         required: true
         schema:
+          description: 'Either provide `idSourceFiles` for single updates or provide  `sourceFilesId`
+            and `fileDetail` for batch updates.
+
+            '
           properties:
             Active:
               description: Flag indicating if this sourcefile is active.
@@ -5551,16 +5571,18 @@ paths:
               - 1
               type: integer
             FileName:
-              description: The new filename. Must be unique within the workspace.
+              description: New filename (unique within the workspace). Only for single
+                update.
               type: string
             IsControlFile:
-              description: Flag indicating if this is the control file.
+              description: Flag indicating if this file is the control file (only
+                for single update).
               enum:
               - 0
               - 1
               type: integer
             IsRoomDefining:
-              description: Flag indicating if this file is room defining.
+              description: Flag indicating if this file is room-defining.
               enum:
               - 0
               - 1
@@ -5568,35 +5590,77 @@ paths:
             building_id:
               description: The new building ID.
               type: integer
+            fileDetail:
+              description: Fields to apply to all source files in sourceFilesId (except
+                FileName & IsControlFile).
+              properties:
+                Active:
+                  description: Flag indicating if these sourcefiles are active.
+                  enum:
+                  - 0
+                  - 1
+                  type: integer
+                IsRoomDefining:
+                  description: Flag for room-defining, applied to all selected files.
+                  enum:
+                  - 0
+                  - 1
+                  type: integer
+                building_id:
+                  description: The new building ID for all selected files.
+                  type: integer
+                discipline:
+                  description: The new discipline for all selected files.
+                  type: string
+                is_tracking_model:
+                  description: Flag for tracking model, applied to all selected files.
+                  enum:
+                  - 0
+                  - 1
+                  type: integer
+                is_zone_model:
+                  description: Flag for zone model, applied to all selected files.
+                  enum:
+                  - 0
+                  - 1
+                  type: integer
+                team_bim_id:
+                  description: The new team BIM ID for all selected files.
+                  type: integer
+              type: object
             file_discipline:
-              description: The new discipline value.
+              description: The new discipline.
               type: string
             idSourceFiles:
-              description: The unique identifier of the sourcefile to update.
+              description: The unique identifier of a single sourcefile to update.
               type: integer
             is_tracking_model:
-              description: Flag indicating if this is a tracking model.
+              description: Flag indicating if this file is a tracking model.
               enum:
               - 0
               - 1
               type: integer
             is_zone_model:
-              description: Flag indicating if this is a zone model.
+              description: Flag indicating if this file is a zone model.
               enum:
               - 0
               - 1
               type: integer
+            sourceFilesId:
+              description: A list of file IDs for a batch update.
+              items:
+                type: integer
+              type: array
             team_bim_id:
               description: The new team BIM ID.
               type: integer
-          required:
-          - idSourceFiles
           type: object
       responses:
         200:
-          description: Sourcefile updated successfully
+          description: Sourcefile(s) updated successfully
           schema:
-            description: The ID of the updated sourcefile.
+            description: Either "Updated record with idSourceFiles=xxx" for single
+              update or "Updated N records" for batch updates.
             type: string
         400:
           description: Bad Request
@@ -5610,7 +5674,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v1: []
-      summary: Edit a source file in a project
+      summary: Edit a source file or multiple files in a project
       tags:
       - Files
     post:
@@ -5620,11 +5684,13 @@ paths:
         and discipline
       operationId: v1_postSourceFiles
       parameters:
-      - in: path
+      - description: The workspace name or identifier
+        in: path
         name: workspaceId
         required: true
         type: string
-      - in: path
+      - description: The project identifier
+        in: path
         name: projectId
         required: true
         type: integer
@@ -5634,10 +5700,10 @@ paths:
         schema:
           properties:
             discipline:
-              description: The discipline of the sourcefile
+              description: The discipline of the sourcefile (e.g., "Architecture")
               type: string
             filename:
-              description: The name of the sourcefile
+              description: The name of the sourcefile (e.g., "MyFile.rvt")
               type: string
           required:
           - filename
@@ -11743,11 +11809,13 @@ paths:
       description: Returns all sourcefiles details for a project
       operationId: v2_getSourceFiles
       parameters:
-      - in: path
+      - description: The workspace name or identifier
+        in: path
         name: workspaceId
         required: true
         type: string
-      - in: path
+      - description: The project identifier
+        in: path
         name: projectId
         required: true
         type: integer
@@ -11766,15 +11834,29 @@ paths:
     patch:
       consumes:
       - application/json
-      description: Edit a file in a project with provided idSourceFiles and update
-        various properties.
+      description: "This endpoint allows partial updates for a single source file\
+        \ or multiple source files in a project. **Single update** requires `idSourceFiles`\
+        \ to be present; **batch update** requires `sourceFilesId` (array) and `fileDetail`\
+        \ (object).  \n- **Single Update**  \n  Required: `idSourceFiles`.  \n  Optional\
+        \ fields to update include `FileName`, `IsControlFile`, `building_id`, `discipline`\
+        \ (file_discipline),\n  `team_bim_id`, `is_tracking_model`, `IsRoomDefining`,\
+        \ `is_zone_model`, `Active`.  \n  - If `FileName` is provided, it must be\
+        \ unique within the workspace.  \n  - If `IsControlFile` is set to `1`, any\
+        \ other file in the same project with `IsControlFile = 1`\n    will be reset\
+        \ to `0`.\n\n- **Batch Update**  \n  Required: `sourceFilesId` (array of integers)\
+        \ and `fileDetail` (object).  \n  Optional fields to update are `file_discipline`,\
+        \ `team_bim_id`, `building_id`, `is_tracking_model`,\n  `IsRoomDefining`,\
+        \ `is_zone_model`, `Active`.  \n  - `FileName` and `IsControlFile` are **not**\
+        \ updated in batch mode.  \n"
       operationId: v2_patchSourceFile
       parameters:
-      - in: path
+      - description: The workspace name or identifier
+        in: path
         name: workspaceId
         required: true
         type: string
-      - in: path
+      - description: The project identifier
+        in: path
         name: projectId
         required: true
         type: integer
@@ -11782,6 +11864,10 @@ paths:
         name: body
         required: true
         schema:
+          description: 'Either provide `idSourceFiles` for single updates or provide  `sourceFilesId`
+            and `fileDetail` for batch updates.
+
+            '
           properties:
             Active:
               description: Flag indicating if this sourcefile is active.
@@ -11790,16 +11876,18 @@ paths:
               - 1
               type: integer
             FileName:
-              description: The new filename. Must be unique within the workspace.
+              description: New filename (unique within the workspace). Only for single
+                update.
               type: string
             IsControlFile:
-              description: Flag indicating if this is the control file.
+              description: Flag indicating if this file is the control file (only
+                for single update).
               enum:
               - 0
               - 1
               type: integer
             IsRoomDefining:
-              description: Flag indicating if this file is room defining.
+              description: Flag indicating if this file is room-defining.
               enum:
               - 0
               - 1
@@ -11807,35 +11895,77 @@ paths:
             building_id:
               description: The new building ID.
               type: integer
+            fileDetail:
+              description: Fields to apply to all source files in sourceFilesId (except
+                FileName & IsControlFile).
+              properties:
+                Active:
+                  description: Flag indicating if these sourcefiles are active.
+                  enum:
+                  - 0
+                  - 1
+                  type: integer
+                IsRoomDefining:
+                  description: Flag for room-defining, applied to all selected files.
+                  enum:
+                  - 0
+                  - 1
+                  type: integer
+                building_id:
+                  description: The new building ID for all selected files.
+                  type: integer
+                discipline:
+                  description: The new discipline for all selected files.
+                  type: string
+                is_tracking_model:
+                  description: Flag for tracking model, applied to all selected files.
+                  enum:
+                  - 0
+                  - 1
+                  type: integer
+                is_zone_model:
+                  description: Flag for zone model, applied to all selected files.
+                  enum:
+                  - 0
+                  - 1
+                  type: integer
+                team_bim_id:
+                  description: The new team BIM ID for all selected files.
+                  type: integer
+              type: object
             file_discipline:
-              description: The new discipline value.
+              description: The new discipline.
               type: string
             idSourceFiles:
-              description: The unique identifier of the sourcefile to update.
+              description: The unique identifier of a single sourcefile to update.
               type: integer
             is_tracking_model:
-              description: Flag indicating if this is a tracking model.
+              description: Flag indicating if this file is a tracking model.
               enum:
               - 0
               - 1
               type: integer
             is_zone_model:
-              description: Flag indicating if this is a zone model.
+              description: Flag indicating if this file is a zone model.
               enum:
               - 0
               - 1
               type: integer
+            sourceFilesId:
+              description: A list of file IDs for a batch update.
+              items:
+                type: integer
+              type: array
             team_bim_id:
               description: The new team BIM ID.
               type: integer
-          required:
-          - idSourceFiles
           type: object
       responses:
         200:
-          description: Sourcefile updated successfully
+          description: Sourcefile(s) updated successfully
           schema:
-            description: The ID of the updated sourcefile.
+            description: Either "Updated record with idSourceFiles=xxx" for single
+              update or "Updated N records" for batch updates.
             type: string
         400:
           description: Bad Request
@@ -11849,7 +11979,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Edit a source file in a project
+      summary: Edit a source file or multiple files in a project
       tags:
       - Files
     post:
@@ -11859,11 +11989,13 @@ paths:
         and discipline
       operationId: v2_postSourceFiles
       parameters:
-      - in: path
+      - description: The workspace name or identifier
+        in: path
         name: workspaceId
         required: true
         type: string
-      - in: path
+      - description: The project identifier
+        in: path
         name: projectId
         required: true
         type: integer
@@ -11873,10 +12005,10 @@ paths:
         schema:
           properties:
             discipline:
-              description: The discipline of the sourcefile
+              description: The discipline of the sourcefile (e.g., "Architecture")
               type: string
             filename:
-              description: The name of the sourcefile
+              description: The name of the sourcefile (e.g., "MyFile.rvt")
               type: string
           required:
           - filename
