@@ -41,6 +41,45 @@ paths:
       tags:
       - Power BI
       x-min-permissions: admin
+  /v1/global-companies:
+    get:
+      operationId: v1_getGlobalCompanies
+      parameters:
+      - in: query
+        name: limit
+        required: false
+        type: number
+      - in: query
+        name: offset
+        required: false
+        type: number
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              limit:
+                type: number
+              message:
+                type: string
+              offset:
+                type: number
+              total:
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get Global Companies
+      tags:
+      - Global Company Directory
   /v1/jobs/{job_id}:
     post:
       operationId: v1_startJobGlobal
@@ -6590,6 +6629,45 @@ paths:
       tags:
       - Power BI
       x-min-permissions: admin
+  /v2/global-companies:
+    get:
+      operationId: v2_getGlobalCompanies
+      parameters:
+      - in: query
+        name: limit
+        required: false
+        type: number
+      - in: query
+        name: offset
+        required: false
+        type: number
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              limit:
+                type: number
+              message:
+                type: string
+              offset:
+                type: number
+              total:
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Global Companies
+      tags:
+      - Global Company Directory
   /v2/jobs/{job_id}:
     post:
       operationId: v2_startJobGlobal
