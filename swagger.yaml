@@ -227,6 +227,65 @@ paths:
       tags:
       - Users
       x-min-permissions: admin
+  /v1/users/{user_id}/profile:
+    get:
+      operationId: v1_getUserProfile
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get User profile data
+      tags:
+      - User Profiles
+    patch:
+      operationId: v1_patchUserProfile
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            ds-platform-notifs-enabled:
+              type: boolean
+            email:
+              type: string
+            first_name:
+              type: string
+            global-company-id:
+              type: number
+            last_name:
+              type: string
+            password-reset-request:
+              type: boolean
+            picture:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Update user profile data
+      tags:
+      - User Profiles
   /v1/workspaces:
     get:
       description: Returns all workspaces and projects a user has access to with optional
@@ -6683,6 +6742,65 @@ paths:
       tags:
       - Users
       x-min-permissions: admin
+  /v2/users/{user_id}/profile:
+    get:
+      operationId: v2_getUserProfile
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get User profile data
+      tags:
+      - User Profiles
+    patch:
+      operationId: v2_patchUserProfile
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            ds-platform-notifs-enabled:
+              type: boolean
+            email:
+              type: string
+            first_name:
+              type: string
+            global-company-id:
+              type: number
+            last_name:
+              type: string
+            password-reset-request:
+              type: boolean
+            picture:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update user profile data
+      tags:
+      - User Profiles
   /v2/workspaces:
     get:
       description: Returns all workspaces and projects a user has access to with optional
