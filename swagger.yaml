@@ -4856,6 +4856,50 @@ paths:
       summary: Upload navis data to Deep Space at the file level
       tags:
       - Navis Integration
+  /v1/workspaces/{workspaceId}/projects/{projectId}/implementation:
+    get:
+      operationId: v1_getProjectImplementationChecklist
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                check_name:
+                  description: Name of implementation check
+                check_result:
+                  description: Yes/No result if check passed
+                check_workload:
+                  description: Implementation Workload (eg. BIM, Material Tracking...)
+                first_metric:
+                  description: Text describing a metric related to the check (eg.
+                    There were 10 Required Parameters found)
+                help_link:
+                  description: Link to Deep Space knowledgebase for the check
+                help_text:
+                  description: Help text for the check
+                scope:
+                  description: Implementation Scope (eg. Project)
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get Project Implementation Checklist
+      tags:
+      - implementation
   /v1/workspaces/{workspaceId}/projects/{projectId}/integrations:
     get:
       operationId: v1_getProjectIntegrations
@@ -11410,6 +11454,50 @@ paths:
       summary: Upload navis data to Deep Space at the file level
       tags:
       - Navis Integration
+  /v2/workspaces/{workspaceId}/projects/{projectId}/implementation:
+    get:
+      operationId: v2_getProjectImplementationChecklist
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                check_name:
+                  description: Name of implementation check
+                check_result:
+                  description: Yes/No result if check passed
+                check_workload:
+                  description: Implementation Workload (eg. BIM, Material Tracking...)
+                first_metric:
+                  description: Text describing a metric related to the check (eg.
+                    There were 10 Required Parameters found)
+                help_link:
+                  description: Link to Deep Space knowledgebase for the check
+                help_text:
+                  description: Help text for the check
+                scope:
+                  description: Implementation Scope (eg. Project)
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Project Implementation Checklist
+      tags:
+      - implementation
   /v2/workspaces/{workspaceId}/projects/{projectId}/integrations:
     get:
       operationId: v2_getProjectIntegrations
