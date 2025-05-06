@@ -59,30 +59,22 @@ paths:
                       properties:
                         awardedBy:
                           description: User who awarded the badge
-                          type: object
                         awardedOn:
                           description: Date and time when the badge was awarded
-                          format: date-time
-                          type: string
                         awardedTo:
                           description: User who received the badge
-                          type: object
                       type: object
                     type: array
                   type:
                     properties:
                       id:
                         description: Badge type ID
-                        type: integer
                       image:
                         description: Image information for the badge type
-                        type: object
                       masterVersionId:
                         description: Master version ID of the badge type
-                        type: integer
                       name:
                         description: Name of the badge type
-                        type: string
                     type: object
                 type: object
               total:
@@ -6795,30 +6787,22 @@ paths:
                       properties:
                         awardedBy:
                           description: User who awarded the badge
-                          type: object
                         awardedOn:
                           description: Date and time when the badge was awarded
-                          format: date-time
-                          type: string
                         awardedTo:
                           description: User who received the badge
-                          type: object
                       type: object
                     type: array
                   type:
                     properties:
                       id:
                         description: Badge type ID
-                        type: integer
                       image:
                         description: Image information for the badge type
-                        type: object
                       masterVersionId:
                         description: Master version ID of the badge type
-                        type: integer
                       name:
                         description: Name of the badge type
-                        type: string
                     type: object
                 type: object
               total:
