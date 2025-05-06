@@ -20,28 +20,28 @@ paths:
       tags:
       - Actions
       x-min-permissions: isRevitUser
-  /v1/channels/{channel_alias}/badges/{badge_type_id}:
+  /v1/channels/{channelAlias}/badges/{badgeTypeId}:
     get:
       description: Retrieves badges for users in a specified global company.
       operationId: v1_getBadges
       parameters:
       - description: The DS Site channel alias to retrieve badges from
         in: query
-        name: channel_alias
+        name: channelAlias
         required: true
         schema:
           example: residentialinductioncard
           type: string
       - description: The ID of the badge type to retrieve
         in: query
-        name: badge_type_id
+        name: badgeTypeId
         required: true
         schema:
           example: 1029
           type: integer
       - description: The ID of the global company to retrieve users from
         in: query
-        name: global_company_id
+        name: globalCompanyId
         required: true
         schema:
           example: 12345
@@ -6756,28 +6756,28 @@ paths:
       tags:
       - Actions
       x-min-permissions: isRevitUser
-  /v2/channels/{channel_alias}/badges/{badge_type_id}:
+  /v2/channels/{channelAlias}/badges/{badgeTypeId}:
     get:
       description: Retrieves badges for users in a specified global company.
       operationId: v2_getBadges
       parameters:
       - description: The DS Site channel alias to retrieve badges from
         in: query
-        name: channel_alias
+        name: channelAlias
         required: true
         schema:
           example: residentialinductioncard
           type: string
       - description: The ID of the badge type to retrieve
         in: query
-        name: badge_type_id
+        name: badgeTypeId
         required: true
         schema:
           example: 1029
           type: integer
       - description: The ID of the global company to retrieve users from
         in: query
-        name: global_company_id
+        name: globalCompanyId
         required: true
         schema:
           example: 12345
