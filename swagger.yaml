@@ -5341,6 +5341,32 @@ paths:
       summary: Logout a user for a certain project
       tags:
       - Users
+  /v1/workspaces/{workspaceId}/projects/{projectId}/menu:
+    get:
+      description: Returns the menu structure for a project based on the project's
+        template
+      operationId: v1_getMenu
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Menu structure for the project
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get menu structure for a project
+      tags:
+      - Info
   /v1/workspaces/{workspaceId}/projects/{projectId}/milestone:
     get:
       operationId: v1_getMilestones
@@ -12074,6 +12100,32 @@ paths:
       summary: Logout a user for a certain project
       tags:
       - Users
+  /v2/workspaces/{workspaceId}/projects/{projectId}/menu:
+    get:
+      description: Returns the menu structure for a project based on the project's
+        template
+      operationId: v2_getMenu
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Menu structure for the project
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get menu structure for a project
+      tags:
+      - Info
   /v2/workspaces/{workspaceId}/projects/{projectId}/milestone:
     get:
       operationId: v2_getMilestones
