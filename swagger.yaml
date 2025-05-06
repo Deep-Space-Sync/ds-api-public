@@ -79,6 +79,8 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+      security:
+      - JWT_v1: []
       summary: Get badges for users in a global company
       tags:
       - Badges
@@ -6844,6 +6846,8 @@ paths:
           description: Unauthorized
         500:
           description: Internal Server Error
+      security:
+      - JWT_v2: []
       summary: Get badges for users in a global company
       tags:
       - Badges
