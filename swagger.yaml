@@ -26,26 +26,20 @@ paths:
       operationId: v1_getBadges
       parameters:
       - description: The DS Site channel alias to retrieve badges from
-        in: query
+        in: path
         name: channelAlias
         required: true
-        schema:
-          example: residentialinductioncard
-          type: string
+        type: string
       - description: The ID of the badge type to retrieve
-        in: query
+        in: path
         name: badgeTypeId
         required: true
-        schema:
-          example: 1029
-          type: integer
+        type: integer
       - description: The ID of the global company to retrieve users from
         in: query
         name: globalCompanyId
         required: true
-        schema:
-          example: 12345
-          type: integer
+        type: integer
       responses:
         200:
           description: Successful response
@@ -6754,26 +6748,20 @@ paths:
       operationId: v2_getBadges
       parameters:
       - description: The DS Site channel alias to retrieve badges from
-        in: query
+        in: path
         name: channelAlias
         required: true
-        schema:
-          example: residentialinductioncard
-          type: string
+        type: string
       - description: The ID of the badge type to retrieve
-        in: query
+        in: path
         name: badgeTypeId
         required: true
-        schema:
-          example: 1029
-          type: integer
+        type: integer
       - description: The ID of the global company to retrieve users from
         in: query
         name: globalCompanyId
         required: true
-        schema:
-          example: 12345
-          type: integer
+        type: integer
       responses:
         200:
           description: Successful response
