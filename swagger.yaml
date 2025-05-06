@@ -20,6 +20,82 @@ paths:
       tags:
       - Actions
       x-min-permissions: isRevitUser
+  /v1/channels/{channel_alias}/badges/{badge_type_id}:
+    get:
+      description: Retrieves badges for users in a specified global company.
+      operationId: v1_getBadges
+      parameters:
+      - description: The DS Site channel alias to retrieve badges from
+        in: query
+        name: channel_alias
+        required: true
+        schema:
+          example: residentialinductioncard
+          type: string
+      - description: The ID of the badge type to retrieve
+        in: query
+        name: badge_type_id
+        required: true
+        schema:
+          example: 1029
+          type: integer
+      - description: The ID of the global company to retrieve users from
+        in: query
+        name: global_company_id
+        required: true
+        schema:
+          example: 12345
+          type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  awards:
+                    description: List of badge awards
+                    items:
+                      properties:
+                        awardedBy:
+                          description: User who awarded the badge
+                          type: object
+                        awardedOn:
+                          description: Date and time when the badge was awarded
+                          format: date-time
+                          type: string
+                        awardedTo:
+                          description: User who received the badge
+                          type: object
+                      type: object
+                    type: array
+                  type:
+                    properties:
+                      id:
+                        description: Badge type ID
+                        type: integer
+                      image:
+                        description: Image information for the badge type
+                        type: object
+                      masterVersionId:
+                        description: Master version ID of the badge type
+                        type: integer
+                      name:
+                        description: Name of the badge type
+                        type: string
+                    type: object
+                type: object
+              total:
+                description: Total number of badges retrieved
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Get badges for users in a global company
+      tags:
+      - Badges
   /v1/data-sync/system-table/{reportName}:
     get:
       operationId: v1_syncSystemTableToGithub
@@ -6680,6 +6756,82 @@ paths:
       tags:
       - Actions
       x-min-permissions: isRevitUser
+  /v2/channels/{channel_alias}/badges/{badge_type_id}:
+    get:
+      description: Retrieves badges for users in a specified global company.
+      operationId: v2_getBadges
+      parameters:
+      - description: The DS Site channel alias to retrieve badges from
+        in: query
+        name: channel_alias
+        required: true
+        schema:
+          example: residentialinductioncard
+          type: string
+      - description: The ID of the badge type to retrieve
+        in: query
+        name: badge_type_id
+        required: true
+        schema:
+          example: 1029
+          type: integer
+      - description: The ID of the global company to retrieve users from
+        in: query
+        name: global_company_id
+        required: true
+        schema:
+          example: 12345
+          type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  awards:
+                    description: List of badge awards
+                    items:
+                      properties:
+                        awardedBy:
+                          description: User who awarded the badge
+                          type: object
+                        awardedOn:
+                          description: Date and time when the badge was awarded
+                          format: date-time
+                          type: string
+                        awardedTo:
+                          description: User who received the badge
+                          type: object
+                      type: object
+                    type: array
+                  type:
+                    properties:
+                      id:
+                        description: Badge type ID
+                        type: integer
+                      image:
+                        description: Image information for the badge type
+                        type: object
+                      masterVersionId:
+                        description: Master version ID of the badge type
+                        type: integer
+                      name:
+                        description: Name of the badge type
+                        type: string
+                    type: object
+                type: object
+              total:
+                description: Total number of badges retrieved
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Get badges for users in a global company
+      tags:
+      - Badges
   /v2/data-sync/system-table/{reportName}:
     get:
       operationId: v2_syncSystemTableToGithub
