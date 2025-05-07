@@ -487,6 +487,30 @@ paths:
       summary: Get list of workspaces and associated projects
       tags:
       - Info
+  /v1/workspaces/{workspaceId}:
+    patch:
+      operationId: v1_patchWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        204:
+          description: No content to return
+        400:
+          description: Bad Request due to invalid parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Update workspace details such as logo
+      tags:
+      - Info
   /v1/workspaces/{workspaceId}/companies:
     get:
       description: Returns all companies for a workspace
@@ -7268,6 +7292,30 @@ paths:
       security:
       - JWT_v2: []
       summary: Get list of workspaces and associated projects
+      tags:
+      - Info
+  /v2/workspaces/{workspaceId}:
+    patch:
+      operationId: v2_patchWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        204:
+          description: No content to return
+        400:
+          description: Bad Request due to invalid parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update workspace details such as logo
       tags:
       - Info
   /v2/workspaces/{workspaceId}/companies:
