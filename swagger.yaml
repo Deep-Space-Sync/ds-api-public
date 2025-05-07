@@ -6644,6 +6644,30 @@ paths:
       tags:
       - Resources
       x-min-permissions: isRevitUser
+  /v1/workspaces/{workspaceId}/tokens/{tokenId}:
+    get:
+      operationId: v1_getWorkpaceToken
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tokenId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get a token for a workspace
+      tags:
+      - Tokens
   /v1/workspaces/{workspaceId}/users:
     get:
       description: Returns all users and user details for a workspace
@@ -13403,6 +13427,30 @@ paths:
       tags:
       - Resources
       x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/tokens/{tokenId}:
+    get:
+      operationId: v2_getWorkpaceToken
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tokenId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a token for a workspace
+      tags:
+      - Tokens
   /v2/workspaces/{workspaceId}/users:
     get:
       description: Returns all users and user details for a workspace
