@@ -187,6 +187,26 @@ paths:
       summary: Get Users in a Global Company
       tags:
       - Global Company Directory
+  /v1/jobs/{job_guid}/status:
+    get:
+      operationId: v1_getJobStatusGlobal
+      parameters:
+      - in: path
+        name: job_guid
+        required: true
+        type: integer
+      responses:
+        202:
+          description: Returns job status
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get job status
+      tags:
+      - Jobs
   /v1/jobs/{job_id}:
     post:
       operationId: v1_startJobGlobal
@@ -7069,6 +7089,26 @@ paths:
       summary: Get Users in a Global Company
       tags:
       - Global Company Directory
+  /v2/jobs/{job_guid}/status:
+    get:
+      operationId: v2_getJobStatusGlobal
+      parameters:
+      - in: path
+        name: job_guid
+        required: true
+        type: integer
+      responses:
+        202:
+          description: Returns job status
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get job status
+      tags:
+      - Jobs
   /v2/jobs/{job_id}:
     post:
       operationId: v2_startJobGlobal
