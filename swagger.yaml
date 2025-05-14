@@ -214,7 +214,6 @@ paths:
             - email
             type: object
           type: array
-        type: object
       responses:
         200:
           description: Successful response
@@ -7158,7 +7157,6 @@ paths:
             - email
             type: object
           type: array
-        type: object
       responses:
         200:
           description: Successful response
