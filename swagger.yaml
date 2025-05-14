@@ -187,6 +187,48 @@ paths:
       summary: Get Users in a Global Company
       tags:
       - Global Company Directory
+    post:
+      operationId: v1_bulkUserInvite
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - description: Only applies for Admin use - doesn't send invite email to users
+        in: query
+        name: skipEmail
+        required: false
+        type: boolean
+      - in: body
+        name: body
+        schema:
+          items:
+            properties:
+              email:
+                type: string
+              first_name:
+                type: string
+              last_name:
+                type: string
+            required:
+            - email
+            type: object
+          type: array
+        type: object
+      responses:
+        200:
+          description: Successful response
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Bulk User Invite
+      tags:
+      - Global Company Directory
   /v1/jobs/{job_guid}/status:
     get:
       operationId: v1_getJobStatusGlobal
@@ -7087,6 +7129,48 @@ paths:
       security:
       - JWT_v2: []
       summary: Get Users in a Global Company
+      tags:
+      - Global Company Directory
+    post:
+      operationId: v2_bulkUserInvite
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - description: Only applies for Admin use - doesn't send invite email to users
+        in: query
+        name: skipEmail
+        required: false
+        type: boolean
+      - in: body
+        name: body
+        schema:
+          items:
+            properties:
+              email:
+                type: string
+              first_name:
+                type: string
+              last_name:
+                type: string
+            required:
+            - email
+            type: object
+          type: array
+        type: object
+      responses:
+        200:
+          description: Successful response
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Bulk User Invite
       tags:
       - Global Company Directory
   /v2/jobs/{job_guid}/status:
