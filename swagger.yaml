@@ -276,17 +276,6 @@ paths:
         200:
           description: Successful response
           schema:
-            properties:
-              data:
-                type: object
-              limit:
-                type: number
-              message:
-                type: string
-              offset:
-                type: number
-              total:
-                type: number
             type: object
         401:
           description: Unauthorized
@@ -298,6 +287,37 @@ paths:
       tags:
       - Global Company Directory
   /v1/global-companies/{globalCompanyId}/vendors/request:
+    delete:
+      operationId: v1_removeVendorSharingRequest
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            global_company_id:
+              type: number
+          required:
+          - global_company_id
+          type: object
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Remove vendor sharing request
+      tags:
+      - Global Company Directory
     post:
       operationId: v1_requestVendorSharing
       parameters:
@@ -323,17 +343,6 @@ paths:
         200:
           description: Successful response
           schema:
-            properties:
-              data:
-                type: object
-              limit:
-                type: number
-              message:
-                type: string
-              offset:
-                type: number
-              total:
-                type: number
             type: object
         401:
           description: Unauthorized
@@ -7335,17 +7344,6 @@ paths:
         200:
           description: Successful response
           schema:
-            properties:
-              data:
-                type: object
-              limit:
-                type: number
-              message:
-                type: string
-              offset:
-                type: number
-              total:
-                type: number
             type: object
         401:
           description: Unauthorized
@@ -7357,6 +7355,37 @@ paths:
       tags:
       - Global Company Directory
   /v2/global-companies/{globalCompanyId}/vendors/request:
+    delete:
+      operationId: v2_removeVendorSharingRequest
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            global_company_id:
+              type: number
+          required:
+          - global_company_id
+          type: object
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove vendor sharing request
+      tags:
+      - Global Company Directory
     post:
       operationId: v2_requestVendorSharing
       parameters:
@@ -7382,17 +7411,6 @@ paths:
         200:
           description: Successful response
           schema:
-            properties:
-              data:
-                type: object
-              limit:
-                type: number
-              message:
-                type: string
-              offset:
-                type: number
-              total:
-                type: number
             type: object
         401:
           description: Unauthorized
