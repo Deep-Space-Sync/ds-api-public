@@ -257,9 +257,9 @@ paths:
               type: string
             global_company_id:
               type: number
-            required:
-            - global_company_id
-            - approval_status
+          required:
+          - global_company_id
+          - approval_status
           type: object
       responses:
         200:
@@ -301,12 +301,12 @@ paths:
           properties:
             global_company_id:
               type: number
-            required:
-            - global_company_id
             sharing_level:
               enum:
               - FULL
               type: string
+          required:
+          - global_company_id
           type: object
       responses:
         200:
@@ -7305,9 +7305,9 @@ paths:
               type: string
             global_company_id:
               type: number
-            required:
-            - global_company_id
-            - approval_status
+          required:
+          - global_company_id
+          - approval_status
           type: object
       responses:
         200:
@@ -7349,12 +7349,12 @@ paths:
           properties:
             global_company_id:
               type: number
-            required:
-            - global_company_id
             sharing_level:
               enum:
               - FULL
               type: string
+          required:
+          - global_company_id
           type: object
       responses:
         200:
