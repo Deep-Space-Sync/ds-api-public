@@ -122,6 +122,17 @@ paths:
         name: search
         required: false
         type: string
+      - description: Global Company ID
+        in: query
+        name: globalCompanyId
+        required: false
+        type: number
+      - description: Include shared companies, only works if globalCompanyId is also
+          provided
+        in: query
+        name: includeSharedCompanies
+        required: false
+        type: boolean
       responses:
         200:
           description: Successful response
@@ -7170,6 +7181,17 @@ paths:
         name: search
         required: false
         type: string
+      - description: Global Company ID
+        in: query
+        name: globalCompanyId
+        required: false
+        type: number
+      - description: Include shared companies, only works if globalCompanyId is also
+          provided
+        in: query
+        name: includeSharedCompanies
+        required: false
+        type: boolean
       responses:
         200:
           description: Successful response
