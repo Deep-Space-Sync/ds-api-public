@@ -232,6 +232,102 @@ paths:
       summary: Bulk User Invite
       tags:
       - Global Company Directory
+  /v1/global-companies/{globalCompanyId}/vendors/approve:
+    post:
+      operationId: v1_approveVendorSharing
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            approval_status:
+              enum:
+              - APPROVED
+              - REJECTED
+              type: string
+            global_company_id:
+              type: number
+            required:
+            - global_company_id
+            - approval_status
+          type: object
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              limit:
+                type: number
+              message:
+                type: string
+              offset:
+                type: number
+              total:
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Approve vendor sharing
+      tags:
+      - Global Company Directory
+  /v1/global-companies/{globalCompanyId}/vendors/request:
+    post:
+      operationId: v1_requestVendorSharing
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            global_company_id:
+              type: number
+            required:
+            - global_company_id
+            sharing_level:
+              enum:
+              - FULL
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              limit:
+                type: number
+              message:
+                type: string
+              offset:
+                type: number
+              total:
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Request vendor sharing
+      tags:
+      - Global Company Directory
   /v1/jobs/{job_guid}/status:
     get:
       operationId: v1_getJobStatusGlobal
@@ -7177,6 +7273,102 @@ paths:
       security:
       - JWT_v2: []
       summary: Bulk User Invite
+      tags:
+      - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/vendors/approve:
+    post:
+      operationId: v2_approveVendorSharing
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            approval_status:
+              enum:
+              - APPROVED
+              - REJECTED
+              type: string
+            global_company_id:
+              type: number
+            required:
+            - global_company_id
+            - approval_status
+          type: object
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              limit:
+                type: number
+              message:
+                type: string
+              offset:
+                type: number
+              total:
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Approve vendor sharing
+      tags:
+      - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/vendors/request:
+    post:
+      operationId: v2_requestVendorSharing
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            global_company_id:
+              type: number
+            required:
+            - global_company_id
+            sharing_level:
+              enum:
+              - FULL
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              limit:
+                type: number
+              message:
+                type: string
+              offset:
+                type: number
+              total:
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Request vendor sharing
       tags:
       - Global Company Directory
   /v2/jobs/{job_guid}/status:
