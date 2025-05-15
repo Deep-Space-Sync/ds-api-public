@@ -117,6 +117,11 @@ paths:
         name: offset
         required: false
         type: number
+      - description: Search query (case insensitive) by company name
+        in: query
+        name: search
+        required: false
+        type: string
       responses:
         200:
           description: Successful response
@@ -7160,6 +7165,11 @@ paths:
         name: offset
         required: false
         type: number
+      - description: Search query (case insensitive) by company name
+        in: query
+        name: search
+        required: false
+        type: string
       responses:
         200:
           description: Successful response
