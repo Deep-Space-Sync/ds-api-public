@@ -160,6 +160,43 @@ paths:
       summary: Get Global Companies
       tags:
       - Global Company Directory
+    post:
+      operationId: v1_createGlobalCompany
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            abn:
+              type: number
+            company_type:
+              type: string
+            head_office_country:
+              type: string
+            industry:
+              type: string
+            name:
+              type: string
+            primary_contact_email:
+              type: string
+            primary_contact_phone:
+              type: string
+          required:
+          - abn
+          type: object
+      responses:
+        200:
+          description: Successful response
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v1: []
+      summary: Create Global Company
+      tags:
+      - Global Company Directory
   /v1/global-companies/{globalCompanyId}/users:
     get:
       operationId: v1_getGlobalCompanyUsers
@@ -7226,6 +7263,43 @@ paths:
       security:
       - JWT_v2: []
       summary: Get Global Companies
+      tags:
+      - Global Company Directory
+    post:
+      operationId: v2_createGlobalCompany
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            abn:
+              type: number
+            company_type:
+              type: string
+            head_office_country:
+              type: string
+            industry:
+              type: string
+            name:
+              type: string
+            primary_contact_email:
+              type: string
+            primary_contact_phone:
+              type: string
+          required:
+          - abn
+          type: object
+      responses:
+        200:
+          description: Successful response
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: Create Global Company
       tags:
       - Global Company Directory
   /v2/global-companies/{globalCompanyId}/users:
