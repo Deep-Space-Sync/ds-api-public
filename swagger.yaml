@@ -893,6 +893,151 @@ paths:
       tags:
       - External Integrations
       x-min-permissions: isRevitUser
+  /v1/workspaces/{workspaceId}/integrations/{integrationId}:
+    get:
+      operationId: v1_getWorkspaceIntegrationFields
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get mapping fields for an integration
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
+    patch:
+      operationId: v1_patchWorkspaceIntegration
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            mappingFieldValue1:
+              description: The first mapping field value
+              type: string
+            mappingFieldValue2:
+              description: The first mapping field value
+              type: string
+          required:
+          - mappingFieldValue1
+          - mappingFieldValue2
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Update an integration configuration in a workspace
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
+    post:
+      operationId: v1_postWorkspaceIntegration
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: json object containing configuration values, differs depending
+            on integration
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Configure an integration in a workspace
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
+  /v1/workspaces/{workspaceId}/integrations/{integrationId}/refresh:
+    post:
+      operationId: v1_postWorkspaceIntegrationRefresh
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Refresh access token for an integration in a workspace
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
+  /v1/workspaces/{workspaceId}/integrations/{integrationId}/sync:
+    post:
+      operationId: v1_postWorkspaceIntegrationSync
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Sync data for an integration in a workspace
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
   /v1/workspaces/{workspaceId}/jobs/{job_id}:
     post:
       operationId: v1_startJobWorkspace
@@ -7982,6 +8127,151 @@ paths:
       security:
       - JWT_v2: []
       summary: Get workspace integrations
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/integrations/{integrationId}:
+    get:
+      operationId: v2_getWorkspaceIntegrationFields
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get mapping fields for an integration
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
+    patch:
+      operationId: v2_patchWorkspaceIntegration
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            mappingFieldValue1:
+              description: The first mapping field value
+              type: string
+            mappingFieldValue2:
+              description: The first mapping field value
+              type: string
+          required:
+          - mappingFieldValue1
+          - mappingFieldValue2
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update an integration configuration in a workspace
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
+    post:
+      operationId: v2_postWorkspaceIntegration
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: json object containing configuration values, differs depending
+            on integration
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Configure an integration in a workspace
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/integrations/{integrationId}/refresh:
+    post:
+      operationId: v2_postWorkspaceIntegrationRefresh
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Refresh access token for an integration in a workspace
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/integrations/{integrationId}/sync:
+    post:
+      operationId: v2_postWorkspaceIntegrationSync
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Sync data for an integration in a workspace
       tags:
       - External Integrations
       x-min-permissions: isRevitUser
