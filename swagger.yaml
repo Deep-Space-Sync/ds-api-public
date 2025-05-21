@@ -947,6 +947,45 @@ paths:
       summary: Get signed url to access cde file
       tags:
       - Get Data
+  /v1/workspaces/{workspaceId}/cde/{cdeId}/metadata:
+    put:
+      operationId: v1_putCdeMetadataWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            metadata_key:
+              description: The key of the metadata
+              type: string
+            metadata_value:
+              description: The value of the metadata
+              type: string
+          required:
+          - metadata_key
+          - metadata_value
+          type: object
+      responses:
+        200:
+          description: Successfully updated CDE metadata
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Update CDE metadata
+      tags:
+      - Upload Data
   /v1/workspaces/{workspaceId}/companies:
     get:
       description: Returns all companies for a workspace
@@ -2460,6 +2499,49 @@ paths:
       summary: Get signed url to access cde file
       tags:
       - Get Data
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cde/{cdeId}/metadata:
+    put:
+      operationId: v1_putCdeMetadata
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            metadata_key:
+              description: The key of the metadata
+              type: string
+            metadata_value:
+              description: The value of the metadata
+              type: string
+          required:
+          - metadata_key
+          - metadata_value
+          type: object
+      responses:
+        200:
+          description: Successfully updated CDE metadata
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Update CDE metadata
+      tags:
+      - Upload Data
   /v1/workspaces/{workspaceId}/projects/{projectId}/cloudstoragebucket:
     get:
       description: Creates a new cloud storage bucket
@@ -8406,6 +8488,45 @@ paths:
       summary: Get signed url to access cde file
       tags:
       - Get Data
+  /v2/workspaces/{workspaceId}/cde/{cdeId}/metadata:
+    put:
+      operationId: v2_putCdeMetadataWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            metadata_key:
+              description: The key of the metadata
+              type: string
+            metadata_value:
+              description: The value of the metadata
+              type: string
+          required:
+          - metadata_key
+          - metadata_value
+          type: object
+      responses:
+        200:
+          description: Successfully updated CDE metadata
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update CDE metadata
+      tags:
+      - Upload Data
   /v2/workspaces/{workspaceId}/companies:
     get:
       description: Returns all companies for a workspace
@@ -9919,6 +10040,49 @@ paths:
       summary: Get signed url to access cde file
       tags:
       - Get Data
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/{cdeId}/metadata:
+    put:
+      operationId: v2_putCdeMetadata
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            metadata_key:
+              description: The key of the metadata
+              type: string
+            metadata_value:
+              description: The value of the metadata
+              type: string
+          required:
+          - metadata_key
+          - metadata_value
+          type: object
+      responses:
+        200:
+          description: Successfully updated CDE metadata
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update CDE metadata
+      tags:
+      - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/cloudstoragebucket:
     get:
       description: Creates a new cloud storage bucket
