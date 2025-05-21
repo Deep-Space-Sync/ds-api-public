@@ -775,6 +775,110 @@ paths:
       summary: Update workspace details such as logo
       tags:
       - Info
+  /v1/workspaces/{workspaceId}/cde:
+    get:
+      operationId: v1_getCdeDocsWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully returns CDE docs
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get CDE docs
+      tags:
+      - Get Data
+    post:
+      operationId: v1_postCdeWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_type:
+              description: The type of CDE upload
+              type: string
+            files:
+              description: A list of file objects
+              items:
+                properties:
+                  filename:
+                    description: The name of the file
+                    type: string
+                  filetype:
+                    description: The type of the file
+                    type: string
+                required:
+                - filename
+                - filetype
+                type: object
+              type: array
+          required:
+          - files
+          type: object
+      responses:
+        200:
+          description: Successfully returns CDE urls
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get signed urls for cde
+      tags:
+      - Upload Data
+  /v1/workspaces/{workspaceId}/cde/process:
+    post:
+      operationId: v1_processCDEWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            files:
+              description: A list of file objects
+              items:
+                properties:
+                  cde_id:
+                    description: The CDE ID of the file
+                    type: integer
+                required:
+                - cde_id
+                type: object
+              type: array
+          required:
+          - files
+          type: object
+      responses:
+        200:
+          description: Successfully processed files
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Process files uploaded to CDE
+      tags:
+      - Upload Data
   /v1/workspaces/{workspaceId}/cde/types:
     get:
       operationId: v1_getCDETypes
@@ -795,6 +899,54 @@ paths:
       summary: Get workspace-level CDE types
       tags:
       - Upload Data
+  /v1/workspaces/{workspaceId}/cde/{cdeId}:
+    delete:
+      description: Invalidates a CDE entry for failed uploads
+      operationId: v1_invalidateCdeEntryWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully invalidated CDE entry
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Invalidate CDE Entry
+      tags:
+      - Upload Data
+    get:
+      operationId: v1_getCdeFileWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully returns CDE url
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get signed url to access cde file
+      tags:
+      - Get Data
   /v1/workspaces/{workspaceId}/companies:
     get:
       description: Returns all companies for a workspace
@@ -8082,6 +8234,110 @@ paths:
       summary: Update workspace details such as logo
       tags:
       - Info
+  /v2/workspaces/{workspaceId}/cde:
+    get:
+      operationId: v2_getCdeDocsWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully returns CDE docs
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get CDE docs
+      tags:
+      - Get Data
+    post:
+      operationId: v2_postCdeWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_type:
+              description: The type of CDE upload
+              type: string
+            files:
+              description: A list of file objects
+              items:
+                properties:
+                  filename:
+                    description: The name of the file
+                    type: string
+                  filetype:
+                    description: The type of the file
+                    type: string
+                required:
+                - filename
+                - filetype
+                type: object
+              type: array
+          required:
+          - files
+          type: object
+      responses:
+        200:
+          description: Successfully returns CDE urls
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get signed urls for cde
+      tags:
+      - Upload Data
+  /v2/workspaces/{workspaceId}/cde/process:
+    post:
+      operationId: v2_processCDEWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            files:
+              description: A list of file objects
+              items:
+                properties:
+                  cde_id:
+                    description: The CDE ID of the file
+                    type: integer
+                required:
+                - cde_id
+                type: object
+              type: array
+          required:
+          - files
+          type: object
+      responses:
+        200:
+          description: Successfully processed files
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Process files uploaded to CDE
+      tags:
+      - Upload Data
   /v2/workspaces/{workspaceId}/cde/types:
     get:
       operationId: v2_getCDETypes
@@ -8102,6 +8358,54 @@ paths:
       summary: Get workspace-level CDE types
       tags:
       - Upload Data
+  /v2/workspaces/{workspaceId}/cde/{cdeId}:
+    delete:
+      description: Invalidates a CDE entry for failed uploads
+      operationId: v2_invalidateCdeEntryWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully invalidated CDE entry
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Invalidate CDE Entry
+      tags:
+      - Upload Data
+    get:
+      operationId: v2_getCdeFileWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully returns CDE url
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get signed url to access cde file
+      tags:
+      - Get Data
   /v2/workspaces/{workspaceId}/companies:
     get:
       description: Returns all companies for a workspace
