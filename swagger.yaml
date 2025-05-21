@@ -775,6 +775,26 @@ paths:
       summary: Update workspace details such as logo
       tags:
       - Info
+  /v1/workspaces/{workspaceId}/cde/types:
+    get:
+      operationId: v1_getCDETypes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully returns CDE types
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get workspace-level CDE types
+      tags:
+      - Upload Data
   /v1/workspaces/{workspaceId}/companies:
     get:
       description: Returns all companies for a workspace
@@ -8062,6 +8082,26 @@ paths:
       summary: Update workspace details such as logo
       tags:
       - Info
+  /v2/workspaces/{workspaceId}/cde/types:
+    get:
+      operationId: v2_getCDETypes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully returns CDE types
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get workspace-level CDE types
+      tags:
+      - Upload Data
   /v2/workspaces/{workspaceId}/companies:
     get:
       description: Returns all companies for a workspace
