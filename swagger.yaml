@@ -775,6 +775,581 @@ paths:
       summary: Update workspace details such as logo
       tags:
       - Info
+  /v1/workspaces/{workspaceId}/actions:
+    get:
+      operationId: v1_getActionsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: currentApp
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successfully created new action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get actions
+      tags:
+      - Actions
+    patch:
+      operationId: v1_updateActionWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            action_id:
+              description: id of existing action to update
+              type: integer
+          required:
+          - action_id
+          type: object
+      responses:
+        200:
+          description: Successfully updated action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Update fields in existing action
+      tags:
+      - Actions
+    post:
+      operationId: v1_createActionWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Name of the action
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Description of the action
+        in: formData
+        name: description
+        required: false
+        type: string
+      - description: Due date of the action, expected format 'yyyy-mm-dd'
+        in: formData
+        name: dueDate
+        required: false
+        type: string
+      - description: Rating of the action - "Low", "Medium", "High"
+        in: formData
+        name: rating
+        required: false
+        type: string
+      - description: App that the action was created from
+        in: formData
+        name: currentApp
+        required: false
+        type: string
+      - description: A JSON string representing a list of attachment objects. Each
+          object must contain a `cde_id` property.
+        in: formData
+        name: attachments
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successfully created new action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create new action
+      tags:
+      - Actions
+  /v1/workspaces/{workspaceId}/actions/{actionId}:
+    get:
+      operationId: v1_getSingleActionWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully got action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get an action
+      tags:
+      - Actions
+    patch:
+      operationId: v1_updateSingleActionWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: formData
+        name: body
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully updated action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Update fields in existing action
+      tags:
+      - Actions
+  /v1/workspaces/{workspaceId}/actions/{actionId}/associations/{associationIdentifier}:
+    get:
+      operationId: v1_getActionAssociationWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: path
+        name: associationIdentifier
+        required: true
+        type: string
+      - description: The association_source_table_key
+        in: query
+        name: association_source_table_key
+        required: false
+        type: string
+      - description: The association_row_table_key
+        in: query
+        name: association_row_table_key
+        required: false
+        type: string
+      - description: The association type
+        in: query
+        name: association_type
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Find an association
+      tags:
+      - Actions
+    post:
+      operationId: v1_postActionAssociationWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: path
+        name: associationIdentifier
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            association_row_table_key:
+              description: The key for association row table
+              type: string
+            association_source_table_key:
+              description: The key for association source table
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Add an association to an action
+      tags:
+      - Actions
+  /v1/workspaces/{workspaceId}/actions/{actionId}/associations/{associationIdentifier}/{associationId}:
+    delete:
+      operationId: v1_deleteActionAssociationWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: path
+        name: associationIdentifier
+        required: true
+        type: string
+      - description: ID of the association to remove
+        in: path
+        name: associationId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Remove an existing association
+      tags:
+      - Actions
+  /v1/workspaces/{workspaceId}/actions/{actionId}/attachments:
+    get:
+      operationId: v1_getActionAttachmentsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully got attachments
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get attachments for an action
+      tags:
+      - Actions
+    post:
+      operationId: v1_postActionAttachmentsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            attachments:
+              description: A list of attachment objects
+              items:
+                properties:
+                  cde_id:
+                    description: CDE id corresponding to file
+                    type: integer
+                required:
+                - cde_id
+                type: object
+              type: array
+          required:
+          - attachments
+          type: object
+      responses:
+        200:
+          description: Successfully got attachments
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Add attachments to action
+      tags:
+      - Actions
+  /v1/workspaces/{workspaceId}/actions/{actionId}/comments:
+    get:
+      operationId: v1_getActionCommentsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: query
+        name: withAttachments
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: Successfully got comments
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get comments for an action
+      tags:
+      - Actions
+    post:
+      operationId: v1_postActionCommentWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            attachments:
+              description: A list of attachment objects
+              items:
+                properties:
+                  cde_id:
+                    description: CDE id corresponding to file
+                    type: integer
+                required:
+                - cde_id
+                type: object
+              type: array
+            comment:
+              description: The comment to add
+              type: string
+          required:
+          - comment
+          type: object
+      responses:
+        200:
+          description: Successfully created comment
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create comment for an action
+      tags:
+      - Actions
+  /v1/workspaces/{workspaceId}/actions/{actionId}/comments/{commentId}:
+    get:
+      operationId: v1_getActionCommentWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: path
+        name: commentId
+        required: true
+        type: integer
+      - in: query
+        name: withAttachments
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: Successfully got comment
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get comment for an action
+      tags:
+      - Actions
+  /v1/workspaces/{workspaceId}/actions/{actionId}/comments/{commentId}/attachments:
+    post:
+      operationId: v1_postActionCommentAttachmentsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: path
+        name: commentId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            attachments:
+              description: A list of attachment objects
+              items:
+                properties:
+                  cde_id:
+                    description: CDE id corresponding to file
+                    type: integer
+                required:
+                - cde_id
+                type: object
+              type: array
+          required:
+          - attachments
+          type: object
+      responses:
+        200:
+          description: Successfully added attachment
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Add attachments to action coment
+      tags:
+      - Actions
+  /v1/workspaces/{workspaceId}/actions/{actionId}/watchers:
+    get:
+      operationId: v1_getActionWatchersWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully got watchers
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get watchers for an action
+      tags:
+      - Actions
+    post:
+      operationId: v1_postActionWatcherWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            watcher:
+              description: The email of the watcher
+              type: string
+          required:
+          - watcher
+          type: object
+      responses:
+        200:
+          description: Successfully added watcher
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Add watcher to action
+      tags:
+      - Actions
+  /v1/workspaces/{workspaceId}/actions/{actionId}/watchers/{watcherId}:
+    delete:
+      operationId: v1_deleteActionWatcherWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - description: email of watcher
+        in: path
+        name: watcherId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully removed watcher
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Remove watcher from action
+      tags:
+      - Actions
   /v1/workspaces/{workspaceId}/cde:
     get:
       operationId: v1_getCdeDocsWorkspaceLevel
@@ -8356,6 +8931,581 @@ paths:
       summary: Update workspace details such as logo
       tags:
       - Info
+  /v2/workspaces/{workspaceId}/actions:
+    get:
+      operationId: v2_getActionsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: currentApp
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successfully created new action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get actions
+      tags:
+      - Actions
+    patch:
+      operationId: v2_updateActionWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            action_id:
+              description: id of existing action to update
+              type: integer
+          required:
+          - action_id
+          type: object
+      responses:
+        200:
+          description: Successfully updated action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update fields in existing action
+      tags:
+      - Actions
+    post:
+      operationId: v2_createActionWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Name of the action
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Description of the action
+        in: formData
+        name: description
+        required: false
+        type: string
+      - description: Due date of the action, expected format 'yyyy-mm-dd'
+        in: formData
+        name: dueDate
+        required: false
+        type: string
+      - description: Rating of the action - "Low", "Medium", "High"
+        in: formData
+        name: rating
+        required: false
+        type: string
+      - description: App that the action was created from
+        in: formData
+        name: currentApp
+        required: false
+        type: string
+      - description: A JSON string representing a list of attachment objects. Each
+          object must contain a `cde_id` property.
+        in: formData
+        name: attachments
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successfully created new action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create new action
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/actions/{actionId}:
+    get:
+      operationId: v2_getSingleActionWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully got action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get an action
+      tags:
+      - Actions
+    patch:
+      operationId: v2_updateSingleActionWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: formData
+        name: body
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully updated action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update fields in existing action
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/actions/{actionId}/associations/{associationIdentifier}:
+    get:
+      operationId: v2_getActionAssociationWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: path
+        name: associationIdentifier
+        required: true
+        type: string
+      - description: The association_source_table_key
+        in: query
+        name: association_source_table_key
+        required: false
+        type: string
+      - description: The association_row_table_key
+        in: query
+        name: association_row_table_key
+        required: false
+        type: string
+      - description: The association type
+        in: query
+        name: association_type
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Find an association
+      tags:
+      - Actions
+    post:
+      operationId: v2_postActionAssociationWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: path
+        name: associationIdentifier
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            association_row_table_key:
+              description: The key for association row table
+              type: string
+            association_source_table_key:
+              description: The key for association source table
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add an association to an action
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/actions/{actionId}/associations/{associationIdentifier}/{associationId}:
+    delete:
+      operationId: v2_deleteActionAssociationWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: path
+        name: associationIdentifier
+        required: true
+        type: string
+      - description: ID of the association to remove
+        in: path
+        name: associationId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove an existing association
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/actions/{actionId}/attachments:
+    get:
+      operationId: v2_getActionAttachmentsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully got attachments
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get attachments for an action
+      tags:
+      - Actions
+    post:
+      operationId: v2_postActionAttachmentsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            attachments:
+              description: A list of attachment objects
+              items:
+                properties:
+                  cde_id:
+                    description: CDE id corresponding to file
+                    type: integer
+                required:
+                - cde_id
+                type: object
+              type: array
+          required:
+          - attachments
+          type: object
+      responses:
+        200:
+          description: Successfully got attachments
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add attachments to action
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/actions/{actionId}/comments:
+    get:
+      operationId: v2_getActionCommentsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: query
+        name: withAttachments
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: Successfully got comments
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get comments for an action
+      tags:
+      - Actions
+    post:
+      operationId: v2_postActionCommentWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            attachments:
+              description: A list of attachment objects
+              items:
+                properties:
+                  cde_id:
+                    description: CDE id corresponding to file
+                    type: integer
+                required:
+                - cde_id
+                type: object
+              type: array
+            comment:
+              description: The comment to add
+              type: string
+          required:
+          - comment
+          type: object
+      responses:
+        200:
+          description: Successfully created comment
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create comment for an action
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/actions/{actionId}/comments/{commentId}:
+    get:
+      operationId: v2_getActionCommentWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: path
+        name: commentId
+        required: true
+        type: integer
+      - in: query
+        name: withAttachments
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: Successfully got comment
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get comment for an action
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/actions/{actionId}/comments/{commentId}/attachments:
+    post:
+      operationId: v2_postActionCommentAttachmentsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: path
+        name: commentId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            attachments:
+              description: A list of attachment objects
+              items:
+                properties:
+                  cde_id:
+                    description: CDE id corresponding to file
+                    type: integer
+                required:
+                - cde_id
+                type: object
+              type: array
+          required:
+          - attachments
+          type: object
+      responses:
+        200:
+          description: Successfully added attachment
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add attachments to action coment
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/actions/{actionId}/watchers:
+    get:
+      operationId: v2_getActionWatchersWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully got watchers
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get watchers for an action
+      tags:
+      - Actions
+    post:
+      operationId: v2_postActionWatcherWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            watcher:
+              description: The email of the watcher
+              type: string
+          required:
+          - watcher
+          type: object
+      responses:
+        200:
+          description: Successfully added watcher
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add watcher to action
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/actions/{actionId}/watchers/{watcherId}:
+    delete:
+      operationId: v2_deleteActionWatcherWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: integer
+      - description: email of watcher
+        in: path
+        name: watcherId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully removed watcher
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove watcher from action
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/cde:
     get:
       operationId: v2_getCdeDocsWorkspaceLevel
