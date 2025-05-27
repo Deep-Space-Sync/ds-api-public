@@ -3359,6 +3359,7 @@ paths:
       summary: Get Cost Approvals
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/claims:
     get:
@@ -3407,6 +3408,7 @@ paths:
       summary: Get Claim Approvals
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v1_postCostClaimApproval
@@ -3468,6 +3470,7 @@ paths:
       summary: Create Claim Approval
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/claims/{costApprovalId}:
     get:
@@ -3518,6 +3521,7 @@ paths:
       summary: Get Claim Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v1_patchCostClaimApprovalById
@@ -3577,6 +3581,7 @@ paths:
       summary: Edit Claim Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/invoices:
     get:
@@ -3625,6 +3630,7 @@ paths:
       summary: Get Invoice Approvals
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v1_postCostInvoiceApproval
@@ -3686,6 +3692,7 @@ paths:
       summary: Create Invoice Approval
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/invoices/{costApprovalId}:
     get:
@@ -3736,6 +3743,7 @@ paths:
       summary: Get Invoice Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v1_patchCostInvoiceApprovalById
@@ -3795,6 +3803,7 @@ paths:
       summary: Edit Invoice Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/variation-requests:
     get:
@@ -3843,6 +3852,7 @@ paths:
       summary: Get Variation Request Approvals
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v1_postCostVariationRequestApproval
@@ -3904,6 +3914,7 @@ paths:
       summary: Create Variation Request Approval
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/variation-requests/{costApprovalId}:
     get:
@@ -3954,6 +3965,7 @@ paths:
       summary: Get Variation Request Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v1_patchCostVariationRequestApprovalById
@@ -4013,6 +4025,7 @@ paths:
       summary: Edit Variation Request Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/attachments/{costObjectType}/{costObjectNum}:
     post:
@@ -4046,6 +4059,7 @@ paths:
       summary: Create Cost Attachment
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/claims:
     get:
@@ -4108,6 +4122,7 @@ paths:
       summary: Get Cost Claims
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/claims/deposit:
     get:
@@ -4170,6 +4185,7 @@ paths:
       summary: Get Deposit Claims
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v1_postCostDepositClaim
@@ -4258,6 +4274,7 @@ paths:
       summary: Create Deposit Claim
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/claims/deposit/{costClaimId}:
     get:
@@ -4322,6 +4339,7 @@ paths:
       summary: Get Deposit Claim By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v1_patchCostDepositClaimById
@@ -4407,6 +4425,7 @@ paths:
       summary: Edit Deposit Claim By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/claims/progress:
     get:
@@ -4469,6 +4488,7 @@ paths:
       summary: Get Progress Claims
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v1_postCostProgressClaim
@@ -4557,6 +4577,7 @@ paths:
       summary: Create Progress Claim
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/claims/progress/{costClaimId}:
     get:
@@ -4621,6 +4642,7 @@ paths:
       summary: Get Progress Claim By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v1_patchCostProgressClaimById
@@ -4706,6 +4728,7 @@ paths:
       summary: Edit Progress Claim By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/invoices:
     get:
@@ -4778,6 +4801,7 @@ paths:
       summary: Get Invoices
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v1_postCostInvoice
@@ -4883,6 +4907,7 @@ paths:
       summary: Create Invoice
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/invoices/{costInvoiceId}:
     get:
@@ -4957,6 +4982,7 @@ paths:
       summary: Get Invoice By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v1_patchCostInvoiceById
@@ -5056,6 +5082,7 @@ paths:
       summary: Edit Invoice By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/orders:
     get:
@@ -5118,6 +5145,7 @@ paths:
       summary: Get Purchase & Variation Orders
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase:
     get:
@@ -5180,6 +5208,7 @@ paths:
       summary: Get Purchase Orders
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v1_postCostPurchaseOrder
@@ -5270,6 +5299,7 @@ paths:
       summary: Create Purchase Order
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase/{costOrderId}:
     get:
@@ -5334,6 +5364,7 @@ paths:
       summary: Get Purchase Order By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v1_patchCostPurchaseOrderById
@@ -5425,6 +5456,7 @@ paths:
       summary: Edit Purchase Order By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/orders/variation:
     get:
@@ -5487,6 +5519,7 @@ paths:
       summary: Get Variation Orders
       tags:
       - Cost
+      x-ds-test-enabled: true
     post:
       operationId: v1_postCostVariationOrder
       parameters:
@@ -5576,6 +5609,7 @@ paths:
       summary: Create Variation Order
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/orders/variation/{costOrderId}:
     get:
@@ -5640,6 +5674,7 @@ paths:
       summary: Get Variation Order By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v1_patchCostVariationOrderById
@@ -5731,6 +5766,7 @@ paths:
       summary: Edit Variation Order By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/user:
     get:
@@ -5765,6 +5801,7 @@ paths:
       summary: Get Cost User details
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests:
     get:
@@ -5834,6 +5871,7 @@ paths:
       summary: Get Variation Requests
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v1_postVariationRequest
@@ -5935,6 +5973,7 @@ paths:
       summary: Create Variation Request
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests/{costVariationReqId}:
     get:
@@ -6006,6 +6045,7 @@ paths:
       summary: Get Invoice By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v1_patchCostVariationReqById
@@ -6099,6 +6139,7 @@ paths:
       summary: Edit Variation Request By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/data:
     get:
@@ -11515,6 +11556,7 @@ paths:
       summary: Get Cost Approvals
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/claims:
     get:
@@ -11563,6 +11605,7 @@ paths:
       summary: Get Claim Approvals
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v2_postCostClaimApproval
@@ -11624,6 +11667,7 @@ paths:
       summary: Create Claim Approval
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/claims/{costApprovalId}:
     get:
@@ -11674,6 +11718,7 @@ paths:
       summary: Get Claim Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostClaimApprovalById
@@ -11733,6 +11778,7 @@ paths:
       summary: Edit Claim Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/invoices:
     get:
@@ -11781,6 +11827,7 @@ paths:
       summary: Get Invoice Approvals
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v2_postCostInvoiceApproval
@@ -11842,6 +11889,7 @@ paths:
       summary: Create Invoice Approval
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/invoices/{costApprovalId}:
     get:
@@ -11892,6 +11940,7 @@ paths:
       summary: Get Invoice Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostInvoiceApprovalById
@@ -11951,6 +12000,7 @@ paths:
       summary: Edit Invoice Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/variation-requests:
     get:
@@ -11999,6 +12049,7 @@ paths:
       summary: Get Variation Request Approvals
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v2_postCostVariationRequestApproval
@@ -12060,6 +12111,7 @@ paths:
       summary: Create Variation Request Approval
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/approvals/variation-requests/{costApprovalId}:
     get:
@@ -12110,6 +12162,7 @@ paths:
       summary: Get Variation Request Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostVariationRequestApprovalById
@@ -12169,6 +12222,7 @@ paths:
       summary: Edit Variation Request Approval By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/attachments/{costObjectType}/{costObjectNum}:
     post:
@@ -12202,6 +12256,7 @@ paths:
       summary: Create Cost Attachment
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims:
     get:
@@ -12264,6 +12319,7 @@ paths:
       summary: Get Cost Claims
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims/deposit:
     get:
@@ -12326,6 +12382,7 @@ paths:
       summary: Get Deposit Claims
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v2_postCostDepositClaim
@@ -12414,6 +12471,7 @@ paths:
       summary: Create Deposit Claim
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims/deposit/{costClaimId}:
     get:
@@ -12478,6 +12536,7 @@ paths:
       summary: Get Deposit Claim By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostDepositClaimById
@@ -12563,6 +12622,7 @@ paths:
       summary: Edit Deposit Claim By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims/progress:
     get:
@@ -12625,6 +12685,7 @@ paths:
       summary: Get Progress Claims
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v2_postCostProgressClaim
@@ -12713,6 +12774,7 @@ paths:
       summary: Create Progress Claim
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims/progress/{costClaimId}:
     get:
@@ -12777,6 +12839,7 @@ paths:
       summary: Get Progress Claim By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostProgressClaimById
@@ -12862,6 +12925,7 @@ paths:
       summary: Edit Progress Claim By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/invoices:
     get:
@@ -12934,6 +12998,7 @@ paths:
       summary: Get Invoices
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v2_postCostInvoice
@@ -13039,6 +13104,7 @@ paths:
       summary: Create Invoice
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/invoices/{costInvoiceId}:
     get:
@@ -13113,6 +13179,7 @@ paths:
       summary: Get Invoice By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostInvoiceById
@@ -13212,6 +13279,7 @@ paths:
       summary: Edit Invoice By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders:
     get:
@@ -13274,6 +13342,7 @@ paths:
       summary: Get Purchase & Variation Orders
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase:
     get:
@@ -13336,6 +13405,7 @@ paths:
       summary: Get Purchase Orders
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v2_postCostPurchaseOrder
@@ -13426,6 +13496,7 @@ paths:
       summary: Create Purchase Order
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase/{costOrderId}:
     get:
@@ -13490,6 +13561,7 @@ paths:
       summary: Get Purchase Order By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostPurchaseOrderById
@@ -13581,6 +13653,7 @@ paths:
       summary: Edit Purchase Order By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/variation:
     get:
@@ -13643,6 +13716,7 @@ paths:
       summary: Get Variation Orders
       tags:
       - Cost
+      x-ds-test-enabled: true
     post:
       operationId: v2_postCostVariationOrder
       parameters:
@@ -13732,6 +13806,7 @@ paths:
       summary: Create Variation Order
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/variation/{costOrderId}:
     get:
@@ -13796,6 +13871,7 @@ paths:
       summary: Get Variation Order By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostVariationOrderById
@@ -13887,6 +13963,7 @@ paths:
       summary: Edit Variation Order By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/user:
     get:
@@ -13921,6 +13998,7 @@ paths:
       summary: Get Cost User details
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests:
     get:
@@ -13990,6 +14068,7 @@ paths:
       summary: Get Variation Requests
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v2_postVariationRequest
@@ -14091,6 +14170,7 @@ paths:
       summary: Create Variation Request
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests/{costVariationReqId}:
     get:
@@ -14162,6 +14242,7 @@ paths:
       summary: Get Invoice By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostVariationReqById
@@ -14255,6 +14336,7 @@ paths:
       summary: Edit Variation Request By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/data:
     get:
