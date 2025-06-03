@@ -1658,7 +1658,7 @@ paths:
       summary: Update a company
       tags:
       - Companies
-  /v1/workspaces/{workspaceId}/forms:
+  /v1/workspaces/{workspaceId}/ds-site/forms:
     get:
       operationId: v1_searchWorkspaceForms
       parameters:
@@ -1682,7 +1682,7 @@ paths:
       summary: Search forms in a workspace
       tags:
       - DS Site Admin Integrations
-  /v1/workspaces/{workspaceId}/forms/{formId}:
+  /v1/workspaces/{workspaceId}/ds-site/forms/{formId}:
     get:
       operationId: v1_getFormById
       parameters:
@@ -9938,7 +9938,7 @@ paths:
       summary: Update a company
       tags:
       - Companies
-  /v2/workspaces/{workspaceId}/forms:
+  /v2/workspaces/{workspaceId}/ds-site/forms:
     get:
       operationId: v2_searchWorkspaceForms
       parameters:
@@ -9962,7 +9962,7 @@ paths:
       summary: Search forms in a workspace
       tags:
       - DS Site Admin Integrations
-  /v2/workspaces/{workspaceId}/forms/{formId}:
+  /v2/workspaces/{workspaceId}/ds-site/forms/{formId}:
     get:
       operationId: v2_getFormById
       parameters:
