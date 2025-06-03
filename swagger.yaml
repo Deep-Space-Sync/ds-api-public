@@ -1658,6 +1658,61 @@ paths:
       summary: Update a company
       tags:
       - Companies
+  /v1/workspaces/{workspaceId}/forms:
+    get:
+      operationId: v1_searchWorkspaceForms
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: searchQuery
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Search forms in a workspace
+      tags:
+      - DS Site Admin Integrations
+  /v1/workspaces/{workspaceId}/forms/{formId}:
+    get:
+      operationId: v1_getFormById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get a form in workspace by ID
+      tags:
+      - DS Site Admin Integrations
   /v1/workspaces/{workspaceId}/implementation:
     get:
       operationId: v1_getWorkspaceImplementationChecklist
@@ -9883,6 +9938,61 @@ paths:
       summary: Update a company
       tags:
       - Companies
+  /v2/workspaces/{workspaceId}/forms:
+    get:
+      operationId: v2_searchWorkspaceForms
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: searchQuery
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Search forms in a workspace
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/forms/{formId}:
+    get:
+      operationId: v2_getFormById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a form in workspace by ID
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/implementation:
     get:
       operationId: v2_getWorkspaceImplementationChecklist
