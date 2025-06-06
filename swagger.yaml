@@ -8427,6 +8427,22 @@ paths:
       tags:
       - Actions
       x-min-permissions: isRevitUser
+  /v2/addins:
+    get:
+      description: Get Deep Space Addins (Revit + IFC, Navis)
+      operationId: getAddins
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT: []
+      summary: Get Addins
+      tags:
+      - Addins
   /v2/channels/{channelAlias}/badges/{badgeTypeId}:
     get:
       description: Retrieves badges for users in a specified global company.
