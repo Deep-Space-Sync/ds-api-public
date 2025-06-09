@@ -1775,6 +1775,47 @@ paths:
       summary: Search forms in a workspace
       tags:
       - DS Site Admin Integrations
+  /v1/workspaces/{workspaceId}/ds-site/forms-sync:
+    post:
+      operationId: v1_syncFormSubmissions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            query:
+              properties:
+                type: string
+              type: object
+          type: object
+        type: string
+      responses:
+        202:
+          description: Sync job started
+          schema:
+            properties:
+              data:
+                properties:
+                  job_uuid:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Sync form submissions
+      tags:
+      - DS Site Admin Integrations
   /v1/workspaces/{workspaceId}/ds-site/forms/{formId}:
     get:
       operationId: v1_getFormById
@@ -10162,6 +10203,47 @@ paths:
       security:
       - JWT_v2: []
       summary: Search forms in a workspace
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/forms-sync:
+    post:
+      operationId: v2_syncFormSubmissions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            query:
+              properties:
+                type: string
+              type: object
+          type: object
+        type: string
+      responses:
+        202:
+          description: Sync job started
+          schema:
+            properties:
+              data:
+                properties:
+                  job_uuid:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Sync form submissions
       tags:
       - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/forms/{formId}:
