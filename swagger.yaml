@@ -1791,10 +1791,10 @@ paths:
             query:
               description: JSON-query object, as per DS Site API schema, excluding
                 orderBy and resultItems
+              type: object
           required:
           - query
           type: object
-        type: string
       responses:
         202:
           description: Sync job started
@@ -10222,10 +10222,10 @@ paths:
             query:
               description: JSON-query object, as per DS Site API schema, excluding
                 orderBy and resultItems
+              type: object
           required:
           - query
           type: object
-        type: string
       responses:
         202:
           description: Sync job started
