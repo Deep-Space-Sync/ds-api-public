@@ -1789,9 +1789,10 @@ paths:
         schema:
           properties:
             query:
-              properties:
-                type: string
-              type: object
+              description: JSON-query object, as per DS Site API schema, excluding
+                orderBy and resultItems
+          required:
+          - query
           type: object
         type: string
       responses:
@@ -10219,9 +10220,10 @@ paths:
         schema:
           properties:
             query:
-              properties:
-                type: string
-              type: object
+              description: JSON-query object, as per DS Site API schema, excluding
+                orderBy and resultItems
+          required:
+          - query
           type: object
         type: string
       responses:
