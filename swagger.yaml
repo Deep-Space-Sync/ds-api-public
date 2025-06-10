@@ -1710,6 +1710,36 @@ paths:
       tags:
       - DS Site Admin Integrations
   /v1/workspaces/{workspaceId}/ds-site/form-workflows/{formWorkflowId}/configure:
+    delete:
+      operationId: v1_deleteConfigurationFormWorkflowById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Delete form workflow configuration by ID
+      tags:
+      - DS Site Admin Integrations
     post:
       operationId: v1_configureFormWorkflowById
       parameters:
@@ -10215,6 +10245,36 @@ paths:
       tags:
       - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/form-workflows/{formWorkflowId}/configure:
+    delete:
+      operationId: v2_deleteConfigurationFormWorkflowById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete form workflow configuration by ID
+      tags:
+      - DS Site Admin Integrations
     post:
       operationId: v2_configureFormWorkflowById
       parameters:
