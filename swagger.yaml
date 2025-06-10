@@ -752,6 +752,26 @@ paths:
       tags:
       - Info
   /v1/workspaces/{workspaceId}:
+    get:
+      description: Returns the details of a workspace
+      operationId: v1_getSingleWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get workspace details
+      tags:
+      - Info
     patch:
       operationId: v1_patchWorkspace
       parameters:
@@ -9237,6 +9257,26 @@ paths:
       tags:
       - Info
   /v2/workspaces/{workspaceId}:
+    get:
+      description: Returns the details of a workspace
+      operationId: v2_getSingleWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get workspace details
+      tags:
+      - Info
     patch:
       operationId: v2_patchWorkspace
       parameters:
