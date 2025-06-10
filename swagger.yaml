@@ -2122,6 +2122,60 @@ paths:
       tags:
       - Power BI
       x-min-permissions: admin
+  /v1/workspaces/{workspaceId}/powerbi/embedded/apps/{appName}:
+    get:
+      operationId: v1_getEmbeddedPbiAppWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: appName
+        required: true
+        type: string
+      responses:
+        200:
+          description: App returned
+        401:
+          description: Unauthorized
+        404:
+          description: App not found in project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get PBI Embedded App (Workspace)
+      tags:
+      - Power BI
+  /v1/workspaces/{workspaceId}/powerbi/refresh/apps/{appName}:
+    post:
+      operationId: v1_refreshPowerBiAppWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: appName
+        required: true
+        type: string
+      responses:
+        200:
+          description: App refresh initiated
+        204:
+          description: App refresh not iniated for some reason (eg. already in progress)
+        401:
+          description: Unauthorized
+        404:
+          description: App not found in project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Refresh Power BI app in workspace
+      tags:
+      - Power BI
   /v1/workspaces/{workspaceId}/projects:
     get:
       operationId: v1_getProjects
@@ -10553,6 +10607,60 @@ paths:
       tags:
       - Power BI
       x-min-permissions: admin
+  /v2/workspaces/{workspaceId}/powerbi/embedded/apps/{appName}:
+    get:
+      operationId: v2_getEmbeddedPbiAppWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: appName
+        required: true
+        type: string
+      responses:
+        200:
+          description: App returned
+        401:
+          description: Unauthorized
+        404:
+          description: App not found in project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get PBI Embedded App (Workspace)
+      tags:
+      - Power BI
+  /v2/workspaces/{workspaceId}/powerbi/refresh/apps/{appName}:
+    post:
+      operationId: v2_refreshPowerBiAppWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: appName
+        required: true
+        type: string
+      responses:
+        200:
+          description: App refresh initiated
+        204:
+          description: App refresh not iniated for some reason (eg. already in progress)
+        401:
+          description: Unauthorized
+        404:
+          description: App not found in project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Refresh Power BI app in workspace
+      tags:
+      - Power BI
   /v2/workspaces/{workspaceId}/projects:
     get:
       operationId: v2_getProjects
