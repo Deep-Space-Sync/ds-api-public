@@ -4355,6 +4355,487 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/budget-items:
+    get:
+      operationId: v1_getBudgetItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                cost_budget_identifier:
+                  description: User-friendly identifier for cost budget item
+                cost_budget_item_description:
+                  description: Description of the cost budget item
+                cost_budget_item_name:
+                  description: Name of the cost budget item
+                cost_budget_item_num:
+                  description: Internal identifier for cost budget item
+                cost_code_num:
+                  description: Cost code number
+                ds_wbs_id:
+                  description: WBS ID of the cost budget item
+                original_total_amount:
+                  description: Original total amount of the cost budget item
+                qty:
+                  description: Quantity of the cost budget item
+                total_amount:
+                  description: Total amount of the cost budget item
+                unit_amount:
+                  description: Unit amount of the cost budget item
+                unit_of_measure:
+                  description: Unit of measure of the cost budget item
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get Budget Items
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v1_postBudgetItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_budget_item_client_id:
+              description: Client ID of the cost budget item
+            cost_budget_item_description:
+              description: Description of the cost budget item
+            cost_budget_item_name:
+              description: Name of the cost budget item
+            cost_code_num:
+              description: Cost code number
+            ds_wbs_id:
+              description: WBS ID of the cost budget item
+            qty:
+              description: Quantity of the cost budget item
+            total_amount:
+              description: Total amount of the cost budget item
+            unit_amount:
+              description: Unit amount of the cost budget item
+            unit_of_measure:
+              description: Unit of measure of the cost budget item
+          required:
+          - cost_budget_item_name
+          - cost_code_num
+          - total_amount
+          type: object
+      responses:
+        201:
+          description: Object successfully created
+          schema:
+            properties:
+              cost_budget_identifier:
+                description: User-friendly identifier for cost budget item
+              cost_budget_item_description:
+                description: Description of the cost budget item
+              cost_budget_item_name:
+                description: Name of the cost budget item
+              cost_budget_item_num:
+                description: Internal identifier for cost budget item
+              cost_code_num:
+                description: Cost code number
+              ds_wbs_id:
+                description: WBS ID of the cost budget item
+              original_total_amount:
+                description: Original total amount of the cost budget item
+              qty:
+                description: Quantity of the cost budget item
+              total_amount:
+                description: Total amount of the cost budget item
+              unit_amount:
+                description: Unit amount of the cost budget item
+              unit_of_measure:
+                description: Unit of measure of the cost budget item
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create Budget Item
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/budget-items/{costBudgetItemId}:
+    get:
+      operationId: v1_getBudgetItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costBudgetItemId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              cost_budget_identifier:
+                description: User-friendly identifier for cost budget item
+              cost_budget_item_description:
+                description: Description of the cost budget item
+              cost_budget_item_name:
+                description: Name of the cost budget item
+              cost_budget_item_num:
+                description: Internal identifier for cost budget item
+              cost_code_num:
+                description: Cost code number
+              ds_wbs_id:
+                description: WBS ID of the cost budget item
+              original_total_amount:
+                description: Original total amount of the cost budget item
+              qty:
+                description: Quantity of the cost budget item
+              total_amount:
+                description: Total amount of the cost budget item
+              unit_amount:
+                description: Unit amount of the cost budget item
+              unit_of_measure:
+                description: Unit of measure of the cost budget item
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get Budget Item By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v1_patchBudgetItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costBudgetItemId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_budget_item_description:
+              description: Description of the cost budget item
+            cost_budget_item_name:
+              description: Name of the cost budget item
+            cost_code_num:
+              description: Cost code number
+            ds_wbs_id:
+              description: WBS ID of the cost budget item
+            qty:
+              description: Quantity of the cost budget item
+            total_amount:
+              description: Total amount of the cost budget item
+            unit_amount:
+              description: Unit amount of the cost budget item
+            unit_of_measure:
+              description: Unit of measure of the cost budget item
+          type: object
+      responses:
+        201:
+          description: Object successfully edited
+          schema:
+            properties:
+              cost_budget_identifier:
+                description: User-friendly identifier for cost budget item
+              cost_budget_item_description:
+                description: Description of the cost budget item
+              cost_budget_item_name:
+                description: Name of the cost budget item
+              cost_budget_item_num:
+                description: Internal identifier for cost budget item
+              cost_code_num:
+                description: Cost code number
+              ds_wbs_id:
+                description: WBS ID of the cost budget item
+              original_total_amount:
+                description: Original total amount of the cost budget item
+              qty:
+                description: Quantity of the cost budget item
+              total_amount:
+                description: Total amount of the cost budget item
+              unit_amount:
+                description: Unit amount of the cost budget item
+              unit_of_measure:
+                description: Unit of measure of the cost budget item
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Edit Budget Item By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/budget-snapshots:
+    get:
+      operationId: v1_getBudgetSnapshots
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                cost_budget_snapshot_id:
+                  description: Internal identifier for cost budget snapshot
+                items:
+                  items:
+                    properties:
+                      cost_budget_item_num:
+                        description: internal ID of the budget item
+                      qty:
+                        description: quantity of the budget item
+                      total_amount:
+                        description: total amount of the budget item
+                      unit_amount:
+                        description: unit amount of the budget item
+                      unit_of_measure:
+                        description: unit of measure of the budget item
+                    type: object
+                  type: array
+                snapshot_by_user_id:
+                  description: User ID of the user who created the snapshot
+                snapshot_name:
+                  description: Name of the snapshot
+                snapshot_on_date:
+                  description: Date of the snapshot
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get Budget Snapshots
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v1_postBudgetSnapshot
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            snapshot_name:
+              description: Name of snapshot
+          required:
+          - snapshot_name
+          type: object
+      responses:
+        201:
+          description: Object successfully created
+          schema:
+            properties:
+              cost_budget_snapshot_id:
+                description: Internal identifier for cost budget snapshot
+              items:
+                items:
+                  properties:
+                    cost_budget_item_num:
+                      description: internal ID of the budget item
+                    qty:
+                      description: quantity of the budget item
+                    total_amount:
+                      description: total amount of the budget item
+                    unit_amount:
+                      description: unit amount of the budget item
+                    unit_of_measure:
+                      description: unit of measure of the budget item
+                  type: object
+                type: array
+              snapshot_by_user_id:
+                description: User ID of the user who created the snapshot
+              snapshot_name:
+                description: Name of the snapshot
+              snapshot_on_date:
+                description: Date of the snapshot
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create Budget Snapshot
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/budget-snapshots/{costBudgetSnapshotId}:
+    get:
+      operationId: v1_getBudgetSnapshotById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costBudgetSnapshotId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              cost_budget_snapshot_id:
+                description: Internal identifier for cost budget snapshot
+              items:
+                items:
+                  properties:
+                    cost_budget_item_num:
+                      description: internal ID of the budget item
+                    qty:
+                      description: quantity of the budget item
+                    total_amount:
+                      description: total amount of the budget item
+                    unit_amount:
+                      description: unit amount of the budget item
+                    unit_of_measure:
+                      description: unit of measure of the budget item
+                  type: object
+                type: array
+              snapshot_by_user_id:
+                description: User ID of the user who created the snapshot
+              snapshot_name:
+                description: Name of the snapshot
+              snapshot_on_date:
+                description: Date of the snapshot
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get Budget Snapshot By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v1_patchBudgetSnapshotById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costBudgetSnapshotId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            snapshot_name:
+              description: Name of snapshot
+          type: object
+      responses:
+        201:
+          description: Object successfully edited
+          schema:
+            properties:
+              cost_budget_snapshot_id:
+                description: Internal identifier for cost budget snapshot
+              snapshot_by_user_id:
+                description: User ID of the user who created the snapshot
+              snapshot_name:
+                description: Name of the snapshot
+              snapshot_on_date:
+                description: Date of the snapshot
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Edit Budget Snapshot By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/claims:
     get:
       operationId: v1_getCostClaims
@@ -5063,6 +5544,7 @@ paths:
       summary: Get Cost Codes
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v1_patchCostCodes
@@ -5127,6 +5609,7 @@ paths:
       summary: Update Cost Code
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v1_postCostCode
@@ -5180,6 +5663,7 @@ paths:
       summary: Create Cost Code
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes/{costCodeId}:
     get:
@@ -5222,6 +5706,7 @@ paths:
       summary: Get Cost Code By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v1_patchCostCodeById
@@ -5275,6 +5760,7 @@ paths:
       summary: Edit Cost Code By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/invoices:
     get:
@@ -13142,6 +13628,487 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-items:
+    get:
+      operationId: v2_getBudgetItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                cost_budget_identifier:
+                  description: User-friendly identifier for cost budget item
+                cost_budget_item_description:
+                  description: Description of the cost budget item
+                cost_budget_item_name:
+                  description: Name of the cost budget item
+                cost_budget_item_num:
+                  description: Internal identifier for cost budget item
+                cost_code_num:
+                  description: Cost code number
+                ds_wbs_id:
+                  description: WBS ID of the cost budget item
+                original_total_amount:
+                  description: Original total amount of the cost budget item
+                qty:
+                  description: Quantity of the cost budget item
+                total_amount:
+                  description: Total amount of the cost budget item
+                unit_amount:
+                  description: Unit amount of the cost budget item
+                unit_of_measure:
+                  description: Unit of measure of the cost budget item
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Budget Items
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postBudgetItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_budget_item_client_id:
+              description: Client ID of the cost budget item
+            cost_budget_item_description:
+              description: Description of the cost budget item
+            cost_budget_item_name:
+              description: Name of the cost budget item
+            cost_code_num:
+              description: Cost code number
+            ds_wbs_id:
+              description: WBS ID of the cost budget item
+            qty:
+              description: Quantity of the cost budget item
+            total_amount:
+              description: Total amount of the cost budget item
+            unit_amount:
+              description: Unit amount of the cost budget item
+            unit_of_measure:
+              description: Unit of measure of the cost budget item
+          required:
+          - cost_budget_item_name
+          - cost_code_num
+          - total_amount
+          type: object
+      responses:
+        201:
+          description: Object successfully created
+          schema:
+            properties:
+              cost_budget_identifier:
+                description: User-friendly identifier for cost budget item
+              cost_budget_item_description:
+                description: Description of the cost budget item
+              cost_budget_item_name:
+                description: Name of the cost budget item
+              cost_budget_item_num:
+                description: Internal identifier for cost budget item
+              cost_code_num:
+                description: Cost code number
+              ds_wbs_id:
+                description: WBS ID of the cost budget item
+              original_total_amount:
+                description: Original total amount of the cost budget item
+              qty:
+                description: Quantity of the cost budget item
+              total_amount:
+                description: Total amount of the cost budget item
+              unit_amount:
+                description: Unit amount of the cost budget item
+              unit_of_measure:
+                description: Unit of measure of the cost budget item
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Budget Item
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-items/{costBudgetItemId}:
+    get:
+      operationId: v2_getBudgetItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costBudgetItemId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              cost_budget_identifier:
+                description: User-friendly identifier for cost budget item
+              cost_budget_item_description:
+                description: Description of the cost budget item
+              cost_budget_item_name:
+                description: Name of the cost budget item
+              cost_budget_item_num:
+                description: Internal identifier for cost budget item
+              cost_code_num:
+                description: Cost code number
+              ds_wbs_id:
+                description: WBS ID of the cost budget item
+              original_total_amount:
+                description: Original total amount of the cost budget item
+              qty:
+                description: Quantity of the cost budget item
+              total_amount:
+                description: Total amount of the cost budget item
+              unit_amount:
+                description: Unit amount of the cost budget item
+              unit_of_measure:
+                description: Unit of measure of the cost budget item
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Budget Item By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchBudgetItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costBudgetItemId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_budget_item_description:
+              description: Description of the cost budget item
+            cost_budget_item_name:
+              description: Name of the cost budget item
+            cost_code_num:
+              description: Cost code number
+            ds_wbs_id:
+              description: WBS ID of the cost budget item
+            qty:
+              description: Quantity of the cost budget item
+            total_amount:
+              description: Total amount of the cost budget item
+            unit_amount:
+              description: Unit amount of the cost budget item
+            unit_of_measure:
+              description: Unit of measure of the cost budget item
+          type: object
+      responses:
+        201:
+          description: Object successfully edited
+          schema:
+            properties:
+              cost_budget_identifier:
+                description: User-friendly identifier for cost budget item
+              cost_budget_item_description:
+                description: Description of the cost budget item
+              cost_budget_item_name:
+                description: Name of the cost budget item
+              cost_budget_item_num:
+                description: Internal identifier for cost budget item
+              cost_code_num:
+                description: Cost code number
+              ds_wbs_id:
+                description: WBS ID of the cost budget item
+              original_total_amount:
+                description: Original total amount of the cost budget item
+              qty:
+                description: Quantity of the cost budget item
+              total_amount:
+                description: Total amount of the cost budget item
+              unit_amount:
+                description: Unit amount of the cost budget item
+              unit_of_measure:
+                description: Unit of measure of the cost budget item
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Budget Item By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-snapshots:
+    get:
+      operationId: v2_getBudgetSnapshots
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                cost_budget_snapshot_id:
+                  description: Internal identifier for cost budget snapshot
+                items:
+                  items:
+                    properties:
+                      cost_budget_item_num:
+                        description: internal ID of the budget item
+                      qty:
+                        description: quantity of the budget item
+                      total_amount:
+                        description: total amount of the budget item
+                      unit_amount:
+                        description: unit amount of the budget item
+                      unit_of_measure:
+                        description: unit of measure of the budget item
+                    type: object
+                  type: array
+                snapshot_by_user_id:
+                  description: User ID of the user who created the snapshot
+                snapshot_name:
+                  description: Name of the snapshot
+                snapshot_on_date:
+                  description: Date of the snapshot
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Budget Snapshots
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postBudgetSnapshot
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            snapshot_name:
+              description: Name of snapshot
+          required:
+          - snapshot_name
+          type: object
+      responses:
+        201:
+          description: Object successfully created
+          schema:
+            properties:
+              cost_budget_snapshot_id:
+                description: Internal identifier for cost budget snapshot
+              items:
+                items:
+                  properties:
+                    cost_budget_item_num:
+                      description: internal ID of the budget item
+                    qty:
+                      description: quantity of the budget item
+                    total_amount:
+                      description: total amount of the budget item
+                    unit_amount:
+                      description: unit amount of the budget item
+                    unit_of_measure:
+                      description: unit of measure of the budget item
+                  type: object
+                type: array
+              snapshot_by_user_id:
+                description: User ID of the user who created the snapshot
+              snapshot_name:
+                description: Name of the snapshot
+              snapshot_on_date:
+                description: Date of the snapshot
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Budget Snapshot
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-snapshots/{costBudgetSnapshotId}:
+    get:
+      operationId: v2_getBudgetSnapshotById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costBudgetSnapshotId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              cost_budget_snapshot_id:
+                description: Internal identifier for cost budget snapshot
+              items:
+                items:
+                  properties:
+                    cost_budget_item_num:
+                      description: internal ID of the budget item
+                    qty:
+                      description: quantity of the budget item
+                    total_amount:
+                      description: total amount of the budget item
+                    unit_amount:
+                      description: unit amount of the budget item
+                    unit_of_measure:
+                      description: unit of measure of the budget item
+                  type: object
+                type: array
+              snapshot_by_user_id:
+                description: User ID of the user who created the snapshot
+              snapshot_name:
+                description: Name of the snapshot
+              snapshot_on_date:
+                description: Date of the snapshot
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Budget Snapshot By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchBudgetSnapshotById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costBudgetSnapshotId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            snapshot_name:
+              description: Name of snapshot
+          type: object
+      responses:
+        201:
+          description: Object successfully edited
+          schema:
+            properties:
+              cost_budget_snapshot_id:
+                description: Internal identifier for cost budget snapshot
+              snapshot_by_user_id:
+                description: User ID of the user who created the snapshot
+              snapshot_name:
+                description: Name of the snapshot
+              snapshot_on_date:
+                description: Date of the snapshot
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Budget Snapshot By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims:
     get:
       operationId: v2_getCostClaims
@@ -13850,6 +14817,7 @@ paths:
       summary: Get Cost Codes
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostCodes
@@ -13914,6 +14882,7 @@ paths:
       summary: Update Cost Code
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v2_postCostCode
@@ -13967,6 +14936,7 @@ paths:
       summary: Create Cost Code
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes/{costCodeId}:
     get:
@@ -14009,6 +14979,7 @@ paths:
       summary: Get Cost Code By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostCodeById
@@ -14062,6 +15033,7 @@ paths:
       summary: Edit Cost Code By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/invoices:
     get:
