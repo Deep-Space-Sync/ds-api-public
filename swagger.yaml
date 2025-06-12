@@ -5024,6 +5024,258 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes:
+    get:
+      operationId: v1_getCostCodes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                cost_code_description:
+                  description: Description of cost code
+                cost_code_identifier:
+                  description: User-friendly identifier for cost code
+                cost_code_name:
+                  description: Name of cost code
+                cost_code_num:
+                  description: Internal identifier for cost code
+                parent_cost_code_num:
+                  description: ID of parent cost code
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get Cost Codes
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v1_patchCostCodes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          items:
+            properties:
+              cost_code_client_id:
+                description: User-provided cost code ID
+              cost_code_description:
+                description: Description of cost code
+              cost_code_name:
+                description: Name of cost code
+              parent_cost_code_num:
+                description: ID of parent cost code
+            required:
+            - costCodeId
+            type: object
+          type: object
+      responses:
+        200:
+          description: Objects successfully updated
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    cost_code_description:
+                      description: Description of cost code
+                    cost_code_identifier:
+                      description: User-friendly identifier for cost code
+                    cost_code_name:
+                      description: Name of cost code
+                    cost_code_num:
+                      description: Internal identifier for cost code
+                    parent_cost_code_num:
+                      description: ID of parent cost code
+                  type: object
+                type: array
+              message:
+                description: Success message
+              updated_count:
+                description: Number of cost codes updated
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Update Cost Code
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v1_postCostCode
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_code_client_id:
+              description: User-provided cost code ID
+            cost_code_description:
+              description: Description of cost code
+            cost_code_name:
+              description: Name of cost code
+            parent_cost_code_num:
+              description: ID of parent cost code
+          required:
+          - cost_code_name
+          type: object
+      responses:
+        201:
+          description: Object successfully created
+          schema:
+            properties:
+              cost_code_description:
+                description: Description of cost code
+              cost_code_identifier:
+                description: User-friendly identifier for cost code
+              cost_code_name:
+                description: Name of cost code
+              cost_code_num:
+                description: Internal identifier for cost code
+              parent_cost_code_num:
+                description: ID of parent cost code
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create Cost Code
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes/{costCodeId}:
+    get:
+      operationId: v1_getCostCodeById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costCodeId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              cost_code_description:
+                description: Description of cost code
+              cost_code_identifier:
+                description: User-friendly identifier for cost code
+              cost_code_name:
+                description: Name of cost code
+              cost_code_num:
+                description: Internal identifier for cost code
+              parent_cost_code_num:
+                description: ID of parent cost code
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get Cost Code By Id
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v1_patchCostCodeById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costCodeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_code_description:
+              description: Description of cost code
+            cost_code_name:
+              description: Name of cost code
+            parent_cost_code_num:
+              description: ID of parent cost code
+          type: object
+      responses:
+        201:
+          description: Object successfully edited
+          schema:
+            properties:
+              cost_code_description:
+                description: Description of cost code
+              cost_code_identifier:
+                description: User-friendly identifier for cost code
+              cost_code_name:
+                description: Name of cost code
+              cost_code_num:
+                description: Internal identifier for cost code
+              parent_cost_code_num:
+                description: ID of parent cost code
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Edit Cost Code By Id
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v1/workspaces/{workspaceId}/projects/{projectId}/cost/invoices:
     get:
       operationId: v1_getCostInvoices
@@ -13558,6 +13810,258 @@ paths:
       tags:
       - Cost
       x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes:
+    get:
+      operationId: v2_getCostCodes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                cost_code_description:
+                  description: Description of cost code
+                cost_code_identifier:
+                  description: User-friendly identifier for cost code
+                cost_code_name:
+                  description: Name of cost code
+                cost_code_num:
+                  description: Internal identifier for cost code
+                parent_cost_code_num:
+                  description: ID of parent cost code
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Cost Codes
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchCostCodes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          items:
+            properties:
+              cost_code_client_id:
+                description: User-provided cost code ID
+              cost_code_description:
+                description: Description of cost code
+              cost_code_name:
+                description: Name of cost code
+              parent_cost_code_num:
+                description: ID of parent cost code
+            required:
+            - costCodeId
+            type: object
+          type: object
+      responses:
+        200:
+          description: Objects successfully updated
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    cost_code_description:
+                      description: Description of cost code
+                    cost_code_identifier:
+                      description: User-friendly identifier for cost code
+                    cost_code_name:
+                      description: Name of cost code
+                    cost_code_num:
+                      description: Internal identifier for cost code
+                    parent_cost_code_num:
+                      description: ID of parent cost code
+                  type: object
+                type: array
+              message:
+                description: Success message
+              updated_count:
+                description: Number of cost codes updated
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Cost Code
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postCostCode
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_code_client_id:
+              description: User-provided cost code ID
+            cost_code_description:
+              description: Description of cost code
+            cost_code_name:
+              description: Name of cost code
+            parent_cost_code_num:
+              description: ID of parent cost code
+          required:
+          - cost_code_name
+          type: object
+      responses:
+        201:
+          description: Object successfully created
+          schema:
+            properties:
+              cost_code_description:
+                description: Description of cost code
+              cost_code_identifier:
+                description: User-friendly identifier for cost code
+              cost_code_name:
+                description: Name of cost code
+              cost_code_num:
+                description: Internal identifier for cost code
+              parent_cost_code_num:
+                description: ID of parent cost code
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Cost Code
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes/{costCodeId}:
+    get:
+      operationId: v2_getCostCodeById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costCodeId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              cost_code_description:
+                description: Description of cost code
+              cost_code_identifier:
+                description: User-friendly identifier for cost code
+              cost_code_name:
+                description: Name of cost code
+              cost_code_num:
+                description: Internal identifier for cost code
+              parent_cost_code_num:
+                description: ID of parent cost code
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Cost Code By Id
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchCostCodeById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costCodeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_code_description:
+              description: Description of cost code
+            cost_code_name:
+              description: Name of cost code
+            parent_cost_code_num:
+              description: ID of parent cost code
+          type: object
+      responses:
+        201:
+          description: Object successfully edited
+          schema:
+            properties:
+              cost_code_description:
+                description: Description of cost code
+              cost_code_identifier:
+                description: User-friendly identifier for cost code
+              cost_code_name:
+                description: Name of cost code
+              cost_code_num:
+                description: Internal identifier for cost code
+              parent_cost_code_num:
+                description: ID of parent cost code
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Cost Code By Id
+      tags:
+      - Cost
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/invoices:
     get:
