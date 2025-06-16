@@ -5505,7 +5505,7 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
-  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes:
+  /v1/workspaces/{workspaceId}/cost/cost-codes:
     get:
       operationId: v1_getCostCodes
       parameters:
@@ -5513,10 +5513,6 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
       responses:
         200:
           description: Successful response
@@ -5553,10 +5549,6 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
       - in: body
         name: body
         required: true
@@ -5618,10 +5610,6 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
       - in: body
         name: body
         required: true
@@ -5665,7 +5653,7 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
-  /v1/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes/{costCodeId}:
+  /v1/workspaces/{workspaceId}/cost/cost-codes/{costCodeId}:
     get:
       operationId: v1_getCostCodeById
       parameters:
@@ -5673,10 +5661,6 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
       - in: path
         name: costCodeId
         required: true
@@ -5715,10 +5699,6 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
       - in: path
         name: costCodeId
         required: true
@@ -14778,7 +14758,7 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes:
+  /v2/workspaces/{workspaceId}/cost/cost-codes:
     get:
       operationId: v2_getCostCodes
       parameters:
@@ -14786,10 +14766,6 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
       responses:
         200:
           description: Successful response
@@ -14826,10 +14802,6 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
       - in: body
         name: body
         required: true
@@ -14891,10 +14863,6 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
       - in: body
         name: body
         required: true
@@ -14938,7 +14906,7 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes/{costCodeId}:
+  /v2/workspaces/{workspaceId}/cost/cost-codes/{costCodeId}:
     get:
       operationId: v2_getCostCodeById
       parameters:
@@ -14946,10 +14914,6 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
       - in: path
         name: costCodeId
         required: true
@@ -14988,10 +14952,6 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
       - in: path
         name: costCodeId
         required: true
