@@ -1915,6 +1915,129 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v1/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}:
+    get:
+      operationId: v1_getConfiguredFormWorkflowEmailById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowEmailId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get configured form workflow email by ID
+      tags:
+      - DS Site Admin Integrations
+  /v1/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}/configure:
+    delete:
+      operationId: v1_deleteConfigurationFormWorkflowEmailById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowEmailId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Delete form workflow email by ID
+      tags:
+      - DS Site Admin Integrations
+    post:
+      operationId: v1_configureFormWorkflowEmailById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowEmailId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Configure form workflow email by ID
+      tags:
+      - DS Site Admin Integrations
+  /v1/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}/submissions:
+    get:
+      operationId: v1_getConfiguredFormWorkflowEmailSubmissionsById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowEmailId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get configured form workflow email submissions by ID
+      tags:
+      - DS Site Admin Integrations
   /v1/workspaces/{workspaceId}/ds-site/form-workflows/{formWorkflowId}:
     get:
       operationId: v1_getConfiguredFormWorkflowById
@@ -11168,6 +11291,129 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}:
+    get:
+      operationId: v2_getConfiguredFormWorkflowEmailById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowEmailId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get configured form workflow email by ID
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}/configure:
+    delete:
+      operationId: v2_deleteConfigurationFormWorkflowEmailById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowEmailId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete form workflow email by ID
+      tags:
+      - DS Site Admin Integrations
+    post:
+      operationId: v2_configureFormWorkflowEmailById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowEmailId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Configure form workflow email by ID
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}/submissions:
+    get:
+      operationId: v2_getConfiguredFormWorkflowEmailSubmissionsById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowEmailId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get configured form workflow email submissions by ID
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/form-workflows/{formWorkflowId}:
     get:
       operationId: v2_getConfiguredFormWorkflowById
