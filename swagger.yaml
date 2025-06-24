@@ -1946,6 +1946,35 @@ paths:
       summary: Get configured form workflow email by ID
       tags:
       - DS Site Admin Integrations
+    post:
+      operationId: v1_sendFormWorkflowEmailById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowEmailId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+            global_company_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v1: []
+      summary: Send form workflow email by ID
+      tags:
+      - DS Site Admin Integrations
   /v1/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}/configure:
     delete:
       operationId: v1_deleteConfigurationFormWorkflowEmailById
@@ -11320,6 +11349,35 @@ paths:
       security:
       - JWT_v2: []
       summary: Get configured form workflow email by ID
+      tags:
+      - DS Site Admin Integrations
+    post:
+      operationId: v2_sendFormWorkflowEmailById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formWorkflowEmailId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+            global_company_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Send form workflow email by ID
       tags:
       - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}/configure:
