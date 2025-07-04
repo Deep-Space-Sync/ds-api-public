@@ -133,6 +133,11 @@ paths:
         name: includeSharedCompanies
         required: false
         type: boolean
+      - description: Include metadata for the global company
+        in: query
+        name: includeMetadata
+        required: false
+        type: boolean
       responses:
         200:
           description: Successful response
@@ -9914,6 +9919,11 @@ paths:
           provided
         in: query
         name: includeSharedCompanies
+        required: false
+        type: boolean
+      - description: Include metadata for the global company
+        in: query
+        name: includeMetadata
         required: false
         type: boolean
       responses:
