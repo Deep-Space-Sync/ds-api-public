@@ -197,6 +197,350 @@ paths:
       summary: Create Global Company
       tags:
       - Global Company Directory
+  /v1/global-companies/{globalCompanyId}/metadata:
+    put:
+      operationId: v1_saveGlobalCompanyMetadataValues
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          items:
+            properties:
+              metadata_from_global_company_id:
+                description: ID of the company this metadata is from
+                type: number
+              metadata_key:
+                description: Key of the metadata definition
+                type: string
+              metadata_value:
+                description: Value to save for this metadata
+                type: string
+            required:
+            - metadata_key
+            - metadata_value
+            - metadata_from_global_company_id
+            type: object
+          type: array
+      responses:
+        200:
+          description: Metadata values saved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    global_metadata_id:
+                      type: number
+                    metadata_from_id_global_company_directory:
+                      type: number
+                    metadata_key:
+                      type: string
+                    metadata_name:
+                      type: string
+                    metadata_type:
+                      type: string
+                    metadata_value:
+                      type: string
+                    shared_metadata_id:
+                      type: number
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data
+        401:
+          description: Unauthorized
+        404:
+          description: Not Found - No metadata definitions found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Save or replace metadata values for a global company
+      tags:
+      - Global Company Directory
+  /v1/global-companies/{globalCompanyId}/metadata/definitions:
+    delete:
+      operationId: v1_deleteGlobalCompanyMetadataDefinition
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            metadata_key:
+              description: Key of the metadata definition to delete
+              type: string
+          required:
+          - metadata_key
+          type: object
+      responses:
+        200:
+          description: Metadata definition deleted successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  editable_by:
+                    type: string
+                  global_metadata_id:
+                    type: number
+                  max_allowed_values:
+                    type: number
+                  metadata_enum_json:
+                    type: string
+                  metadata_key:
+                    type: string
+                  metadata_name:
+                    type: string
+                  metadata_type:
+                    type: string
+                  min_allowed_values:
+                    type: number
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data
+        401:
+          description: Unauthorized
+        404:
+          description: Not Found - Metadata definition not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Delete a metadata definition for a global company
+      tags:
+      - Global Company Directory
+    get:
+      operationId: v1_getGlobalCompanyMetadataDefinitions
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    editable_by:
+                      type: string
+                    global_metadata_id:
+                      type: number
+                    max_allowed_values:
+                      type: number
+                    metadata_enum_json:
+                      type: string
+                    metadata_key:
+                      type: string
+                    metadata_name:
+                      type: string
+                    metadata_type:
+                      enum:
+                      - STRING
+                      - NUMBER
+                      - ENUM
+                      type: string
+                    min_allowed_values:
+                      type: number
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get metadata definitions for a global company
+      tags:
+      - Global Company Directory
+    patch:
+      operationId: v1_updateGlobalCompanyMetadataDefinition
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            editable_by:
+              description: Who can edit this metadata
+              type: string
+            max_allowed_values:
+              description: Maximum number of values allowed
+              type: number
+            metadata_enum_json:
+              description: JSON string of enum values (required when metadata_type
+                is ENUM)
+              type: string
+            metadata_key:
+              description: Key of the metadata definition to update
+              type: string
+            metadata_name:
+              description: Display name for the metadata definition
+              type: string
+            metadata_type:
+              description: Type of metadata value
+              enum:
+              - STRING
+              - NUMBER
+              - ENUM
+              type: string
+            min_allowed_values:
+              description: Minimum number of values allowed
+              type: number
+          required:
+          - metadata_key
+          type: object
+      responses:
+        200:
+          description: Metadata definition updated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  editable_by:
+                    type: string
+                  global_metadata_id:
+                    type: number
+                  max_allowed_values:
+                    type: number
+                  metadata_enum_json:
+                    type: string
+                  metadata_key:
+                    type: string
+                  metadata_name:
+                    type: string
+                  metadata_type:
+                    type: string
+                  min_allowed_values:
+                    type: number
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data
+        401:
+          description: Unauthorized
+        404:
+          description: Not Found - Metadata definition not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Update a metadata definition for a global company
+      tags:
+      - Global Company Directory
+    post:
+      operationId: v1_createGlobalCompanyMetadataDefinition
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            editable_by:
+              default: company_admin
+              description: Who can edit this metadata
+              type: string
+            max_allowed_values:
+              description: Maximum number of values allowed
+              type: number
+            metadata_enum_json:
+              description: JSON string of enum values (required when metadata_type
+                is ENUM)
+              type: string
+            metadata_key:
+              description: Unique key for the metadata definition
+              type: string
+            metadata_name:
+              description: Display name for the metadata definition
+              type: string
+            metadata_type:
+              description: Type of metadata value
+              enum:
+              - STRING
+              - NUMBER
+              - ENUM
+              type: string
+            min_allowed_values:
+              description: Minimum number of values allowed
+              type: number
+          required:
+          - metadata_key
+          - metadata_name
+          - metadata_type
+          type: object
+      responses:
+        201:
+          description: Metadata definition created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  editable_by:
+                    type: string
+                  global_metadata_id:
+                    type: number
+                  max_allowed_values:
+                    type: number
+                  metadata_enum_json:
+                    type: string
+                  metadata_key:
+                    type: string
+                  metadata_name:
+                    type: string
+                  metadata_type:
+                    type: string
+                  min_allowed_values:
+                    type: number
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data
+        401:
+          description: Unauthorized
+        409:
+          description: Conflict - Metadata key already exists
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create new metadata definition for a global company
+      tags:
+      - Global Company Directory
   /v1/global-companies/{globalCompanyId}/users:
     get:
       operationId: v1_getGlobalCompanyUsers
@@ -9634,6 +9978,350 @@ paths:
       security:
       - JWT_v2: []
       summary: Create Global Company
+      tags:
+      - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/metadata:
+    put:
+      operationId: v2_saveGlobalCompanyMetadataValues
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          items:
+            properties:
+              metadata_from_global_company_id:
+                description: ID of the company this metadata is from
+                type: number
+              metadata_key:
+                description: Key of the metadata definition
+                type: string
+              metadata_value:
+                description: Value to save for this metadata
+                type: string
+            required:
+            - metadata_key
+            - metadata_value
+            - metadata_from_global_company_id
+            type: object
+          type: array
+      responses:
+        200:
+          description: Metadata values saved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    global_metadata_id:
+                      type: number
+                    metadata_from_id_global_company_directory:
+                      type: number
+                    metadata_key:
+                      type: string
+                    metadata_name:
+                      type: string
+                    metadata_type:
+                      type: string
+                    metadata_value:
+                      type: string
+                    shared_metadata_id:
+                      type: number
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data
+        401:
+          description: Unauthorized
+        404:
+          description: Not Found - No metadata definitions found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Save or replace metadata values for a global company
+      tags:
+      - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/metadata/definitions:
+    delete:
+      operationId: v2_deleteGlobalCompanyMetadataDefinition
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            metadata_key:
+              description: Key of the metadata definition to delete
+              type: string
+          required:
+          - metadata_key
+          type: object
+      responses:
+        200:
+          description: Metadata definition deleted successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  editable_by:
+                    type: string
+                  global_metadata_id:
+                    type: number
+                  max_allowed_values:
+                    type: number
+                  metadata_enum_json:
+                    type: string
+                  metadata_key:
+                    type: string
+                  metadata_name:
+                    type: string
+                  metadata_type:
+                    type: string
+                  min_allowed_values:
+                    type: number
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data
+        401:
+          description: Unauthorized
+        404:
+          description: Not Found - Metadata definition not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a metadata definition for a global company
+      tags:
+      - Global Company Directory
+    get:
+      operationId: v2_getGlobalCompanyMetadataDefinitions
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    editable_by:
+                      type: string
+                    global_metadata_id:
+                      type: number
+                    max_allowed_values:
+                      type: number
+                    metadata_enum_json:
+                      type: string
+                    metadata_key:
+                      type: string
+                    metadata_name:
+                      type: string
+                    metadata_type:
+                      enum:
+                      - STRING
+                      - NUMBER
+                      - ENUM
+                      type: string
+                    min_allowed_values:
+                      type: number
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get metadata definitions for a global company
+      tags:
+      - Global Company Directory
+    patch:
+      operationId: v2_updateGlobalCompanyMetadataDefinition
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            editable_by:
+              description: Who can edit this metadata
+              type: string
+            max_allowed_values:
+              description: Maximum number of values allowed
+              type: number
+            metadata_enum_json:
+              description: JSON string of enum values (required when metadata_type
+                is ENUM)
+              type: string
+            metadata_key:
+              description: Key of the metadata definition to update
+              type: string
+            metadata_name:
+              description: Display name for the metadata definition
+              type: string
+            metadata_type:
+              description: Type of metadata value
+              enum:
+              - STRING
+              - NUMBER
+              - ENUM
+              type: string
+            min_allowed_values:
+              description: Minimum number of values allowed
+              type: number
+          required:
+          - metadata_key
+          type: object
+      responses:
+        200:
+          description: Metadata definition updated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  editable_by:
+                    type: string
+                  global_metadata_id:
+                    type: number
+                  max_allowed_values:
+                    type: number
+                  metadata_enum_json:
+                    type: string
+                  metadata_key:
+                    type: string
+                  metadata_name:
+                    type: string
+                  metadata_type:
+                    type: string
+                  min_allowed_values:
+                    type: number
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data
+        401:
+          description: Unauthorized
+        404:
+          description: Not Found - Metadata definition not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a metadata definition for a global company
+      tags:
+      - Global Company Directory
+    post:
+      operationId: v2_createGlobalCompanyMetadataDefinition
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            editable_by:
+              default: company_admin
+              description: Who can edit this metadata
+              type: string
+            max_allowed_values:
+              description: Maximum number of values allowed
+              type: number
+            metadata_enum_json:
+              description: JSON string of enum values (required when metadata_type
+                is ENUM)
+              type: string
+            metadata_key:
+              description: Unique key for the metadata definition
+              type: string
+            metadata_name:
+              description: Display name for the metadata definition
+              type: string
+            metadata_type:
+              description: Type of metadata value
+              enum:
+              - STRING
+              - NUMBER
+              - ENUM
+              type: string
+            min_allowed_values:
+              description: Minimum number of values allowed
+              type: number
+          required:
+          - metadata_key
+          - metadata_name
+          - metadata_type
+          type: object
+      responses:
+        201:
+          description: Metadata definition created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  editable_by:
+                    type: string
+                  global_metadata_id:
+                    type: number
+                  max_allowed_values:
+                    type: number
+                  metadata_enum_json:
+                    type: string
+                  metadata_key:
+                    type: string
+                  metadata_name:
+                    type: string
+                  metadata_type:
+                    type: string
+                  min_allowed_values:
+                    type: number
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data
+        401:
+          description: Unauthorized
+        409:
+          description: Conflict - Metadata key already exists
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create new metadata definition for a global company
       tags:
       - Global Company Directory
   /v2/global-companies/{globalCompanyId}/users:
