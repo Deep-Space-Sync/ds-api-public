@@ -214,23 +214,28 @@ paths:
         name: body
         required: true
         schema:
-          items:
-            properties:
-              metadata_from_global_company_id:
-                description: ID of the company this metadata is from
-                type: number
-              metadata_key:
-                description: Key of the metadata definition
-                type: string
-              metadata_value:
-                description: Value to save for this metadata
-                type: string
-            required:
-            - metadata_key
-            - metadata_value
-            - metadata_from_global_company_id
-            type: object
-          type: array
+          properties:
+            metadata_values:
+              items:
+                properties:
+                  metadata_from_global_company_id:
+                    description: ID of the company this metadata is from
+                    type: number
+                  metadata_key:
+                    description: Key of the metadata definition
+                    type: string
+                  metadata_value:
+                    description: Value to save for this metadata
+                    type: string
+                required:
+                - metadata_key
+                - metadata_value
+                - metadata_from_global_company_id
+                type: object
+              type: array
+          required:
+          - metadata_values
+          type: object
       responses:
         200:
           description: Metadata values saved successfully
@@ -10002,23 +10007,28 @@ paths:
         name: body
         required: true
         schema:
-          items:
-            properties:
-              metadata_from_global_company_id:
-                description: ID of the company this metadata is from
-                type: number
-              metadata_key:
-                description: Key of the metadata definition
-                type: string
-              metadata_value:
-                description: Value to save for this metadata
-                type: string
-            required:
-            - metadata_key
-            - metadata_value
-            - metadata_from_global_company_id
-            type: object
-          type: array
+          properties:
+            metadata_values:
+              items:
+                properties:
+                  metadata_from_global_company_id:
+                    description: ID of the company this metadata is from
+                    type: number
+                  metadata_key:
+                    description: Key of the metadata definition
+                    type: string
+                  metadata_value:
+                    description: Value to save for this metadata
+                    type: string
+                required:
+                - metadata_key
+                - metadata_value
+                - metadata_from_global_company_id
+                type: object
+              type: array
+          required:
+          - metadata_values
+          type: object
       responses:
         200:
           description: Metadata values saved successfully
