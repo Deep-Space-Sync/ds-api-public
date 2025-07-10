@@ -2411,29 +2411,27 @@ paths:
         name: workspaceId
         required: true
         type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                field_alias:
-                  description: Optional - Specific field alias to delete mapping for
-                  type: string
-                form_alias:
-                  description: Form alias to delete metadata mappings for
-                  type: string
-                form_workflow_id:
-                  description: Form workflow ID to delete metadata mappings for
-                  type: string
-                metadata_key:
-                  description: Optional - Specific metadata key to delete mapping
-                    for
-                  type: string
-              required:
-              - form_alias
-              - form_workflow_id
-              type: object
+      - in: body
+        name: body
         required: true
+        schema:
+          properties:
+            field_alias:
+              description: Optional - Specific field alias to delete mapping for
+              type: string
+            form_alias:
+              description: Form alias to delete metadata mappings for
+              type: string
+            form_workflow_id:
+              description: Form workflow ID to delete metadata mappings for
+              type: string
+            metadata_key:
+              description: Optional - Specific metadata key to delete mapping for
+              type: string
+          required:
+          - form_alias
+          - form_workflow_id
+          type: object
       responses:
         200:
           description: Successful response
@@ -2549,38 +2547,37 @@ paths:
         name: workspaceId
         required: true
         type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                form_alias:
-                  description: Form alias to map metadata for
-                  type: string
-                form_workflow_id:
-                  description: Form workflow ID to map metadata for
-                  type: string
-                mapping:
-                  description: Array of field to metadata mappings
-                  items:
-                    properties:
-                      field_alias:
-                        description: Form field alias to map
-                        type: string
-                      metadata_key:
-                        description: Metadata key to map the field to
-                        type: string
-                    required:
-                    - field_alias
-                    - metadata_key
-                    type: object
-                  type: array
-              required:
-              - form_alias
-              - form_workflow_id
-              - mapping
-              type: object
+      - in: body
+        name: body
         required: true
+        schema:
+          properties:
+            form_alias:
+              description: Form alias to map metadata for
+              type: string
+            form_workflow_id:
+              description: Form workflow ID to map metadata for
+              type: string
+            mapping:
+              description: Array of field to metadata mappings
+              items:
+                properties:
+                  field_alias:
+                    description: Form field alias to map
+                    type: string
+                  metadata_key:
+                    description: Metadata key to map the field to
+                    type: string
+                required:
+                - field_alias
+                - metadata_key
+                type: object
+              type: array
+          required:
+          - form_alias
+          - form_workflow_id
+          - mapping
+          type: object
       responses:
         200:
           description: Successful response
