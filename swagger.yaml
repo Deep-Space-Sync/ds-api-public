@@ -2403,6 +2403,222 @@ paths:
       summary: Get configured form workflow email submissions by ID
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/form-workflow-metadata:
+    delete:
+      operationId: v2_deleteFormWorkflowMetadata
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                field_alias:
+                  description: Optional - Specific field alias to delete mapping for
+                  type: string
+                form_alias:
+                  description: Form alias to delete metadata mappings for
+                  type: string
+                form_workflow_id:
+                  description: Form workflow ID to delete metadata mappings for
+                  type: string
+                metadata_key:
+                  description: Optional - Specific metadata key to delete mapping
+                    for
+                  type: string
+              required:
+              - form_alias
+              - form_workflow_id
+              type: object
+        required: true
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  field_alias:
+                    type: string
+                  form_alias:
+                    type: string
+                  form_workflow_id:
+                    type: string
+                  metadata_key:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Missing parameters or workspace not mapped to
+            global company
+        401:
+          description: Unauthorized
+        404:
+          description: Form workflow not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete form workflow metadata mapping
+      tags:
+      - DS Site Admin Integrations
+    get:
+      operationId: v2_getFormWorkflowMetadata
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Form workflow ID to get metadata mappings for
+        in: query
+        name: formWorkflowId
+        required: true
+        type: string
+      - description: Form alias to get metadata mappings for
+        in: query
+        name: formAlias
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  form_alias:
+                    type: string
+                  form_workflow_id:
+                    type: string
+                  mapping:
+                    items:
+                      properties:
+                        editable_by:
+                          enum:
+                          - parent
+                          - child
+                          - both
+                          type: string
+                        field_alias:
+                          type: string
+                        max_allowed_values:
+                          type: integer
+                        metadata_enum_json:
+                          type: object
+                        metadata_key:
+                          type: string
+                        metadata_name:
+                          type: string
+                        metadata_type:
+                          enum:
+                          - STRING
+                          - NUMBER
+                          - ENUM
+                          type: string
+                        min_allowed_values:
+                          type: integer
+                      type: object
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Missing parameters or workspace not mapped to
+            global company
+        401:
+          description: Unauthorized
+        404:
+          description: Form workflow not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get form workflow metadata mappings
+      tags:
+      - DS Site Admin Integrations
+    put:
+      operationId: v2_createOrUpdateFormWorkflowMetadata
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                form_alias:
+                  description: Form alias to map metadata for
+                  type: string
+                form_workflow_id:
+                  description: Form workflow ID to map metadata for
+                  type: string
+                mapping:
+                  description: Array of field to metadata mappings
+                  items:
+                    properties:
+                      field_alias:
+                        description: Form field alias to map
+                        type: string
+                      metadata_key:
+                        description: Metadata key to map the field to
+                        type: string
+                    required:
+                    - field_alias
+                    - metadata_key
+                    type: object
+                  type: array
+              required:
+              - form_alias
+              - form_workflow_id
+              - mapping
+              type: object
+        required: true
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  form_alias:
+                    type: string
+                  form_workflow_id:
+                    type: string
+                  mapping:
+                    items:
+                      properties:
+                        field_alias:
+                          type: string
+                        metadata_key:
+                          type: string
+                      type: object
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Missing parameters, invalid metadata keys, or
+            workspace not mapped to global company
+        401:
+          description: Unauthorized
+        404:
+          description: Form workflow or form workflow mapping not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create or update form workflow metadata mapping
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/form-workflows/{formWorkflowId}:
     get:
       operationId: v2_getConfiguredFormWorkflowById
