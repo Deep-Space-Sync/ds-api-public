@@ -5783,6 +5783,776 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/order:
+    get:
+      operationId: v2_getCostOrderLineItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: lineItemId
+        required: false
+        type: integer
+        description: Optional line item ID to fetch specific line item
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                oneOf:
+                - type: array
+                  items:
+                    type: object
+                    properties:
+                      cost_order_line_num:
+                        type: integer
+                        description: Internal identifier for order line item
+                      line_item_identifier:
+                        type: string
+                        description: User-friendly identifier for order line item
+                      cost_order_line_name:
+                        type: string
+                        description: Name of the order line item
+                      cost_order_line_description:
+                        type: string
+                        description: Description of the order line item
+                      cost_order_num:
+                        type: integer
+                        description: Related order number
+                      total_amount:
+                        type: number
+                        description: Total amount for the line item
+                      qty:
+                        type: number
+                        description: Quantity
+                      unit_of_measure:
+                        type: string
+                        description: Unit of measure
+                      unit_amount:
+                        type: number
+                        description: Unit amount
+                      related_cost_budget_item_num:
+                        type: integer
+                        description: Related budget item number
+                      cost_budget_item_name:
+                        type: string
+                        description: Name of related budget item
+                      cost_code_num:
+                        type: string
+                        description: Cost code number
+                - type: object
+                  properties:
+                    cost_order_line_num:
+                      type: integer
+                      description: Internal identifier for order line item
+                    line_item_identifier:
+                      type: string
+                      description: User-friendly identifier for order line item
+                    cost_order_line_name:
+                      type: string
+                      description: Name of the order line item
+                    cost_order_line_description:
+                      type: string
+                      description: Description of the order line item
+                    cost_order_num:
+                      type: integer
+                      description: Related order number
+                    total_amount:
+                      type: number
+                      description: Total amount for the line item
+                    qty:
+                      type: number
+                      description: Quantity
+                    unit_of_measure:
+                      type: string
+                      description: Unit of measure
+                    unit_amount:
+                      type: number
+                      description: Unit amount
+                    related_cost_budget_item_num:
+                      type: integer
+                      description: Related budget item number
+                    cost_budget_item_name:
+                      type: string
+                      description: Name of related budget item
+                    cost_code_num:
+                      type: string
+                      description: Cost code number
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Order Line Items
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postCostOrderLineItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          oneOf:
+          - type: object
+            required:
+            - cost_order_line_name
+            - cost_order_line_description
+            - cost_order_num
+            - total_amount
+            properties:
+              cost_order_line_client_id:
+                type: string
+                description: Client-defined identifier for order line item
+              cost_order_line_name:
+                type: string
+                description: Name of the order line item
+              cost_order_line_description:
+                type: string
+                description: Description of the order line item
+              cost_order_num:
+                type: integer
+                description: Related order number
+              total_amount:
+                type: number
+                description: Total amount for the line item
+              qty:
+                type: number
+                description: Quantity
+              unit_of_measure:
+                type: string
+                description: Unit of measure
+              unit_amount:
+                type: number
+                description: Unit amount
+              related_cost_budget_item_num:
+                type: integer
+                description: Related budget item number
+          - type: array
+            items:
+              type: object
+              required:
+              - cost_order_line_name
+              - cost_order_line_description
+              - cost_order_num
+              - total_amount
+              properties:
+                cost_order_line_client_id:
+                  type: string
+                  description: Client-defined identifier for order line item
+                cost_order_line_name:
+                  type: string
+                  description: Name of the order line item
+                cost_order_line_description:
+                  type: string
+                  description: Description of the order line item
+                cost_order_num:
+                  type: integer
+                  description: Related order number
+                total_amount:
+                  type: number
+                  description: Total amount for the line item
+                qty:
+                  type: number
+                  description: Quantity
+                unit_of_measure:
+                  type: string
+                  description: Unit of measure
+                unit_amount:
+                  type: number
+                  description: Unit amount
+                related_cost_budget_item_num:
+                  type: integer
+                  description: Related budget item number
+      responses:
+        201:
+          description: Line item(s) successfully created
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+              updated_objects:
+                type: array
+        400:
+          description: Bad Request - Invalid input or missing required fields
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Order Line Item(s)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+/v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/order/{lineItemId}:
+  patch:
+    operationId: v2_patchCostOrderLineItemById
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    - in: path
+      name: lineItemId
+      required: true
+      type: integer
+    - in: body
+      name: body
+      required: true
+      schema:
+        type: object
+        properties:
+          cost_order_line_name:
+            type: string
+            description: Name of the order line item
+          cost_order_line_description:
+            type: string
+            description: Description of the order line item
+          total_amount:
+            type: number
+            description: Total amount for the line item
+          qty:
+            type: number
+            description: Quantity
+          unit_of_measure:
+            type: string
+            description: Unit of measure
+          unit_amount:
+            type: number
+            description: Unit amount
+          related_cost_budget_item_num:
+            type: integer
+            description: Related budget item number
+    responses:
+      200:
+        description: Line item successfully updated
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+            data:
+              type: object
+            updated_objects:
+              type: array
+      400:
+        description: Bad Request - Invalid input
+      404:
+        description: Line item not found
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    security:
+    - JWT_v2: []
+    summary: Edit Order Line Item
+    tags:
+    - Cost
+    x-min-permissions: isCostUser
+  options:
+    operationId: v2_getCostOrderLineItemByIdOptions
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    - in: path
+      name: lineItemId
+      required: true
+      type: integer
+    responses:
+      200:
+        description: A successful response
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    summary: Headers required for CORs support
+/v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/claim:
+  get:
+    operationId: v2_getCostClaimLineItems
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    - in: query
+      name: lineItemId
+      required: false
+      type: integer
+      description: Optional line item ID to fetch specific line item
+    responses:
+      200:
+        description: Successful response
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+            data:
+              type: object
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    security:
+    - JWT_v2: []
+    summary: Get Claim Line Items
+    tags:
+    - Cost
+    x-min-permissions: isCostUser
+  post:
+    operationId: v2_postCostClaimLineItems
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    - in: body
+      name: body
+      required: true
+      schema:
+        type: object
+        required:
+        - cost_claim_line_name
+        - cost_claim_line_description
+        - cost_claim_num
+        - total_amount
+        - claim_remaining_percentage
+        properties:
+          cost_claim_line_client_id:
+            type: string
+            description: Client-defined identifier for claim line item
+          cost_claim_line_name:
+            type: string
+            description: Name of the claim line item
+          cost_claim_line_description:
+            type: string
+            description: Description of the claim line item
+          cost_claim_num:
+            type: integer
+            description: Related claim number
+          total_amount:
+            type: number
+            description: Total amount for the line item
+          qty:
+            type: number
+            description: Quantity
+          unit_of_measure:
+            type: string
+            description: Unit of measure
+          unit_amount:
+            type: number
+            description: Unit amount
+          claim_remaining_percentage:
+            type: number
+            minimum: 0
+            maximum: 100
+            description: Remaining claim percentage (0-100)
+          related_cost_order_line_num:
+            type: integer
+            description: Related order line item number
+    responses:
+      201:
+        description: Line item(s) successfully created
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+            data:
+              type: object
+            updated_objects:
+              type: array
+      400:
+        description: Bad Request - Invalid input or missing required fields
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    security:
+    - JWT_v2: []
+    summary: Create Claim Line Item(s)
+    tags:
+    - Cost
+    x-min-permissions: isCostUser
+  options:
+    operationId: v2_getCostClaimLineItemsOptions
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    responses:
+      200:
+        description: A successful response
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    summary: Headers required for CORs support
+/v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/claim/{lineItemId}:
+  patch:
+    operationId: v2_patchCostClaimLineItemById
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    - in: path
+      name: lineItemId
+      required: true
+      type: integer
+    - in: body
+      name: body
+      required: true
+      schema:
+        type: object
+        properties:
+          cost_claim_line_name:
+            type: string
+            description: Name of the claim line item
+          cost_claim_line_description:
+            type: string
+            description: Description of the claim line item
+          total_amount:
+            type: number
+            description: Total amount for the line item
+          qty:
+            type: number
+            description: Quantity
+          unit_of_measure:
+            type: string
+            description: Unit of measure
+          unit_amount:
+            type: number
+            description: Unit amount
+          claim_remaining_percentage:
+            type: number
+            minimum: 0
+            maximum: 100
+            description: Remaining claim percentage (0-100)
+          related_cost_order_line_num:
+            type: integer
+            description: Related order line item number
+    responses:
+      200:
+        description: Line item successfully updated
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+            data:
+              type: object
+            updated_objects:
+              type: array
+      400:
+        description: Bad Request - Invalid input
+      404:
+        description: Line item not found
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    security:
+    - JWT_v2: []
+    summary: Edit Claim Line Item
+    tags:
+    - Cost
+    x-min-permissions: isCostUser
+  options:
+    operationId: v2_getCostClaimLineItemByIdOptions
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    - in: path
+      name: lineItemId
+      required: true
+      type: integer
+    responses:
+      200:
+        description: A successful response
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    summary: Headers required for CORs support
+/v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/invoice:
+  get:
+    operationId: v2_getCostInvoiceLineItems
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    - in: query
+      name: lineItemId
+      required: false
+      type: integer
+      description: Optional line item ID to fetch specific line item
+    responses:
+      200:
+        description: Successful response
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+            data:
+              type: object
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    security:
+    - JWT_v2: []
+    summary: Get Invoice Line Items
+    tags:
+    - Cost
+    x-min-permissions: isCostUser
+  post:
+    operationId: v2_postCostInvoiceLineItems
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    - in: body
+      name: body
+      required: true
+      schema:
+        type: object
+        required:
+        - cost_invoice_line_name
+        - cost_invoice_line_description
+        - cost_invoice_num
+        - total_amount
+        properties:
+          cost_invoice_line_client_id:
+            type: string
+            description: Client-defined identifier for invoice line item
+          cost_invoice_line_name:
+            type: string
+            description: Name of the invoice line item
+          cost_invoice_line_description:
+            type: string
+            description: Description of the invoice line item
+          cost_invoice_num:
+            type: integer
+            description: Related invoice number
+          total_amount:
+            type: number
+            description: Total amount for the line item
+          qty:
+            type: number
+            description: Quantity
+          unit_of_measure:
+            type: string
+            description: Unit of measure
+          unit_amount:
+            type: number
+            description: Unit amount
+          related_cost_claim_line_num:
+            type: integer
+            description: Related claim line item number
+    responses:
+      201:
+        description: Line item(s) successfully created
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+            data:
+              type: object
+            updated_objects:
+              type: array
+      400:
+        description: Bad Request - Invalid input or missing required fields
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    security:
+    - JWT_v2: []
+    summary: Create Invoice Line Item(s)
+    tags:
+    - Cost
+    x-min-permissions: isCostUser
+  options:
+    operationId: v2_getCostInvoiceLineItemsOptions
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    responses:
+      200:
+        description: A successful response
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    summary: Headers required for CORs support
+/v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/invoice/{lineItemId}:
+  patch:
+    operationId: v2_patchCostInvoiceLineItemById
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    - in: path
+      name: lineItemId
+      required: true
+      type: integer
+    - in: body
+      name: body
+      required: true
+      schema:
+        type: object
+        properties:
+          cost_invoice_line_name:
+            type: string
+            description: Name of the invoice line item
+          cost_invoice_line_description:
+            type: string
+            description: Description of the invoice line item
+          total_amount:
+            type: number
+            description: Total amount for the line item
+          qty:
+            type: number
+            description: Quantity
+          unit_of_measure:
+            type: string
+            description: Unit of measure
+          unit_amount:
+            type: number
+            description: Unit amount
+          related_cost_claim_line_num:
+            type: integer
+            description: Related claim line item number
+    responses:
+      200:
+        description: Line item successfully updated
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+            data:
+              type: object
+            updated_objects:
+              type: array
+      400:
+        description: Bad Request - Invalid input
+      404:
+        description: Line item not found
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    security:
+    - JWT_v2: []
+    summary: Edit Invoice Line Item
+    tags:
+    - Cost
+    x-min-permissions: isCostUser
+  options:
+    operationId: v2_getCostInvoiceLineItemByIdOptions
+    parameters:
+    - in: path
+      name: workspaceId
+      required: true
+      type: string
+    - in: path
+      name: projectId
+      required: true
+      type: integer
+    - in: path
+      name: lineItemId
+      required: true
+      type: integer
+    responses:
+      200:
+        description: A successful response
+      401:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+    summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims:
     get:
       operationId: v2_getCostClaims
@@ -5846,6 +6616,26 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostClaimsOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims/deposit:
     get:
       operationId: v2_getCostDepositClaims
@@ -5909,6 +6699,28 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostDepositClaimOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      tags:
+      - Cost
+      x-ds-test-enabled: true
     post:
       operationId: v2_postCostDepositClaim
       parameters:
@@ -6063,6 +6875,30 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostDepositClaimByIdOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costClaimId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
     patch:
       operationId: v2_patchCostDepositClaimById
       parameters:
@@ -6212,6 +7048,26 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostProgressClaimOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
     post:
       operationId: v2_postCostProgressClaim
       parameters:
@@ -6366,6 +7222,30 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostProgressClaimByIdOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costClaimId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
     patch:
       operationId: v2_patchCostProgressClaimById
       parameters:
@@ -6525,6 +7405,26 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostInvoiceOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
     post:
       operationId: v2_postCostInvoice
       parameters:
@@ -6706,6 +7606,30 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostInvoiceByIdOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costInvoiceId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
     patch:
       operationId: v2_patchCostInvoiceById
       parameters:
@@ -6869,6 +7793,26 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostOrdersOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase:
     get:
       operationId: v2_getCostPurchaseOrders
@@ -6932,6 +7876,26 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostPurchaseOrdersOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
     post:
       operationId: v2_postCostPurchaseOrder
       parameters:
@@ -7088,6 +8052,30 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostPurchaseOrdersByIdOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costOrderId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
     patch:
       operationId: v2_patchCostPurchaseOrderById
       parameters:
@@ -7241,6 +8229,26 @@ paths:
       summary: Get Variation Orders
       tags:
       - Cost
+      x-ds-test-enabled: true
+    options:
+      operationId: v2_getCostVariationOrdersOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
       x-ds-test-enabled: true
     post:
       operationId: v2_postCostVariationOrder
@@ -7398,6 +8406,30 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostVariationOrdersByIdOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costOrderId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
     patch:
       operationId: v2_patchCostVariationOrderById
       parameters:
@@ -7525,6 +8557,26 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostUserDetailsOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests:
     get:
       operationId: v2_getCostVariationRequests
@@ -7595,6 +8647,26 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostVariationRequestsOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      x-ds-test-enabled: true
     post:
       operationId: v2_postVariationRequest
       parameters:
@@ -7769,6 +8841,32 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_getCostVariationRequestByIdOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costVariationReqId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
+      tags:
+      - Cost
+      x-ds-test-enabled: true
     patch:
       operationId: v2_patchCostVariationReqById
       parameters:
@@ -7887,7 +8985,49 @@ paths:
       summary: Get list of data classifications
       tags:
       - Upload Data
+    options:
+      description: returns headers required for CORS support
+      operationId: v2_getDataOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
   /v2/workspaces/{workspaceId}/projects/{projectId}/data/any:
+    options:
+      consumes:
+      - multipart/form-data
+      operationId: v2_getAnyDataOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: The CSV file to upload
+        in: formData
+        name: file
+        required: true
+        type: string
+      - description: The unique identifying name to categorise the data type
+        in: formData
+        name: data_classification
+        required: true
+        type: string
+      responses:
+        200:
+          description: success
+      summary: returns headers required for CORS support
     post:
       consumes:
       - multipart/form-data
@@ -7959,6 +9099,46 @@ paths:
       tags:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/data/{data_classification}/{data_source}/{export_type}/{export_version}:
+    options:
+      description: returns headers required for CORS support
+      operationId: v2_getUploadDataOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: The classification of the data
+        in: path
+        name: data_classification
+        required: true
+        type: string
+      - description: The source of the data
+        in: path
+        name: data_source
+        required: true
+        type: string
+      - description: The type of export
+        in: path
+        name: export_type
+        required: true
+        type: string
+      - description: The version of the export
+        in: path
+        name: export_version
+        required: true
+        type: string
+      - description: The file to upload
+        in: formData
+        name: file
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
     post:
       consumes:
       - multipart/form-data
@@ -8043,6 +9223,29 @@ paths:
       summary: Download a file from the project
       tags:
       - Download
+    options:
+      operationId: v2_getProjectDownloadOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: ds_data_type
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}/navis/{collectorKey}:
     post:
       consumes:
@@ -8144,6 +9347,25 @@ paths:
       summary: Get Project Implementation Checklist
       tags:
       - implementation
+    options:
+      operationId: v2_getProjectImplementationChecklistOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/projects/{projectId}/integrations:
     get:
       operationId: v2_getProjectIntegrations
@@ -8169,6 +9391,25 @@ paths:
       tags:
       - External Integrations
       x-min-permissions: isRevitUser
+    options:
+      operationId: v2_projectIntegrationsOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}:
     get:
       operationId: v2_getProjectIntegrationFields
@@ -8198,6 +9439,29 @@ paths:
       tags:
       - External Integrations
       x-min-permissions: isRevitUser
+    options:
+      operationId: v2_projectIntegrationsOptionsConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     patch:
       operationId: v2_patchProjectIntegration
       parameters:
@@ -8277,6 +9541,29 @@ paths:
       - External Integrations
       x-min-permissions: isRevitUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}/refresh:
+    options:
+      operationId: v2_projectIntegrationsOptionsConfigRefresh
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     post:
       operationId: v2_postProjectIntegrationRefresh
       parameters:
@@ -8306,6 +9593,29 @@ paths:
       - External Integrations
       x-min-permissions: isRevitUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}/sync:
+    options:
+      operationId: v2_projectIntegrationsOptionsConfigSync
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     post:
       operationId: v2_postProjectIntegrationSync
       parameters:
@@ -8390,6 +9700,21 @@ paths:
       summary: Get supported jobs
       tags:
       - Jobs
+    options:
+      description: returns headers required for CORS support
+      operationId: v2_getJobsOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
   /v2/workspaces/{workspaceId}/projects/{projectId}/jobs/{job_guid}/status:
     get:
       operationId: v2_getJobStatus
@@ -8418,7 +9743,45 @@ paths:
       summary: Get job status
       tags:
       - Jobs
+    options:
+      description: returns headers required for CORS support
+      operationId: v2_getJobStatusOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: job_guid
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
   /v2/workspaces/{workspaceId}/projects/{projectId}/jobs/{job_id}:
+    options:
+      description: returns headers required for CORS support
+      operationId: v2_startJobOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: job_id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
     post:
       operationId: v2_startJob
       parameters:
@@ -8475,7 +9838,53 @@ paths:
       tags:
       - Links
       x-min-permissions: isRevitUser
+    options:
+      operationId: v2_getProjectLinkTypeOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: linkType
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/projects/{projectId}/logout/{userId}:
+    options:
+      operationId: v2_logoutOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     post:
       description: Used to track logout times, mainly for concurrent seat licenses
       operationId: v2_logoutUser
@@ -8531,6 +9940,25 @@ paths:
       summary: Get menu structure for a project
       tags:
       - Info
+    options:
+      operationId: v2_getMenuOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/projects/{projectId}/milestone:
     get:
       operationId: v2_getMilestones
@@ -8555,6 +9983,21 @@ paths:
       summary: Get list of current milestones
       tags:
       - Milestones
+    options:
+      description: returns headers required for CORS support
+      operationId: v2_getMilestoneOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
     post:
       operationId: v2_postMilestone
       parameters:
@@ -8646,6 +10089,27 @@ paths:
       tags:
       - Navis Integration
   /v2/workspaces/{workspaceId}/projects/{projectId}/outseta:
+    options:
+      operationId: v2_ProjectsOptionsOutseta
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Headers required for CORs support
     patch:
       consumes:
       - application/json
@@ -8777,6 +10241,29 @@ paths:
       tags:
       - Info
   /v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/apps/{contentPack}:
+    options:
+      operationId: v2_postPowerBiAppsOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: contentPack
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     post:
       operationId: v2_postPowerBiApps
       parameters:
@@ -8806,6 +10293,25 @@ paths:
       - Power BI
       x-min-permissions: admin
   /v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/deploy/apps:
+    options:
+      operationId: v2_deployPbiAppOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     post:
       operationId: v2_deployPbiApp
       parameters:
@@ -8873,6 +10379,29 @@ paths:
       summary: Get PBI Embedded App
       tags:
       - Power BI
+    options:
+      operationId: v2_getEmbeddedPbiAppOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: appName
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/filters:
     get:
       operationId: v2_getPbiFilters
@@ -8897,6 +10426,25 @@ paths:
       summary: Get filters for power bi
       tags:
       - Power BI
+    options:
+      operationId: v2_getPbiFiltersOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/refresh/apps:
     get:
       operationId: v2_getPowerBiApps
@@ -8921,7 +10469,53 @@ paths:
       summary: Get power bi apps & latest refresh dates in a project
       tags:
       - Power BI
+    options:
+      operationId: v2_getPowerBiAppsOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: appName
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/refresh/apps/{appName}:
+    options:
+      operationId: v2_refreshPowerBiAppsOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: appName
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     post:
       operationId: v2_refreshPowerBiApp
       parameters:
@@ -8954,6 +10548,29 @@ paths:
       tags:
       - Power BI
   /v2/workspaces/{workspaceId}/projects/{projectId}/powerbi/syncback/apps/{appName}:
+    options:
+      operationId: v2_syncbackPbiAppOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: appName
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     post:
       operationId: v2_syncbackPbiApp
       parameters:
@@ -9006,6 +10623,25 @@ paths:
       tags:
       - Resources
       x-min-permissions: isRevitUser
+    options:
+      operationId: v2_resourceOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     post:
       operationId: v2_postResources
       parameters:
@@ -9089,6 +10725,25 @@ paths:
       tags:
       - Info
       x-min-permissions: isCostUser
+    options:
+      operationId: v2_sectorOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/projects/{projectId}/sourcefiles:
     get:
       description: Returns all sourcefiles details for a project
@@ -9341,6 +10996,21 @@ paths:
       summary: Get list of teams
       tags:
       - Teams
+    options:
+      description: returns headers required for CORS support
+      operationId: v2_getTeamsOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
     post:
       operationId: v2_postTeam
       parameters:
@@ -9384,6 +11054,21 @@ paths:
       tags:
       - Teams
   /v2/workspaces/{workspaceId}/projects/{projectId}/teams/bulk:
+    options:
+      description: returns headers required for CORS support
+      operationId: v2_getTeamsBulkOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
     post:
       operationId: v2_postTeamsBulk
       parameters:
@@ -9413,6 +11098,25 @@ paths:
       tags:
       - Teams
   /v2/workspaces/{workspaceId}/projects/{projectId}/teams/{teamId}:
+    options:
+      description: returns headers required for CORS support
+      operationId: v2_patchTeamsOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: teamId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
     patch:
       operationId: v2_patchTeam
       parameters:
@@ -9488,6 +11192,29 @@ paths:
       summary: Get a token for a project
       tags:
       - Tokens
+    options:
+      operationId: v2_getProjectTokensOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: tokenId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/projects/{projectId}/users:
     get:
       description: Returns all users and user details for a project
@@ -9513,6 +11240,25 @@ paths:
       summary: Get users in a project
       tags:
       - Users
+    options:
+      operationId: v2_getProjectUsersOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     post:
       description: Creates a user if not already exista and invites to project
       operationId: v2_postProjectUsers
@@ -9633,6 +11379,29 @@ paths:
       summary: Get user in a project
       tags:
       - Users
+    options:
+      operationId: v2_getProjectUserOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     patch:
       description: Edit project-level attributes of a user
       operationId: v2_patchProjectUsers
@@ -9713,6 +11482,25 @@ paths:
       summary: Get WBS
       tags:
       - Resources
+    options:
+      operationId: v2_wbsOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     patch:
       operationId: v2_patchWBS
       parameters:
@@ -9808,6 +11596,21 @@ paths:
       tags:
       - Resources
       x-min-permissions: isRevitUser
+    options:
+      operationId: v2_resourceWSOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/tokens/{tokenId}:
     get:
       operationId: v2_getWorkpaceToken
@@ -9832,6 +11635,25 @@ paths:
       summary: Get a token for a workspace
       tags:
       - Tokens
+    options:
+      operationId: v2_getWorkspaceTokensOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tokenId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
   /v2/workspaces/{workspaceId}/users:
     get:
       description: Returns all users and user details for a workspace
@@ -9853,6 +11675,21 @@ paths:
       summary: Get users in a workspaces
       tags:
       - Users
+    options:
+      operationId: v2_getWorkspaceUsersOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     post:
       description: Creates user if not already exista and invites to workspace
       operationId: v2_postWorkspaceUsers
@@ -9924,6 +11761,25 @@ paths:
       tags:
       - Users
   /v2/workspaces/{workspaceId}/users/{userId}:
+    options:
+      operationId: v2_patchWorkspaceUsersOptions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Headers required for CORs support
     patch:
       description: Edit workspace-level attributes of a user
       operationId: v2_patchWorkspaceUsers
