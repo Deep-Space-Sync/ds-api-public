@@ -5809,48 +5809,9 @@ paths:
               message:
                 type: string
               data:
-                oneOf:
-                - type: array
-                  items:
-                    type: object
-                    properties:
-                      cost_order_line_num:
-                        type: integer
-                        description: Internal identifier for order line item
-                      line_item_identifier:
-                        type: string
-                        description: User-friendly identifier for order line item
-                      cost_order_line_name:
-                        type: string
-                        description: Name of the order line item
-                      cost_order_line_description:
-                        type: string
-                        description: Description of the order line item
-                      cost_order_num:
-                        type: integer
-                        description: Related order number
-                      total_amount:
-                        type: number
-                        description: Total amount for the line item
-                      qty:
-                        type: number
-                        description: Quantity
-                      unit_of_measure:
-                        type: string
-                        description: Unit of measure
-                      unit_amount:
-                        type: number
-                        description: Unit amount
-                      related_cost_budget_item_num:
-                        type: integer
-                        description: Related budget item number
-                      cost_budget_item_name:
-                        type: string
-                        description: Name of related budget item
-                      cost_code_num:
-                        type: string
-                        description: Cost code number
-                - type: object
+                type: array
+                items:
+                  type: object
                   properties:
                     cost_order_line_num:
                       type: integer
@@ -5913,8 +5874,9 @@ paths:
         name: body
         required: true
         schema:
-          oneOf:
-          - type: object
+          type: array
+          items:
+            type: object
             required:
             - cost_order_line_name
             - cost_order_line_description
@@ -5948,42 +5910,6 @@ paths:
               related_cost_budget_item_num:
                 type: integer
                 description: Related budget item number
-          - type: array
-            items:
-              type: object
-              required:
-              - cost_order_line_name
-              - cost_order_line_description
-              - cost_order_num
-              - total_amount
-              properties:
-                cost_order_line_client_id:
-                  type: string
-                  description: Client-defined identifier for order line item
-                cost_order_line_name:
-                  type: string
-                  description: Name of the order line item
-                cost_order_line_description:
-                  type: string
-                  description: Description of the order line item
-                cost_order_num:
-                  type: integer
-                  description: Related order number
-                total_amount:
-                  type: number
-                  description: Total amount for the line item
-                qty:
-                  type: number
-                  description: Quantity
-                unit_of_measure:
-                  type: string
-                  description: Unit of measure
-                unit_amount:
-                  type: number
-                  description: Unit amount
-                related_cost_budget_item_num:
-                  type: integer
-                  description: Related budget item number
       responses:
         201:
           description: Line item(s) successfully created
@@ -6005,6 +5931,8 @@ paths:
       security:
       - JWT_v2: []
       summary: Create Order Line Item(s)
+      description: Create one or multiple order line items. Send an array of order
+        line items (use an array with a single item for creating just one item)
       tags:
       - Cost
       x-min-permissions: isCostUser
