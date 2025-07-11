@@ -6808,7 +6808,7 @@ paths:
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/claim:
     get:
-      operationId: v2_v2_getCostClaimLineItems
+      operationId: v2_getCostClaimLineItems
       parameters:
       - in: path
         name: workspaceId
@@ -6827,12 +6827,46 @@ paths:
         200:
           description: Successful response
           schema:
-            properties:
-              data:
-                type: object
-              message:
-                type: string
-            type: object
+            items:
+              properties:
+                claim_remaining_percentage:
+                  description: Remaining claim percentage (0-100)
+                  type: number
+                cost_claim_line_description:
+                  description: Description of the claim line item
+                  type: string
+                cost_claim_line_name:
+                  description: Name of the claim line item
+                  type: string
+                cost_claim_line_num:
+                  description: Internal identifier for claim line item
+                  type: integer
+                cost_claim_num:
+                  description: Related claim number
+                  type: integer
+                line_item_identifier:
+                  description: User-friendly identifier for claim line item
+                  type: string
+                qty:
+                  description: Quantity
+                  type: number
+                related_cost_order_line_num:
+                  description: Related order line item number
+                  type: integer
+                related_order_line_name:
+                  description: Name of related order line item
+                  type: string
+                total_amount:
+                  description: Total amount for the line item
+                  type: number
+                unit_amount:
+                  description: Unit amount
+                  type: number
+                unit_of_measure:
+                  description: Unit of measure
+                  type: string
+              type: object
+            type: array
         401:
           description: Unauthorized
         500:
@@ -6842,9 +6876,10 @@ paths:
       summary: Get Claim Line Items
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
-      operationId: v2_v2_postCostClaimLineItems
+      operationId: v2_postCostClaimLineItems
       parameters:
       - in: path
         name: workspaceId
@@ -6858,53 +6893,94 @@ paths:
         name: body
         required: true
         schema:
-          properties:
-            claim_remaining_percentage:
-              description: Remaining claim percentage (0-100)
-              maximum: 100
-              minimum: 0
-              type: number
-            cost_claim_line_client_id:
-              description: Client-defined identifier for claim line item
-              type: string
-            cost_claim_line_description:
-              description: Description of the claim line item
-              type: string
-            cost_claim_line_name:
-              description: Name of the claim line item
-              type: string
-            cost_claim_num:
-              description: Related claim number
-              type: integer
-            qty:
-              description: Quantity
-              type: number
-            related_cost_order_line_num:
-              description: Related order line item number
-              type: integer
-            total_amount:
-              description: Total amount for the line item
-              type: number
-            unit_amount:
-              description: Unit amount
-              type: number
-            unit_of_measure:
-              description: Unit of measure
-              type: string
-          required:
-          - cost_claim_line_name
-          - cost_claim_line_description
-          - cost_claim_num
-          - total_amount
-          - claim_remaining_percentage
-          type: object
+          items:
+            properties:
+              claim_remaining_percentage:
+                description: Remaining claim percentage (0-100)
+                maximum: 100
+                minimum: 0
+                type: number
+              cost_claim_line_client_id:
+                description: Client-defined identifier for claim line item
+                type: string
+              cost_claim_line_description:
+                description: Description of the claim line item
+                type: string
+              cost_claim_line_name:
+                description: Name of the claim line item
+                type: string
+              cost_claim_num:
+                description: Related claim number
+                type: integer
+              qty:
+                description: Quantity
+                type: number
+              related_cost_order_line_num:
+                description: Related order line item number
+                type: integer
+              total_amount:
+                description: Total amount for the line item
+                type: number
+              unit_amount:
+                description: Unit amount
+                type: number
+              unit_of_measure:
+                description: Unit of measure
+                type: string
+            required:
+            - cost_claim_line_name
+            - cost_claim_line_description
+            - cost_claim_num
+            - total_amount
+            - claim_remaining_percentage
+            type: object
+          type: array
       responses:
         201:
           description: Line item(s) successfully created
           schema:
             properties:
               data:
-                type: object
+                items:
+                  properties:
+                    claim_remaining_percentage:
+                      description: Remaining claim percentage (0-100)
+                      type: number
+                    cost_claim_line_description:
+                      description: Description of the claim line item
+                      type: string
+                    cost_claim_line_name:
+                      description: Name of the claim line item
+                      type: string
+                    cost_claim_line_num:
+                      description: Internal identifier for claim line item
+                      type: integer
+                    cost_claim_num:
+                      description: Related claim number
+                      type: integer
+                    line_item_identifier:
+                      description: User-friendly identifier for claim line item
+                      type: string
+                    qty:
+                      description: Quantity
+                      type: number
+                    related_cost_order_line_num:
+                      description: Related order line item number
+                      type: integer
+                    related_order_line_name:
+                      description: Name of related order line item
+                      type: string
+                    total_amount:
+                      description: Total amount for the line item
+                      type: number
+                    unit_amount:
+                      description: Unit amount
+                      type: number
+                    unit_of_measure:
+                      description: Unit of measure
+                      type: string
+                  type: object
+                type: array
               message:
                 type: string
               updated_objects:
@@ -6921,10 +6997,11 @@ paths:
       summary: Create Claim Line Item(s)
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/claim/{lineItemId}:
     patch:
-      operationId: v2_v2_patchCostClaimLineItemById
+      operationId: v2_patchCostClaimLineItemById
       parameters:
       - in: path
         name: workspaceId
@@ -6971,11 +7048,48 @@ paths:
               type: string
           type: object
       responses:
-        200:
+        201:
           description: Line item successfully updated
           schema:
             properties:
               data:
+                properties:
+                  claim_remaining_percentage:
+                    description: Remaining claim percentage (0-100)
+                    type: number
+                  cost_claim_line_description:
+                    description: Description of the claim line item
+                    type: string
+                  cost_claim_line_name:
+                    description: Name of the claim line item
+                    type: string
+                  cost_claim_line_num:
+                    description: Internal identifier for claim line item
+                    type: integer
+                  cost_claim_num:
+                    description: Related claim number
+                    type: integer
+                  line_item_identifier:
+                    description: User-friendly identifier for claim line item
+                    type: string
+                  qty:
+                    description: Quantity
+                    type: number
+                  related_cost_order_line_num:
+                    description: Related order line item number
+                    type: integer
+                  related_order_line_name:
+                    description: Name of related order line item
+                    type: string
+                  total_amount:
+                    description: Total amount for the line item
+                    type: number
+                  unit_amount:
+                    description: Unit amount
+                    type: number
+                  unit_of_measure:
+                    description: Unit of measure
+                    type: string
                 type: object
               message:
                 type: string
@@ -6992,13 +7106,14 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Edit Claim Line Item
+      summary: Edit Claim Line Item By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/invoice:
     get:
-      operationId: v2_v2_getCostInvoiceLineItems
+      operationId: v2_getCostInvoiceLineItems
       parameters:
       - in: path
         name: workspaceId
@@ -7017,12 +7132,43 @@ paths:
         200:
           description: Successful response
           schema:
-            properties:
-              data:
-                type: object
-              message:
-                type: string
-            type: object
+            items:
+              properties:
+                cost_invoice_line_description:
+                  description: Description of the invoice line item
+                  type: string
+                cost_invoice_line_name:
+                  description: Name of the invoice line item
+                  type: string
+                cost_invoice_line_num:
+                  description: Internal identifier for invoice line item
+                  type: integer
+                cost_invoice_num:
+                  description: Related invoice number
+                  type: integer
+                line_item_identifier:
+                  description: User-friendly identifier for invoice line item
+                  type: string
+                qty:
+                  description: Quantity
+                  type: number
+                related_claim_line_name:
+                  description: Name of related claim line item
+                  type: string
+                related_cost_claim_line_num:
+                  description: Related claim line item number
+                  type: integer
+                total_amount:
+                  description: Total amount for the line item
+                  type: number
+                unit_amount:
+                  description: Unit amount
+                  type: number
+                unit_of_measure:
+                  description: Unit of measure
+                  type: string
+              type: object
+            type: array
         401:
           description: Unauthorized
         500:
@@ -7032,9 +7178,10 @@ paths:
       summary: Get Invoice Line Items
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
-      operationId: v2_v2_postCostInvoiceLineItems
+      operationId: v2_postCostInvoiceLineItems
       parameters:
       - in: path
         name: workspaceId
@@ -7048,47 +7195,85 @@ paths:
         name: body
         required: true
         schema:
-          properties:
-            cost_invoice_line_client_id:
-              description: Client-defined identifier for invoice line item
-              type: string
-            cost_invoice_line_description:
-              description: Description of the invoice line item
-              type: string
-            cost_invoice_line_name:
-              description: Name of the invoice line item
-              type: string
-            cost_invoice_num:
-              description: Related invoice number
-              type: integer
-            qty:
-              description: Quantity
-              type: number
-            related_cost_claim_line_num:
-              description: Related claim line item number
-              type: integer
-            total_amount:
-              description: Total amount for the line item
-              type: number
-            unit_amount:
-              description: Unit amount
-              type: number
-            unit_of_measure:
-              description: Unit of measure
-              type: string
-          required:
-          - cost_invoice_line_name
-          - cost_invoice_line_description
-          - cost_invoice_num
-          - total_amount
-          type: object
+          items:
+            properties:
+              cost_invoice_line_client_id:
+                description: Client-defined identifier for invoice line item
+                type: string
+              cost_invoice_line_description:
+                description: Description of the invoice line item
+                type: string
+              cost_invoice_line_name:
+                description: Name of the invoice line item
+                type: string
+              cost_invoice_num:
+                description: Related invoice number
+                type: integer
+              qty:
+                description: Quantity
+                type: number
+              related_cost_claim_line_num:
+                description: Related claim line item number
+                type: integer
+              total_amount:
+                description: Total amount for the line item
+                type: number
+              unit_amount:
+                description: Unit amount
+                type: number
+              unit_of_measure:
+                description: Unit of measure
+                type: string
+            required:
+            - cost_invoice_line_name
+            - cost_invoice_line_description
+            - cost_invoice_num
+            - total_amount
+            type: object
+          type: array
       responses:
         201:
           description: Line item(s) successfully created
           schema:
             properties:
               data:
-                type: object
+                items:
+                  properties:
+                    cost_invoice_line_description:
+                      description: Description of the invoice line item
+                      type: string
+                    cost_invoice_line_name:
+                      description: Name of the invoice line item
+                      type: string
+                    cost_invoice_line_num:
+                      description: Internal identifier for invoice line item
+                      type: integer
+                    cost_invoice_num:
+                      description: Related invoice number
+                      type: integer
+                    line_item_identifier:
+                      description: User-friendly identifier for invoice line item
+                      type: string
+                    qty:
+                      description: Quantity
+                      type: number
+                    related_claim_line_name:
+                      description: Name of related claim line item
+                      type: string
+                    related_cost_claim_line_num:
+                      description: Related claim line item number
+                      type: integer
+                    total_amount:
+                      description: Total amount for the line item
+                      type: number
+                    unit_amount:
+                      description: Unit amount
+                      type: number
+                    unit_of_measure:
+                      description: Unit of measure
+                      type: string
+                  type: object
+                type: array
               message:
                 type: string
               updated_objects:
@@ -7105,10 +7290,11 @@ paths:
       summary: Create Invoice Line Item(s)
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/invoice/{lineItemId}:
     patch:
-      operationId: v2_v2_patchCostInvoiceLineItemById
+      operationId: v2_patchCostInvoiceLineItemById
       parameters:
       - in: path
         name: workspaceId
@@ -7150,11 +7336,45 @@ paths:
               type: string
           type: object
       responses:
-        200:
+        201:
           description: Line item successfully updated
           schema:
             properties:
               data:
+                properties:
+                  cost_invoice_line_description:
+                    description: Description of the invoice line item
+                    type: string
+                  cost_invoice_line_name:
+                    description: Name of the invoice line item
+                    type: string
+                  cost_invoice_line_num:
+                    description: Internal identifier for invoice line item
+                    type: integer
+                  cost_invoice_num:
+                    description: Related invoice number
+                    type: integer
+                  line_item_identifier:
+                    description: User-friendly identifier for invoice line item
+                    type: string
+                  qty:
+                    description: Quantity
+                    type: number
+                  related_claim_line_name:
+                    description: Name of related claim line item
+                    type: string
+                  related_cost_claim_line_num:
+                    description: Related claim line item number
+                    type: integer
+                  total_amount:
+                    description: Total amount for the line item
+                    type: number
+                  unit_amount:
+                    description: Unit amount
+                    type: number
+                  unit_of_measure:
+                    description: Unit of measure
+                    type: string
                 type: object
               message:
                 type: string
@@ -7171,13 +7391,14 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Edit Invoice Line Item
+      summary: Edit Invoice Line Item By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/order:
     get:
-      operationId: v2_v2_getCostOrderLineItems
+      operationId: v2_getCostOrderLineItems
       parameters:
       - in: path
         name: workspaceId
@@ -7196,51 +7417,46 @@ paths:
         200:
           description: Successful response
           schema:
-            properties:
-              data:
-                items:
-                  properties:
-                    cost_budget_item_name:
-                      description: Name of related budget item
-                      type: string
-                    cost_code_num:
-                      description: Cost code number
-                      type: string
-                    cost_order_line_description:
-                      description: Description of the order line item
-                      type: string
-                    cost_order_line_name:
-                      description: Name of the order line item
-                      type: string
-                    cost_order_line_num:
-                      description: Internal identifier for order line item
-                      type: integer
-                    cost_order_num:
-                      description: Related order number
-                      type: integer
-                    line_item_identifier:
-                      description: User-friendly identifier for order line item
-                      type: string
-                    qty:
-                      description: Quantity
-                      type: number
-                    related_cost_budget_item_num:
-                      description: Related budget item number
-                      type: integer
-                    total_amount:
-                      description: Total amount for the line item
-                      type: number
-                    unit_amount:
-                      description: Unit amount
-                      type: number
-                    unit_of_measure:
-                      description: Unit of measure
-                      type: string
-                  type: object
-                type: array
-              message:
-                type: string
-            type: object
+            items:
+              properties:
+                cost_budget_item_name:
+                  description: Name of related budget item
+                  type: string
+                cost_code_num:
+                  description: Cost code number
+                  type: string
+                cost_order_line_description:
+                  description: Description of the order line item
+                  type: string
+                cost_order_line_name:
+                  description: Name of the order line item
+                  type: string
+                cost_order_line_num:
+                  description: Internal identifier for order line item
+                  type: integer
+                cost_order_num:
+                  description: Related order number
+                  type: integer
+                line_item_identifier:
+                  description: User-friendly identifier for order line item
+                  type: string
+                qty:
+                  description: Quantity
+                  type: number
+                related_cost_budget_item_num:
+                  description: Related budget item number
+                  type: integer
+                total_amount:
+                  description: Total amount for the line item
+                  type: number
+                unit_amount:
+                  description: Unit amount
+                  type: number
+                unit_of_measure:
+                  description: Unit of measure
+                  type: string
+              type: object
+            type: array
         401:
           description: Unauthorized
         500:
@@ -7250,11 +7466,10 @@ paths:
       summary: Get Order Line Items
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
-      description: Create one or multiple order line items. Send an array of order
-        line items (use an array with a single item for creating just one item)
-      operationId: v2_v2_postCostOrderLineItems
+      operationId: v2_postCostOrderLineItems
       parameters:
       - in: path
         name: workspaceId
@@ -7310,7 +7525,46 @@ paths:
           schema:
             properties:
               data:
-                type: object
+                items:
+                  properties:
+                    cost_budget_item_name:
+                      description: Name of related budget item
+                      type: string
+                    cost_code_num:
+                      description: Cost code number
+                      type: string
+                    cost_order_line_description:
+                      description: Description of the order line item
+                      type: string
+                    cost_order_line_name:
+                      description: Name of the order line item
+                      type: string
+                    cost_order_line_num:
+                      description: Internal identifier for order line item
+                      type: integer
+                    cost_order_num:
+                      description: Related order number
+                      type: integer
+                    line_item_identifier:
+                      description: User-friendly identifier for order line item
+                      type: string
+                    qty:
+                      description: Quantity
+                      type: number
+                    related_cost_budget_item_num:
+                      description: Related budget item number
+                      type: integer
+                    total_amount:
+                      description: Total amount for the line item
+                      type: number
+                    unit_amount:
+                      description: Unit amount
+                      type: number
+                    unit_of_measure:
+                      description: Unit of measure
+                      type: string
+                  type: object
+                type: array
               message:
                 type: string
               updated_objects:
@@ -7327,10 +7581,11 @@ paths:
       summary: Create Order Line Item(s)
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/order/{lineItemId}:
     patch:
-      operationId: v2_v2_patchCostOrderLineItemById
+      operationId: v2_patchCostOrderLineItemById
       parameters:
       - in: path
         name: workspaceId
@@ -7372,11 +7627,48 @@ paths:
               type: string
           type: object
       responses:
-        200:
+        201:
           description: Line item successfully updated
           schema:
             properties:
               data:
+                properties:
+                  cost_budget_item_name:
+                    description: Name of related budget item
+                    type: string
+                  cost_code_num:
+                    description: Cost code number
+                    type: string
+                  cost_order_line_description:
+                    description: Description of the order line item
+                    type: string
+                  cost_order_line_name:
+                    description: Name of the order line item
+                    type: string
+                  cost_order_line_num:
+                    description: Internal identifier for order line item
+                    type: integer
+                  cost_order_num:
+                    description: Related order number
+                    type: integer
+                  line_item_identifier:
+                    description: User-friendly identifier for order line item
+                    type: string
+                  qty:
+                    description: Quantity
+                    type: number
+                  related_cost_budget_item_num:
+                    description: Related budget item number
+                    type: integer
+                  total_amount:
+                    description: Total amount for the line item
+                    type: number
+                  unit_amount:
+                    description: Unit amount
+                    type: number
+                  unit_of_measure:
+                    description: Unit of measure
+                    type: string
                 type: object
               message:
                 type: string
@@ -7393,9 +7685,10 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Edit Order Line Item
+      summary: Edit Order Line Item By Id
       tags:
       - Cost
+      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders:
     get:
