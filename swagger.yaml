@@ -2565,12 +2565,21 @@ paths:
                   field_alias:
                     description: Form field alias to map
                     type: string
+                  field_name:
+                    description: Field name to map the field to
+                    type: string
                   metadata_key:
                     description: Metadata key to map the field to
+                    type: string
+                  section_name:
+                    description: Section name to map the field to
                     type: string
                 required:
                 - field_alias
                 - metadata_key
+                - section_name
+                - field_name
+                - field_type
                 type: object
               type: array
           required:
