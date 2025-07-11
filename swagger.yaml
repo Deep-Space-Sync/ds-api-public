@@ -5783,597 +5783,6 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/order:
-    get:
-      operationId: v2_getCostOrderLineItems
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: query
-        name: lineItemId
-        required: false
-        type: integer
-        description: Optional line item ID to fetch specific line item
-      responses:
-        200:
-          description: Successful response
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              data:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    cost_order_line_num:
-                      type: integer
-                      description: Internal identifier for order line item
-                    line_item_identifier:
-                      type: string
-                      description: User-friendly identifier for order line item
-                    cost_order_line_name:
-                      type: string
-                      description: Name of the order line item
-                    cost_order_line_description:
-                      type: string
-                      description: Description of the order line item
-                    cost_order_num:
-                      type: integer
-                      description: Related order number
-                    total_amount:
-                      type: number
-                      description: Total amount for the line item
-                    qty:
-                      type: number
-                      description: Quantity
-                    unit_of_measure:
-                      type: string
-                      description: Unit of measure
-                    unit_amount:
-                      type: number
-                      description: Unit amount
-                    related_cost_budget_item_num:
-                      type: integer
-                      description: Related budget item number
-                    cost_budget_item_name:
-                      type: string
-                      description: Name of related budget item
-                    cost_code_num:
-                      type: string
-                      description: Cost code number
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get Order Line Items
-      tags:
-      - Cost
-      x-min-permissions: isCostUser
-    post:
-      operationId: v2_postCostOrderLineItems
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: array
-          items:
-            type: object
-            required:
-            - cost_order_line_name
-            - cost_order_line_description
-            - cost_order_num
-            - total_amount
-            properties:
-              cost_order_line_client_id:
-                type: string
-                description: Client-defined identifier for order line item
-              cost_order_line_name:
-                type: string
-                description: Name of the order line item
-              cost_order_line_description:
-                type: string
-                description: Description of the order line item
-              cost_order_num:
-                type: integer
-                description: Related order number
-              total_amount:
-                type: number
-                description: Total amount for the line item
-              qty:
-                type: number
-                description: Quantity
-              unit_of_measure:
-                type: string
-                description: Unit of measure
-              unit_amount:
-                type: number
-                description: Unit amount
-              related_cost_budget_item_num:
-                type: integer
-                description: Related budget item number
-      responses:
-        201:
-          description: Line item(s) successfully created
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              data:
-                type: object
-              updated_objects:
-                type: array
-        400:
-          description: Bad Request - Invalid input or missing required fields
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Create Order Line Item(s)
-      description: Create one or multiple order line items. Send an array of order
-        line items (use an array with a single item for creating just one item)
-      tags:
-      - Cost
-      x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/order/{lineItemId}:
-    patch:
-      operationId: v2_patchCostOrderLineItemById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: lineItemId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          properties:
-            cost_order_line_name:
-              type: string
-              description: Name of the order line item
-            cost_order_line_description:
-              type: string
-              description: Description of the order line item
-            total_amount:
-              type: number
-              description: Total amount for the line item
-            qty:
-              type: number
-              description: Quantity
-            unit_of_measure:
-              type: string
-              description: Unit of measure
-            unit_amount:
-              type: number
-              description: Unit amount
-            related_cost_budget_item_num:
-              type: integer
-              description: Related budget item number
-      responses:
-        200:
-          description: Line item successfully updated
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              data:
-                type: object
-              updated_objects:
-                type: array
-        400:
-          description: Bad Request - Invalid input
-        404:
-          description: Line item not found
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Edit Order Line Item
-      tags:
-      - Cost
-      x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/claim:
-    get:
-      operationId: v2_getCostClaimLineItems
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: query
-        name: lineItemId
-        required: false
-        type: integer
-        description: Optional line item ID to fetch specific line item
-      responses:
-        200:
-          description: Successful response
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              data:
-                type: object
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get Claim Line Items
-      tags:
-      - Cost
-      x-min-permissions: isCostUser
-    post:
-      operationId: v2_postCostClaimLineItems
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          required:
-          - cost_claim_line_name
-          - cost_claim_line_description
-          - cost_claim_num
-          - total_amount
-          - claim_remaining_percentage
-          properties:
-            cost_claim_line_client_id:
-              type: string
-              description: Client-defined identifier for claim line item
-            cost_claim_line_name:
-              type: string
-              description: Name of the claim line item
-            cost_claim_line_description:
-              type: string
-              description: Description of the claim line item
-            cost_claim_num:
-              type: integer
-              description: Related claim number
-            total_amount:
-              type: number
-              description: Total amount for the line item
-            qty:
-              type: number
-              description: Quantity
-            unit_of_measure:
-              type: string
-              description: Unit of measure
-            unit_amount:
-              type: number
-              description: Unit amount
-            claim_remaining_percentage:
-              type: number
-              minimum: 0
-              maximum: 100
-              description: Remaining claim percentage (0-100)
-            related_cost_order_line_num:
-              type: integer
-              description: Related order line item number
-      responses:
-        201:
-          description: Line item(s) successfully created
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              data:
-                type: object
-              updated_objects:
-                type: array
-        400:
-          description: Bad Request - Invalid input or missing required fields
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Create Claim Line Item(s)
-      tags:
-      - Cost
-      x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/claim/{lineItemId}:
-    patch:
-      operationId: v2_patchCostClaimLineItemById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: lineItemId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          properties:
-            cost_claim_line_name:
-              type: string
-              description: Name of the claim line item
-            cost_claim_line_description:
-              type: string
-              description: Description of the claim line item
-            total_amount:
-              type: number
-              description: Total amount for the line item
-            qty:
-              type: number
-              description: Quantity
-            unit_of_measure:
-              type: string
-              description: Unit of measure
-            unit_amount:
-              type: number
-              description: Unit amount
-            claim_remaining_percentage:
-              type: number
-              minimum: 0
-              maximum: 100
-              description: Remaining claim percentage (0-100)
-            related_cost_order_line_num:
-              type: integer
-              description: Related order line item number
-      responses:
-        200:
-          description: Line item successfully updated
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              data:
-                type: object
-              updated_objects:
-                type: array
-        400:
-          description: Bad Request - Invalid input
-        404:
-          description: Line item not found
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Edit Claim Line Item
-      tags:
-      - Cost
-      x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/invoice:
-    get:
-      operationId: v2_getCostInvoiceLineItems
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: query
-        name: lineItemId
-        required: false
-        type: integer
-        description: Optional line item ID to fetch specific line item
-      responses:
-        200:
-          description: Successful response
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              data:
-                type: object
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get Invoice Line Items
-      tags:
-      - Cost
-      x-min-permissions: isCostUser
-    post:
-      operationId: v2_postCostInvoiceLineItems
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          required:
-          - cost_invoice_line_name
-          - cost_invoice_line_description
-          - cost_invoice_num
-          - total_amount
-          properties:
-            cost_invoice_line_client_id:
-              type: string
-              description: Client-defined identifier for invoice line item
-            cost_invoice_line_name:
-              type: string
-              description: Name of the invoice line item
-            cost_invoice_line_description:
-              type: string
-              description: Description of the invoice line item
-            cost_invoice_num:
-              type: integer
-              description: Related invoice number
-            total_amount:
-              type: number
-              description: Total amount for the line item
-            qty:
-              type: number
-              description: Quantity
-            unit_of_measure:
-              type: string
-              description: Unit of measure
-            unit_amount:
-              type: number
-              description: Unit amount
-            related_cost_claim_line_num:
-              type: integer
-              description: Related claim line item number
-      responses:
-        201:
-          description: Line item(s) successfully created
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              data:
-                type: object
-              updated_objects:
-                type: array
-        400:
-          description: Bad Request - Invalid input or missing required fields
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Create Invoice Line Item(s)
-      tags:
-      - Cost
-      x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/invoice/{lineItemId}:
-    patch:
-      operationId: v2_patchCostInvoiceLineItemById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: lineItemId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          properties:
-            cost_invoice_line_name:
-              type: string
-              description: Name of the invoice line item
-            cost_invoice_line_description:
-              type: string
-              description: Description of the invoice line item
-            total_amount:
-              type: number
-              description: Total amount for the line item
-            qty:
-              type: number
-              description: Quantity
-            unit_of_measure:
-              type: string
-              description: Unit of measure
-            unit_amount:
-              type: number
-              description: Unit amount
-            related_cost_claim_line_num:
-              type: integer
-              description: Related claim line item number
-      responses:
-        200:
-          description: Line item successfully updated
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              data:
-                type: object
-              updated_objects:
-                type: array
-        400:
-          description: Bad Request - Invalid input
-        404:
-          description: Line item not found
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Edit Invoice Line Item
-      tags:
-      - Cost
-      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims:
     get:
       operationId: v2_getCostClaims
@@ -7393,6 +6802,424 @@ paths:
       security:
       - JWT_v2: []
       summary: Edit Invoice By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/claim:
+    get:
+      description: Retrieve all claim line items for a project, or a specific claim
+        line item by ID
+      operationId: v2_getCostClaimLineItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Optional line item ID to fetch specific line item
+        in: query
+        name: lineItemId
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/ClaimLineItem'
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Claim Line Items
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      description: Create one or multiple claim line items. Send an array of claim
+        line items (use an array with a single item for creating just one item). Claim
+        percentage must be between 0-100
+      operationId: v2_postCostClaimLineItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/CreateClaimLineItem'
+          type: array
+      responses:
+        201:
+          description: Line item(s) successfully created
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/ClaimLineItem'
+                type: array
+              message:
+                type: string
+              updated_objects:
+                type: array
+            type: object
+        400:
+          description: Bad Request - Invalid input or missing required fields
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Claim Line Item(s)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/claim/{lineItemId}:
+    patch:
+      description: Update specific fields of an existing claim line item. Only provided
+        fields will be updated. Claim percentage must be between 0-100
+      operationId: v2_patchCostClaimLineItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: lineItemId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/EditClaimLineItem'
+      responses:
+        200:
+          description: Line item successfully updated
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/ClaimLineItem'
+              message:
+                type: string
+              updated_objects:
+                type: array
+            type: object
+        400:
+          description: Bad Request - Invalid input
+        401:
+          description: Unauthorized
+        404:
+          description: Line item not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Claim Line Item
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/invoice:
+    get:
+      description: Retrieve all invoice line items for a project, or a specific invoice
+        line item by ID
+      operationId: v2_getCostInvoiceLineItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Optional line item ID to fetch specific line item
+        in: query
+        name: lineItemId
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/InvoiceLineItem'
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Invoice Line Items
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      description: Create one or multiple invoice line items. Send an array of invoice
+        line items (use an array with a single item for creating just one item)
+      operationId: v2_postCostInvoiceLineItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/CreateInvoiceLineItem'
+          type: array
+      responses:
+        201:
+          description: Line item(s) successfully created
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/InvoiceLineItem'
+                type: array
+              message:
+                type: string
+              updated_objects:
+                type: array
+            type: object
+        400:
+          description: Bad Request - Invalid input or missing required fields
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Invoice Line Item(s)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/invoice/{lineItemId}:
+    patch:
+      description: Update specific fields of an existing invoice line item. Only provided
+        fields will be updated
+      operationId: v2_patchCostInvoiceLineItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: lineItemId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/EditInvoiceLineItem'
+      responses:
+        200:
+          description: Line item successfully updated
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/InvoiceLineItem'
+              message:
+                type: string
+              updated_objects:
+                type: array
+            type: object
+        400:
+          description: Bad Request - Invalid input
+        401:
+          description: Unauthorized
+        404:
+          description: Line item not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Invoice Line Item
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/order:
+    get:
+      description: Retrieve all order line items for a project, or a specific order
+        line item by ID
+      operationId: v2_getCostOrderLineItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Optional line item ID to fetch specific line item
+        in: query
+        name: lineItemId
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/OrderLineItem'
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Order Line Items
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      description: Create one or multiple order line items. Send an array of order
+        line items (use an array with a single item for creating just one item)
+      operationId: v2_postCostOrderLineItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/CreateOrderLineItem'
+          type: array
+      responses:
+        201:
+          description: Line item(s) successfully created
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/OrderLineItem'
+                type: array
+              message:
+                type: string
+              updated_objects:
+                type: array
+            type: object
+        400:
+          description: Bad Request - Invalid input or missing required fields
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Order Line Item(s)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/order/{lineItemId}:
+    patch:
+      description: Update specific fields of an existing order line item. Only provided
+        fields will be updated
+      operationId: v2_patchCostOrderLineItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: lineItemId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/EditOrderLineItem'
+      responses:
+        200:
+          description: Line item successfully updated
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/OrderLineItem'
+              message:
+                type: string
+              updated_objects:
+                type: array
+            type: object
+        400:
+          description: Bad Request - Invalid input
+        401:
+          description: Unauthorized
+        404:
+          description: Line item not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Order Line Item
       tags:
       - Cost
       x-ds-test-enabled: true
@@ -10576,6 +10403,309 @@ paths:
       summary: Resend invite email to user in workspace
       tags:
       - Users
+  /v2definitions:
+    ClaimLineItem:
+      properties:
+        claim_remaining_percentage:
+          description: Remaining claim percentage (0-100)
+          type: number
+        cost_claim_line_description:
+          description: Description of the claim line item
+          type: string
+        cost_claim_line_name:
+          description: Name of the claim line item
+          type: string
+        cost_claim_line_num:
+          description: Internal identifier for claim line item
+          type: integer
+        cost_claim_num:
+          description: Related claim number
+          type: integer
+        line_item_identifier:
+          description: User-friendly identifier for claim line item
+          type: string
+        qty:
+          description: Quantity
+          type: number
+        related_cost_order_line_num:
+          description: Related order line item number
+          type: integer
+        related_order_line_name:
+          description: Name of related order line item
+          type: string
+        total_amount:
+          description: Total amount for the line item
+          type: number
+        unit_amount:
+          description: Unit amount
+          type: number
+        unit_of_measure:
+          description: Unit of measure
+          type: string
+      type: object
+    CreateClaimLineItem:
+      properties:
+        claim_remaining_percentage:
+          description: Remaining claim percentage (0-100)
+          maximum: 100
+          minimum: 0
+          type: number
+        cost_claim_line_client_id:
+          description: Client-defined identifier for claim line item
+          type: string
+        cost_claim_line_description:
+          description: Description of the claim line item
+          type: string
+        cost_claim_line_name:
+          description: Name of the claim line item
+          type: string
+        cost_claim_num:
+          description: Related claim number
+          type: integer
+        qty:
+          description: Quantity
+          type: number
+        related_cost_order_line_num:
+          description: Related order line item number
+          type: integer
+        total_amount:
+          description: Total amount for the line item
+          type: number
+        unit_amount:
+          description: Unit amount
+          type: number
+        unit_of_measure:
+          description: Unit of measure
+          type: string
+      required:
+      - cost_claim_line_name
+      - cost_claim_line_description
+      - cost_claim_num
+      - total_amount
+      - claim_remaining_percentage
+      type: object
+    CreateInvoiceLineItem:
+      properties:
+        cost_invoice_line_client_id:
+          description: Client-defined identifier for invoice line item
+          type: string
+        cost_invoice_line_description:
+          description: Description of the invoice line item
+          type: string
+        cost_invoice_line_name:
+          description: Name of the invoice line item
+          type: string
+        cost_invoice_num:
+          description: Related invoice number
+          type: integer
+        qty:
+          description: Quantity
+          type: number
+        related_cost_claim_line_num:
+          description: Related claim line item number
+          type: integer
+        total_amount:
+          description: Total amount for the line item
+          type: number
+        unit_amount:
+          description: Unit amount
+          type: number
+        unit_of_measure:
+          description: Unit of measure
+          type: string
+      required:
+      - cost_invoice_line_name
+      - cost_invoice_line_description
+      - cost_invoice_num
+      - total_amount
+      type: object
+    CreateOrderLineItem:
+      properties:
+        cost_order_line_client_id:
+          description: Client-defined identifier for order line item
+          type: string
+        cost_order_line_description:
+          description: Description of the order line item
+          type: string
+        cost_order_line_name:
+          description: Name of the order line item
+          type: string
+        cost_order_num:
+          description: Related order number
+          type: integer
+        qty:
+          description: Quantity
+          type: number
+        related_cost_budget_item_num:
+          description: Related budget item number
+          type: integer
+        total_amount:
+          description: Total amount for the line item
+          type: number
+        unit_amount:
+          description: Unit amount
+          type: number
+        unit_of_measure:
+          description: Unit of measure
+          type: string
+      required:
+      - cost_order_line_name
+      - cost_order_line_description
+      - cost_order_num
+      - total_amount
+      type: object
+    EditClaimLineItem:
+      properties:
+        claim_remaining_percentage:
+          description: Remaining claim percentage (0-100)
+          maximum: 100
+          minimum: 0
+          type: number
+        cost_claim_line_description:
+          description: Description of the claim line item
+          type: string
+        cost_claim_line_name:
+          description: Name of the claim line item
+          type: string
+        qty:
+          description: Quantity
+          type: number
+        related_cost_order_line_num:
+          description: Related order line item number
+          type: integer
+        total_amount:
+          description: Total amount for the line item
+          type: number
+        unit_amount:
+          description: Unit amount
+          type: number
+        unit_of_measure:
+          description: Unit of measure
+          type: string
+      type: object
+    EditInvoiceLineItem:
+      properties:
+        cost_invoice_line_description:
+          description: Description of the invoice line item
+          type: string
+        cost_invoice_line_name:
+          description: Name of the invoice line item
+          type: string
+        qty:
+          description: Quantity
+          type: number
+        related_cost_claim_line_num:
+          description: Related claim line item number
+          type: integer
+        total_amount:
+          description: Total amount for the line item
+          type: number
+        unit_amount:
+          description: Unit amount
+          type: number
+        unit_of_measure:
+          description: Unit of measure
+          type: string
+      type: object
+    EditOrderLineItem:
+      properties:
+        cost_order_line_description:
+          description: Description of the order line item
+          type: string
+        cost_order_line_name:
+          description: Name of the order line item
+          type: string
+        qty:
+          description: Quantity
+          type: number
+        related_cost_budget_item_num:
+          description: Related budget item number
+          type: integer
+        total_amount:
+          description: Total amount for the line item
+          type: number
+        unit_amount:
+          description: Unit amount
+          type: number
+        unit_of_measure:
+          description: Unit of measure
+          type: string
+      type: object
+    InvoiceLineItem:
+      properties:
+        cost_invoice_line_description:
+          description: Description of the invoice line item
+          type: string
+        cost_invoice_line_name:
+          description: Name of the invoice line item
+          type: string
+        cost_invoice_line_num:
+          description: Internal identifier for invoice line item
+          type: integer
+        cost_invoice_num:
+          description: Related invoice number
+          type: integer
+        line_item_identifier:
+          description: User-friendly identifier for invoice line item
+          type: string
+        qty:
+          description: Quantity
+          type: number
+        related_claim_line_name:
+          description: Name of related claim line item
+          type: string
+        related_cost_claim_line_num:
+          description: Related claim line item number
+          type: integer
+        total_amount:
+          description: Total amount for the line item
+          type: number
+        unit_amount:
+          description: Unit amount
+          type: number
+        unit_of_measure:
+          description: Unit of measure
+          type: string
+      type: object
+    OrderLineItem:
+      properties:
+        cost_budget_item_name:
+          description: Name of related budget item
+          type: string
+        cost_code_num:
+          description: Cost code number
+          type: string
+        cost_order_line_description:
+          description: Description of the order line item
+          type: string
+        cost_order_line_name:
+          description: Name of the order line item
+          type: string
+        cost_order_line_num:
+          description: Internal identifier for order line item
+          type: integer
+        cost_order_num:
+          description: Related order number
+          type: integer
+        line_item_identifier:
+          description: User-friendly identifier for order line item
+          type: string
+        qty:
+          description: Quantity
+          type: number
+        related_cost_budget_item_num:
+          description: Related budget item number
+          type: integer
+        total_amount:
+          description: Total amount for the line item
+          type: number
+        unit_amount:
+          description: Unit amount
+          type: number
+        unit_of_measure:
+          description: Unit of measure
+          type: string
+      type: object
 schemes:
 - https
 securityDefinitions:
