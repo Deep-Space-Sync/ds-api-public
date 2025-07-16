@@ -2325,19 +2325,22 @@ paths:
         name: body
         required: true
         schema:
-          items:
-            properties:
-              cost_code_client_id:
-                description: User-provided cost code ID
-              cost_code_description:
-                description: Description of cost code
-              cost_code_name:
-                description: Name of cost code
-              parent_cost_code_num:
-                description: ID of parent cost code
-            required:
-            - costCodeId
-            type: object
+          required:
+          - items
+          properties:
+            items:
+              properties:
+                cost_code_client_id:
+                  description: User-provided cost code ID
+                cost_code_description:
+                  description: Description of cost code
+                cost_code_name:
+                  description: Name of cost code
+                parent_cost_code_num:
+                  description: ID of parent cost code
+              required:
+              - costCodeId
+              type: object
           type: object
       responses:
         200:
@@ -7345,6 +7348,7 @@ paths:
         name: body
         required: true
         schema:
+          properties: null
           items:
             properties:
               claim_remaining_percentage:
