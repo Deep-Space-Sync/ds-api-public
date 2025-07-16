@@ -2325,22 +2325,19 @@ paths:
         name: body
         required: true
         schema:
-          required:
-          - items
-          properties:
-            items:
-              properties:
-                cost_code_client_id:
-                  description: User-provided cost code ID
-                cost_code_description:
-                  description: Description of cost code
-                cost_code_name:
-                  description: Name of cost code
-                parent_cost_code_num:
-                  description: ID of parent cost code
-              required:
-              - costCodeId
-              type: object
+          items:
+            properties:
+              cost_code_client_id:
+                description: User-provided cost code ID
+              cost_code_description:
+                description: Description of cost code
+              cost_code_name:
+                description: Name of cost code
+              parent_cost_code_num:
+                description: ID of parent cost code
+            required:
+            - costCodeId
+            type: object
           type: object
       responses:
         200:
@@ -7348,49 +7345,51 @@ paths:
         name: body
         required: true
         schema:
-          properties: null
-          items:
-            properties:
-              claim_remaining_percentage:
-                description: Remaining claim percentage (0-100)
-                maximum: 100
-                minimum: 0
-                type: number
-              cost_claim_line_client_id:
-                description: Client-defined identifier for claim line item
-                type: string
-              cost_claim_line_description:
-                description: Description of the claim line item
-                type: string
-              cost_claim_line_name:
-                description: Name of the claim line item
-                type: string
-              cost_claim_num:
-                description: Related claim number
-                type: integer
-              qty:
-                description: Quantity
-                type: number
-              related_cost_order_line_num:
-                description: Related order line item number
-                type: integer
-              total_amount:
-                description: Total amount for the line item
-                type: number
-              unit_amount:
-                description: Unit amount
-                type: number
-              unit_of_measure:
-                description: Unit of measure
-                type: string
-            required:
-            - cost_claim_line_name
-            - cost_claim_line_description
-            - cost_claim_num
-            - total_amount
-            - claim_remaining_percentage
-            type: object
-          type: array
+          properties:
+            items:
+              items:
+                properties:
+                  claim_remaining_percentage:
+                    description: Remaining claim percentage (0-100)
+                    maximum: 100
+                    minimum: 0
+                    type: number
+                  cost_claim_line_client_id:
+                    description: Client-defined identifier for claim line item
+                    type: string
+                  cost_claim_line_description:
+                    description: Description of the claim line item
+                    type: string
+                  cost_claim_line_name:
+                    description: Name of the claim line item
+                    type: string
+                  cost_claim_num:
+                    description: Related claim number
+                    type: integer
+                  qty:
+                    description: Quantity
+                    type: number
+                  related_cost_order_line_num:
+                    description: Related order line item number
+                    type: integer
+                  total_amount:
+                    description: Total amount for the line item
+                    type: number
+                  unit_amount:
+                    description: Unit amount
+                    type: number
+                  unit_of_measure:
+                    description: Unit of measure
+                    type: string
+                required:
+                - cost_claim_line_name
+                - cost_claim_line_description
+                - cost_claim_num
+                - total_amount
+                - claim_remaining_percentage
+                type: object
+              type: array
+          type: object
       responses:
         201:
           description: Line item(s) successfully created
@@ -7651,42 +7650,45 @@ paths:
         name: body
         required: true
         schema:
-          items:
-            properties:
-              cost_invoice_line_client_id:
-                description: Client-defined identifier for invoice line item
-                type: string
-              cost_invoice_line_description:
-                description: Description of the invoice line item
-                type: string
-              cost_invoice_line_name:
-                description: Name of the invoice line item
-                type: string
-              cost_invoice_num:
-                description: Related invoice number
-                type: integer
-              qty:
-                description: Quantity
-                type: number
-              related_cost_claim_line_num:
-                description: Related claim line item number
-                type: integer
-              total_amount:
-                description: Total amount for the line item
-                type: number
-              unit_amount:
-                description: Unit amount
-                type: number
-              unit_of_measure:
-                description: Unit of measure
-                type: string
-            required:
-            - cost_invoice_line_name
-            - cost_invoice_line_description
-            - cost_invoice_num
-            - total_amount
-            type: object
-          type: array
+          properties:
+            items:
+              items:
+                type: object
+              properties:
+                cost_invoice_line_client_id:
+                  description: Client-defined identifier for invoice line item
+                  type: string
+                cost_invoice_line_description:
+                  description: Description of the invoice line item
+                  type: string
+                cost_invoice_line_name:
+                  description: Name of the invoice line item
+                  type: string
+                cost_invoice_num:
+                  description: Related invoice number
+                  type: integer
+                qty:
+                  description: Quantity
+                  type: number
+                related_cost_claim_line_num:
+                  description: Related claim line item number
+                  type: integer
+                total_amount:
+                  description: Total amount for the line item
+                  type: number
+                unit_amount:
+                  description: Unit amount
+                  type: number
+                unit_of_measure:
+                  description: Unit of measure
+                  type: string
+              required:
+              - cost_invoice_line_name
+              - cost_invoice_line_description
+              - cost_invoice_num
+              - total_amount
+              type: array
+          type: object
       responses:
         201:
           description: Line item(s) successfully created
@@ -7939,42 +7941,45 @@ paths:
         name: body
         required: true
         schema:
-          items:
-            properties:
-              cost_order_line_client_id:
-                description: Client-defined identifier for order line item
-                type: string
-              cost_order_line_description:
-                description: Description of the order line item
-                type: string
-              cost_order_line_name:
-                description: Name of the order line item
-                type: string
-              cost_order_num:
-                description: Related order number
-                type: integer
-              qty:
-                description: Quantity
-                type: number
-              related_cost_budget_item_num:
-                description: Related budget item number
-                type: integer
-              total_amount:
-                description: Total amount for the line item
-                type: number
-              unit_amount:
-                description: Unit amount
-                type: number
-              unit_of_measure:
-                description: Unit of measure
-                type: string
-            required:
-            - cost_order_line_name
-            - cost_order_line_description
-            - cost_order_num
-            - total_amount
-            type: object
-          type: array
+          properties:
+            items:
+              items:
+                properties:
+                  cost_order_line_client_id:
+                    description: Client-defined identifier for order line item
+                    type: string
+                  cost_order_line_description:
+                    description: Description of the order line item
+                    type: string
+                  cost_order_line_name:
+                    description: Name of the order line item
+                    type: string
+                  cost_order_num:
+                    description: Related order number
+                    type: integer
+                  qty:
+                    description: Quantity
+                    type: number
+                  related_cost_budget_item_num:
+                    description: Related budget item number
+                    type: integer
+                  total_amount:
+                    description: Total amount for the line item
+                    type: number
+                  unit_amount:
+                    description: Unit amount
+                    type: number
+                  unit_of_measure:
+                    description: Unit of measure
+                    type: string
+                required:
+                - cost_order_line_name
+                - cost_order_line_description
+                - cost_order_num
+                - total_amount
+                type: object
+              type: array
+          type: object
       responses:
         201:
           description: Line item(s) successfully created
