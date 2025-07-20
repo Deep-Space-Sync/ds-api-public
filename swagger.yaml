@@ -5770,7 +5770,7 @@ paths:
         in: formData
         name: file
         required: true
-        type: file
+        type: string
       responses:
         201:
           description: Budget import completed successfully
