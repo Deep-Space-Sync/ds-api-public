@@ -3632,6 +3632,40 @@ paths:
       tags:
       - Power BI
       x-min-permissions: admin
+  /v2/workspaces/{workspaceId}/powerbi/deploy/apps:
+    post:
+      operationId: v2_deployPbiAppWS
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            content_pack:
+              type: string
+            id_dashboard_deployment_job:
+              type: integer
+          required:
+          - id_dashboard_deployment_job
+          - content_pack
+          type: object
+      responses:
+        200:
+          description: Deployment initiated
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Deploy power bi app
+      tags:
+      - Power BI
+      x-min-permissions: admin
   /v2/workspaces/{workspaceId}/powerbi/embedded/apps/{appName}:
     get:
       operationId: v2_getEmbeddedPbiAppWorkspace
