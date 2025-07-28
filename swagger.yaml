@@ -193,18 +193,16 @@ paths:
               type: number
             company_type:
               type: string
-            head_office_country:
-              type: string
             industry:
               type: string
             name:
               type: string
+            nzbn:
+              type: number
             primary_contact_email:
               type: string
             primary_contact_phone:
               type: string
-          required:
-          - abn
           type: object
       responses:
         200:
