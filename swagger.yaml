@@ -3395,6 +3395,28 @@ paths:
       summary: Start a new job at workpace-level
       tags:
       - Jobs
+  /v2/workspaces/{workspaceId}/menu:
+    get:
+      description: Returns the menu structure for a workspace based on the workspace's
+        template
+      operationId: v2_getMenuWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Menu structure for the workspace
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get menu structure for a workspace
+      tags:
+      - Info
   /v2/workspaces/{workspaceId}/notifications:
     get:
       operationId: v2_getWorkspaceNotifications
