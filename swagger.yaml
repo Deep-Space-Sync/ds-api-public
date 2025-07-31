@@ -11266,6 +11266,60 @@ paths:
       summary: Invite user to a project
       tags:
       - Users
+  /v2/workspaces/{workspaceId}/projects/{projectId}/users/email:
+    post:
+      description: Resends project invite notification to an existing user
+      operationId: v2_postProjectUsersEmail
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              description: The email of the user to resend project invite to
+              type: string
+          required:
+          - email
+          type: object
+      responses:
+        200:
+          description: Project invite notification resent successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  kinde_id:
+                    description: The Kinde ID of the user
+                    type: string
+                  message:
+                    description: Additional message about the resend operation
+                    type: string
+                type: object
+              message:
+                description: Success message
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid email, user not found, or user doesn't
+            have project viewer permission
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Resend invite email to user in project
+      tags:
+      - Users
   /v2/workspaces/{workspaceId}/projects/{projectId}/users/{userId}:
     delete:
       description: Remove's a user's permissions and team assignment from a project
@@ -11611,6 +11665,56 @@ paths:
       security:
       - JWT_v2: []
       summary: Invite user to a workspace
+      tags:
+      - Users
+  /v2/workspaces/{workspaceId}/users/email:
+    post:
+      description: Resends invite notification to an existing user in the workspace
+      operationId: v2_postWorkspaceUsersEmail
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              description: The email of the user to resend invite to
+              type: string
+          required:
+          - email
+          type: object
+      responses:
+        200:
+          description: Invite notification resent successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  kinde_id:
+                    description: The Kinde ID of the user
+                    type: string
+                  message:
+                    description: Additional message about the resend operation
+                    type: string
+                type: object
+              message:
+                description: Success message
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid email, user not found, or user doesn't
+            have workspace access
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Resend invite email to user in workspace
       tags:
       - Users
   /v2/workspaces/{workspaceId}/users/{userId}:
