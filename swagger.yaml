@@ -7104,6 +7104,411 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts:
+    get:
+      operationId: v2_getCostContracts
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Get specific contract by ID
+        in: query
+        name: costContractId
+        required: false
+        type: integer
+      - description: Filter by contract type (SUBCONTRACT/HEAD)
+        in: query
+        name: contractType
+        required: false
+        type: string
+      - description: Filter by contract status (Draft/Active/Completed/Cancelled)
+        in: query
+        name: contractStatus
+        required: false
+        type: string
+      - description: Filter by contract risk (Low/Medium/High)
+        in: query
+        name: contractRisk
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                attachments:
+                  description: Array of attachments associated with the contract
+                  items:
+                    properties:
+                      cde_id:
+                        description: Attachment identifier
+                      created_by_company_id:
+                        description: Company ID of user who created the attachment
+                      created_by_user_email:
+                        description: Email of user who created the attachment
+                    type: object
+                  type: array
+                award_date:
+                  description: Date the contract was awarded
+                contract_currency:
+                  description: Currency of the cost contract
+                contract_identifier:
+                  description: User-friendly identifier for cost contract
+                contract_risk:
+                  description: Risk level of the contract (Low/Medium/High)
+                contract_status:
+                  description: Status of the contract (Draft/Active/Completed/Cancelled)
+                contract_type:
+                  description: Type of contract (SUBCONTRACT/HEAD)
+                contract_value:
+                  description: Value of the cost contract
+                cost_contract_name:
+                  description: Name of the cost contract
+                cost_contract_num:
+                  description: Internal identifier for cost contract
+                cost_contract_scope_of_work:
+                  description: Scope of work for the cost contract
+                created_at:
+                  description: Date the contract was created
+                created_by_user_id:
+                  description: User ID of the person who created the contract
+                dlp_end:
+                  description: Defects liability period end date
+                issuing_company_id:
+                  description: Internal identifier for the issuing company
+                pc_date:
+                  description: Practical completion date
+                receiving_company_id:
+                  description: Internal identifier for the receiving company
+                retention_cap_value:
+                  description: Retention cap value
+                start_date:
+                  description: Start date of the contract
+                trade:
+                  description: Trade associated with the contract
+                updated_at:
+                  description: Date the contract was last updated
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Cost Contracts
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postCostContract
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            award_date:
+              description: Date the contract was awarded
+            contract_currency:
+              description: Currency of the cost contract
+            contract_risk:
+              description: Risk level of the contract (Low/Medium/High)
+            contract_status:
+              description: Status of the contract (Draft/Active/Completed/Cancelled)
+            contract_type:
+              description: Type of contract (SUBCONTRACT/HEAD)
+            contract_value:
+              description: Value of the cost contract
+            cost_contract_client_id:
+              description: Provided identifier for cost contract
+            cost_contract_name:
+              description: Name of the cost contract
+            cost_contract_scope_of_work:
+              description: Scope of work for the cost contract
+            dlp_end:
+              description: Defects liability period end date
+            pc_date:
+              description: Practical completion date
+            receiving_company_id:
+              description: Internal identifier for the receiving company
+            retention_cap_value:
+              description: Retention cap value
+            start_date:
+              description: Start date of the contract
+            trade:
+              description: Trade associated with the contract
+          required:
+          - cost_contract_name
+          - cost_contract_scope_of_work
+          - contract_value
+          - receiving_company_id
+          type: object
+      responses:
+        201:
+          description: Object successfully created
+          schema:
+            properties:
+              award_date:
+                description: Date the contract was awarded
+              contract_currency:
+                description: Currency of the cost contract
+              contract_identifier:
+                description: User-friendly identifier for cost contract
+              contract_risk:
+                description: Risk level of the contract (Low/Medium/High)
+              contract_status:
+                description: Status of the contract (Draft/Active/Completed/Cancelled)
+              contract_type:
+                description: Type of contract (SUBCONTRACT/HEAD)
+              contract_value:
+                description: Value of the cost contract
+              cost_contract_name:
+                description: Name of the cost contract
+              cost_contract_num:
+                description: Internal identifier for cost contract
+              cost_contract_scope_of_work:
+                description: Scope of work for the cost contract
+              created_at:
+                description: Date the contract was created
+              created_by_user_id:
+                description: User ID of the person who created the contract
+              dlp_end:
+                description: Defects liability period end date
+              issuing_company_id:
+                description: Internal identifier for the issuing company
+              pc_date:
+                description: Practical completion date
+              receiving_company_id:
+                description: Internal identifier for the receiving company
+              retention_cap_value:
+                description: Retention cap value
+              start_date:
+                description: Start date of the contract
+              trade:
+                description: Trade associated with the contract
+              updated_at:
+                description: Date the contract was last updated
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Cost Contract
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}:
+    get:
+      operationId: v2_getCostContractById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              attachments:
+                description: Array of attachments associated with the contract
+                items:
+                  properties:
+                    cde_id:
+                      description: Attachment identifier
+                    created_by_company_id:
+                      description: Company ID of user who created the attachment
+                    created_by_user_email:
+                      description: Email of user who created the attachment
+                  type: object
+                type: array
+              award_date:
+                description: Date the contract was awarded
+              contract_currency:
+                description: Currency of the cost contract
+              contract_identifier:
+                description: User-friendly identifier for cost contract
+              contract_risk:
+                description: Risk level of the contract (Low/Medium/High)
+              contract_status:
+                description: Status of the contract (Draft/Active/Completed/Cancelled)
+              contract_type:
+                description: Type of contract (SUBCONTRACT/HEAD)
+              contract_value:
+                description: Value of the cost contract
+              cost_contract_name:
+                description: Name of the cost contract
+              cost_contract_num:
+                description: Internal identifier for cost contract
+              cost_contract_scope_of_work:
+                description: Scope of work for the cost contract
+              created_at:
+                description: Date the contract was created
+              created_by_user_id:
+                description: User ID of the person who created the contract
+              dlp_end:
+                description: Defects liability period end date
+              issuing_company_id:
+                description: Internal identifier for the issuing company
+              pc_date:
+                description: Practical completion date
+              receiving_company_id:
+                description: Internal identifier for the receiving company
+              retention_cap_value:
+                description: Retention cap value
+              start_date:
+                description: Start date of the contract
+              trade:
+                description: Trade associated with the contract
+              updated_at:
+                description: Date the contract was last updated
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Cost Contract By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchCostContractById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            award_date:
+              description: Date the contract was awarded
+            contract_currency:
+              description: Currency of the cost contract
+            contract_risk:
+              description: Risk level of the contract (Low/Medium/High)
+            contract_status:
+              description: Status of the contract (Draft/Active/Completed/Cancelled)
+            contract_type:
+              description: Type of contract (SUBCONTRACT/HEAD)
+            contract_value:
+              description: Value of the cost contract
+            cost_contract_client_id:
+              description: Provided identifier for cost contract
+            cost_contract_name:
+              description: Name of the cost contract
+            cost_contract_scope_of_work:
+              description: Scope of work for the cost contract
+            dlp_end:
+              description: Defects liability period end date
+            pc_date:
+              description: Practical completion date
+            receiving_company_id:
+              description: Internal identifier for the receiving company
+            retention_cap_value:
+              description: Retention cap value
+            start_date:
+              description: Start date of the contract
+            trade:
+              description: Trade associated with the contract
+          type: object
+      responses:
+        200:
+          description: Object successfully edited
+          schema:
+            properties:
+              award_date:
+                description: Date the contract was awarded
+              contract_currency:
+                description: Currency of the cost contract
+              contract_identifier:
+                description: User-friendly identifier for cost contract
+              contract_risk:
+                description: Risk level of the contract (Low/Medium/High)
+              contract_status:
+                description: Status of the contract (Draft/Active/Completed/Cancelled)
+              contract_type:
+                description: Type of contract (SUBCONTRACT/HEAD)
+              contract_value:
+                description: Value of the cost contract
+              cost_contract_name:
+                description: Name of the cost contract
+              cost_contract_num:
+                description: Internal identifier for cost contract
+              cost_contract_scope_of_work:
+                description: Scope of work for the cost contract
+              created_at:
+                description: Date the contract was created
+              created_by_user_id:
+                description: User ID of the person who created the contract
+              dlp_end:
+                description: Defects liability period end date
+              issuing_company_id:
+                description: Internal identifier for the issuing company
+              pc_date:
+                description: Practical completion date
+              receiving_company_id:
+                description: Internal identifier for the receiving company
+              retention_cap_value:
+                description: Retention cap value
+              start_date:
+                description: Start date of the contract
+              trade:
+                description: Trade associated with the contract
+              updated_at:
+                description: Date the contract was last updated
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Cost Contract By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/invoices:
     get:
       operationId: v2_getCostInvoices
@@ -8312,6 +8717,8 @@ paths:
               properties:
                 amount:
                   description: Amount of the cost order
+                cost_contract_num:
+                  description: Internal identifier for the associated cost contract
                 cost_order_name:
                   description: Name of the cost order
                 cost_order_num:
@@ -8467,6 +8874,8 @@ paths:
             properties:
               amount:
                 description: Amount of the cost order
+              cost_contract_num:
+                description: Internal identifier for the associated cost contract
               cost_order_name:
                 description: Name of the cost order
               cost_order_num:
@@ -8624,6 +9033,8 @@ paths:
             properties:
               amount:
                 description: Amount of the cost order
+              cost_contract_num:
+                description: Internal identifier for the associated cost contract
               cost_order_name:
                 description: Name of the cost order
               cost_order_num:
@@ -8777,6 +9188,8 @@ paths:
             properties:
               amount:
                 description: Amount of the cost order
+              cost_contract_num:
+                description: Internal identifier for the associated cost contract
               cost_order_name:
                 description: Name of the cost order
               cost_order_num:
@@ -8934,6 +9347,8 @@ paths:
             properties:
               amount:
                 description: Amount of the cost order
+              cost_contract_num:
+                description: Internal identifier for the associated cost contract
               cost_order_name:
                 description: Name of the cost order
               cost_order_num:
