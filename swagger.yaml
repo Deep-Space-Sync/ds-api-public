@@ -7943,6 +7943,8 @@ paths:
                   description: Amount of the invoice
                 cost_invoice_num:
                   description: Internal identifier for invoice
+                cost_payment_schedule_num:
+                  description: Id of the related payment schedule the invoice is against
                 created_by_user_email:
                   description: Email of the user who created the claim
                 currency:
@@ -8014,6 +8016,8 @@ paths:
               description: Amount of the invoice
             cost_invoice_client_id:
               description: User-friendly identifier for invoice
+            cost_payment_schedule_num:
+              description: Id of the related payment schedule the invoice is against
             currency:
               description: Currency of the invoice
             description:
@@ -9799,6 +9803,408 @@ paths:
       security:
       - JWT_v2: []
       summary: Edit Variation Order By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/payment-schedules:
+    get:
+      operationId: v2_getPaymentSchedules
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of specific payment schedule to fetch
+        in: query
+        name: paymentScheduleId
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                oneOf:
+                - items:
+                    properties:
+                      attachments:
+                        items:
+                          properties:
+                            cde_id:
+                              type: string
+                            created_by_company_id:
+                              type: integer
+                            created_by_user_email:
+                              type: string
+                          type: object
+                        type: array
+                      cost_payment_schedule_num:
+                        type: integer
+                      created_by_user_id:
+                        type: string
+                      currency:
+                        type: string
+                      due_date:
+                        format: date
+                        type: string
+                      issued_date:
+                        format: date
+                        type: string
+                      issuing_company_id:
+                        type: integer
+                      project_id:
+                        type: integer
+                      receiving_company_id:
+                        type: integer
+                      related_cost_claim_num:
+                        type: integer
+                      retention_amount:
+                        format: float
+                        type: number
+                      schedule_identifier:
+                        type: string
+                      scheduled_amount:
+                        format: float
+                        type: number
+                      withholdings:
+                        items:
+                          properties:
+                            amount:
+                              format: float
+                              type: number
+                            reason:
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  type: array
+                - properties:
+                    attachments:
+                      items:
+                        properties:
+                          cde_id:
+                            type: string
+                          created_by_company_id:
+                            type: integer
+                          created_by_user_email:
+                            type: string
+                        type: object
+                      type: array
+                    cost_payment_schedule_num:
+                      type: integer
+                    created_by_user_id:
+                      type: string
+                    currency:
+                      type: string
+                    due_date:
+                      format: date
+                      type: string
+                    issued_date:
+                      format: date
+                      type: string
+                    issuing_company_id:
+                      type: integer
+                    project_id:
+                      type: integer
+                    receiving_company_id:
+                      type: integer
+                    related_cost_claim_num:
+                      type: integer
+                    retention_amount:
+                      format: float
+                      type: number
+                    schedule_identifier:
+                      type: string
+                    scheduled_amount:
+                      format: float
+                      type: number
+                    withholdings:
+                      items:
+                        properties:
+                          amount:
+                            format: float
+                            type: number
+                          reason:
+                            type: string
+                        type: object
+                      type: array
+                  type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Payment Schedules
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updatePaymentSchedule
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: paymentScheduleId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            currency:
+              type: string
+            due_date:
+              format: date
+              type: string
+            issued_date:
+              format: date
+              type: string
+            retention_amount:
+              format: float
+              type: number
+            scheduled_amount:
+              format: float
+              type: number
+            withholdings:
+              items:
+                properties:
+                  amount:
+                    format: float
+                    type: number
+                  reason:
+                    type: string
+                required:
+                - reason
+                - amount
+                type: object
+              type: array
+          type: object
+      responses:
+        200:
+          description: Payment schedule updated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  attachments:
+                    items:
+                      properties:
+                        cde_id:
+                          type: string
+                        created_by_company_id:
+                          type: integer
+                        created_by_user_email:
+                          type: string
+                      type: object
+                    type: array
+                  cost_payment_schedule_num:
+                    type: integer
+                  created_by_user_id:
+                    type: string
+                  currency:
+                    type: string
+                  due_date:
+                    format: date
+                    type: string
+                  issued_date:
+                    format: date
+                    type: string
+                  issuing_company_id:
+                    type: integer
+                  project_id:
+                    type: integer
+                  receiving_company_id:
+                    type: integer
+                  related_cost_claim_num:
+                    type: integer
+                  retention_amount:
+                    format: float
+                    type: number
+                  schedule_identifier:
+                    type: string
+                  scheduled_amount:
+                    format: float
+                    type: number
+                  withholdings:
+                    items:
+                      properties:
+                        amount:
+                          format: float
+                          type: number
+                        reason:
+                          type: string
+                      type: object
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Payment schedule not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Payment Schedule
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createPaymentSchedule
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_payment_schedule_client_id:
+              type: string
+            currency:
+              default: AUD
+              type: string
+            due_date:
+              format: date
+              type: string
+            issued_date:
+              format: date
+              type: string
+            issuing_company_id:
+              type: integer
+            project_id:
+              type: integer
+            receiving_company_id:
+              type: integer
+            related_cost_claim_num:
+              type: integer
+            retention_amount:
+              format: float
+              type: number
+            scheduled_amount:
+              format: float
+              type: number
+            withholdings:
+              items:
+                properties:
+                  amount:
+                    format: float
+                    type: number
+                  reason:
+                    type: string
+                required:
+                - reason
+                - amount
+                type: object
+              type: array
+          required:
+          - scheduled_amount
+          - retention_amount
+          - issuing_company_id
+          - receiving_company_id
+          - due_date
+          - issued_date
+          - related_cost_claim_num
+          - project_id
+          type: object
+      responses:
+        201:
+          description: Payment schedule created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  attachments:
+                    items:
+                      properties:
+                        cde_id:
+                          type: string
+                        created_by_company_id:
+                          type: integer
+                        created_by_user_email:
+                          type: string
+                      type: object
+                    type: array
+                  cost_payment_schedule_num:
+                    type: integer
+                  created_by_user_id:
+                    type: string
+                  currency:
+                    type: string
+                  due_date:
+                    format: date
+                    type: string
+                  issued_date:
+                    format: date
+                    type: string
+                  issuing_company_id:
+                    type: integer
+                  project_id:
+                    type: integer
+                  receiving_company_id:
+                    type: integer
+                  related_cost_claim_num:
+                    type: integer
+                  retention_amount:
+                    format: float
+                    type: number
+                  schedule_identifier:
+                    type: string
+                  scheduled_amount:
+                    format: float
+                    type: number
+                  withholdings:
+                    items:
+                      properties:
+                        amount:
+                          format: float
+                          type: number
+                        reason:
+                          type: string
+                      type: object
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Payment Schedule
       tags:
       - Cost
       x-ds-test-enabled: true
