@@ -839,6 +839,206 @@ paths:
       summary: Link DS Site Channel
       tags:
       - User Profiles
+  /v2/markups:
+    get:
+      description: Retrieve markups with filtering, pagination, and sorting options
+      parameters:
+      - description: Filter by PDF document ID
+        in: query
+        name: pdf_id
+        required: false
+        schema:
+          format: uuid
+          type: string
+      - description: Filter by PDF version ID
+        in: query
+        name: pdf_version_id
+        required: false
+        schema:
+          format: uuid
+          type: string
+      - description: Filter by author/user ID (for "My Markups")
+        in: query
+        name: author_id
+        required: false
+        schema:
+          format: uuid
+          type: string
+      - description: Filter by PDF page number
+        in: query
+        name: page_number
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: Filter by markup type (comma-separated list)
+        in: query
+        name: markup_type
+        required: false
+        schema:
+          example: polygon,rectangle
+          type: string
+      - description: Filter by workflow context
+        in: query
+        name: workflow_context
+        required: false
+        schema:
+          example: tendering
+          type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          type: integer
+      - description: Number of results per page
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Markup'
+                type: array
+          description: List of markups
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid request parameters
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      security:
+      - BearerAuth: []
+      summary: Get markups with optional filters
+  /v2/markups/{markupId}:
+    delete:
+      description: Delete a markup (soft delete by default)
+      parameters:
+      - description: Markup unique identifier
+        in: path
+        name: markupId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    example: Markup deleted successfully
+                    type: string
+                type: object
+          description: Markup deleted successfully
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Markup not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      security:
+      - BearerAuth: []
+      summary: Delete markup
+    get:
+      description: Retrieve a specific markup by its unique identifier
+      parameters:
+      - description: Markup unique identifier
+        in: path
+        name: markupId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Markup'
+          description: Markup details
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Markup not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      security:
+      - BearerAuth: []
+      summary: Get markup by ID
+    put:
+      description: Update an existing markup's properties, geometry, or metadata
+      parameters:
+      - description: Markup unique identifier
+        in: path
+        name: markupId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMarkupRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Markup'
+          description: Updated markup
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid request data
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Markup not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      security:
+      - BearerAuth: []
+      summary: Update markup
   /v2/migrations/{migrationId}:
     post:
       operationId: v2_runMigration
@@ -1179,6 +1379,126 @@ paths:
       summary: Process a queued notification (admin only)
       tags:
       - Notifications
+  /v2/pdfs/{pdfId}/versions/{versionId}/markups:
+    get:
+      description: Retrieve all markups for a specific PDF version with optional filtering
+      parameters:
+      - description: PDF document identifier
+        in: path
+        name: pdfId
+        required: true
+        schema:
+          type: string
+      - description: PDF version identifier
+        in: path
+        name: versionId
+        required: true
+        schema:
+          type: string
+      - description: Filter by PDF page number
+        in: query
+        name: page_number
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: Filter by markup type (comma-separated)
+        in: query
+        name: markup_type
+        required: false
+        schema:
+          type: string
+      - description: Filter by author ID
+        in: query
+        name: author_id
+        required: false
+        schema:
+          format: uuid
+          type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          type: integer
+      - description: Number of results per page
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Markup'
+                type: array
+          description: List of markups for the PDF version
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid request parameters
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      security:
+      - BearerAuth: []
+      summary: Get markups for PDF version
+    post:
+      description: Create a new markup on a specific page of a PDF version
+      parameters:
+      - description: PDF document identifier
+        in: path
+        name: pdfId
+        required: true
+        schema:
+          type: string
+      - description: PDF version identifier
+        in: path
+        name: versionId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMarkupRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Markup'
+          description: Markup created successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid request data
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      security:
+      - BearerAuth: []
+      summary: Create markup for PDF version
   /v2/powerbi-xmla/system-table/{reportName}:
     get:
       operationId: v2_uploadSystemTables
@@ -13044,6 +13364,206 @@ paths:
       summary: Resend invite email to user in workspace
       tags:
       - Users
+  /v2components:
+    schemas:
+      CreateMarkupRequest:
+        properties:
+          geometry:
+            $ref: '#/components/schemas/GeoJSONGeometry'
+          markup_type:
+            description: Type of markup shape
+            enum:
+            - polygon
+            - line
+            - text
+            - rectangle
+            - point
+            type: string
+          pdf_page_number:
+            description: Page number within the PDF (1-based)
+            minimum: 1
+            type: integer
+          properties:
+            $ref: '#/components/schemas/MarkupProperties'
+          workflow_context:
+            default: pdf_review
+            description: Workflow context
+            type: string
+        required:
+        - pdf_page_number
+        - geometry
+        - markup_type
+        - properties
+        type: object
+      Error:
+        properties:
+          code:
+            description: Error code
+            type: string
+          details:
+            description: Additional error details
+            type: string
+          error:
+            description: Error message
+            type: string
+        type: object
+      GeoJSONGeometry:
+        description: GeoJSON geometry object
+        discriminator:
+          propertyName: type
+        properties:
+          coordinates:
+            oneOf:
+            - description: Point coordinates [x, y]
+              items:
+                type: number
+              minItems: 2
+              type: array
+            - description: LineString coordinates [[x1, y1], [x2, y2], ...]
+              items:
+                items:
+                  type: number
+                minItems: 2
+                type: array
+              minItems: 2
+              type: array
+            - description: Polygon coordinates [[[x1, y1], [x2, y2], ...]]
+              items:
+                items:
+                  items:
+                    type: number
+                  minItems: 2
+                  type: array
+                minItems: 4
+                type: array
+              minItems: 1
+              type: array
+          type:
+            enum:
+            - Point
+            - LineString
+            - Polygon
+            type: string
+        required:
+        - type
+        - coordinates
+        type: object
+      Markup:
+        properties:
+          author_email:
+            description: Email of the markup author
+            format: email
+            type: string
+          author_id:
+            description: ID of the user who created the markup
+            format: uuid
+            type: string
+          calculated_area_sqm:
+            description: Calculated area in square meters (for polygons/rectangles)
+            format: float
+            nullable: true
+            type: number
+          created_at:
+            description: Creation timestamp
+            format: date-time
+            type: string
+          geometry:
+            $ref: '#/components/schemas/GeoJSONGeometry'
+          id:
+            description: Unique identifier for the markup
+            format: uuid
+            type: string
+          is_deleted:
+            description: Soft delete flag
+            type: boolean
+          markup_type:
+            description: Type of markup shape
+            enum:
+            - polygon
+            - line
+            - text
+            - rectangle
+            - point
+            type: string
+          pdf_id:
+            description: Reference to the PDF document
+            type: string
+          pdf_page_number:
+            description: Page number within the PDF (1-based)
+            minimum: 1
+            type: integer
+          pdf_version_id:
+            description: Reference to the specific PDF version
+            type: string
+          properties:
+            $ref: '#/components/schemas/MarkupProperties'
+          updated_at:
+            description: Last update timestamp
+            format: date-time
+            type: string
+          workflow_context:
+            description: Workflow context (e.g., tendering, design_review)
+            example: pdf_review
+            type: string
+        type: object
+      MarkupProperties:
+        additionalProperties: true
+        properties:
+          color:
+            description: Fill color (hex)
+            example: '#3B82F6'
+            type: string
+          description:
+            description: Optional description
+            type: string
+          fill_opacity:
+            description: Fill opacity (0-1)
+            example: 0.2
+            maximum: 1
+            minimum: 0
+            type: number
+          font_size:
+            description: Font size for text annotations
+            example: 14
+            type: number
+          label:
+            description: Optional label for the markup
+            type: string
+          stroke_color:
+            description: Stroke color (hex)
+            example: '#1E40AF'
+            type: string
+          stroke_width:
+            description: Stroke width in pixels
+            example: 2
+            type: number
+          text_content:
+            description: Text content for text annotations
+            type: string
+        type: object
+      UpdateMarkupRequest:
+        properties:
+          geometry:
+            $ref: '#/components/schemas/GeoJSONGeometry'
+          markup_type:
+            description: Type of markup shape
+            enum:
+            - polygon
+            - line
+            - text
+            - rectangle
+            - point
+            type: string
+          pdf_page_number:
+            description: Page number within the PDF (1-based)
+            minimum: 1
+            type: integer
+          properties:
+            $ref: '#/components/schemas/MarkupProperties'
+          workflow_context:
+            description: Workflow context
+            type: string
+        type: object
 schemes:
 - https
 securityDefinitions:
