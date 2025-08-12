@@ -36,6 +36,150 @@ paths:
       summary: Get Addins
       tags:
       - Addins
+  /v2/cde/{cdeId}/markups:
+    get:
+      description: Retrieve all markups for a specific CDE document (legacy endpoint)
+      operationId: v2_getCdeMarkupsLegacy
+      parameters:
+      - description: CDE document identifier
+        in: path
+        name: cdeId
+        required: true
+        type: integer
+      - description: Filter by CDE version ID
+        in: query
+        name: cde_version_id
+        required: false
+        type: integer
+      - description: Filter by author/user ID
+        in: query
+        name: author_kinde_id
+        required: false
+        type: string
+      - description: Filter by PDF page number
+        in: query
+        minimum: 1
+        name: page_number
+        required: false
+        type: integer
+      - description: Filter by markup type (comma-separated list)
+        in: query
+        name: markup_type
+        required: false
+        type: string
+      - description: Filter by workflow context
+        in: query
+        name: workflow_context
+        required: false
+        type: string
+      - default: this_version
+        description: Version filtering option
+        in: query
+        name: version_filter
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 10
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of markups for the CDE document
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request parameters
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get markups for CDE document (legacy)
+      tags:
+      - Markup (Legacy)
+    post:
+      description: Create a new markup on a CDE document (legacy endpoint)
+      operationId: v2_createCdeMarkupLegacy
+      parameters:
+      - description: CDE document identifier
+        in: path
+        name: cdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_version_id:
+              description: CDE version ID this markup applies to
+              type: integer
+            geometry:
+              description: GeoJSON geometry object
+              type: object
+            markup_type:
+              description: Type of markup shape
+              enum:
+              - polygon
+              - line
+              - text
+              - rectangle
+              - point
+              type: string
+            pdf_page_number:
+              description: Page number within the PDF (1-based)
+              minimum: 1
+              type: integer
+            properties:
+              description: Markup properties and metadata
+              type: object
+            workflow_context:
+              default: pdf_review
+              description: Workflow context
+              type: string
+          required:
+          - pdf_page_number
+          - geometry
+          - markup_type
+          - properties
+          - cde_version_id
+          type: object
+      responses:
+        201:
+          description: Markup created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create markup for CDE document (legacy)
+      tags:
+      - Markup (Legacy)
   /v2/channels/{channelAlias}/badges/{badgeTypeId}:
     get:
       description: Retrieves badges for users in a specified global company.
@@ -842,21 +986,22 @@ paths:
   /v2/markups:
     get:
       description: Retrieve markups with filtering, pagination, and sorting options
-      operationId: v2_getMarkups
+        (legacy endpoint)
+      operationId: v2_getMarkupsLegacy
       parameters:
-      - description: Filter by PDF document ID
+      - description: Filter by CDE document ID
         in: query
-        name: pdf_id
+        name: cde_id
         required: false
-        type: string
-      - description: Filter by PDF version ID
+        type: integer
+      - description: Filter by CDE version ID
         in: query
-        name: pdf_version_id
+        name: cde_version_id
         required: false
-        type: string
-      - description: Filter by author/user ID (for "My Markups")
+        type: integer
+      - description: Filter by author/user ID
         in: query
-        name: author_id
+        name: author_kinde_id
         required: false
         type: string
       - description: Filter by PDF page number
@@ -908,13 +1053,78 @@ paths:
           description: Internal server error
       security:
       - JWT_v2: []
-      summary: Get markups with optional filters
+      summary: Get markups with optional filters (legacy)
       tags:
-      - Markup
+      - Markup (Legacy)
+    post:
+      description: Create a new markup with CDE ID in request body (legacy endpoint)
+      operationId: v2_createMarkupLegacy
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_id:
+              description: CDE document ID
+              type: integer
+            cde_version_id:
+              description: CDE version ID this markup applies to
+              type: integer
+            geometry:
+              description: GeoJSON geometry object
+              type: object
+            markup_type:
+              description: Type of markup shape
+              enum:
+              - polygon
+              - line
+              - text
+              - rectangle
+              - point
+              type: string
+            pdf_page_number:
+              description: Page number within the PDF (1-based)
+              minimum: 1
+              type: integer
+            properties:
+              description: Markup properties and metadata
+              type: object
+            workflow_context:
+              default: pdf_review
+              description: Workflow context
+              type: string
+          required:
+          - cde_id
+          - pdf_page_number
+          - geometry
+          - markup_type
+          - properties
+          - cde_version_id
+          type: object
+      responses:
+        201:
+          description: Markup created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create markup (legacy)
+      tags:
+      - Markup (Legacy)
   /v2/markups/{markupId}:
     delete:
-      description: Delete a markup (soft delete by default)
-      operationId: v2_deleteMarkup
+      description: Delete a markup (soft delete by default) (legacy endpoint)
+      operationId: v2_deleteMarkupLegacy
       parameters:
       - description: Markup unique identifier
         in: path
@@ -935,12 +1145,12 @@ paths:
           description: Internal server error
       security:
       - JWT_v2: []
-      summary: Delete markup
+      summary: Delete markup (legacy)
       tags:
-      - Markup
+      - Markup (Legacy)
     get:
-      description: Retrieve a specific markup by its unique identifier
-      operationId: v2_getMarkupById
+      description: Retrieve a specific markup by its unique identifier (legacy endpoint)
+      operationId: v2_getMarkupByIdLegacy
       parameters:
       - description: Markup unique identifier
         in: path
@@ -963,44 +1173,47 @@ paths:
           description: Internal server error
       security:
       - JWT_v2: []
-      summary: Get markup by ID
+      summary: Get markup by ID (legacy)
       tags:
-      - Markup
+      - Markup (Legacy)
     put:
-      description: Update an existing markup's properties, geometry, or metadata
-      operationId: v2_updateMarkup
+      description: Update an existing markup's properties, geometry, or metadata (legacy
+        endpoint)
+      operationId: v2_updateMarkupLegacy
       parameters:
       - description: Markup unique identifier
         in: path
         name: markupId
         required: true
         type: string
-      - description: Page number within the PDF (1-based)
-        in: formData
-        minimum: 1
-        name: pdf_page_number
-        required: false
-        type: integer
-      - description: GeoJSON geometry object (as JSON string)
-        in: formData
-        name: geometry
-        required: false
-        type: string
-      - description: Type of markup shape
-        in: formData
-        name: markup_type
-        required: false
-        type: string
-      - description: Markup properties (as JSON string)
-        in: formData
-        name: properties
-        required: false
-        type: string
-      - description: Workflow context
-        in: formData
-        name: workflow_context
-        required: false
-        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            geometry:
+              description: GeoJSON geometry object
+              type: object
+            markup_type:
+              description: Type of markup shape
+              enum:
+              - polygon
+              - line
+              - text
+              - rectangle
+              - point
+              type: string
+            pdf_page_number:
+              description: Page number within the PDF (1-based)
+              minimum: 1
+              type: integer
+            properties:
+              description: Markup properties and metadata
+              type: object
+            workflow_context:
+              description: Workflow context
+              type: string
+          type: object
       responses:
         200:
           description: Updated markup
@@ -1019,9 +1232,9 @@ paths:
           description: Internal server error
       security:
       - JWT_v2: []
-      summary: Update markup
+      summary: Update markup (legacy)
       tags:
-      - Markup
+      - Markup (Legacy)
   /v2/migrations/{migrationId}:
     post:
       operationId: v2_runMigration
@@ -1362,133 +1575,6 @@ paths:
       summary: Process a queued notification (admin only)
       tags:
       - Notifications
-  /v2/pdfs/{pdfId}/versions/{versionId}/markups:
-    get:
-      description: Retrieve all markups for a specific PDF version with optional filtering
-      operationId: v2_getPdfVersionMarkups
-      parameters:
-      - description: PDF document identifier
-        in: path
-        name: pdfId
-        required: true
-        type: string
-      - description: PDF version identifier
-        in: path
-        name: versionId
-        required: true
-        type: string
-      - description: Filter by PDF page number
-        in: query
-        minimum: 1
-        name: page_number
-        required: false
-        type: integer
-      - description: Filter by markup type (comma-separated)
-        in: query
-        name: markup_type
-        required: false
-        type: string
-      - description: Filter by author ID
-        in: query
-        name: author_id
-        required: false
-        type: string
-      - default: 1
-        description: Page number for pagination
-        in: query
-        minimum: 1
-        name: page
-        required: false
-        type: integer
-      - default: 10
-        description: Number of results per page
-        in: query
-        maximum: 100
-        minimum: 1
-        name: limit
-        required: false
-        type: integer
-      responses:
-        200:
-          description: List of markups for the PDF version
-          schema:
-            properties:
-              data:
-                items:
-                  type: object
-                type: array
-              message:
-                type: string
-            type: object
-        400:
-          description: Invalid request parameters
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Get markups for PDF version
-      tags:
-      - Markup
-    post:
-      description: Create a new markup on a specific page of a PDF version
-      operationId: v2_createPdfVersionMarkup
-      parameters:
-      - description: PDF document identifier
-        in: path
-        name: pdfId
-        required: true
-        type: string
-      - description: PDF version identifier
-        in: path
-        name: versionId
-        required: true
-        type: string
-      - description: Page number within the PDF (1-based)
-        in: formData
-        minimum: 1
-        name: pdf_page_number
-        required: true
-        type: integer
-      - description: GeoJSON geometry object (as JSON string)
-        in: formData
-        name: geometry
-        required: true
-        type: string
-      - description: Type of markup shape (polygon, line, text, rectangle, point)
-        in: formData
-        name: markup_type
-        required: true
-        type: string
-      - description: Markup properties (as JSON string)
-        in: formData
-        name: properties
-        required: true
-        type: string
-      - default: pdf_review
-        description: Workflow context
-        in: formData
-        name: workflow_context
-        required: false
-        type: string
-      responses:
-        201:
-          description: Markup created successfully
-          schema:
-            properties:
-              data:
-                type: object
-              message:
-                type: string
-            type: object
-        400:
-          description: Invalid request data
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Create markup for PDF version
-      tags:
-      - Markup
   /v2/powerbi-xmla/system-table/{reportName}:
     get:
       operationId: v2_uploadSystemTables
@@ -2485,6 +2571,165 @@ paths:
       summary: Get signed url to access cde file
       tags:
       - Get Data
+  /v2/workspaces/{workspaceId}/cde/{cdeId}/markups:
+    get:
+      description: Retrieve all markups for a specific CDE document with optional
+        filtering and pagination
+      operationId: v2_getCdeMarkups
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: CDE document identifier
+        in: path
+        name: cdeId
+        required: true
+        type: integer
+      - description: Filter by CDE version ID
+        in: query
+        name: cde_version_id
+        required: false
+        type: integer
+      - description: Filter by author/user ID (for "My Markups")
+        in: query
+        name: author_kinde_id
+        required: false
+        type: string
+      - description: Filter by PDF page number
+        in: query
+        minimum: 1
+        name: page_number
+        required: false
+        type: integer
+      - description: Filter by markup type (comma-separated list)
+        in: query
+        name: markup_type
+        required: false
+        type: string
+      - description: Filter by workflow context
+        in: query
+        name: workflow_context
+        required: false
+        type: string
+      - default: this_version
+        description: Version filtering option (this_version, all)
+        in: query
+        name: version_filter
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 10
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of markups for the CDE document
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get markups for CDE document
+      tags:
+      - Markup
+    post:
+      description: Create a new markup on a specific page of a CDE document
+      operationId: v2_createCdeMarkup
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: CDE document identifier
+        in: path
+        name: cdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_version_id:
+              description: CDE version ID this markup applies to
+              type: integer
+            geometry:
+              description: GeoJSON geometry object
+              type: object
+            markup_type:
+              description: Type of markup shape
+              enum:
+              - polygon
+              - line
+              - text
+              - rectangle
+              - point
+              type: string
+            pdf_page_number:
+              description: Page number within the PDF (1-based)
+              minimum: 1
+              type: integer
+            properties:
+              description: Markup properties and metadata
+              type: object
+            workflow_context:
+              default: pdf_review
+              description: Workflow context
+              type: string
+          required:
+          - pdf_page_number
+          - geometry
+          - markup_type
+          - properties
+          - cde_version_id
+          type: object
+      responses:
+        201:
+          description: Markup created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create markup for CDE document
+      tags:
+      - Markup
   /v2/workspaces/{workspaceId}/cde/{cdeId}/metadata:
     put:
       operationId: v2_putCdeMetadataWorkspaceLevel
@@ -4117,6 +4362,296 @@ paths:
       summary: Start a new job at workpace-level
       tags:
       - Jobs
+  /v2/workspaces/{workspaceId}/markups:
+    get:
+      description: Retrieve markups with filtering, pagination, and sorting options
+      operationId: v2_getWorkspaceMarkups
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by CDE document ID
+        in: query
+        name: cde_id
+        required: false
+        type: integer
+      - description: Filter by CDE version ID
+        in: query
+        name: cde_version_id
+        required: false
+        type: integer
+      - description: Filter by author/user ID (for "My Markups")
+        in: query
+        name: author_kinde_id
+        required: false
+        type: string
+      - description: Filter by PDF page number
+        in: query
+        minimum: 1
+        name: page_number
+        required: false
+        type: integer
+      - description: Filter by markup type (comma-separated list)
+        in: query
+        name: markup_type
+        required: false
+        type: string
+      - description: Filter by workflow context
+        in: query
+        name: workflow_context
+        required: false
+        type: string
+      - description: Version filtering option (this_version, all)
+        in: query
+        name: version_filter
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 10
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of markups
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get markups with optional filters
+      tags:
+      - Markup
+    post:
+      description: Create a new markup with CDE ID specified in request body
+      operationId: v2_createWorkspaceMarkup
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_id:
+              description: CDE document ID
+              type: integer
+            cde_version_id:
+              description: CDE version ID this markup applies to
+              type: integer
+            geometry:
+              description: GeoJSON geometry object
+              type: object
+            markup_type:
+              description: Type of markup shape
+              enum:
+              - polygon
+              - line
+              - text
+              - rectangle
+              - point
+              type: string
+            pdf_page_number:
+              description: Page number within the PDF (1-based)
+              minimum: 1
+              type: integer
+            properties:
+              description: Markup properties and metadata
+              type: object
+            workflow_context:
+              default: pdf_review
+              description: Workflow context
+              type: string
+          required:
+          - cde_id
+          - pdf_page_number
+          - geometry
+          - markup_type
+          - properties
+          - cde_version_id
+          type: object
+      responses:
+        201:
+          description: Markup created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create markup with CDE ID in body
+      tags:
+      - Markup
+  /v2/workspaces/{workspaceId}/markups/{markupId}:
+    delete:
+      description: Delete a markup (soft delete by default)
+      operationId: v2_deleteMarkup
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Markup unique identifier
+        in: path
+        name: markupId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Markup deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Markup not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete markup
+      tags:
+      - Markup
+    get:
+      description: Retrieve a specific markup by its unique identifier
+      operationId: v2_getMarkupById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Markup unique identifier
+        in: path
+        name: markupId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Markup details
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Markup not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get markup by ID
+      tags:
+      - Markup
+    put:
+      description: Update an existing markup's properties, geometry, or metadata
+      operationId: v2_updateMarkup
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Markup unique identifier
+        in: path
+        name: markupId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            geometry:
+              description: GeoJSON geometry object
+              type: object
+            markup_type:
+              description: Type of markup shape
+              enum:
+              - polygon
+              - line
+              - text
+              - rectangle
+              - point
+              type: string
+            pdf_page_number:
+              description: Page number within the PDF (1-based)
+              minimum: 1
+              type: integer
+            properties:
+              description: Markup properties and metadata
+              type: object
+            workflow_context:
+              description: Workflow context
+              type: string
+          type: object
+      responses:
+        200:
+          description: Updated markup
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Markup not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update markup
+      tags:
+      - Markup
   /v2/workspaces/{workspaceId}/menu:
     get:
       description: Returns the menu structure for a workspace based on the workspace's
