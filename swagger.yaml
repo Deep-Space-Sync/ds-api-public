@@ -9562,6 +9562,285 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/variation:
+    get:
+      operationId: v2_getCostVariationLineItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Optional line item ID to fetch specific line item
+        in: query
+        name: lineItemId
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                cost_budget_item_name:
+                  description: Name of related budget item
+                  type: string
+                cost_code_num:
+                  description: Cost code number
+                  type: string
+                cost_variation_line_description:
+                  description: Description of the variation line item
+                  type: string
+                cost_variation_line_name:
+                  description: Name of the variation line item
+                  type: string
+                cost_variation_line_num:
+                  description: Internal identifier for variation line item
+                  type: integer
+                cost_variation_num:
+                  description: Related variation number
+                  type: integer
+                line_item_identifier:
+                  description: User-friendly identifier for variation line item
+                  type: string
+                qty:
+                  description: Quantity
+                  type: number
+                related_cost_budget_item_num:
+                  description: Related budget item number
+                  type: integer
+                total_amount:
+                  description: Total amount for the line item
+                  type: number
+                unit_amount:
+                  description: Unit amount
+                  type: number
+                unit_of_measure:
+                  description: Unit of measure
+                  type: string
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Variation Line Items
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postCostVariationLineItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            items:
+              items:
+                properties:
+                  cost_variation_line_client_id:
+                    description: Client-defined identifier for variation line item
+                    type: string
+                  cost_variation_line_description:
+                    description: Description of the variation line item
+                    type: string
+                  cost_variation_line_name:
+                    description: Name of the variation line item
+                    type: string
+                  cost_variation_num:
+                    description: Related variation number
+                    type: integer
+                  qty:
+                    description: Quantity
+                    type: number
+                  related_cost_budget_item_num:
+                    description: Related budget item number
+                    type: integer
+                  total_amount:
+                    description: Total amount for the line item
+                    type: number
+                  unit_amount:
+                    description: Unit amount
+                    type: number
+                  unit_of_measure:
+                    description: Unit of measure
+                    type: string
+                required:
+                - cost_variation_line_name
+                - cost_variation_line_description
+                - cost_variation_num
+                - total_amount
+                type: object
+              type: array
+          type: object
+      responses:
+        201:
+          description: Line item(s) successfully created
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    cost_budget_item_name:
+                      description: Name of related budget item
+                      type: string
+                    cost_code_num:
+                      description: Cost code number
+                      type: string
+                    cost_variation_line_description:
+                      description: Description of the variation line item
+                      type: string
+                    cost_variation_line_name:
+                      description: Name of the variation line item
+                      type: string
+                    cost_variation_line_num:
+                      description: Internal identifier for variation line item
+                      type: integer
+                    cost_variation_num:
+                      description: Related variation number
+                      type: integer
+                    line_item_identifier:
+                      description: User-friendly identifier for variation line item
+                      type: string
+                    qty:
+                      description: Quantity
+                      type: number
+                    related_cost_budget_item_num:
+                      description: Related budget item number
+                      type: integer
+                    total_amount:
+                      description: Total amount for the line item
+                      type: number
+                    unit_amount:
+                      description: Unit amount
+                      type: number
+                    unit_of_measure:
+                      description: Unit of measure
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+              updated_objects:
+                type: array
+            type: object
+        400:
+          description: Bad Request - Invalid input or missing required fields
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Variation Line Item(s)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/variation/{lineItemId}:
+    patch:
+      operationId: v2_patchCostVariationLineItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: lineItemId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            related_cost_budget_item_num:
+              description: Related budget item number
+              type: integer
+          type: object
+      responses:
+        201:
+          description: Line item successfully updated
+          schema:
+            properties:
+              data:
+                properties:
+                  cost_budget_item_name:
+                    description: Name of related budget item
+                    type: string
+                  cost_code_num:
+                    description: Cost code number
+                    type: string
+                  cost_variation_line_description:
+                    description: Description of the variation line item
+                    type: string
+                  cost_variation_line_name:
+                    description: Name of the variation line item
+                    type: string
+                  cost_variation_line_num:
+                    description: Internal identifier for variation line item
+                    type: integer
+                  cost_variation_num:
+                    description: Related variation number
+                    type: integer
+                  line_item_identifier:
+                    description: User-friendly identifier for variation line item
+                    type: string
+                  qty:
+                    description: Quantity
+                    type: number
+                  related_cost_budget_item_num:
+                    description: Related budget item number
+                    type: integer
+                  total_amount:
+                    description: Total amount for the line item
+                    type: number
+                  unit_amount:
+                    description: Unit amount
+                    type: number
+                  unit_of_measure:
+                    description: Unit of measure
+                    type: string
+                type: object
+              message:
+                type: string
+              updated_objects:
+                type: array
+            type: object
+        400:
+          description: Bad Request - Invalid input
+        401:
+          description: Unauthorized
+        404:
+          description: Line item not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Variation Line Item By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders:
     get:
       operationId: v2_getCostOrders
