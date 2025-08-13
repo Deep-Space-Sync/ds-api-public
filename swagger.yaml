@@ -4467,6 +4467,250 @@ paths:
       summary: Create a workspace-level notification (admin only)
       tags:
       - Notifications
+  /v2/workspaces/{workspaceId}/opportunities:
+    get:
+      description: Retrieve opportunities for a workspace with optional filters and
+        pagination
+      operationId: v2_listOpportunities
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by status
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by client identifier
+        in: query
+        name: client_id
+        required: false
+        type: string
+      - description: Filter by project type
+        in: query
+        name: project_type
+        required: false
+        type: string
+      - description: Minimum probability (inclusive)
+        in: query
+        maximum: 100
+        minimum: 0
+        name: min_probability
+        required: false
+        type: integer
+      - description: Maximum probability (inclusive)
+        in: query
+        maximum: 100
+        minimum: 0
+        name: max_probability
+        required: false
+        type: integer
+      - description: Free text search across project name and client name
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of opportunities
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              limit:
+                type: integer
+              page:
+                type: integer
+              total_count:
+                type: integer
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List opportunities
+      tags:
+      - Opportunities
+    post:
+      description: Create a new opportunity for the workspace
+      operationId: v2_createOpportunity
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assigned_estimator:
+              type: string
+            client_id:
+              type: string
+            estimated_value_millions:
+              default: 0
+              format: float
+              type: number
+            probability:
+              default: 50
+              maximum: 100
+              minimum: 0
+              type: integer
+            project_name:
+              type: string
+            project_type:
+              type: string
+            status:
+              default: Will Bid
+              description: Opportunity status
+              type: string
+            submission_date:
+              description: Submission date (ISO 8601)
+              type: string
+          required:
+          - project_name
+          - client_id
+          - project_type
+          - submission_date
+          - assigned_estimator
+          type: object
+      responses:
+        201:
+          description: Opportunity created successfully
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create opportunity
+      tags:
+      - Opportunities
+  /v2/workspaces/{workspaceId}/opportunities/{opportunityId}:
+    delete:
+      description: Soft delete an opportunity
+      operationId: v2_deleteOpportunity
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Opportunity unique identifier
+        in: path
+        name: opportunityId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Opportunity deleted successfully
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Opportunity not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete opportunity
+      tags:
+      - Opportunities
+    get:
+      description: Retrieve a specific opportunity by its unique identifier
+      operationId: v2_getOpportunityById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Opportunity unique identifier
+        in: path
+        name: opportunityId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Opportunity details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Opportunity not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get opportunity by ID
+      tags:
+      - Opportunities
+    put:
+      description: Update an existing opportunity
+      operationId: v2_updateOpportunity
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Opportunity unique identifier
+        in: path
+        name: opportunityId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated opportunity
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Opportunity not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update opportunity
+      tags:
+      - Opportunities
   /v2/workspaces/{workspaceId}/powerbi:
     post:
       operationId: v2_postPowerBiWorkspace
