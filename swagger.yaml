@@ -2000,6 +2000,50 @@ paths:
       summary: Remove watcher from action
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/actions/tasks:
+    get:
+      operationId: v2_getActionsTasksByWorkspaceId
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully returned tasks
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get tasks for a workspace
+      tags:
+      - Get Actions with category = Tasks
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/tasks:
+    get:
+      operationId: v2_getActionsTasksByWorkspaceIdAndProjectId
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully returned tasks
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get actions with categorty = Tasks by a workspace and projectId
+      tags:
+      - Get Actions with category = Tasks, workspaceId and projectId
   /v2/workspaces/{workspaceId}/cde:
     get:
       operationId: v2_getCdeDocsWorkspaceLevel
