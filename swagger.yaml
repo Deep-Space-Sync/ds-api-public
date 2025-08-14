@@ -11213,6 +11213,460 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/retentions:
+    get:
+      operationId: v2_getRetentionReleases
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Filter by retention status (pending/released/scheduled)
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by company releasing retention
+        in: query
+        name: retentionReleasedByCompanyId
+        required: false
+        type: integer
+      - description: Filter by company receiving retention
+        in: query
+        name: retentionReleasedToCompanyId
+        required: false
+        type: integer
+      - description: Filter by project ID
+        in: query
+        name: projectId
+        required: false
+        type: integer
+      - default: 1
+        description: Page number for pagination
+        in: query
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of items per page
+        in: query
+        maximum: 100
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    created_at:
+                      description: Date retention release was created
+                      format: date-time
+                      type: string
+                    created_by_user_id:
+                      description: User ID who created retention release
+                      type: string
+                    id:
+                      description: Internal identifier for retention release (UUID)
+                      type: string
+                    marked_as_released_by_user_id:
+                      description: User ID who marked retention as released
+                      type: string
+                    milestone_name:
+                      description: Name of the milestone
+                      type: string
+                    project_id:
+                      description: Project ID
+                      type: integer
+                    retention_amount:
+                      description: Retention amount
+                      format: float
+                      type: number
+                    retention_percentage:
+                      description: Retention percentage
+                      format: float
+                      type: number
+                    retention_reference_no:
+                      description: Reference number for retention
+                      type: string
+                    retention_release_date:
+                      description: Date when retention is released
+                      format: date
+                      type: string
+                    retention_released_by_company_id:
+                      description: ID of company releasing retention
+                      type: integer
+                    retention_released_to_company_id:
+                      description: ID of company receiving retention
+                      type: integer
+                    status:
+                      description: Status of retention (pending/released/scheduled)
+                      type: string
+                    updated_at:
+                      description: Date retention release was last updated
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Retention Releases
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postRetentionRelease
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            marked_as_released_by_user_id:
+              description: User ID who marked retention as released
+              type: string
+            milestone_name:
+              description: Name of the milestone
+              type: string
+            project_id:
+              description: Project ID (defaults to path projectId)
+              type: integer
+            retention_amount:
+              description: Retention amount
+              format: float
+              type: number
+            retention_percentage:
+              description: Retention percentage
+              format: float
+              type: number
+            retention_reference_no:
+              description: Reference number for retention
+              type: string
+            retention_release_date:
+              description: Date when retention is released
+              format: date
+              type: string
+            retention_released_by_company_id:
+              description: ID of company releasing retention
+              type: integer
+            retention_released_to_company_id:
+              description: ID of company receiving retention
+              type: integer
+            status:
+              default: pending
+              description: Status of retention (pending/released/scheduled)
+              type: string
+          required:
+          - milestone_name
+          - retention_amount
+          - retention_released_by_company_id
+          - retention_released_to_company_id
+          type: object
+      responses:
+        201:
+          description: Retention release created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  created_at:
+                    description: Date retention release was created
+                    format: date-time
+                    type: string
+                  created_by_user_id:
+                    description: User ID who created retention release
+                    type: string
+                  id:
+                    description: Internal identifier for retention release
+                    type: integer
+                  marked_as_released_by_user_id:
+                    description: User ID who marked retention as released
+                    type: string
+                  milestone_name:
+                    description: Name of the milestone
+                    type: string
+                  project_id:
+                    description: Project ID
+                    type: integer
+                  retention_amount:
+                    description: Retention amount
+                    format: float
+                    type: number
+                  retention_percentage:
+                    description: Retention percentage
+                    format: float
+                    type: number
+                  retention_reference_no:
+                    description: Reference number for retention
+                    type: string
+                  retention_release_date:
+                    description: Date when retention is released
+                    format: date
+                    type: string
+                  retention_released_by_company_id:
+                    description: ID of company releasing retention
+                    type: integer
+                  retention_released_to_company_id:
+                    description: ID of company receiving retention
+                    type: integer
+                  status:
+                    description: Status of retention (pending/released/scheduled)
+                    type: string
+                  updated_at:
+                    description: Date retention release was last updated
+                    format: date-time
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Retention Release
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/retentions/{retentionId}:
+    get:
+      operationId: v2_getRetentionReleaseById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  created_at:
+                    description: Date retention release was created
+                    format: date-time
+                    type: string
+                  created_by_user_id:
+                    description: User ID who created retention release
+                    type: string
+                  id:
+                    description: Internal identifier for retention release
+                    type: integer
+                  marked_as_released_by_user_id:
+                    description: User ID who marked retention as released
+                    type: string
+                  milestone_name:
+                    description: Name of the milestone
+                    type: string
+                  project_id:
+                    description: Project ID
+                    type: integer
+                  retention_amount:
+                    description: Retention amount
+                    format: float
+                    type: number
+                  retention_percentage:
+                    description: Retention percentage
+                    format: float
+                    type: number
+                  retention_reference_no:
+                    description: Reference number for retention
+                    type: string
+                  retention_release_date:
+                    description: Date when retention is released
+                    format: date
+                    type: string
+                  retention_released_by_company_id:
+                    description: ID of company releasing retention
+                    type: integer
+                  retention_released_to_company_id:
+                    description: ID of company receiving retention
+                    type: integer
+                  status:
+                    description: Status of retention (pending/released/scheduled)
+                    type: string
+                  updated_at:
+                    description: Date retention release was last updated
+                    format: date-time
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Retention release not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Retention Release By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchRetentionReleaseById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            marked_as_released_by_user_id:
+              description: User ID who marked retention as released
+              type: string
+            milestone_name:
+              description: Name of the milestone
+              type: string
+            retention_amount:
+              description: Retention amount
+              format: float
+              type: number
+            retention_percentage:
+              description: Retention percentage
+              format: float
+              type: number
+            retention_reference_no:
+              description: Reference number for retention
+              type: string
+            retention_release_date:
+              description: Date when retention is released
+              format: date
+              type: string
+            retention_released_by_company_id:
+              description: ID of company releasing retention
+              type: integer
+            retention_released_to_company_id:
+              description: ID of company receiving retention
+              type: integer
+            status:
+              description: Status of retention (pending/released/scheduled)
+              type: string
+          type: object
+      responses:
+        200:
+          description: Retention release updated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  created_at:
+                    description: Date retention release was created
+                    format: date-time
+                    type: string
+                  created_by_user_id:
+                    description: User ID who created retention release
+                    type: string
+                  id:
+                    description: Internal identifier for retention release
+                    type: integer
+                  marked_as_released_by_user_id:
+                    description: User ID who marked retention as released
+                    type: string
+                  milestone_name:
+                    description: Name of the milestone
+                    type: string
+                  project_id:
+                    description: Project ID
+                    type: integer
+                  retention_amount:
+                    description: Retention amount
+                    format: float
+                    type: number
+                  retention_percentage:
+                    description: Retention percentage
+                    format: float
+                    type: number
+                  retention_reference_no:
+                    description: Reference number for retention
+                    type: string
+                  retention_release_date:
+                    description: Date when retention is released
+                    format: date
+                    type: string
+                  retention_released_by_company_id:
+                    description: ID of company releasing retention
+                    type: integer
+                  retention_released_to_company_id:
+                    description: ID of company receiving retention
+                    type: integer
+                  status:
+                    description: Status of retention (pending/released/scheduled)
+                    type: string
+                  updated_at:
+                    description: Date retention release was last updated
+                    format: date-time
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Retention release not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Retention Release By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/user:
     get:
       operationId: v2_getCostUserDetails
