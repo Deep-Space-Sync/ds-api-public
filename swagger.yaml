@@ -4926,6 +4926,4233 @@ paths:
       summary: Update commercial variation
       tags:
       - Commercial
+  /v2/workspaces/{workspaceId}/hz-delivery-action-items:
+    get:
+      description: Retrieve action items with optional filters and pagination
+      operationId: v2_listActionItems
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by action item status
+        enum:
+        - open
+        - in-progress
+        - completed
+        - overdue
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by priority level
+        enum:
+        - high
+        - medium
+        - low
+        in: query
+        name: priority
+        required: false
+        type: string
+      - description: Filter by category
+        enum:
+        - safety
+        - quality
+        - schedule
+        - general
+        in: query
+        name: category
+        required: false
+        type: string
+      - description: Filter by assignee name
+        in: query
+        name: assignedTo
+        required: false
+        type: string
+      - description: Filter by project name
+        in: query
+        name: project
+        required: false
+        type: string
+      - description: Filter by due date from (inclusive)
+        format: date
+        in: query
+        name: dueDateFrom
+        required: false
+        type: string
+      - description: Filter by due date to (inclusive)
+        format: date
+        in: query
+        name: dueDateTo
+        required: false
+        type: string
+      - description: Free text search across action item content
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of action items
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List action items
+      tags:
+      - Delivery
+    post:
+      description: Create a new action item
+      operationId: v2_createActionItem
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assignedTo:
+              description: Assignee name
+              type: string
+            category:
+              description: Action item category
+              enum:
+              - safety
+              - quality
+              - schedule
+              - general
+              type: string
+            description:
+              description: Action item description
+              type: string
+            dueDate:
+              description: Due date
+              format: date
+              type: string
+            notes:
+              description: Additional notes
+              type: string
+            priority:
+              default: medium
+              description: Priority level
+              enum:
+              - high
+              - medium
+              - low
+              type: string
+            project:
+              description: Associated project
+              type: string
+            status:
+              default: open
+              enum:
+              - open
+              - in-progress
+              - completed
+              - overdue
+              type: string
+            title:
+              description: Action item title
+              type: string
+          required:
+          - title
+          - description
+          - project
+          - assignedTo
+          - dueDate
+          - category
+          type: object
+      responses:
+        201:
+          description: Action item created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create action item
+      tags:
+      - Delivery
+  /v2/workspaces/{workspaceId}/hz-delivery-action-items/{actionId}:
+    get:
+      description: Retrieve a specific action item by its unique identifier
+      operationId: v2_getActionItemById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Action item unique identifier
+        in: path
+        name: actionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Action item details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Action item not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get action item by ID
+      tags:
+      - Delivery
+    put:
+      description: Update an existing action item
+      operationId: v2_updateActionItem
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Action item unique identifier
+        in: path
+        name: actionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated action item
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Action item not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update action item
+      tags:
+      - Delivery
+  /v2/workspaces/{workspaceId}/hz-delivery-completion-packs:
+    get:
+      description: Retrieve completion packs with optional filters and pagination
+      operationId: v2_listCompletionPacks
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by completion pack status
+        enum:
+        - draft
+        - in-progress
+        - under-review
+        - approved
+        - submitted
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by project name
+        in: query
+        name: project
+        required: false
+        type: string
+      - description: Filter by pack type
+        enum:
+        - project-closeout
+        - handover
+        - commissioning
+        - warranty
+        in: query
+        name: type
+        required: false
+        type: string
+      - description: Filter by due date from (inclusive)
+        format: date
+        in: query
+        name: dueDateFrom
+        required: false
+        type: string
+      - description: Filter by due date to (inclusive)
+        format: date
+        in: query
+        name: dueDateTo
+        required: false
+        type: string
+      - description: Free text search across completion pack content
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of completion packs
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List completion packs
+      tags:
+      - Delivery
+    post:
+      description: Create a new completion pack
+      operationId: v2_createCompletionPack
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              description: Pack description
+              type: string
+            documents:
+              description: Document URLs or references
+              items:
+                type: string
+              type: array
+            dueDate:
+              description: Due date
+              format: date
+              type: string
+            name:
+              description: Completion pack name
+              type: string
+            project:
+              description: Associated project
+              type: string
+            status:
+              default: draft
+              enum:
+              - draft
+              - in-progress
+              - under-review
+              - approved
+              - submitted
+              type: string
+            type:
+              description: Pack type
+              enum:
+              - project-closeout
+              - handover
+              - commissioning
+              - warranty
+              type: string
+          required:
+          - name
+          - project
+          - type
+          - dueDate
+          type: object
+      responses:
+        201:
+          description: Completion pack created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create completion pack
+      tags:
+      - Delivery
+  /v2/workspaces/{workspaceId}/hz-delivery-completion-packs/{packId}:
+    get:
+      description: Retrieve a specific completion pack by its unique identifier
+      operationId: v2_getCompletionPackById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Completion pack unique identifier
+        in: path
+        name: packId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Completion pack details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Completion pack not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get completion pack by ID
+      tags:
+      - Delivery
+    put:
+      description: Update an existing completion pack
+      operationId: v2_updateCompletionPack
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Completion pack unique identifier
+        in: path
+        name: packId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated completion pack
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Completion pack not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update completion pack
+      tags:
+      - Delivery
+  /v2/workspaces/{workspaceId}/hz-delivery-dashboard:
+    get:
+      description: Retrieve delivery dashboard data with KPIs, site diary entries,
+        RFIs, and action items
+      operationId: v2_getDeliveryDashboard
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - default: month
+        description: Time filter for dashboard data
+        enum:
+        - week
+        - month
+        - quarter
+        - year
+        in: query
+        name: timeFilter
+        required: false
+        type: string
+      - default: overview
+        description: Dashboard view mode
+        enum:
+        - overview
+        - site-diary
+        - rfis
+        - actions
+        in: query
+        name: activeView
+        required: false
+        type: string
+      responses:
+        200:
+          description: Delivery dashboard data
+          schema:
+            properties:
+              actionItems:
+                items:
+                  properties:
+                    assignedTo:
+                      type: string
+                    category:
+                      enum:
+                      - safety
+                      - quality
+                      - schedule
+                      - general
+                      type: string
+                    description:
+                      type: string
+                    dueDate:
+                      format: date
+                      type: string
+                    id:
+                      type: string
+                    priority:
+                      enum:
+                      - high
+                      - medium
+                      - low
+                      type: string
+                    project:
+                      type: string
+                    status:
+                      enum:
+                      - open
+                      - in-progress
+                      - completed
+                      - overdue
+                      type: string
+                    title:
+                      type: string
+                  type: object
+                type: array
+              kpis:
+                properties:
+                  actionItems:
+                    type: integer
+                  activeProjects:
+                    type: integer
+                  completionRate:
+                    format: float
+                    type: number
+                  openRfis:
+                    type: integer
+                type: object
+              recentActivity:
+                items:
+                  properties:
+                    description:
+                      type: string
+                    id:
+                      type: string
+                    status:
+                      type: string
+                    timestamp:
+                      format: date-time
+                      type: string
+                    title:
+                      type: string
+                    type:
+                      type: string
+                  type: object
+                type: array
+              rfis:
+                items:
+                  properties:
+                    assignedTo:
+                      type: string
+                    category:
+                      type: string
+                    dueDate:
+                      format: date
+                      type: string
+                    id:
+                      type: string
+                    priority:
+                      enum:
+                      - high
+                      - medium
+                      - low
+                      type: string
+                    project:
+                      type: string
+                    rfiNumber:
+                      type: string
+                    status:
+                      enum:
+                      - open
+                      - pending
+                      - answered
+                      - closed
+                      type: string
+                    submittedBy:
+                      type: string
+                    title:
+                      type: string
+                  type: object
+                type: array
+              siteDiaryEntries:
+                items:
+                  properties:
+                    activities:
+                      type: string
+                    author:
+                      type: string
+                    date:
+                      format: date
+                      type: string
+                    id:
+                      type: string
+                    issues:
+                      type: string
+                    project:
+                      type: string
+                    status:
+                      enum:
+                      - draft
+                      - submitted
+                      - approved
+                      type: string
+                    temperature:
+                      type: number
+                    trades:
+                      items:
+                        type: string
+                      type: array
+                    weather:
+                      enum:
+                      - sunny
+                      - cloudy
+                      - rain
+                      - overcast
+                      - snow
+                      type: string
+                    workforce:
+                      type: integer
+                  type: object
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get delivery dashboard
+      tags:
+      - Delivery
+  /v2/workspaces/{workspaceId}/hz-delivery-rfis:
+    get:
+      description: Retrieve RFIs with optional filters and pagination
+      operationId: v2_listRFIs
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by RFI status
+        enum:
+        - open
+        - pending
+        - answered
+        - closed
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by priority level
+        enum:
+        - high
+        - medium
+        - low
+        in: query
+        name: priority
+        required: false
+        type: string
+      - description: Filter by RFI category
+        in: query
+        name: category
+        required: false
+        type: string
+      - description: Filter by submitter name
+        in: query
+        name: submittedBy
+        required: false
+        type: string
+      - description: Filter by assignee name
+        in: query
+        name: assignedTo
+        required: false
+        type: string
+      - description: Filter by project name
+        in: query
+        name: project
+        required: false
+        type: string
+      - description: Filter by due date from (inclusive)
+        format: date
+        in: query
+        name: dueDateFrom
+        required: false
+        type: string
+      - description: Filter by due date to (inclusive)
+        format: date
+        in: query
+        name: dueDateTo
+        required: false
+        type: string
+      - description: Free text search across RFI content
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of RFIs
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    assignedTo:
+                      type: string
+                    category:
+                      type: string
+                    createdAt:
+                      format: date-time
+                      type: string
+                    description:
+                      type: string
+                    dueDate:
+                      format: date
+                      type: string
+                    id:
+                      type: string
+                    priority:
+                      type: string
+                    project:
+                      type: string
+                    rfiNumber:
+                      type: string
+                    status:
+                      type: string
+                    submittedBy:
+                      type: string
+                    title:
+                      type: string
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List RFIs (Requests for Information)
+      tags:
+      - Delivery
+    post:
+      description: Create a new Request for Information
+      operationId: v2_createRFI
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assignedTo:
+              description: Assignee name
+              type: string
+            attachments:
+              description: Attachment URLs or references
+              items:
+                type: string
+              type: array
+            category:
+              description: RFI category
+              type: string
+            description:
+              description: Detailed RFI description
+              type: string
+            dueDate:
+              description: Response due date
+              format: date
+              type: string
+            priority:
+              default: medium
+              description: Priority level
+              enum:
+              - high
+              - medium
+              - low
+              type: string
+            project:
+              description: Associated project
+              type: string
+            status:
+              default: open
+              enum:
+              - open
+              - pending
+              - answered
+              - closed
+              type: string
+            submittedBy:
+              description: Submitter name
+              type: string
+            title:
+              description: RFI title
+              type: string
+          required:
+          - title
+          - project
+          - submittedBy
+          - assignedTo
+          - dueDate
+          - description
+          type: object
+      responses:
+        201:
+          description: RFI created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+              rfiNumber:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create RFI
+      tags:
+      - Delivery
+  /v2/workspaces/{workspaceId}/hz-delivery-rfis/{rfiId}:
+    get:
+      description: Retrieve a specific RFI by its unique identifier
+      operationId: v2_getRFIById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: RFI unique identifier
+        in: path
+        name: rfiId
+        required: true
+        type: string
+      responses:
+        200:
+          description: RFI details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: RFI not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get RFI by ID
+      tags:
+      - Delivery
+    put:
+      description: Update an existing RFI
+      operationId: v2_updateRFI
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: RFI unique identifier
+        in: path
+        name: rfiId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated RFI
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: RFI not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update RFI
+      tags:
+      - Delivery
+  /v2/workspaces/{workspaceId}/hz-delivery-site-diary:
+    get:
+      description: Retrieve site diary entries with optional filters and pagination
+      operationId: v2_listSiteDiaryEntries
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by entry status
+        enum:
+        - draft
+        - submitted
+        - approved
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by project name
+        in: query
+        name: project
+        required: false
+        type: string
+      - description: Filter by entry author
+        in: query
+        name: author
+        required: false
+        type: string
+      - description: Filter by weather condition
+        enum:
+        - sunny
+        - cloudy
+        - rain
+        - overcast
+        - snow
+        in: query
+        name: weather
+        required: false
+        type: string
+      - description: Filter by entry date from (inclusive)
+        format: date
+        in: query
+        name: entryDateFrom
+        required: false
+        type: string
+      - description: Filter by entry date to (inclusive)
+        format: date
+        in: query
+        name: entryDateTo
+        required: false
+        type: string
+      - description: Free text search across diary entry content
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of site diary entries
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    activities:
+                      type: string
+                    author:
+                      type: string
+                    createdAt:
+                      format: date-time
+                      type: string
+                    date:
+                      format: date
+                      type: string
+                    id:
+                      type: string
+                    issues:
+                      type: string
+                    project:
+                      type: string
+                    status:
+                      type: string
+                    temperature:
+                      type: number
+                    trades:
+                      items:
+                        type: string
+                      type: array
+                    updatedAt:
+                      format: date-time
+                      type: string
+                    weather:
+                      type: string
+                    workforce:
+                      type: integer
+                  type: object
+                type: array
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  pages:
+                    type: integer
+                  total:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List site diary entries
+      tags:
+      - Delivery
+    post:
+      description: Create a new site diary entry
+      operationId: v2_createSiteDiaryEntry
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            activities:
+              description: Activities performed
+              type: string
+            author:
+              description: Entry author name
+              type: string
+            date:
+              description: Diary entry date
+              format: date
+              type: string
+            issues:
+              description: Issues encountered (or 'None')
+              type: string
+            photos:
+              description: Photo URLs or references
+              items:
+                type: string
+              type: array
+            project:
+              description: Associated project
+              type: string
+            status:
+              default: draft
+              enum:
+              - draft
+              - submitted
+              - approved
+              type: string
+            temperature:
+              description: Temperature in Celsius
+              type: number
+            trades:
+              description: Trades present on site
+              items:
+                type: string
+              type: array
+            weather:
+              default: sunny
+              description: Weather condition
+              enum:
+              - sunny
+              - cloudy
+              - rain
+              - overcast
+              - snow
+              type: string
+            workforce:
+              description: Number of workers on site
+              minimum: 0
+              type: integer
+          required:
+          - date
+          - project
+          - author
+          - activities
+          - workforce
+          type: object
+      responses:
+        201:
+          description: Site diary entry created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create site diary entry
+      tags:
+      - Delivery
+  /v2/workspaces/{workspaceId}/hz-delivery-site-diary/{entryId}:
+    delete:
+      description: Delete a site diary entry
+      operationId: v2_deleteSiteDiaryEntry
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Site diary entry unique identifier
+        in: path
+        name: entryId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Site diary entry deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Site diary entry not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete site diary entry
+      tags:
+      - Delivery
+    get:
+      description: Retrieve a specific site diary entry by its unique identifier
+      operationId: v2_getSiteDiaryEntryById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Site diary entry unique identifier
+        in: path
+        name: entryId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Site diary entry details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Site diary entry not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get site diary entry by ID
+      tags:
+      - Delivery
+    put:
+      description: Update an existing site diary entry
+      operationId: v2_updateSiteDiaryEntry
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Site diary entry unique identifier
+        in: path
+        name: entryId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated site diary entry
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Site diary entry not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update site diary entry
+      tags:
+      - Delivery
+  /v2/workspaces/{workspaceId}/hz-preconstruction-bid-packages:
+    get:
+      description: Retrieve bid packages with optional filters and pagination
+      operationId: v2_listBidPackages
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by bid package status
+        enum:
+        - draft
+        - issued
+        - responses-received
+        - evaluated
+        - awarded
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by package type
+        in: query
+        name: packageType
+        required: false
+        type: string
+      - description: Filter by project ID
+        in: query
+        name: projectId
+        required: false
+        type: string
+      - description: Free text search across bid package details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of bid packages
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List bid packages
+      tags:
+      - Preconstruction
+  /v2/workspaces/{workspaceId}/hz-preconstruction-dashboard:
+    get:
+      description: Retrieve preconstruction dashboard data with KPIs, tender opportunities,
+        and activity overview
+      operationId: v2_getPreconstructionDashboard
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - default: month
+        description: Time filter for dashboard data
+        enum:
+        - week
+        - month
+        - quarter
+        - year
+        in: query
+        name: timeFilter
+        required: false
+        type: string
+      responses:
+        200:
+          description: Preconstruction dashboard data
+          schema:
+            properties:
+              kpis:
+                properties:
+                  activeEstimates:
+                    type: integer
+                  activeOpportunities:
+                    type: integer
+                  pipelineValue:
+                    format: float
+                    type: number
+                  winRate:
+                    format: float
+                    type: number
+                type: object
+              recentActivity:
+                items:
+                  properties:
+                    description:
+                      type: string
+                    id:
+                      type: string
+                    status:
+                      type: string
+                    timestamp:
+                      format: date-time
+                      type: string
+                    title:
+                      type: string
+                    type:
+                      type: string
+                  type: object
+                type: array
+              tenderOpportunities:
+                items:
+                  properties:
+                    client:
+                      type: string
+                    dueDate:
+                      format: date
+                      type: string
+                    estimator:
+                      type: string
+                    id:
+                      type: string
+                    project:
+                      type: string
+                    status:
+                      enum:
+                      - new
+                      - in-progress
+                      - submitted
+                      - won
+                      - lost
+                      type: string
+                    value:
+                      format: float
+                      type: number
+                  type: object
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get preconstruction dashboard
+      tags:
+      - Preconstruction
+  /v2/workspaces/{workspaceId}/hz-preconstruction-estimates:
+    get:
+      description: Retrieve project estimates with optional filters and pagination
+      operationId: v2_listProjectEstimates
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by estimate status
+        enum:
+        - draft
+        - in-progress
+        - under-review
+        - approved
+        - rejected
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by estimator name
+        in: query
+        name: estimator
+        required: false
+        type: string
+      - description: Filter by project type
+        in: query
+        name: projectType
+        required: false
+        type: string
+      - description: Filter by opportunity ID
+        in: query
+        name: opportunityId
+        required: false
+        type: string
+      - description: Free text search across estimate details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of project estimates
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List project estimates
+      tags:
+      - Preconstruction
+    post:
+      description: Create a new project estimate
+      operationId: v2_createProjectEstimate
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              description: Estimate description
+              type: string
+            estimateName:
+              description: Estimate name/title
+              type: string
+            estimatedValue:
+              description: Estimated total value
+              format: float
+              type: number
+            estimator:
+              description: Assigned estimator name
+              type: string
+            opportunityId:
+              description: Associated opportunity ID
+              type: string
+            status:
+              default: draft
+              enum:
+              - draft
+              - in-progress
+              - under-review
+              - approved
+              - rejected
+              type: string
+          required:
+          - estimateName
+          - estimator
+          - opportunityId
+          type: object
+      responses:
+        201:
+          description: Project estimate created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create project estimate
+      tags:
+      - Preconstruction
+  /v2/workspaces/{workspaceId}/hz-preconstruction-estimates/{estimateId}:
+    get:
+      description: Retrieve a specific project estimate by its unique identifier
+      operationId: v2_getProjectEstimateById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project estimate unique identifier
+        in: path
+        name: estimateId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Project estimate details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Project estimate not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get project estimate by ID
+      tags:
+      - Preconstruction
+    put:
+      description: Update an existing project estimate
+      operationId: v2_updateProjectEstimate
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project estimate unique identifier
+        in: path
+        name: estimateId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated project estimate
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Project estimate not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update project estimate
+      tags:
+      - Preconstruction
+  /v2/workspaces/{workspaceId}/hz-preconstruction-opportunities:
+    get:
+      description: Retrieve tender opportunities with optional filters and pagination
+      operationId: v2_listTenderOpportunities
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by opportunity status
+        enum:
+        - new
+        - in-progress
+        - submitted
+        - won
+        - lost
+        - undecided
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by assigned estimator
+        in: query
+        name: estimator
+        required: false
+        type: string
+      - description: Filter by client name
+        in: query
+        name: client
+        required: false
+        type: string
+      - description: Filter by region
+        in: query
+        name: region
+        required: false
+        type: string
+      - description: Filter by minimum project value
+        format: float
+        in: query
+        name: minValue
+        required: false
+        type: number
+      - description: Filter by maximum project value
+        format: float
+        in: query
+        name: maxValue
+        required: false
+        type: number
+      - description: Filter by due date from (inclusive)
+        format: date
+        in: query
+        name: dueDateFrom
+        required: false
+        type: string
+      - description: Filter by due date to (inclusive)
+        format: date
+        in: query
+        name: dueDateTo
+        required: false
+        type: string
+      - description: Free text search across opportunity details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of tender opportunities
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    client:
+                      type: string
+                    documents:
+                      type: integer
+                    dueDate:
+                      format: date
+                      type: string
+                    estimator:
+                      type: string
+                    id:
+                      type: string
+                    project:
+                      type: string
+                    region:
+                      type: string
+                    rfis:
+                      type: integer
+                    status:
+                      type: string
+                    type:
+                      type: string
+                    value:
+                      format: float
+                      type: number
+                  type: object
+                type: array
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  pages:
+                    type: integer
+                  total:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List tender opportunities
+      tags:
+      - Preconstruction
+    post:
+      description: Create a new tender opportunity
+      operationId: v2_createTenderOpportunity
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            client:
+              description: Client name
+              type: string
+            description:
+              description: Project description
+              type: string
+            dueDate:
+              description: Tender submission due date
+              format: date
+              type: string
+            estimator:
+              description: Assigned estimator name
+              type: string
+            project:
+              description: Project name
+              type: string
+            region:
+              description: Project region
+              type: string
+            status:
+              default: new
+              enum:
+              - new
+              - in-progress
+              - submitted
+              - won
+              - lost
+              - undecided
+              type: string
+            type:
+              description: Project type (e.g., Commercial, Healthcare, Residential)
+              type: string
+            value:
+              description: Estimated project value
+              format: float
+              type: number
+          required:
+          - project
+          - client
+          - value
+          - dueDate
+          - estimator
+          type: object
+      responses:
+        201:
+          description: Tender opportunity created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create tender opportunity
+      tags:
+      - Preconstruction
+  /v2/workspaces/{workspaceId}/hz-preconstruction-opportunities/{opportunityId}:
+    delete:
+      description: Delete a tender opportunity
+      operationId: v2_deleteTenderOpportunity
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Tender opportunity unique identifier
+        in: path
+        name: opportunityId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tender opportunity deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Tender opportunity not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete tender opportunity
+      tags:
+      - Preconstruction
+    get:
+      description: Retrieve a specific tender opportunity by its unique identifier
+      operationId: v2_getTenderOpportunityById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Tender opportunity unique identifier
+        in: path
+        name: opportunityId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tender opportunity details
+          schema:
+            properties:
+              client:
+                type: string
+              createdAt:
+                format: date-time
+                type: string
+              description:
+                type: string
+              documents:
+                type: integer
+              dueDate:
+                format: date
+                type: string
+              estimator:
+                type: string
+              id:
+                type: string
+              project:
+                type: string
+              region:
+                type: string
+              rfis:
+                type: integer
+              status:
+                type: string
+              type:
+                type: string
+              updatedAt:
+                format: date-time
+                type: string
+              value:
+                format: float
+                type: number
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Tender opportunity not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get tender opportunity by ID
+      tags:
+      - Preconstruction
+    put:
+      description: Update an existing tender opportunity
+      operationId: v2_updateTenderOpportunity
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Tender opportunity unique identifier
+        in: path
+        name: opportunityId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            client:
+              type: string
+            description:
+              type: string
+            dueDate:
+              format: date
+              type: string
+            estimator:
+              type: string
+            project:
+              type: string
+            region:
+              type: string
+            status:
+              enum:
+              - new
+              - in-progress
+              - submitted
+              - won
+              - lost
+              - undecided
+              type: string
+            type:
+              type: string
+            value:
+              format: float
+              type: number
+          type: object
+      responses:
+        200:
+          description: Updated tender opportunity
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Tender opportunity not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update tender opportunity
+      tags:
+      - Preconstruction
+  /v2/workspaces/{workspaceId}/hz-preconstruction-quantity-takeoffs:
+    get:
+      description: Retrieve quantity takeoff records with optional filters and pagination
+      operationId: v2_listQuantityTakeoffs
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by takeoff status
+        enum:
+        - draft
+        - in-progress
+        - under-review
+        - approved
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by estimate ID
+        in: query
+        name: estimateId
+        required: false
+        type: string
+      - description: Filter by trade category
+        in: query
+        name: trade
+        required: false
+        type: string
+      - description: Free text search across takeoff details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of quantity takeoffs
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List quantity takeoffs
+      tags:
+      - Preconstruction
+    post:
+      description: Create a new quantity takeoff record
+      operationId: v2_createQuantityTakeoff
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              description: Takeoff description
+              type: string
+            estimateId:
+              description: Associated estimate ID
+              type: string
+            quantities:
+              description: Quantity items
+              items:
+                type: object
+              type: array
+            status:
+              default: draft
+              enum:
+              - draft
+              - in-progress
+              - under-review
+              - approved
+              type: string
+            takeoffName:
+              description: Takeoff name/title
+              type: string
+            trade:
+              description: Trade category
+              type: string
+          required:
+          - takeoffName
+          - estimateId
+          - trade
+          type: object
+      responses:
+        201:
+          description: Quantity takeoff created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create quantity takeoff
+      tags:
+      - Preconstruction
+  /v2/workspaces/{workspaceId}/hz-procurement-approvals:
+    get:
+      description: Retrieve pending approval requests with optional filters and pagination
+      operationId: v2_listPendingApprovals
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by assigned approver
+        in: query
+        name: approver
+        required: false
+        type: string
+      - description: Filter by minimum PO amount
+        format: float
+        in: query
+        name: minAmount
+        required: false
+        type: number
+      - description: Filter by maximum PO amount
+        format: float
+        in: query
+        name: maxAmount
+        required: false
+        type: number
+      - description: Filter by urgency level
+        enum:
+        - high
+        - medium
+        - low
+        in: query
+        name: urgency
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of pending approvals
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List pending approvals
+      tags:
+      - Procurement
+  /v2/workspaces/{workspaceId}/hz-procurement-approvals/{approvalId}:
+    put:
+      description: Approve or reject a pending approval request
+      operationId: v2_processApprovalRequest
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Approval request unique identifier
+        in: path
+        name: approvalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            action:
+              description: Approval action
+              enum:
+              - approve
+              - reject
+              type: string
+            approver:
+              description: Approver name
+              type: string
+            comments:
+              description: Approval comments
+              type: string
+          required:
+          - action
+          - approver
+          type: object
+      responses:
+        200:
+          description: Approval processed successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Approval request not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Process approval request
+      tags:
+      - Procurement
+  /v2/workspaces/{workspaceId}/hz-procurement-dashboard:
+    get:
+      description: Retrieve procurement dashboard data with KPIs, purchase orders,
+        and vendor overview
+      operationId: v2_getProcurementDashboard
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - default: month
+        description: Time filter for dashboard data
+        enum:
+        - week
+        - month
+        - quarter
+        - year
+        in: query
+        name: timeFilter
+        required: false
+        type: string
+      responses:
+        200:
+          description: Procurement dashboard data
+          schema:
+            properties:
+              kpis:
+                properties:
+                  activePurchaseOrders:
+                    type: integer
+                  activeVendors:
+                    type: integer
+                  pendingApprovals:
+                    type: integer
+                  totalProcurementValue:
+                    format: float
+                    type: number
+                type: object
+              purchaseOrders:
+                items:
+                  properties:
+                    amount:
+                      format: float
+                      type: number
+                    description:
+                      type: string
+                    id:
+                      type: string
+                    poNumber:
+                      type: string
+                    project:
+                      type: string
+                    status:
+                      enum:
+                      - draft
+                      - pending-approval
+                      - approved
+                      - ordered
+                      - delivered
+                      - invoiced
+                      - paid
+                      type: string
+                    urgency:
+                      enum:
+                      - high
+                      - medium
+                      - low
+                      type: string
+                    vendor:
+                      type: string
+                  type: object
+                type: array
+              recentActivity:
+                items:
+                  properties:
+                    description:
+                      type: string
+                    id:
+                      type: string
+                    status:
+                      type: string
+                    timestamp:
+                      format: date-time
+                      type: string
+                    title:
+                      type: string
+                    type:
+                      type: string
+                  type: object
+                type: array
+              topVendors:
+                items:
+                  properties:
+                    category:
+                      type: string
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    rating:
+                      format: float
+                      type: number
+                    status:
+                      enum:
+                      - active
+                      - inactive
+                      - pending
+                      type: string
+                    totalOrders:
+                      type: integer
+                    totalValue:
+                      format: float
+                      type: number
+                  type: object
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get procurement dashboard
+      tags:
+      - Procurement
+  /v2/workspaces/{workspaceId}/hz-procurement-delivery-tracking:
+    get:
+      description: Retrieve delivery tracking information with optional filters and
+        pagination
+      operationId: v2_listDeliveryTracking
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by delivery status
+        enum:
+        - pending
+        - in-transit
+        - delivered
+        - failed
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by purchase order ID
+        in: query
+        name: poId
+        required: false
+        type: string
+      - description: Filter by vendor name
+        in: query
+        name: vendor
+        required: false
+        type: string
+      - description: Filter by delivery date from (inclusive)
+        format: date
+        in: query
+        name: deliveryDateFrom
+        required: false
+        type: string
+      - description: Filter by delivery date to (inclusive)
+        format: date
+        in: query
+        name: deliveryDateTo
+        required: false
+        type: string
+      - description: Free text search across delivery details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of delivery tracking records
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List delivery tracking records
+      tags:
+      - Procurement
+  /v2/workspaces/{workspaceId}/hz-procurement-purchase-orders:
+    get:
+      description: Retrieve purchase orders with optional filters and pagination
+      operationId: v2_listPurchaseOrders
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by PO status
+        enum:
+        - draft
+        - pending-approval
+        - approved
+        - ordered
+        - delivered
+        - invoiced
+        - paid
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by vendor name
+        in: query
+        name: vendor
+        required: false
+        type: string
+      - description: Filter by project name
+        in: query
+        name: project
+        required: false
+        type: string
+      - description: Filter by urgency level
+        enum:
+        - high
+        - medium
+        - low
+        in: query
+        name: urgency
+        required: false
+        type: string
+      - description: Filter by requester name
+        in: query
+        name: requestedBy
+        required: false
+        type: string
+      - description: Filter by approver name
+        in: query
+        name: approvedBy
+        required: false
+        type: string
+      - description: Filter by minimum PO amount
+        format: float
+        in: query
+        name: minAmount
+        required: false
+        type: number
+      - description: Filter by maximum PO amount
+        format: float
+        in: query
+        name: maxAmount
+        required: false
+        type: number
+      - description: Filter by order date from (inclusive)
+        format: date
+        in: query
+        name: orderDateFrom
+        required: false
+        type: string
+      - description: Filter by order date to (inclusive)
+        format: date
+        in: query
+        name: orderDateTo
+        required: false
+        type: string
+      - description: Free text search across PO details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of purchase orders
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    amount:
+                      format: float
+                      type: number
+                    approvedBy:
+                      type: string
+                    deliveryDate:
+                      format: date
+                      type: string
+                    description:
+                      type: string
+                    id:
+                      type: string
+                    orderDate:
+                      format: date
+                      type: string
+                    poNumber:
+                      type: string
+                    project:
+                      type: string
+                    requestedBy:
+                      type: string
+                    status:
+                      type: string
+                    urgency:
+                      type: string
+                    vendor:
+                      type: string
+                  type: object
+                type: array
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  pages:
+                    type: integer
+                  total:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List purchase orders
+      tags:
+      - Procurement
+    post:
+      description: Create a new purchase order
+      operationId: v2_createPurchaseOrder
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              description: Purchase order amount
+              format: float
+              type: number
+            deliveryDate:
+              description: Expected delivery date
+              format: date
+              type: string
+            description:
+              description: Purchase order description
+              type: string
+            notes:
+              description: Additional notes
+              type: string
+            project:
+              description: Associated project
+              type: string
+            requestedBy:
+              description: Requester name
+              type: string
+            status:
+              default: draft
+              enum:
+              - draft
+              - pending-approval
+              - approved
+              - ordered
+              - delivered
+              - invoiced
+              - paid
+              type: string
+            urgency:
+              default: medium
+              description: Urgency level
+              enum:
+              - high
+              - medium
+              - low
+              type: string
+            vendor:
+              description: Vendor name
+              type: string
+          required:
+          - vendor
+          - description
+          - amount
+          - project
+          - requestedBy
+          type: object
+      responses:
+        201:
+          description: Purchase order created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+              poNumber:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create purchase order
+      tags:
+      - Procurement
+  /v2/workspaces/{workspaceId}/hz-procurement-purchase-orders/{poId}:
+    delete:
+      description: Delete a purchase order
+      operationId: v2_deletePurchaseOrder
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Purchase order unique identifier
+        in: path
+        name: poId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Purchase order deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Purchase order not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete purchase order
+      tags:
+      - Procurement
+    get:
+      description: Retrieve a specific purchase order by its unique identifier
+      operationId: v2_getPurchaseOrderById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Purchase order unique identifier
+        in: path
+        name: poId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Purchase order details
+          schema:
+            properties:
+              amount:
+                format: float
+                type: number
+              approvedBy:
+                type: string
+              createdAt:
+                format: date-time
+                type: string
+              deliveryDate:
+                format: date
+                type: string
+              description:
+                type: string
+              id:
+                type: string
+              notes:
+                type: string
+              orderDate:
+                format: date
+                type: string
+              poNumber:
+                type: string
+              project:
+                type: string
+              requestedBy:
+                type: string
+              status:
+                type: string
+              updatedAt:
+                format: date-time
+                type: string
+              urgency:
+                type: string
+              vendor:
+                type: string
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Purchase order not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get purchase order by ID
+      tags:
+      - Procurement
+    put:
+      description: Update an existing purchase order
+      operationId: v2_updatePurchaseOrder
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Purchase order unique identifier
+        in: path
+        name: poId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              format: float
+              type: number
+            deliveryDate:
+              format: date
+              type: string
+            description:
+              type: string
+            notes:
+              type: string
+            project:
+              type: string
+            status:
+              enum:
+              - draft
+              - pending-approval
+              - approved
+              - ordered
+              - delivered
+              - invoiced
+              - paid
+              type: string
+            urgency:
+              enum:
+              - high
+              - medium
+              - low
+              type: string
+            vendor:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Updated purchase order
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Purchase order not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update purchase order
+      tags:
+      - Procurement
+  /v2/workspaces/{workspaceId}/hz-procurement-vendors:
+    get:
+      description: Retrieve vendor directory with optional filters and pagination
+      operationId: v2_listVendors
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by vendor status
+        enum:
+        - active
+        - inactive
+        - pending
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by vendor category
+        in: query
+        name: category
+        required: false
+        type: string
+      - description: Filter by minimum vendor rating
+        format: float
+        in: query
+        maximum: 5.0
+        minimum: 0.0
+        name: minRating
+        required: false
+        type: number
+      - description: Filter by vendor region
+        in: query
+        name: region
+        required: false
+        type: string
+      - description: Free text search across vendor details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of vendors
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    category:
+                      type: string
+                    contactEmail:
+                      type: string
+                    contactPhone:
+                      type: string
+                    id:
+                      type: string
+                    lastOrder:
+                      format: date
+                      type: string
+                    name:
+                      type: string
+                    paymentTerms:
+                      type: string
+                    rating:
+                      format: float
+                      type: number
+                    status:
+                      type: string
+                    totalOrders:
+                      type: integer
+                    totalValue:
+                      format: float
+                      type: number
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List vendors
+      tags:
+      - Procurement
+    post:
+      description: Create a new vendor in the directory
+      operationId: v2_createVendor
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            address:
+              description: Vendor address
+              type: string
+            category:
+              description: Vendor category
+              type: string
+            contactEmail:
+              description: Primary contact email
+              format: email
+              type: string
+            contactPhone:
+              description: Primary contact phone
+              type: string
+            name:
+              description: Vendor name
+              type: string
+            notes:
+              description: Additional notes
+              type: string
+            paymentTerms:
+              description: Payment terms
+              type: string
+            rating:
+              description: Vendor rating
+              format: float
+              maximum: 5.0
+              minimum: 0.0
+              type: number
+            status:
+              default: pending
+              enum:
+              - active
+              - inactive
+              - pending
+              type: string
+          required:
+          - name
+          - category
+          - contactEmail
+          type: object
+      responses:
+        201:
+          description: Vendor created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create vendor
+      tags:
+      - Procurement
+  /v2/workspaces/{workspaceId}/hz-procurement-vendors/{vendorId}:
+    get:
+      description: Retrieve a specific vendor by its unique identifier
+      operationId: v2_getVendorById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Vendor unique identifier
+        in: path
+        name: vendorId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Vendor details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Vendor not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get vendor by ID
+      tags:
+      - Procurement
+    put:
+      description: Update an existing vendor
+      operationId: v2_updateVendor
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Vendor unique identifier
+        in: path
+        name: vendorId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated vendor
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Vendor not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update vendor
+      tags:
+      - Procurement
+  /v2/workspaces/{workspaceId}/hz-scheduling-constraints:
+    get:
+      description: Retrieve project constraints with optional filters and pagination
+      operationId: v2_listProjectConstraints
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by constraint status
+        enum:
+        - open
+        - in-progress
+        - resolved
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by constraint type
+        enum:
+        - resource
+        - material
+        - weather
+        - regulatory
+        - design
+        in: query
+        name: type
+        required: false
+        type: string
+      - description: Filter by severity level
+        enum:
+        - high
+        - medium
+        - low
+        in: query
+        name: severity
+        required: false
+        type: string
+      - description: Filter by project name
+        in: query
+        name: project
+        required: false
+        type: string
+      - description: Filter by due date from (inclusive)
+        format: date
+        in: query
+        name: dueDateFrom
+        required: false
+        type: string
+      - description: Filter by due date to (inclusive)
+        format: date
+        in: query
+        name: dueDateTo
+        required: false
+        type: string
+      - description: Free text search across constraint details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of project constraints
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List project constraints
+      tags:
+      - Scheduling
+    post:
+      description: Create a new project constraint
+      operationId: v2_createProjectConstraint
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              description: Detailed constraint description
+              type: string
+            dueDate:
+              description: Resolution due date
+              format: date
+              type: string
+            impact:
+              description: Impact description
+              type: string
+            mitigation:
+              description: Mitigation plan
+              type: string
+            project:
+              description: Associated project
+              type: string
+            severity:
+              description: Severity level
+              enum:
+              - high
+              - medium
+              - low
+              type: string
+            status:
+              default: open
+              enum:
+              - open
+              - in-progress
+              - resolved
+              type: string
+            title:
+              description: Constraint title
+              type: string
+            type:
+              description: Constraint type
+              enum:
+              - resource
+              - material
+              - weather
+              - regulatory
+              - design
+              type: string
+          required:
+          - title
+          - project
+          - type
+          - severity
+          - impact
+          - dueDate
+          type: object
+      responses:
+        201:
+          description: Project constraint created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create project constraint
+      tags:
+      - Scheduling
+  /v2/workspaces/{workspaceId}/hz-scheduling-constraints/{constraintId}:
+    get:
+      description: Retrieve a specific project constraint by its unique identifier
+      operationId: v2_getProjectConstraintById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project constraint unique identifier
+        in: path
+        name: constraintId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Project constraint details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Project constraint not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get project constraint by ID
+      tags:
+      - Scheduling
+    put:
+      description: Update an existing project constraint
+      operationId: v2_updateProjectConstraint
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project constraint unique identifier
+        in: path
+        name: constraintId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated project constraint
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Project constraint not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update project constraint
+      tags:
+      - Scheduling
+  /v2/workspaces/{workspaceId}/hz-scheduling-construction-programme:
+    get:
+      description: Retrieve construction programme with Gantt chart data and timeline
+        information
+      operationId: v2_getConstructionProgramme
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by project ID
+        in: query
+        name: projectId
+        required: false
+        type: string
+      - default: week
+        description: Programme view mode
+        enum:
+        - day
+        - week
+        - month
+        - quarter
+        in: query
+        name: viewMode
+        required: false
+        type: string
+      responses:
+        200:
+          description: Construction programme data
+          schema:
+            properties:
+              constraints:
+                items:
+                  type: object
+                type: array
+              milestones:
+                items:
+                  type: object
+                type: array
+              tasks:
+                items:
+                  properties:
+                    criticalPath:
+                      type: boolean
+                    dependencies:
+                      items:
+                        type: string
+                      type: array
+                    endDate:
+                      format: date
+                      type: string
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    progress:
+                      format: float
+                      type: number
+                    resources:
+                      items:
+                        type: string
+                      type: array
+                    startDate:
+                      format: date
+                      type: string
+                  type: object
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get construction programme
+      tags:
+      - Scheduling
+  /v2/workspaces/{workspaceId}/hz-scheduling-critical-path:
+    get:
+      description: Retrieve critical path analysis data for project schedules
+      operationId: v2_getCriticalPathAnalysis
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID for critical path analysis
+        in: query
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Critical path analysis data
+          schema:
+            properties:
+              criticalPathTasks:
+                items:
+                  type: object
+                type: array
+              freeFloat:
+                format: float
+                type: number
+              recommendations:
+                items:
+                  type: object
+                type: array
+              totalFloat:
+                format: float
+                type: number
+            type: object
+        400:
+          description: Project ID is required
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get critical path analysis
+      tags:
+      - Scheduling
+  /v2/workspaces/{workspaceId}/hz-scheduling-dashboard:
+    get:
+      description: Retrieve scheduling dashboard data with KPIs, project schedules,
+        milestones, and constraints
+      operationId: v2_getSchedulingDashboard
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - default: month
+        description: Time filter for dashboard data
+        enum:
+        - week
+        - month
+        - quarter
+        - year
+        in: query
+        name: timeFilter
+        required: false
+        type: string
+      - default: overview
+        description: Dashboard view mode
+        enum:
+        - overview
+        - gantt
+        - calendar
+        - resources
+        in: query
+        name: activeView
+        required: false
+        type: string
+      responses:
+        200:
+          description: Scheduling dashboard data
+          schema:
+            properties:
+              constraints:
+                items:
+                  properties:
+                    dueDate:
+                      format: date
+                      type: string
+                    id:
+                      type: string
+                    impact:
+                      type: string
+                    project:
+                      type: string
+                    severity:
+                      enum:
+                      - high
+                      - medium
+                      - low
+                      type: string
+                    status:
+                      enum:
+                      - open
+                      - in-progress
+                      - resolved
+                      type: string
+                    title:
+                      type: string
+                    type:
+                      enum:
+                      - resource
+                      - material
+                      - weather
+                      - regulatory
+                      - design
+                      type: string
+                  type: object
+                type: array
+              kpis:
+                properties:
+                  activeProjects:
+                    type: integer
+                  criticalConstraints:
+                    type: integer
+                  onSchedulePercentage:
+                    format: float
+                    type: number
+                  upcomingMilestones:
+                    type: integer
+                type: object
+              milestones:
+                items:
+                  properties:
+                    assignee:
+                      type: string
+                    dueDate:
+                      format: date
+                      type: string
+                    id:
+                      type: string
+                    priority:
+                      enum:
+                      - high
+                      - medium
+                      - low
+                      type: string
+                    project:
+                      type: string
+                    status:
+                      enum:
+                      - upcoming
+                      - due-today
+                      - overdue
+                      - completed
+                      type: string
+                    title:
+                      type: string
+                  type: object
+                type: array
+              projectSchedules:
+                items:
+                  properties:
+                    criticalPath:
+                      type: boolean
+                    daysRemaining:
+                      type: integer
+                    endDate:
+                      format: date
+                      type: string
+                    id:
+                      type: string
+                    manager:
+                      type: string
+                    name:
+                      type: string
+                    progress:
+                      format: float
+                      type: number
+                    startDate:
+                      format: date
+                      type: string
+                    status:
+                      enum:
+                      - on-track
+                      - at-risk
+                      - critical
+                      - completed
+                      type: string
+                  type: object
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get scheduling dashboard
+      tags:
+      - Scheduling
+  /v2/workspaces/{workspaceId}/hz-scheduling-lookahead-planning:
+    get:
+      description: Retrieve lookahead planning information for upcoming work
+      operationId: v2_getLookaheadPlanning
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by project ID
+        in: query
+        name: projectId
+        required: false
+        type: string
+      - default: 4weeks
+        description: Lookahead time horizon
+        enum:
+        - 1week
+        - 2weeks
+        - 4weeks
+        - 6weeks
+        in: query
+        name: timeHorizon
+        required: false
+        type: string
+      responses:
+        200:
+          description: Lookahead planning data
+          schema:
+            properties:
+              constraints:
+                items:
+                  type: object
+                type: array
+              readiness:
+                items:
+                  type: object
+                type: array
+              resourceRequirements:
+                items:
+                  type: object
+                type: array
+              upcomingTasks:
+                items:
+                  type: object
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get lookahead planning data
+      tags:
+      - Scheduling
+  /v2/workspaces/{workspaceId}/hz-scheduling-milestones:
+    get:
+      description: Retrieve project milestones with optional filters and pagination
+      operationId: v2_listProjectMilestones
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by milestone status
+        enum:
+        - upcoming
+        - due-today
+        - overdue
+        - completed
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by priority level
+        enum:
+        - high
+        - medium
+        - low
+        in: query
+        name: priority
+        required: false
+        type: string
+      - description: Filter by assignee
+        in: query
+        name: assignee
+        required: false
+        type: string
+      - description: Filter by project name
+        in: query
+        name: project
+        required: false
+        type: string
+      - description: Filter by due date from (inclusive)
+        format: date
+        in: query
+        name: dueDateFrom
+        required: false
+        type: string
+      - description: Filter by due date to (inclusive)
+        format: date
+        in: query
+        name: dueDateTo
+        required: false
+        type: string
+      - description: Free text search across milestone details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of project milestones
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List project milestones
+      tags:
+      - Scheduling
+    post:
+      description: Create a new project milestone
+      operationId: v2_createProjectMilestone
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assignee:
+              description: Assigned person
+              type: string
+            dependencies:
+              description: Dependent milestone IDs
+              items:
+                type: string
+              type: array
+            description:
+              description: Milestone description
+              type: string
+            dueDate:
+              description: Milestone due date
+              format: date
+              type: string
+            priority:
+              default: medium
+              description: Priority level
+              enum:
+              - high
+              - medium
+              - low
+              type: string
+            project:
+              description: Associated project
+              type: string
+            status:
+              default: upcoming
+              enum:
+              - upcoming
+              - due-today
+              - overdue
+              - completed
+              type: string
+            title:
+              description: Milestone title
+              type: string
+          required:
+          - title
+          - project
+          - dueDate
+          - assignee
+          type: object
+      responses:
+        201:
+          description: Project milestone created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create project milestone
+      tags:
+      - Scheduling
+  /v2/workspaces/{workspaceId}/hz-scheduling-milestones/{milestoneId}:
+    get:
+      description: Retrieve a specific project milestone by its unique identifier
+      operationId: v2_getProjectMilestoneById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project milestone unique identifier
+        in: path
+        name: milestoneId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Project milestone details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Project milestone not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get project milestone by ID
+      tags:
+      - Scheduling
+    put:
+      description: Update an existing project milestone
+      operationId: v2_updateProjectMilestone
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project milestone unique identifier
+        in: path
+        name: milestoneId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated project milestone
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Project milestone not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update project milestone
+      tags:
+      - Scheduling
+  /v2/workspaces/{workspaceId}/hz-scheduling-projects:
+    get:
+      description: Retrieve project schedules with optional filters and pagination
+      operationId: v2_listProjectSchedules
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by project status
+        enum:
+        - on-track
+        - at-risk
+        - critical
+        - completed
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by project manager
+        in: query
+        name: manager
+        required: false
+        type: string
+      - description: Filter by critical path projects
+        in: query
+        name: criticalPath
+        required: false
+        type: boolean
+      - description: Filter by start date from (inclusive)
+        format: date
+        in: query
+        name: startDateFrom
+        required: false
+        type: string
+      - description: Filter by start date to (inclusive)
+        format: date
+        in: query
+        name: startDateTo
+        required: false
+        type: string
+      - description: Filter by end date from (inclusive)
+        format: date
+        in: query
+        name: endDateFrom
+        required: false
+        type: string
+      - description: Filter by end date to (inclusive)
+        format: date
+        in: query
+        name: endDateTo
+        required: false
+        type: string
+      - description: Free text search across project details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of project schedules
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    budget:
+                      format: float
+                      type: number
+                    budgetSpent:
+                      format: float
+                      type: number
+                    criticalPath:
+                      type: boolean
+                    daysRemaining:
+                      type: integer
+                    endDate:
+                      format: date
+                      type: string
+                    id:
+                      type: string
+                    manager:
+                      type: string
+                    name:
+                      type: string
+                    progress:
+                      format: float
+                      type: number
+                    startDate:
+                      format: date
+                      type: string
+                    status:
+                      type: string
+                  type: object
+                type: array
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  pages:
+                    type: integer
+                  total:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List project schedules
+      tags:
+      - Scheduling
+  /v2/workspaces/{workspaceId}/hz-scheduling-resource-planning:
+    get:
+      description: Retrieve resource planning and allocation information
+      operationId: v2_getResourcePlanning
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by project ID
+        in: query
+        name: projectId
+        required: false
+        type: string
+      - description: Filter by resource type
+        enum:
+        - labor
+        - equipment
+        - material
+        in: query
+        name: resourceType
+        required: false
+        type: string
+      - description: Planning start date
+        format: date
+        in: query
+        name: startDate
+        required: false
+        type: string
+      - description: Planning end date
+        format: date
+        in: query
+        name: endDate
+        required: false
+        type: string
+      responses:
+        200:
+          description: Resource planning data
+          schema:
+            properties:
+              conflicts:
+                items:
+                  type: object
+                type: array
+              resourceAllocations:
+                items:
+                  type: object
+                type: array
+              resourceCapacity:
+                items:
+                  type: object
+                type: array
+              utilization:
+                type: object
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get resource planning data
+      tags:
+      - Scheduling
   /v2/workspaces/{workspaceId}/implementation:
     get:
       operationId: v2_getWorkspaceImplementationChecklist
