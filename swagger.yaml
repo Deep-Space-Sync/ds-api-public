@@ -7020,9 +7020,6 @@ paths:
                         original_total_amount:
                           description: Original total amount of the cost budget item
                           type: number
-                        project_id:
-                          description: Project ID
-                          type: integer
                         total_amount:
                           description: Total amount of the cost budget item
                           type: number
@@ -10824,8 +10821,6 @@ paths:
                       type: string
                     issuing_company_id:
                       type: integer
-                    project_id:
-                      type: integer
                     receiving_company_id:
                       type: integer
                     related_cost_claim_num:
@@ -10957,8 +10952,6 @@ paths:
                     type: string
                   issuing_company_id:
                     type: integer
-                  project_id:
-                    type: integer
                   receiving_company_id:
                     type: integer
                   related_cost_claim_num:
@@ -11045,8 +11038,6 @@ paths:
                     format: date
                     type: string
                   issuing_company_id:
-                    type: integer
-                  project_id:
                     type: integer
                   receiving_company_id:
                     type: integer
@@ -11167,8 +11158,6 @@ paths:
                     type: string
                   issuing_company_id:
                     type: integer
-                  project_id:
-                    type: integer
                   receiving_company_id:
                     type: integer
                   related_cost_claim_num:
@@ -11272,8 +11261,6 @@ paths:
                   description: User ID who marked retention as released
                 milestone_name:
                   description: Name of the milestone
-                project_id:
-                  description: Project ID
                 retention_amount:
                   description: Retention amount
                 retention_percentage:
@@ -11361,8 +11348,6 @@ paths:
                     description: User ID who marked retention as released
                   milestone_name:
                     description: Name of the milestone
-                  project_id:
-                    description: Project ID
                   retention_amount:
                     description: Retention amount
                   retention_percentage:
@@ -11429,8 +11414,6 @@ paths:
                     description: User ID who marked retention as released
                   milestone_name:
                     description: Name of the milestone
-                  project_id:
-                    description: Project ID
                   retention_amount:
                     description: Retention amount
                   retention_percentage:
@@ -11520,8 +11503,6 @@ paths:
                     description: User ID who marked retention as released
                   milestone_name:
                     description: Name of the milestone
-                  project_id:
-                    description: Project ID
                   retention_amount:
                     description: Retention amount
                   retention_percentage:
@@ -13416,8 +13397,6 @@ paths:
                       - Price (60%), Experience (20%), Capacity (20%)
                     id:
                       description: Internal identifier for RFQ (UUID)
-                    project_id:
-                      description: Project ID
                     response_due_date:
                       description: Date when responses are due
                     response_format:
@@ -13497,9 +13476,6 @@ paths:
               - Price (70%), Quality (30%)
               - Price (60%), Experience (20%), Capacity (20%)
               type: string
-            project_id:
-              description: Project ID (defaults to path projectId)
-              type: integer
             response_due_date:
               description: Date when responses are due (YYYY-MM-DD or DD/MM/YYYY format)
               type: string
@@ -13552,8 +13528,6 @@ paths:
                     description: Evaluation criteria for responses
                   id:
                     description: Internal identifier for RFQ
-                  project_id:
-                    description: Project ID
                   response_due_date:
                     description: Date when responses are due
                   response_format:
@@ -13654,8 +13628,6 @@ paths:
                     description: Evaluation criteria for responses
                   id:
                     description: Internal identifier for RFQ
-                  project_id:
-                    description: Project ID
                   response_due_date:
                     description: Date when responses are due
                   response_format:
@@ -13766,8 +13738,6 @@ paths:
                     description: Evaluation criteria for responses
                   id:
                     description: Internal identifier for RFQ
-                  project_id:
-                    description: Project ID
                   response_due_date:
                     description: Date when responses are due
                   response_format:
