@@ -13377,7 +13377,7 @@ paths:
         type: string
       - description: Filter by project ID
         in: query
-        name: projectId
+        name: filterProjectId
         required: false
         type: string
       - default: 1
