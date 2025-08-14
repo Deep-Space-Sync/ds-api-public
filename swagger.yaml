@@ -11208,40 +11208,6 @@ paths:
         name: projectId
         required: true
         type: string
-      - description: Filter by retention status (pending/released/scheduled)
-        in: query
-        name: status
-        required: false
-        type: string
-      - description: Filter by company releasing retention
-        in: query
-        name: retentionReleasedByCompanyId
-        required: false
-        type: string
-      - description: Filter by company receiving retention
-        in: query
-        name: retentionReleasedToCompanyId
-        required: false
-        type: string
-      - description: Filter by project ID
-        in: query
-        name: projectId
-        required: false
-        type: string
-      - default: 1
-        description: Page number for pagination
-        format: int32
-        in: query
-        name: page
-        required: false
-        type: integer
-      - default: 25
-        description: Number of items per page
-        format: int32
-        in: query
-        name: limit
-        required: false
-        type: integer
       responses:
         200:
           description: Successful response
@@ -11285,7 +11251,6 @@ paths:
       summary: Get Retention Releases
       tags:
       - Cost
-      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
       operationId: v2_postRetentionRelease
@@ -11376,7 +11341,6 @@ paths:
       summary: Create Retention Release
       tags:
       - Cost
-      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/retentions/{retentionId}:
     get:
@@ -11442,7 +11406,6 @@ paths:
       summary: Get Retention Release By Id
       tags:
       - Cost
-      x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
       operationId: v2_patchRetentionReleaseById
@@ -11533,7 +11496,6 @@ paths:
       summary: Update Retention Release By Id
       tags:
       - Cost
-      x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/user:
     get:
