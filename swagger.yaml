@@ -3730,6 +3730,1202 @@ paths:
       summary: Get a form in workspace by ID
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/hz-commercial-budgets:
+    get:
+      description: Retrieve budget register entries with optional filters and pagination
+      operationId: v2_listCommercialBudgets
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by budget status
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by budget category
+        in: query
+        name: category
+        required: false
+        type: string
+      - description: Filter by project identifier
+        in: query
+        name: project_id
+        required: false
+        type: string
+      - description: Free text search across budget descriptions
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of budget entries
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List commercial budgets
+      tags:
+      - Commercial
+    post:
+      description: Create a new budget entry in the budget register
+      operationId: v2_createCommercialBudget
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              type: string
+            costCode:
+              type: string
+            currentBudget:
+              format: float
+              type: number
+            description:
+              type: string
+            originalBudget:
+              format: float
+              type: number
+            project_id:
+              type: string
+          required:
+          - category
+          - costCode
+          - description
+          - originalBudget
+          type: object
+      responses:
+        201:
+          description: Budget created successfully
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create commercial budget
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-budgets/{budgetId}:
+    delete:
+      description: Delete a budget entry
+      operationId: v2_deleteCommercialBudget
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Budget unique identifier
+        in: path
+        name: budgetId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Budget deleted successfully
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Budget not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete commercial budget
+      tags:
+      - Commercial
+    get:
+      description: Retrieve a specific budget entry by its unique identifier
+      operationId: v2_getCommercialBudgetById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Budget unique identifier
+        in: path
+        name: budgetId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Budget details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Budget not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get commercial budget by ID
+      tags:
+      - Commercial
+    put:
+      description: Update an existing budget entry
+      operationId: v2_updateCommercialBudget
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Budget unique identifier
+        in: path
+        name: budgetId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated budget
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Budget not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update commercial budget
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-dashboard:
+    get:
+      description: Retrieve commercial dashboard data with budget overview, variations,
+        and progress claims summary
+      operationId: v2_getCommercialDashboard
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier for project-specific dashboard
+        in: query
+        name: projectId
+        required: false
+        type: string
+      responses:
+        200:
+          description: Commercial dashboard data
+          schema:
+            properties:
+              budget:
+                type: object
+              progressClaims:
+                type: array
+              project:
+                type: object
+              variations:
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get commercial dashboard
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-head-contract-invoices:
+    get:
+      description: Retrieve head contract invoices with optional filters and pagination
+      operationId: v2_listCommercialHeadContractInvoices
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by invoice status
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by contractor
+        in: query
+        name: contractor
+        required: false
+        type: string
+      - description: Filter by project identifier
+        in: query
+        name: project_id
+        required: false
+        type: string
+      - description: Free text search across invoice details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of head contract invoices
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List commercial head contract invoices
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-head-contract-invoices/{invoiceId}:
+    get:
+      description: Retrieve a specific head contract invoice by its unique identifier
+      operationId: v2_getCommercialHeadContractInvoiceById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Head contract invoice unique identifier
+        in: path
+        name: invoiceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Head contract invoice details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Head contract invoice not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get commercial head contract invoice by ID
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-head-contracts:
+    get:
+      description: Retrieve head contracts with optional filters and pagination
+      operationId: v2_listCommercialHeadContracts
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by contract status
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by risk level
+        in: query
+        name: riskLevel
+        required: false
+        type: string
+      - description: Filter by project identifier
+        in: query
+        name: project_id
+        required: false
+        type: string
+      - description: Free text search across contract details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of head contracts
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List commercial head contracts
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-head-contracts/{contractId}:
+    get:
+      description: Retrieve a specific head contract by its unique identifier
+      operationId: v2_getCommercialHeadContractById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Head contract unique identifier
+        in: path
+        name: contractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Head contract details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Head contract not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get commercial head contract by ID
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-payment-schedule:
+    get:
+      description: Retrieve payment schedule entries with optional filters and pagination
+      operationId: v2_listCommercialPaymentSchedule
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by payment status
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by payment type
+        in: query
+        name: paymentType
+        required: false
+        type: string
+      - description: Filter by contractor
+        in: query
+        name: contractor
+        required: false
+        type: string
+      - description: Filter by project identifier
+        in: query
+        name: project_id
+        required: false
+        type: string
+      - description: Free text search across payment details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of payment schedule entries
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List commercial payment schedule
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-payment-schedule/{paymentId}:
+    get:
+      description: Retrieve a specific payment schedule entry by its unique identifier
+      operationId: v2_getCommercialPaymentScheduleById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Payment schedule entry unique identifier
+        in: path
+        name: paymentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Payment schedule entry details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Payment schedule entry not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get commercial payment schedule entry by ID
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-progress-claims:
+    get:
+      description: Retrieve progress claims with optional filters and pagination
+      operationId: v2_listCommercialProgressClaims
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by claim status
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by contractor
+        in: query
+        name: contractor
+        required: false
+        type: string
+      - description: Filter by claim type
+        in: query
+        name: claimType
+        required: false
+        type: string
+      - description: Filter by project identifier
+        in: query
+        name: project_id
+        required: false
+        type: string
+      - description: Free text search across claim details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of progress claims
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List commercial progress claims
+      tags:
+      - Commercial
+    post:
+      description: Create a new progress claim
+      operationId: v2_createCommercialProgressClaim
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            claimNumber:
+              type: string
+            claimedAmount:
+              format: float
+              type: number
+            contractor:
+              type: string
+            period:
+              type: string
+            project_id:
+              type: string
+            status:
+              type: string
+          required:
+          - claimNumber
+          - contractor
+          - period
+          - claimedAmount
+          type: object
+      responses:
+        201:
+          description: Progress claim created successfully
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create commercial progress claim
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-progress-claims/{claimId}:
+    delete:
+      description: Delete a progress claim
+      operationId: v2_deleteCommercialProgressClaim
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Progress claim unique identifier
+        in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Progress claim deleted successfully
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Progress claim not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete commercial progress claim
+      tags:
+      - Commercial
+    get:
+      description: Retrieve a specific progress claim by its unique identifier
+      operationId: v2_getCommercialProgressClaimById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Progress claim unique identifier
+        in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Progress claim details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Progress claim not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get commercial progress claim by ID
+      tags:
+      - Commercial
+    put:
+      description: Update an existing progress claim
+      operationId: v2_updateCommercialProgressClaim
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Progress claim unique identifier
+        in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated progress claim
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Progress claim not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update commercial progress claim
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-retentions:
+    get:
+      description: Retrieve retention entries with optional filters and pagination
+      operationId: v2_listCommercialRetentions
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by retention status
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by contractor
+        in: query
+        name: contractor
+        required: false
+        type: string
+      - description: Filter by project identifier
+        in: query
+        name: project_id
+        required: false
+        type: string
+      - description: Free text search across retention details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of retentions
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List commercial retentions
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-retentions/{retentionId}:
+    get:
+      description: Retrieve a specific retention by its unique identifier
+      operationId: v2_getCommercialRetentionById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Retention unique identifier
+        in: path
+        name: retentionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Retention details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Retention not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get commercial retention by ID
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-subcontracts:
+    get:
+      description: Retrieve subcontract entries with optional filters and pagination
+      operationId: v2_listCommercialSubcontracts
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by subcontract status
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by risk level
+        in: query
+        name: riskLevel
+        required: false
+        type: string
+      - description: Filter by work package
+        in: query
+        name: workPackage
+        required: false
+        type: string
+      - description: Filter by project identifier
+        in: query
+        name: project_id
+        required: false
+        type: string
+      - description: Free text search across subcontract details
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of subcontracts
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List commercial subcontracts
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-subcontracts/{subcontractId}:
+    get:
+      description: Retrieve a specific subcontract by its unique identifier
+      operationId: v2_getCommercialSubcontractById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Subcontract unique identifier
+        in: path
+        name: subcontractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Subcontract details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Subcontract not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get commercial subcontract by ID
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-variations:
+    get:
+      description: Retrieve contract variations with optional filters and pagination
+      operationId: v2_listCommercialVariations
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by variation status
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by variation category
+        in: query
+        name: category
+        required: false
+        type: string
+      - description: Filter by priority level
+        in: query
+        name: priority
+        required: false
+        type: string
+      - description: Filter by project identifier
+        in: query
+        name: project_id
+        required: false
+        type: string
+      - description: Free text search across variation titles
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of variations
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              pagination:
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List commercial variations
+      tags:
+      - Commercial
+    post:
+      description: Create a new contract variation
+      operationId: v2_createCommercialVariation
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            contractor:
+              type: string
+            originalValue:
+              format: float
+              type: number
+            priority:
+              type: string
+            project_id:
+              type: string
+            status:
+              type: string
+            title:
+              type: string
+            variationNumber:
+              type: string
+          required:
+          - variationNumber
+          - title
+          - contractor
+          - originalValue
+          type: object
+      responses:
+        201:
+          description: Variation created successfully
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create commercial variation
+      tags:
+      - Commercial
+  /v2/workspaces/{workspaceId}/hz-commercial-variations/{variationId}:
+    delete:
+      description: Delete a variation
+      operationId: v2_deleteCommercialVariation
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Variation unique identifier
+        in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Variation deleted successfully
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Variation not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete commercial variation
+      tags:
+      - Commercial
+    get:
+      description: Retrieve a specific variation by its unique identifier
+      operationId: v2_getCommercialVariationById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Variation unique identifier
+        in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Variation details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Variation not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get commercial variation by ID
+      tags:
+      - Commercial
+    put:
+      description: Update an existing variation
+      operationId: v2_updateCommercialVariation
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Variation unique identifier
+        in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated variation
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Variation not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update commercial variation
+      tags:
+      - Commercial
   /v2/workspaces/{workspaceId}/implementation:
     get:
       operationId: v2_getWorkspaceImplementationChecklist
