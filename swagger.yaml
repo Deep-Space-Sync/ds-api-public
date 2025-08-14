@@ -11220,35 +11220,45 @@ paths:
       - in: path
         name: workspaceId
         required: true
+        type: string
       - in: path
         name: projectId
         required: true
+        type: string
       - description: Filter by retention status (pending/released/scheduled)
         in: query
         name: status
         required: false
+        type: string
       - description: Filter by company releasing retention
         in: query
         name: retentionReleasedByCompanyId
         required: false
+        type: string
       - description: Filter by company receiving retention
         in: query
         name: retentionReleasedToCompanyId
         required: false
+        type: string
       - description: Filter by project ID
         in: query
         name: projectId
         required: false
+        type: string
       - default: 1
         description: Page number for pagination
+        format: int32
         in: query
         name: page
         required: false
+        type: integer
       - default: 25
         description: Number of items per page
+        format: int32
         in: query
         name: limit
         required: false
+        type: integer
       responses:
         200:
           description: Successful response
@@ -11302,9 +11312,11 @@ paths:
       - in: path
         name: workspaceId
         required: true
+        type: string
       - in: path
         name: projectId
         required: true
+        type: string
       - in: body
         name: body
         required: true
@@ -11396,12 +11408,15 @@ paths:
       - in: path
         name: workspaceId
         required: true
+        type: string
       - in: path
         name: projectId
         required: true
+        type: string
       - in: path
         name: retentionId
         required: true
+        type: string
       responses:
         200:
           description: Successful response
@@ -11460,12 +11475,15 @@ paths:
       - in: path
         name: workspaceId
         required: true
+        type: string
       - in: path
         name: projectId
         required: true
+        type: string
       - in: path
         name: retentionId
         required: true
+        type: string
       - in: body
         name: body
         required: true
