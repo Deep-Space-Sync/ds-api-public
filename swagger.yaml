@@ -13340,6 +13340,947 @@ paths:
       tags:
       - Resources
       x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/rfq/rfqs:
+    get:
+      operationId: v2_getRFQs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - description: Filter by RFQ title (case-sensitive search)
+        in: query
+        name: title
+        required: false
+        type: string
+      - description: Filter by response format
+        enum:
+        - Standard price schedule
+        - Detailed breakdown
+        - Custom template
+        in: query
+        name: responseFormat
+        required: false
+        type: string
+      - description: Filter by evaluation criteria
+        enum:
+        - Price (100%)
+        - Price (70%), Quality (30%)
+        - Price (60%), Experience (20%), Capacity (20%)
+        in: query
+        name: evaluationCriteria
+        required: false
+        type: string
+      - description: Filter by project ID
+        in: query
+        name: projectId
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        format: int32
+        in: query
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of items per page
+        format: int32
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    attached_documents:
+                      description: Array of CDE IDs for attached documents
+                      items:
+                        type: string
+                      type: array
+                    created_at:
+                      description: Date RFQ was created
+                    created_by_user_id:
+                      description: User ID who created RFQ
+                    estimated_value:
+                      description: Estimated value of the RFQ
+                    evaluation_criteria:
+                      description: Evaluation criteria for responses
+                      enum:
+                      - Price (100%)
+                      - Price (70%), Quality (30%)
+                      - Price (60%), Experience (20%), Capacity (20%)
+                    id:
+                      description: Internal identifier for RFQ (UUID)
+                    project_id:
+                      description: Project ID
+                    response_due_date:
+                      description: Date when responses are due
+                    response_format:
+                      description: Required response format
+                      enum:
+                      - Standard price schedule
+                      - Detailed breakdown
+                      - Custom template
+                    scope_of_work:
+                      description: Scope of work object with id and description
+                      properties:
+                        description:
+                          description: Scope of work description
+                        id:
+                          description: Scope of work ID
+                      type: object
+                    suppliers:
+                      description: Array of company IDs for suppliers
+                      items:
+                        type: integer
+                      type: array
+                    title:
+                      description: RFQ title
+                    updated_at:
+                      description: Date RFQ was last updated
+                  type: object
+                type: array
+              limit:
+                description: Items per page
+              message:
+                description: Response message
+              page:
+                description: Current page number
+              total_count:
+                description: Total number of items
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get RFQs (Requests for Quotation)
+      tags:
+      - RFQ
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createRFQ
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            attached_documents:
+              description: Array of CDE IDs for attached documents
+              items:
+                type: string
+              type: array
+            estimated_value:
+              description: Estimated value of the RFQ
+              type: number
+            evaluation_criteria:
+              default: Price (100%)
+              description: Evaluation criteria for responses
+              enum:
+              - Price (100%)
+              - Price (70%), Quality (30%)
+              - Price (60%), Experience (20%), Capacity (20%)
+              type: string
+            project_id:
+              description: Project ID (defaults to path projectId)
+              type: integer
+            response_due_date:
+              description: Date when responses are due (YYYY-MM-DD or DD/MM/YYYY format)
+              type: string
+            response_format:
+              default: Standard price schedule
+              description: Required response format
+              enum:
+              - Standard price schedule
+              - Detailed breakdown
+              - Custom template
+              type: string
+            scope_of_work:
+              description: Scope of work object with id and description
+              properties:
+                description:
+                  description: Scope of work description
+                id:
+                  description: Scope of work ID
+              type: object
+            suppliers:
+              description: Array of company IDs for suppliers
+              items:
+                type: integer
+              type: array
+            title:
+              description: RFQ title
+              type: string
+          required:
+          - title
+          - scope_of_work
+          - response_due_date
+          - estimated_value
+          type: object
+      responses:
+        201:
+          description: RFQ created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  attached_documents:
+                    description: Array of CDE IDs for attached documents
+                  created_at:
+                    description: Date RFQ was created
+                  created_by_user_id:
+                    description: User ID who created RFQ
+                  estimated_value:
+                    description: Estimated value of the RFQ
+                  evaluation_criteria:
+                    description: Evaluation criteria for responses
+                  id:
+                    description: Internal identifier for RFQ
+                  project_id:
+                    description: Project ID
+                  response_due_date:
+                    description: Date when responses are due
+                  response_format:
+                    description: Required response format
+                  scope_of_work:
+                    description: Scope of work object
+                  suppliers:
+                    description: Array of company IDs for suppliers
+                  title:
+                    description: RFQ title
+                  updated_at:
+                    description: Date RFQ was last updated
+                type: object
+              message:
+                description: Response message
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create RFQ (Request for Quotation)
+      tags:
+      - RFQ
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/rfq/rfqs/{rfqId}:
+    delete:
+      operationId: v2_deleteRFQById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: rfqId
+        required: true
+        type: string
+      responses:
+        200:
+          description: RFQ deleted successfully
+          schema:
+            properties:
+              message:
+                description: Response message
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: RFQ not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete RFQ By Id
+      tags:
+      - RFQ
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getRFQById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: rfqId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  attached_documents:
+                    description: Array of CDE IDs for attached documents
+                  created_at:
+                    description: Date RFQ was created
+                  created_by_user_id:
+                    description: User ID who created RFQ
+                  estimated_value:
+                    description: Estimated value of the RFQ
+                  evaluation_criteria:
+                    description: Evaluation criteria for responses
+                  id:
+                    description: Internal identifier for RFQ
+                  project_id:
+                    description: Project ID
+                  response_due_date:
+                    description: Date when responses are due
+                  response_format:
+                    description: Required response format
+                  scope_of_work:
+                    description: Scope of work object
+                  suppliers:
+                    description: Array of company IDs for suppliers
+                  title:
+                    description: RFQ title
+                  updated_at:
+                    description: Date RFQ was last updated
+                type: object
+              message:
+                description: Response message
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: RFQ not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get RFQ By Id
+      tags:
+      - RFQ
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateRFQById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: rfqId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            attached_documents:
+              description: Array of CDE IDs for attached documents
+              items:
+                type: string
+              type: array
+            estimated_value:
+              description: Estimated value of the RFQ
+              type: number
+            evaluation_criteria:
+              description: Evaluation criteria for responses
+              enum:
+              - Price (100%)
+              - Price (70%), Quality (30%)
+              - Price (60%), Experience (20%), Capacity (20%)
+              type: string
+            response_due_date:
+              description: Date when responses are due
+              type: string
+            response_format:
+              description: Required response format
+              enum:
+              - Standard price schedule
+              - Detailed breakdown
+              - Custom template
+              type: string
+            scope_of_work:
+              description: Scope of work object
+              properties:
+                description:
+                  description: Scope of work description
+                id:
+                  description: Scope of work ID
+              type: object
+            suppliers:
+              description: Array of company IDs for suppliers
+              items:
+                type: integer
+              type: array
+            title:
+              description: RFQ title
+              type: string
+          type: object
+      responses:
+        200:
+          description: RFQ updated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  attached_documents:
+                    description: Array of CDE IDs for attached documents
+                  created_at:
+                    description: Date RFQ was created
+                  created_by_user_id:
+                    description: User ID who created RFQ
+                  estimated_value:
+                    description: Estimated value of the RFQ
+                  evaluation_criteria:
+                    description: Evaluation criteria for responses
+                  id:
+                    description: Internal identifier for RFQ
+                  project_id:
+                    description: Project ID
+                  response_due_date:
+                    description: Date when responses are due
+                  response_format:
+                    description: Required response format
+                  scope_of_work:
+                    description: Scope of work object
+                  suppliers:
+                    description: Array of company IDs for suppliers
+                  title:
+                    description: RFQ title
+                  updated_at:
+                    description: Date RFQ was last updated
+                type: object
+              message:
+                description: Response message
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: RFQ not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update RFQ By Id
+      tags:
+      - RFQ
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/rfq/rfqs/{rfqId}/responses:
+    get:
+      operationId: v2_getRFQResponses
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: rfqId
+        required: true
+        type: string
+      - description: Filter by supplier company ID
+        in: query
+        name: supplierCompanyId
+        required: false
+        type: integer
+      - description: Filter by minimum evaluation score
+        in: query
+        name: evaluationScoreMin
+        required: false
+        type: number
+      - description: Filter by maximum evaluation score
+        in: query
+        name: evaluationScoreMax
+        required: false
+        type: number
+      - default: 1
+        description: Page number for pagination
+        format: int32
+        in: query
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of items per page
+        format: int32
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    clarifications:
+                      description: Array of clarifications
+                      items:
+                        type: string
+                      type: array
+                    created_at:
+                      description: Date response was created
+                    created_by_user_id:
+                      description: User ID who created response
+                    duration:
+                      description: Quoted duration in days
+                      type: integer
+                    evaluation_score:
+                      description: Evaluation score out of 100
+                      type: number
+                    exclusions:
+                      description: Array of exclusions
+                      items:
+                        type: string
+                      type: array
+                    id:
+                      description: Internal identifier for RFQ response (UUID)
+                    notes:
+                      description: Additional notes
+                      type: string
+                    rfq_id:
+                      description: RFQ ID this response belongs to
+                    scope_of_work_quotes:
+                      description: Array of quotes per scope of work item
+                      items:
+                        properties:
+                          quoted_value:
+                            description: Quoted value for this scope
+                            type: number
+                          scope_id:
+                            description: Scope of work ID
+                        type: object
+                      type: array
+                    submitted_date:
+                      description: Date when response was submitted
+                    supplier_company_id:
+                      description: Company ID of the supplier
+                    total_amount:
+                      description: Total quoted amount
+                      type: number
+                    updated_at:
+                      description: Date response was last updated
+                  type: object
+                type: array
+              limit:
+                description: Items per page
+              message:
+                description: Response message
+              page:
+                description: Current page number
+              total_count:
+                description: Total number of items
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: RFQ not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get RFQ Responses
+      tags:
+      - RFQ
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createRFQResponse
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: rfqId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            clarifications:
+              description: Array of clarifications (dot point list)
+              items:
+                type: string
+              type: array
+            duration:
+              description: Quoted duration in days
+              type: integer
+            evaluation_score:
+              description: Evaluation score out of 100 (0-100)
+              maximum: 100
+              minimum: 0
+              type: number
+            exclusions:
+              description: Array of exclusions (dot point list)
+              items:
+                type: string
+              type: array
+            notes:
+              description: Additional notes
+              type: string
+            scope_of_work_quotes:
+              description: Array of quotes per scope of work item
+              items:
+                properties:
+                  quoted_value:
+                    description: Quoted value for this scope
+                    type: number
+                  scope_id:
+                    description: Scope of work ID
+                type: object
+              type: array
+            submitted_date:
+              description: Date when response was submitted (YYYY-MM-DD or DD/MM/YYYY
+                format)
+              type: string
+            supplier_company_id:
+              description: Company ID of the supplier
+              type: integer
+            total_amount:
+              description: Total quoted amount
+              type: number
+          required:
+          - supplier_company_id
+          - total_amount
+          - duration
+          type: object
+      responses:
+        201:
+          description: RFQ response created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  clarifications:
+                    description: Array of clarifications
+                  created_at:
+                    description: Date response was created
+                  created_by_user_id:
+                    description: User ID who created response
+                  duration:
+                    description: Quoted duration in days
+                  evaluation_score:
+                    description: Evaluation score out of 100
+                  exclusions:
+                    description: Array of exclusions
+                  id:
+                    description: Internal identifier for RFQ response
+                  notes:
+                    description: Additional notes
+                  rfq_id:
+                    description: RFQ ID this response belongs to
+                  scope_of_work_quotes:
+                    description: Array of quotes per scope of work item
+                  submitted_date:
+                    description: Date when response was submitted
+                  supplier_company_id:
+                    description: Company ID of the supplier
+                  total_amount:
+                    description: Total quoted amount
+                  updated_at:
+                    description: Date response was last updated
+                type: object
+              message:
+                description: Response message
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: RFQ not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create RFQ Response
+      tags:
+      - RFQ
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/rfq/rfqs/{rfqId}/responses/{responseId}:
+    delete:
+      operationId: v2_deleteRFQResponseById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: rfqId
+        required: true
+        type: string
+      - in: path
+        name: responseId
+        required: true
+        type: string
+      responses:
+        200:
+          description: RFQ response deleted successfully
+          schema:
+            properties:
+              message:
+                description: Response message
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: RFQ response not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete RFQ Response By Id
+      tags:
+      - RFQ
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getRFQResponseById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: rfqId
+        required: true
+        type: string
+      - in: path
+        name: responseId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  clarifications:
+                    description: Array of clarifications
+                  created_at:
+                    description: Date response was created
+                  created_by_user_id:
+                    description: User ID who created response
+                  duration:
+                    description: Quoted duration in days
+                  evaluation_score:
+                    description: Evaluation score out of 100
+                  exclusions:
+                    description: Array of exclusions
+                  id:
+                    description: Internal identifier for RFQ response
+                  notes:
+                    description: Additional notes
+                  rfq_id:
+                    description: RFQ ID this response belongs to
+                  scope_of_work_quotes:
+                    description: Array of quotes per scope of work item
+                  submitted_date:
+                    description: Date when response was submitted
+                  supplier_company_id:
+                    description: Company ID of the supplier
+                  total_amount:
+                    description: Total quoted amount
+                  updated_at:
+                    description: Date response was last updated
+                type: object
+              message:
+                description: Response message
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: RFQ response not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get RFQ Response By Id
+      tags:
+      - RFQ
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateRFQResponseById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: rfqId
+        required: true
+        type: string
+      - in: path
+        name: responseId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            clarifications:
+              description: Array of clarifications
+              items:
+                type: string
+              type: array
+            duration:
+              description: Quoted duration in days
+              type: integer
+            evaluation_score:
+              description: Evaluation score out of 100 (0-100)
+              maximum: 100
+              minimum: 0
+              type: number
+            exclusions:
+              description: Array of exclusions
+              items:
+                type: string
+              type: array
+            notes:
+              description: Additional notes
+              type: string
+            scope_of_work_quotes:
+              description: Array of quotes per scope of work item
+              items:
+                properties:
+                  quoted_value:
+                    description: Quoted value for this scope
+                    type: number
+                  scope_id:
+                    description: Scope of work ID
+                type: object
+              type: array
+            submitted_date:
+              description: Date when response was submitted
+              type: string
+            supplier_company_id:
+              description: Company ID of the supplier
+              type: integer
+            total_amount:
+              description: Total quoted amount
+              type: number
+          type: object
+      responses:
+        200:
+          description: RFQ response updated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  clarifications:
+                    description: Array of clarifications
+                  created_at:
+                    description: Date response was created
+                  created_by_user_id:
+                    description: User ID who created response
+                  duration:
+                    description: Quoted duration in days
+                  evaluation_score:
+                    description: Evaluation score out of 100
+                  exclusions:
+                    description: Array of exclusions
+                  id:
+                    description: Internal identifier for RFQ response
+                  notes:
+                    description: Additional notes
+                  rfq_id:
+                    description: RFQ ID this response belongs to
+                  scope_of_work_quotes:
+                    description: Array of quotes per scope of work item
+                  submitted_date:
+                    description: Date when response was submitted
+                  supplier_company_id:
+                    description: Company ID of the supplier
+                  total_amount:
+                    description: Total quoted amount
+                  updated_at:
+                    description: Date response was last updated
+                type: object
+              message:
+                description: Response message
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: RFQ response not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update RFQ Response By Id
+      tags:
+      - RFQ
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/sectors:
     get:
       operationId: v2_getSectors
