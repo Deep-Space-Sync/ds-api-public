@@ -10893,8 +10893,6 @@ paths:
               type: string
             issuing_company_id:
               type: integer
-            project_id:
-              type: integer
             receiving_company_id:
               type: integer
             related_cost_claim_num:
@@ -10926,7 +10924,6 @@ paths:
           - due_date
           - issued_date
           - related_cost_claim_num
-          - project_id
           type: object
       responses:
         201:
@@ -11326,8 +11323,6 @@ paths:
               description: User ID who marked retention as released
             milestone_name:
               description: Name of the milestone
-            project_id:
-              description: Project ID (defaults to path projectId)
             retention_amount:
               description: Retention amount
             retention_percentage:
