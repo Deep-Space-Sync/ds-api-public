@@ -1354,9 +1354,6 @@ paths:
                 projects:
                   items:
                     properties:
-                      project_id:
-                        example: 1
-                        type: integer
                       project_name:
                         example: My Project Name
                         type: string
@@ -15132,14 +15129,10 @@ paths:
                     description: bool indicating whether the user is a revit user
                       (default false)
                     type: boolean
-                  project_id:
-                    description: The project id to add the user to
-                    type: integer
                   team_bim_id:
                     description: The team id to add the user to on the project
                     type: integer
                 required:
-                - project_id
                 - team_bim_id
                 type: object
               type: array
