@@ -2496,152 +2496,141 @@ paths:
         name: workspaceId
         required: true
         type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                project_level:
-                  description: Endpoints that require project_id
-                  items:
-                    properties:
-                      endpoint:
-                        description: Target endpoint name
-                        enum:
-                        - budget-items
-                        - invoices
-                        - orders
-                        - variation-requests
-                        - approvals
-                        - claims
-                        - attachments
-                        - line-items
-                        - contracts
-                        - payment-schedules
-                        - retentions
-                        type: string
-                      params:
-                        additionalProperties: true
-                        description: Parameters for the endpoint
-                        properties:
-                          method:
-                            default: GET
-                            type: string
-                          project_id:
-                            description: Project identifier (required for project-level
-                              endpoints)
-                            type: integer
-                          sub_path:
-                            default: ''
-                            type: string
-                        required:
-                        - project_id
-                        type: object
-                    required:
-                    - endpoint
-                    type: object
-                  type: array
-                workspace_level:
-                  description: Endpoints that don't require project_id
-                  items:
-                    properties:
-                      endpoint:
-                        description: Target endpoint name
-                        enum:
-                        - cost-codes
-                        - budget-categories
-                        type: string
-                      params:
-                        additionalProperties: true
-                        description: Parameters for the endpoint
-                        properties:
-                          method:
-                            default: GET
-                            type: string
-                          sub_path:
-                            default: ''
-                            type: string
-                        type: object
-                    required:
-                    - endpoint
-                    type: object
-                  type: array
-              type: object
+      - in: body
+        name: body
         required: true
+        schema:
+          properties:
+            project_level:
+              description: Endpoints that require project_id
+              items:
+                properties:
+                  endpoint:
+                    description: Target endpoint name
+                    enum:
+                    - budget-items
+                    - invoices
+                    - orders
+                    - variation-requests
+                    - approvals
+                    - claims
+                    - attachments
+                    - line-items
+                    - contracts
+                    - payment-schedules
+                    - retentions
+                    type: string
+                  params:
+                    additionalProperties: true
+                    description: Parameters for the endpoint
+                    properties:
+                      method:
+                        default: GET
+                        type: string
+                      project_id:
+                        description: Project identifier (required for project-level
+                          endpoints)
+                        type: integer
+                      sub_path:
+                        default: ''
+                        type: string
+                    required:
+                    - project_id
+                    type: object
+                required:
+                - endpoint
+                type: object
+              type: array
+            workspace_level:
+              description: Endpoints that don't require project_id
+              items:
+                properties:
+                  endpoint:
+                    description: Target endpoint name
+                    enum:
+                    - cost-codes
+                    - budget-categories
+                    type: string
+                  params:
+                    additionalProperties: true
+                    description: Parameters for the endpoint
+                    properties:
+                      method:
+                        default: GET
+                        type: string
+                      sub_path:
+                        default: ''
+                        type: string
+                    type: object
+                required:
+                - endpoint
+                type: object
+              type: array
+          type: object
       responses:
         200:
-          content:
-            application/json:
-              schema:
-                properties:
-                  project_level:
-                    additionalProperties:
-                      properties:
-                        data:
-                          description: Response data from the endpoint
-                          type: object
-                        error:
-                          description: Error message if endpoint failed
-                          type: string
-                        status_code:
-                          description: HTTP status code from the endpoint
-                          type: integer
-                      type: object
-                    description: Results from project-level endpoints
-                    type: object
-                  workspace_level:
-                    additionalProperties:
-                      properties:
-                        data:
-                          description: Response data from the endpoint
-                          type: object
-                        error:
-                          description: Error message if endpoint failed
-                          type: string
-                        status_code:
-                          description: HTTP status code from the endpoint
-                          type: integer
-                      type: object
-                    description: Results from workspace-level endpoints
-                    type: object
-                type: object
           description: Successful response with aggregated data
+          schema:
+            properties:
+              project_level:
+                additionalProperties:
+                  properties:
+                    data:
+                      description: Response data from the endpoint
+                      type: object
+                    error:
+                      description: Error message if endpoint failed
+                      type: string
+                    status_code:
+                      description: HTTP status code from the endpoint
+                      type: integer
+                  type: object
+                description: Results from project-level endpoints
+                type: object
+              workspace_level:
+                additionalProperties:
+                  properties:
+                    data:
+                      description: Response data from the endpoint
+                      type: object
+                    error:
+                      description: Error message if endpoint failed
+                      type: string
+                    status_code:
+                      description: HTTP status code from the endpoint
+                      type: integer
+                  type: object
+                description: Results from workspace-level endpoints
+                type: object
+            type: object
         400:
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                type: object
           description: Bad request - invalid request body or parameters
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
         401:
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                type: object
           description: Unauthorized
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
         405:
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                type: object
           description: Method not allowed
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
         500:
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                type: object
           description: Internal Server Error
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
       security:
       - JWT_v2: []
       summary: Aggregate Cost Data from Multiple Endpoints
@@ -11865,150 +11854,139 @@ paths:
         name: projectId
         required: true
         type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                project_level:
-                  description: Endpoints that require project_id
-                  items:
-                    properties:
-                      endpoint:
-                        description: Target endpoint name
-                        enum:
-                        - budget-items
-                        - invoices
-                        - orders
-                        - variation-requests
-                        - approvals
-                        - claims
-                        - attachments
-                        - line-items
-                        - contracts
-                        - payment-schedules
-                        - retentions
-                        type: string
-                      params:
-                        additionalProperties: true
-                        description: Parameters for the endpoint
-                        properties:
-                          method:
-                            default: GET
-                            type: string
-                          project_id:
-                            description: Project identifier (will use URL projectId
-                              if not specified)
-                            type: integer
-                          sub_path:
-                            default: ''
-                            type: string
-                        type: object
-                    required:
-                    - endpoint
-                    type: object
-                  type: array
-                workspace_level:
-                  description: Endpoints that don't require project_id
-                  items:
-                    properties:
-                      endpoint:
-                        description: Target endpoint name
-                        enum:
-                        - cost-codes
-                        - budget-categories
-                        type: string
-                      params:
-                        additionalProperties: true
-                        description: Parameters for the endpoint
-                        properties:
-                          method:
-                            default: GET
-                            type: string
-                          sub_path:
-                            default: ''
-                            type: string
-                        type: object
-                    required:
-                    - endpoint
-                    type: object
-                  type: array
-              type: object
+      - in: body
+        name: body
         required: true
+        schema:
+          properties:
+            project_level:
+              description: Endpoints that require project_id
+              items:
+                properties:
+                  endpoint:
+                    description: Target endpoint name
+                    enum:
+                    - budget-items
+                    - invoices
+                    - orders
+                    - variation-requests
+                    - approvals
+                    - claims
+                    - attachments
+                    - line-items
+                    - contracts
+                    - payment-schedules
+                    - retentions
+                    type: string
+                  params:
+                    additionalProperties: true
+                    description: Parameters for the endpoint
+                    properties:
+                      method:
+                        default: GET
+                        type: string
+                      project_id:
+                        description: Project identifier (will use URL projectId if
+                          not specified)
+                        type: integer
+                      sub_path:
+                        default: ''
+                        type: string
+                    type: object
+                required:
+                - endpoint
+                type: object
+              type: array
+            workspace_level:
+              description: Endpoints that don't require project_id
+              items:
+                properties:
+                  endpoint:
+                    description: Target endpoint name
+                    enum:
+                    - cost-codes
+                    - budget-categories
+                    type: string
+                  params:
+                    additionalProperties: true
+                    description: Parameters for the endpoint
+                    properties:
+                      method:
+                        default: GET
+                        type: string
+                      sub_path:
+                        default: ''
+                        type: string
+                    type: object
+                required:
+                - endpoint
+                type: object
+              type: array
+          type: object
       responses:
         200:
-          content:
-            application/json:
-              schema:
-                properties:
-                  project_level:
-                    additionalProperties:
-                      properties:
-                        data:
-                          description: Response data from the endpoint
-                          type: object
-                        error:
-                          description: Error message if endpoint failed
-                          type: string
-                        status_code:
-                          description: HTTP status code from the endpoint
-                          type: integer
-                      type: object
-                    description: Results from project-level endpoints
-                    type: object
-                  workspace_level:
-                    additionalProperties:
-                      properties:
-                        data:
-                          description: Response data from the endpoint
-                          type: object
-                        error:
-                          description: Error message if endpoint failed
-                          type: string
-                        status_code:
-                          description: HTTP status code from the endpoint
-                          type: integer
-                      type: object
-                    description: Results from workspace-level endpoints
-                    type: object
-                type: object
           description: Successful response with aggregated data
+          schema:
+            properties:
+              project_level:
+                additionalProperties:
+                  properties:
+                    data:
+                      description: Response data from the endpoint
+                      type: object
+                    error:
+                      description: Error message if endpoint failed
+                      type: string
+                    status_code:
+                      description: HTTP status code from the endpoint
+                      type: integer
+                  type: object
+                description: Results from project-level endpoints
+                type: object
+              workspace_level:
+                additionalProperties:
+                  properties:
+                    data:
+                      description: Response data from the endpoint
+                      type: object
+                    error:
+                      description: Error message if endpoint failed
+                      type: string
+                    status_code:
+                      description: HTTP status code from the endpoint
+                      type: integer
+                  type: object
+                description: Results from workspace-level endpoints
+                type: object
+            type: object
         400:
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                type: object
           description: Bad request - invalid request body or parameters
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
         401:
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                type: object
           description: Unauthorized
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
         405:
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                type: object
           description: Method not allowed
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
         500:
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                type: object
           description: Internal Server Error
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
       security:
       - JWT_v2: []
       summary: Aggregate Cost Data from Multiple Endpoints (Project Level)
