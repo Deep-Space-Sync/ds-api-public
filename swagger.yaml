@@ -9460,6 +9460,90 @@ paths:
       tags:
       - External Integrations
       x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/integrations/{integrationId}/advanced-config:
+    get:
+      operationId: v2_getWorkspaceIntegrationAdvancedConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get advanced configuration for an integration in a workspace
+      tags:
+      - External Integrations
+    patch:
+      operationId: v2_patchWorkspaceIntegrationAdvancedConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: json object containing advanced configuration values, differs
+            depending on integration
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update advanced configuration for an integration in a workspace
+      tags:
+      - External Integrations
+    post:
+      operationId: v2_postWorkspaceIntegrationAdvancedConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: json object containing advanced configuration values, differs
+            depending on integration
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create advanced configuration for an integration in a workspace
+      tags:
+      - External Integrations
   /v2/workspaces/{workspaceId}/integrations/{integrationId}/refresh:
     post:
       operationId: v2_postWorkspaceIntegrationRefresh
@@ -18055,6 +18139,102 @@ paths:
       tags:
       - External Integrations
       x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}/advanced-config:
+    get:
+      operationId: v2_getProjectIntegrationAdvancedConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get advanced configuration for an integration on a project
+      tags:
+      - External Integrations
+    patch:
+      operationId: v2_patchProjectIntegrationAdvancedConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: json object containing advanced configuration values, differs
+            depending on integration
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update advanced configuration for an integration on a project
+      tags:
+      - External Integrations
+    post:
+      operationId: v2_postProjectIntegrationAdvancedConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: json object containing advanced configuration values, differs
+            depending on integration
+          type: object
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create advanced configuration for an integration on a project
+      tags:
+      - External Integrations
   /v2/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}/refresh:
     post:
       operationId: v2_postProjectIntegrationRefresh
