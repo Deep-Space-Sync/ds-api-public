@@ -216,6 +216,56 @@ paths:
       summary: Create Global Company
       tags:
       - Global Company Directory
+  /v2/global-companies/allworkers:
+    get:
+      operationId: v2_getAllWorkers
+      parameters:
+      - description: Global Company ID (base company to resolve sharing relationships)
+        in: query
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: query
+        name: limit
+        required: false
+        type: number
+      - in: query
+        name: offset
+        required: false
+        type: number
+      - description: Include worker metadata using definitions from the provided global
+          company
+        in: query
+        name: includeMetadata
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              limit:
+                type: number
+              message:
+                type: string
+              offset:
+                type: number
+              total:
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get All Workers Across Sharing Companies
+      tags:
+      - Global Company Directory
   /v2/global-companies/{globalCompanyId}/metadata:
     put:
       operationId: v2_saveGlobalCompanyMetadataValues
