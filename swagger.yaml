@@ -9521,6 +9521,31 @@ paths:
       - External Integrations
       x-min-permissions: isRevitUser
   /v2/workspaces/{workspaceId}/integrations/{integrationId}/advanced-config:
+    delete:
+      operationId: v2_deleteWorkspaceIntegrationAdvancedConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Integration successfully disconnected and configuration deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Advanced configuration not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete advanced configuration and disconnect integration in a workspace
+      tags:
+      - External Integrations
     get:
       operationId: v2_getWorkspaceIntegrationAdvancedConfig
       parameters:
@@ -18200,6 +18225,35 @@ paths:
       - External Integrations
       x-min-permissions: isRevitUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}/advanced-config:
+    delete:
+      operationId: v2_deleteProjectIntegrationAdvancedConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Integration successfully disconnected and configuration deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Advanced configuration not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete advanced configuration and disconnect integration on a project
+      tags:
+      - External Integrations
     get:
       operationId: v2_getProjectIntegrationAdvancedConfig
       parameters:
