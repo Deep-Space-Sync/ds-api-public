@@ -2107,6 +2107,11 @@ paths:
         name: workspaceId
         required: true
         type: string
+      - description: Worker ID for worker-specific document uploads
+        in: query
+        name: worker_id
+        required: false
+        type: string
       - in: body
         name: body
         required: true
@@ -2114,6 +2119,9 @@ paths:
           properties:
             cde_type:
               description: The type of CDE upload
+              type: string
+            cde_type_id:
+              description: The CDE type ID
               type: string
             files:
               description: A list of file objects
