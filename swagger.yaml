@@ -2078,6 +2078,16 @@ paths:
         name: workspaceId
         required: true
         type: string
+      - description: Filter by CDE type ID
+        in: query
+        name: cde_type_id
+        required: false
+        type: string
+      - description: Filter by worker ID for worker-specific documents
+        in: query
+        name: worker_id
+        required: false
+        type: string
       responses:
         200:
           description: Successfully returns CDE docs
