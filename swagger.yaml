@@ -9637,6 +9637,42 @@ paths:
       summary: Create advanced configuration for an integration in a workspace
       tags:
       - External Integrations
+  /v2/workspaces/{workspaceId}/integrations/{integrationId}/advanced-config/mapping:
+    get:
+      operationId: v2_getWorkspaceIntegrationAdvancedConfigMapping
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved mapping data from external provider
+          schema:
+            properties:
+              accounts:
+                description: Chart of Accounts from external provider
+                type: array
+              tracking_categories:
+                description: Tracking Categories from external provider
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Integration not found or not configured
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get mapping data (Chart of Accounts and Tracking Categories) for advanced
+        config setup
+      tags:
+      - External Integrations
   /v2/workspaces/{workspaceId}/integrations/{integrationId}/refresh:
     post:
       operationId: v2_postWorkspaceIntegrationRefresh
@@ -18355,6 +18391,46 @@ paths:
       security:
       - JWT_v2: []
       summary: Create advanced configuration for an integration on a project
+      tags:
+      - External Integrations
+  /v2/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}/advanced-config/mapping:
+    get:
+      operationId: v2_getProjectIntegrationAdvancedConfigMapping
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved mapping data from external provider
+          schema:
+            properties:
+              accounts:
+                description: Chart of Accounts from external provider
+                type: array
+              tracking_categories:
+                description: Tracking Categories from external provider
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Integration not found or not configured
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get mapping data (Chart of Accounts and Tracking Categories) for advanced
+        config setup on a project
       tags:
       - External Integrations
   /v2/workspaces/{workspaceId}/projects/{projectId}/integrations/{integrationId}/refresh:
