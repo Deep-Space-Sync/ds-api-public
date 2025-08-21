@@ -9468,6 +9468,115 @@ paths:
       tags:
       - External Integrations
       x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/integrations/activity-log:
+    get:
+      operationId: v2_getWorkspaceIntegrationsActivityLog
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        name: page
+        required: false
+        type: integer
+      - default: 50
+        description: Number of records per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - description: Filter by sync type (e.g., contacts, invoices_to_client, purchase_orders)
+        in: query
+        name: sync_type
+        required: false
+        type: string
+      - description: Filter by activity type (e.g., sync, refresh_token)
+        in: query
+        name: activity_type
+        required: false
+        type: string
+      - description: Filter by user ID who performed the action
+        in: query
+        name: user_id
+        required: false
+        type: string
+      - description: Filter by success status (true/false)
+        in: query
+        name: success
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: Successfully retrieved integration activity log
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    activity_type:
+                      description: Type of activity (e.g., sync, refresh_token)
+                      type: string
+                    created_at:
+                      description: When the record was created
+                      format: date-time
+                      type: string
+                    error_message:
+                      description: Error message if operation failed
+                      type: string
+                    id:
+                      description: Activity log entry ID
+                      type: string
+                    id_integrations_config:
+                      description: Integration config ID
+                      type: integer
+                    integration_id:
+                      description: Integration ID (e.g., xero)
+                      type: string
+                    status_code:
+                      description: HTTP status code or result code
+                      type: integer
+                    success:
+                      description: Whether the operation was successful
+                      type: boolean
+                    sync_type:
+                      description: Type of sync (e.g., contacts, invoices_to_client)
+                      type: string
+                    synced_at:
+                      description: When the activity occurred
+                      format: date-time
+                      type: string
+                    user_id:
+                      description: ID of user who performed the action
+                      type: string
+                  type: object
+                type: array
+              limit:
+                description: Records per page
+                type: integer
+              page:
+                description: Current page number
+                type: integer
+              total:
+                description: Total number of records
+                type: integer
+            type: object
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get integration activity log for all integrations in a workspace
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
   /v2/workspaces/{workspaceId}/integrations/{integrationId}:
     get:
       operationId: v2_getWorkspaceIntegrationFields
@@ -9560,6 +9669,121 @@ paths:
       security:
       - JWT_v2: []
       summary: Configure an integration in a workspace
+      tags:
+      - External Integrations
+      x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/integrations/{integrationId}/activity-log:
+    get:
+      operationId: v2_getWorkspaceIntegrationActivityLog
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: integrationId
+        required: true
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        name: page
+        required: false
+        type: integer
+      - default: 50
+        description: Number of records per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - description: Filter by sync type (e.g., contacts, invoices_to_client, purchase_orders)
+        in: query
+        name: sync_type
+        required: false
+        type: string
+      - description: Filter by activity type (e.g., sync, refresh_token)
+        in: query
+        name: activity_type
+        required: false
+        type: string
+      - description: Filter by user ID who performed the action
+        in: query
+        name: user_id
+        required: false
+        type: string
+      - description: Filter by success status (true/false)
+        in: query
+        name: success
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: Successfully retrieved integration activity log
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    activity_type:
+                      description: Type of activity (e.g., sync, refresh_token)
+                      type: string
+                    created_at:
+                      description: When the record was created
+                      format: date-time
+                      type: string
+                    error_message:
+                      description: Error message if operation failed
+                      type: string
+                    id:
+                      description: Activity log entry ID
+                      type: string
+                    id_integrations_config:
+                      description: Integration config ID
+                      type: integer
+                    integration_id:
+                      description: Integration ID (e.g., xero)
+                      type: string
+                    status_code:
+                      description: HTTP status code or result code
+                      type: integer
+                    success:
+                      description: Whether the operation was successful
+                      type: boolean
+                    sync_type:
+                      description: Type of sync (e.g., contacts, invoices_to_client)
+                      type: string
+                    synced_at:
+                      description: When the activity occurred
+                      format: date-time
+                      type: string
+                    user_id:
+                      description: ID of user who performed the action
+                      type: string
+                  type: object
+                type: array
+              limit:
+                description: Records per page
+                type: integer
+              page:
+                description: Current page number
+                type: integer
+              total:
+                description: Total number of records
+                type: integer
+            type: object
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: Integration not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get integration activity log for a specific integration in a workspace
       tags:
       - External Integrations
       x-min-permissions: isRevitUser
