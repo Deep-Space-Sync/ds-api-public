@@ -266,6 +266,74 @@ paths:
       summary: Get All Workers Across Sharing Companies
       tags:
       - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/cde/{cdeId}/metadata:
+    put:
+      operationId: v2_updateCdeMetadataViaGlobalCompany
+      parameters:
+      - description: Global Company ID (must have sharing permissions to target workspace)
+        in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - description: CDE document ID to update metadata for
+        in: path
+        name: cdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            metadata_key:
+              description: The key of the metadata to update
+              type: string
+            metadata_value:
+              description: The value of the metadata to set
+              type: string
+            project_id:
+              description: Optional project ID (if CDE is project-scoped)
+              type: integer
+            workspace_id:
+              description: Target workspace ID where the CDE document exists
+              type: string
+          required:
+          - workspace_id
+          - metadata_key
+          - metadata_value
+          type: object
+      responses:
+        200:
+          description: Successfully updated CDE metadata
+          schema:
+            properties:
+              data:
+                properties:
+                  cde_id:
+                    type: integer
+                  metadata_key:
+                    type: string
+                  metadata_value:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - No sharing permissions or invalid CDE
+        404:
+          description: Not Found - CDE or workspace not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update CDE metadata via global company sharing permissions
+      tags:
+      - Global Company Directory
   /v2/global-companies/{globalCompanyId}/metadata:
     put:
       operationId: v2_saveGlobalCompanyMetadataValues
