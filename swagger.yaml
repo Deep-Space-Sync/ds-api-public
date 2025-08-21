@@ -3355,6 +3355,41 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/xero-sync/{syncId}:
+    post:
+      operationId: v2_postXeroSync
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - enum:
+        - contacts
+        - head_contract_claims
+        - invoices_to_client
+        - payments
+        - purchase_orders
+        - subcontractor_payment_schedules
+        in: path
+        name: syncId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        400:
+          description: Bad request - Invalid sync type or Xero not configured
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Trigger Xero sync for a specific sync type
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}:
     get:
       operationId: v2_getConfiguredFormWorkflowEmailById
