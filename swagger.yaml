@@ -15278,6 +15278,355 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/issues:
+    get:
+      operationId: v2_getCostIssues
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Optional issue ID to fetch specific issue
+        in: query
+        name: issueId
+        required: false
+        type: string
+      - description: Filter by status
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by severity
+        in: query
+        name: severity
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                assignee:
+                  description: Issue assignee
+                  type: string
+                created_at:
+                  description: Created timestamp
+                  format: date-time
+                  type: string
+                creator_name:
+                  description: Creator name
+                  type: string
+                description:
+                  description: Issue description
+                  type: string
+                id:
+                  description: Issue identifier
+                  type: string
+                project_id:
+                  description: Project ID
+                  type: integer
+                related_document_num:
+                  description: Related document number
+                  type: string
+                severity:
+                  description: Issue severity
+                  type: string
+                status:
+                  description: Issue status
+                  type: string
+                title:
+                  description: Issue title
+                  type: string
+                type:
+                  description: Issue type
+                  type: string
+                updated_at:
+                  description: Updated timestamp
+                  format: date-time
+                  type: string
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Cost Issues
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postCostIssues
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assignee:
+              description: Issue assignee
+              type: string
+            creator_name:
+              description: Creator name
+              type: string
+            description:
+              description: Issue description
+              type: string
+            related_document_num:
+              description: Related document number
+              type: string
+            severity:
+              description: Issue severity
+              type: string
+            status:
+              description: Issue status
+              type: string
+            title:
+              description: Issue title
+              type: string
+            type:
+              description: Issue type
+              type: string
+          required:
+          - title
+          - description
+          - status
+          - severity
+          type: object
+      responses:
+        201:
+          description: Issue successfully created
+          schema:
+            properties:
+              data:
+                properties:
+                  assignee:
+                    description: Issue assignee
+                    type: string
+                  created_at:
+                    description: Created timestamp
+                    format: date-time
+                    type: string
+                  creator_name:
+                    description: Creator name
+                    type: string
+                  description:
+                    description: Issue description
+                    type: string
+                  id:
+                    description: Issue identifier
+                    type: string
+                  project_id:
+                    description: Project ID
+                    type: integer
+                  related_document_num:
+                    description: Related document number
+                    type: string
+                  severity:
+                    description: Issue severity
+                    type: string
+                  status:
+                    description: Issue status
+                    type: string
+                  title:
+                    description: Issue title
+                    type: string
+                  type:
+                    description: Issue type
+                    type: string
+                  updated_at:
+                    description: Updated timestamp
+                    format: date-time
+                    type: string
+                type: object
+              message:
+                type: string
+              updated_objects:
+                type: array
+            type: object
+        400:
+          description: Bad Request - Invalid input or missing required fields
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Cost Issue
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/issues/{issueId}:
+    delete:
+      operationId: v2_deleteCostIssueById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: issueId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Issue successfully deleted
+          schema:
+            properties:
+              data:
+                properties:
+                  id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Issue not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Cost Issue By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchCostIssueById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: issueId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assignee:
+              description: Issue assignee
+              type: string
+            creator_name:
+              description: Creator name
+              type: string
+            description:
+              description: Issue description
+              type: string
+            related_document_num:
+              description: Related document number
+              type: string
+            severity:
+              description: Issue severity
+              type: string
+            status:
+              description: Issue status
+              type: string
+            title:
+              description: Issue title
+              type: string
+            type:
+              description: Issue type
+              type: string
+          type: object
+      responses:
+        201:
+          description: Issue successfully updated
+          schema:
+            properties:
+              data:
+                properties:
+                  assignee:
+                    description: Issue assignee
+                    type: string
+                  created_at:
+                    description: Created timestamp
+                    format: date-time
+                    type: string
+                  creator_name:
+                    description: Creator name
+                    type: string
+                  description:
+                    description: Issue description
+                    type: string
+                  id:
+                    description: Issue identifier
+                    type: string
+                  project_id:
+                    description: Project ID
+                    type: integer
+                  related_document_num:
+                    description: Related document number
+                    type: string
+                  severity:
+                    description: Issue severity
+                    type: string
+                  status:
+                    description: Issue status
+                    type: string
+                  title:
+                    description: Issue title
+                    type: string
+                  type:
+                    description: Issue type
+                    type: string
+                  updated_at:
+                    description: Updated timestamp
+                    format: date-time
+                    type: string
+                type: object
+              message:
+                type: string
+              updated_objects:
+                type: array
+            type: object
+        400:
+          description: Bad Request - Invalid input
+        401:
+          description: Unauthorized
+        404:
+          description: Issue not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Cost Issue By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/claim:
     get:
       operationId: v2_getCostClaimLineItems
