@@ -216,6 +216,75 @@ paths:
       summary: Create Global Company
       tags:
       - Global Company Directory
+  /v2/global-companies/alldocuments:
+    get:
+      operationId: v2_getAllDocuments
+      parameters:
+      - description: Global Company ID (base company to resolve sharing relationships)
+        in: query
+        name: globalCompanyId
+        required: true
+        type: number
+      - description: Maximum number of documents to return (default 1000)
+        in: query
+        name: limit
+        required: false
+        type: number
+      - description: Number of documents to skip (default 0)
+        in: query
+        name: offset
+        required: false
+        type: number
+      - description: Metadata key to search for (default 'expiry_date')
+        in: query
+        name: metadataKey
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    cde_id:
+                      type: number
+                    company_id:
+                      type: number
+                    created_at:
+                      format: date-time
+                      type: string
+                    metadata_key:
+                      type: string
+                    metadata_value:
+                      type: string
+                    tenant:
+                      type: string
+                  type: object
+                type: array
+              limit:
+                type: number
+              message:
+                type: string
+              metadata_key_searched:
+                type: string
+              offset:
+                type: number
+              schemas_queried:
+                type: number
+              total:
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get All Documents Across Sharing Companies
+      tags:
+      - Global Company Directory
   /v2/global-companies/allworkers:
     get:
       operationId: v2_getAllWorkers
