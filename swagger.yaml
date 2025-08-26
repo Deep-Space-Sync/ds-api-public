@@ -3492,6 +3492,441 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/deliveries:
+    get:
+      operationId: v2_getDeliveries
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: status
+        type: string
+      - in: query
+        name: supplier
+        type: string
+      - in: query
+        name: project_id
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    description:
+                      description: Delivery description
+                    documents:
+                      type: array
+                    expected_date:
+                      description: Expected delivery date
+                    id:
+                      description: Delivery ID
+                    issues:
+                      type: array
+                    items:
+                      type: array
+                    related_files:
+                      type: array
+                    status:
+                      description: Delivery status
+                    supplier:
+                      description: Supplier name
+                    tracking_number:
+                      description: Tracking number
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Deliveries
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postDelivery
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_order_num:
+              description: Related order number
+            delivery_location:
+              description: Delivery location
+            description:
+              description: Delivery description
+            expected_date:
+              description: Expected delivery date
+            project_id:
+              description: Project ID
+            related_files:
+              type: array
+            status:
+              description: Delivery status
+            supplier:
+              description: Supplier name
+            tracking_number:
+              description: Tracking number
+          required:
+          - supplier
+          - description
+          - status
+          type: object
+      responses:
+        201:
+          description: Delivery successfully created
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Delivery
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}:
+    delete:
+      operationId: v2_deleteDeliveryById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Delivery successfully deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Delivery By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getDeliveryById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Delivery By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchDeliveryById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actual_date:
+              description: Actual delivery date
+            delivery_location:
+              description: Delivery location
+            description:
+              description: Delivery description
+            expected_date:
+              description: Expected delivery date
+            related_files:
+              type: array
+            status:
+              description: Delivery status
+            supplier:
+              description: Supplier name
+            tracking_number:
+              description: Tracking number
+          type: object
+      responses:
+        200:
+          description: Delivery successfully updated
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Delivery By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/items:
+    get:
+      operationId: v2_getDeliveryItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Delivery Items
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postDeliveryItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            condition:
+              description: Item condition
+            description:
+              description: Item description
+            expected_qty:
+              description: Expected quantity
+            item_name:
+              description: Item name
+            received_qty:
+              description: Received quantity
+            status:
+              description: Item status
+            unit:
+              description: Unit of measurement
+          required:
+          - item_name
+          - expected_qty
+          - unit
+          - status
+          type: object
+      responses:
+        201:
+          description: Item successfully created
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Delivery Item
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/deliveries/files/process:
+    post:
+      operationId: v2_processDeliveryFiles
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            files:
+              items:
+                properties:
+                  file_id:
+                    description: File ID from signed URL response
+                type: object
+              type: array
+          required:
+          - files
+          type: object
+      responses:
+        200:
+          description: Files processed successfully
+          schema:
+            properties:
+              data:
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Process Uploaded Files
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/deliveries/files/signed-urls:
+    post:
+      operationId: v2_getDeliveryFileSignedUrls
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            files:
+              items:
+                properties:
+                  collection_type:
+                    description: Collection type
+                  file_size_bytes:
+                    description: File size in bytes
+                  filename:
+                    description: Original filename
+                  filetype:
+                    description: File MIME type
+                type: object
+              type: array
+          required:
+          - files
+          type: object
+      responses:
+        200:
+          description: Signed URLs generated successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    file_id:
+                      description: File ID
+                    file_url:
+                      description: Final file URL
+                    signed_url:
+                      description: Signed upload URL
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get File Upload Signed URLs
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/xero-sync/{syncId}:
     post:
       operationId: v2_postXeroSync
