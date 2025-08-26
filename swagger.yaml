@@ -3615,6 +3615,109 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/deliveries/files/process:
+    post:
+      operationId: v2_processDeliveryFiles
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            files:
+              items:
+                properties:
+                  file_id:
+                    description: File ID from signed URL response
+                type: object
+              type: array
+          required:
+          - files
+          type: object
+      responses:
+        200:
+          description: Files processed successfully
+          schema:
+            properties:
+              data:
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Process Uploaded Files
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/deliveries/files/signed-urls:
+    post:
+      operationId: v2_getDeliveryFileSignedUrls
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            files:
+              items:
+                properties:
+                  collection_type:
+                    description: Collection type
+                  file_size_bytes:
+                    description: File size in bytes
+                  filename:
+                    description: Original filename
+                  filetype:
+                    description: File MIME type
+                type: object
+              type: array
+          required:
+          - files
+          type: object
+      responses:
+        200:
+          description: Signed URLs generated successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    file_id:
+                      description: File ID
+                    file_url:
+                      description: Final file URL
+                    signed_url:
+                      description: Signed upload URL
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get File Upload Signed URLs
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}:
     delete:
       operationId: v2_deleteDeliveryById
@@ -3732,6 +3835,153 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/documents:
+    get:
+      operationId: v2_getDeliveryDocuments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Delivery Documents
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postDeliveryDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_type:
+              description: Document type
+            related_files:
+              type: array
+            status:
+              description: Document status
+            supplier:
+              description: Supplier name
+          required:
+          - document_type
+          - status
+          type: object
+      responses:
+        201:
+          description: Document successfully created
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Delivery Document
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/issues:
+    get:
+      operationId: v2_getDeliveryIssues
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Delivery Issues
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postDeliveryIssue
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assigned_to:
+              description: Assigned user ID
+            description:
+              description: Issue description
+            priority:
+              description: Issue priority
+            related_files:
+              type: array
+            status:
+              description: Issue status
+          required:
+          - description
+          - status
+          - priority
+          type: object
+      responses:
+        201:
+          description: Issue successfully created
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Delivery Issue
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/items:
     get:
       operationId: v2_getDeliveryItems
@@ -3824,38 +4074,26 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/cost/deliveries/files/process:
-    post:
-      operationId: v2_processDeliveryFiles
+  /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/items/{itemId}:
+    delete:
+      operationId: v2_deleteDeliveryItem
       parameters:
       - in: path
         name: workspaceId
         required: true
         type: string
-      - in: body
-        name: body
+      - in: path
+        name: deliveryId
         required: true
-        schema:
-          properties:
-            files:
-              items:
-                properties:
-                  file_id:
-                    description: File ID from signed URL response
-                type: object
-              type: array
-          required:
-          - files
-          type: object
+        type: string
+      - in: path
+        name: itemId
+        required: true
+        type: string
       responses:
         200:
-          description: Files processed successfully
+          description: Item successfully deleted
           schema:
-            properties:
-              data:
-                type: array
-              message:
-                type: string
             type: object
         401:
           description: Unauthorized
@@ -3863,58 +4101,35 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Process Uploaded Files
+      summary: Delete Delivery Item
       tags:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/cost/deliveries/files/signed-urls:
-    post:
-      operationId: v2_getDeliveryFileSignedUrls
+    patch:
+      operationId: v2_patchDeliveryItem
       parameters:
       - in: path
         name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      - in: path
+        name: itemId
         required: true
         type: string
       - in: body
         name: body
         required: true
         schema:
-          properties:
-            files:
-              items:
-                properties:
-                  collection_type:
-                    description: Collection type
-                  file_size_bytes:
-                    description: File size in bytes
-                  filename:
-                    description: Original filename
-                  filetype:
-                    description: File MIME type
-                type: object
-              type: array
-          required:
-          - files
           type: object
       responses:
         200:
-          description: Signed URLs generated successfully
+          description: Item successfully updated
           schema:
-            properties:
-              data:
-                items:
-                  properties:
-                    file_id:
-                      description: File ID
-                    file_url:
-                      description: Final file URL
-                    signed_url:
-                      description: Signed upload URL
-                  type: object
-                type: array
-              message:
-                type: string
             type: object
         401:
           description: Unauthorized
@@ -3922,7 +4137,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get File Upload Signed URLs
+      summary: Update Delivery Item
       tags:
       - Cost
       x-ds-test-enabled: true
