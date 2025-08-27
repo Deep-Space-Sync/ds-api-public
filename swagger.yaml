@@ -22792,6 +22792,127 @@ paths:
       tags:
       - Resources
       x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/roles:
+    get:
+      description: Retrieve all roles for the specified workspace
+      operationId: v2_listWorkspaceRoles
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of roles
+          schema:
+            properties:
+              data:
+                properties:
+                  items:
+                    items:
+                      $ref: '#/definitions/Role'
+                    type: array
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: List roles for workspace
+      tags:
+      - Roles
+    post:
+      operationId: v2_createWorkspaceRole
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/RoleCreateRequest'
+      responses:
+        201:
+          description: Role created
+          schema:
+            $ref: '#/definitions/Role'
+      security:
+      - JWT_v2: []
+      summary: Create a new role
+      tags:
+      - Roles
+  /v2/workspaces/{workspaceId}/roles/{roleId}:
+    delete:
+      operationId: v2_deleteWorkspaceRole
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: roleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete role
+      tags:
+      - Roles
+    get:
+      operationId: v2_getWorkspaceRole
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: roleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Role details
+          schema:
+            $ref: '#/definitions/Role'
+        404:
+          description: Role not found
+      security:
+      - JWT_v2: []
+      summary: Get role by ID
+      tags:
+      - Roles
+    patch:
+      operationId: v2_updateWorkspaceRole
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: roleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/RoleUpdateRequest'
+      responses:
+        200:
+          description: Updated role
+          schema:
+            $ref: '#/definitions/Role'
+      security:
+      - JWT_v2: []
+      summary: Update role
+      tags:
+      - Roles
   /v2/workspaces/{workspaceId}/tokens/{tokenId}:
     get:
       operationId: v2_getWorkpaceToken
