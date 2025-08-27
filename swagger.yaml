@@ -2225,6 +2225,11 @@ paths:
         name: worker_id
         required: false
         type: string
+      - description: Optional filter for CDE status (e.g. active, archived)
+        in: query
+        name: cde_status
+        required: false
+        type: string
       responses:
         200:
           description: Successfully returns CDE docs
@@ -2593,6 +2598,41 @@ paths:
       security:
       - JWT_v2: []
       summary: Update CDE metadata
+      tags:
+      - Upload Data
+  /v2/workspaces/{workspaceId}/cde/{cdeId}/status:
+    put:
+      operationId: v2_putCdeStatusWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_status:
+              description: New CDE status (e.g. active, archived)
+              type: string
+          required:
+          - cde_status
+          type: object
+      responses:
+        200:
+          description: Successfully updated CDE status
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update CDE status
       tags:
       - Upload Data
   /v2/workspaces/{workspaceId}/companies:
@@ -12885,6 +12925,11 @@ paths:
         name: projectId
         required: true
         type: integer
+      - description: Optional filter for CDE status (e.g. active, archived)
+        in: query
+        name: cde_status
+        required: false
+        type: string
       - in: path
         name: cdeId
         required: true
@@ -12942,6 +12987,45 @@ paths:
       security:
       - JWT_v2: []
       summary: Update CDE metadata
+      tags:
+      - Upload Data
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/{cdeId}/status:
+    put:
+      operationId: v2_putCdeStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_status:
+              description: New CDE status (e.g. active, archived)
+              type: string
+          required:
+          - cde_status
+          type: object
+      responses:
+        200:
+          description: Successfully updated CDE status
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update CDE status
       tags:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/cloudstoragebucket:
