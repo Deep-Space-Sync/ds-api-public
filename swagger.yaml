@@ -4090,38 +4090,6 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/documents/upload:
-    post:
-      operationId: v2_uploadDeliveryDocument
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: deliveryId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Document uploaded successfully
-          schema:
-            type: object
-        400:
-          description: Bad request
-          schema:
-            type: object
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Upload Delivery Document with File
-      tags:
-      - Cost
-      x-ds-test-enabled: true
-      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/issues:
     get:
       operationId: v2_getDeliveryIssues
