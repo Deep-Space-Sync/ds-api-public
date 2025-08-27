@@ -22864,7 +22864,34 @@ paths:
                 properties:
                   items:
                     items:
-                      $ref: '#/definitions/Role'
+                      properties:
+                        createdAt:
+                          description: Creation timestamp
+                          type: string
+                        createdBy:
+                          description: User who created the role
+                          type: string
+                        description:
+                          description: Role description
+                          type: string
+                        features:
+                          description: Features and permissions
+                          items:
+                            type: object
+                          type: array
+                        id:
+                          description: Role ID
+                          type: string
+                        name:
+                          description: Role name
+                          type: string
+                        updatedAt:
+                          description: Last update timestamp
+                          type: string
+                        workspaceId:
+                          description: Workspace ID
+                          type: string
+                      type: object
                     type: array
                 type: object
               ok:
@@ -22886,12 +22913,52 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/RoleCreateRequest'
+          properties:
+            description:
+              description: Role description
+              type: string
+            features:
+              description: Features and permissions
+              items:
+                type: object
+              type: array
+            name:
+              description: Role name
+              type: string
+          required:
+          - name
+          type: object
       responses:
         201:
           description: Role created
           schema:
-            $ref: '#/definitions/Role'
+            properties:
+              data:
+                properties:
+                  createdBy:
+                    description: User who created the role
+                    type: string
+                  description:
+                    description: Role description
+                    type: string
+                  features:
+                    description: Features and permissions
+                    items:
+                      type: object
+                    type: array
+                  id:
+                    description: Role ID
+                    type: string
+                  name:
+                    description: Role name
+                    type: string
+                  workspaceId:
+                    description: Workspace ID
+                    type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
       security:
       - JWT_v2: []
       summary: Create a new role
@@ -22912,6 +22979,20 @@ paths:
       responses:
         200:
           description: Deleted
+          schema:
+            properties:
+              data:
+                properties:
+                  deleted:
+                    description: Deletion status
+                    type: boolean
+                  id:
+                    description: Deleted role ID
+                    type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
       security:
       - JWT_v2: []
       summary: Delete role
@@ -22932,7 +23013,39 @@ paths:
         200:
           description: Role details
           schema:
-            $ref: '#/definitions/Role'
+            properties:
+              data:
+                properties:
+                  createdAt:
+                    description: Creation timestamp
+                    type: string
+                  createdBy:
+                    description: User who created the role
+                    type: string
+                  description:
+                    description: Role description
+                    type: string
+                  features:
+                    description: Features and permissions
+                    items:
+                      type: object
+                    type: array
+                  id:
+                    description: Role ID
+                    type: string
+                  name:
+                    description: Role name
+                    type: string
+                  updatedAt:
+                    description: Last update timestamp
+                    type: string
+                  workspaceId:
+                    description: Workspace ID
+                    type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
         404:
           description: Role not found
       security:
@@ -22955,12 +23068,56 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/RoleUpdateRequest'
+          properties:
+            description:
+              description: Role description
+              type: string
+            features:
+              description: Features and permissions
+              items:
+                type: object
+              type: array
+            name:
+              description: Role name
+              type: string
+          type: object
       responses:
         200:
           description: Updated role
           schema:
-            $ref: '#/definitions/Role'
+            properties:
+              data:
+                properties:
+                  createdAt:
+                    description: Creation timestamp
+                    type: string
+                  createdBy:
+                    description: User who created the role
+                    type: string
+                  description:
+                    description: Role description
+                    type: string
+                  features:
+                    description: Features and permissions
+                    items:
+                      type: object
+                    type: array
+                  id:
+                    description: Role ID
+                    type: string
+                  name:
+                    description: Role name
+                    type: string
+                  updatedAt:
+                    description: Last update timestamp
+                    type: string
+                  workspaceId:
+                    description: Workspace ID
+                    type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
       security:
       - JWT_v2: []
       summary: Update role
