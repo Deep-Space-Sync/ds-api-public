@@ -4090,6 +4090,102 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/documents/upload:
+    post:
+      operationId: v2_uploadDeliveryDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      - in: formData
+        name: file
+        required: true
+        type: file
+        description: Document file to upload
+      - in: formData
+        name: document_type
+        required: true
+        type: string
+        description: Document type (delivery_docket, delivery_receipt, invoice, packing_list)
+      - in: formData
+        name: status
+        required: true
+        type: string
+        description: Document status (pending, approved, rejected)
+      - in: formData
+        name: cost_order_num
+        required: false
+        type: string
+        description: Related purchase order number
+      - in: formData
+        name: supplier
+        required: false
+        type: string
+        description: Supplier name
+      consumes:
+      - multipart/form-data
+      responses:
+        200:
+          description: Document uploaded successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  id:
+                    description: Document ID
+                  document_type:
+                    description: Document type
+                  status:
+                    description: Document status
+                  cost_order_num:
+                    description: Related order number
+                  supplier:
+                    description: Supplier name
+                  related_files:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          description: File ID
+                        file_name:
+                          description: File name
+                        display_name:
+                          description: Display name
+                        file_url:
+                          description: File URL
+                        file_type:
+                          description: File MIME type
+                        file_size:
+                          description: File size in bytes
+        400:
+          description: Bad request - missing required fields or invalid file
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Missing required fields: document_type, status'
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upload Delivery Document with File
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/issues:
     get:
       operationId: v2_getDeliveryIssues
