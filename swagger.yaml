@@ -4092,8 +4092,6 @@ paths:
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/documents/upload:
     post:
-      consumes:
-      - multipart/form-data
       operationId: v2_uploadDeliveryDocument
       parameters:
       - in: path
@@ -4103,26 +4101,6 @@ paths:
       - in: path
         name: deliveryId
         required: true
-        type: string
-      - in: formData
-        name: file
-        required: true
-        type: file
-      - in: formData
-        name: document_type
-        required: true
-        type: string
-      - in: formData
-        name: status
-        required: true
-        type: string
-      - in: formData
-        name: cost_order_num
-        required: false
-        type: string
-      - in: formData
-        name: supplier
-        required: false
         type: string
       responses:
         200:
