@@ -1366,6 +1366,59 @@ paths:
       summary: Process a queued notification (admin only)
       tags:
       - Notifications
+  /v2/permissions/registry:
+    get:
+      description: Returns the versioned permissions registry defining modules, features,
+        and permission keys
+      operationId: v2_getPermissionsRegistry
+      responses:
+        200:
+          description: Global permissions registry
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Get global permissions registry
+      tags:
+      - Roles
+    patch:
+      description: Admin-only. Merges fields into the existing registry
+      operationId: v2_updatePermissionsRegistry
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated registry
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Update global permissions registry
+      tags:
+      - Roles
+    post:
+      description: Admin-only. Creates or replaces the registry document
+      operationId: v2_createPermissionsRegistry
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Saved registry
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Create or replace global permissions registry
+      tags:
+      - Roles
   /v2/powerbi-xmla/system-table/{reportName}:
     get:
       operationId: v2_uploadSystemTables
