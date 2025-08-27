@@ -1375,6 +1375,36 @@ paths:
         200:
           description: Global permissions registry
           schema:
+            properties:
+              data:
+                properties:
+                  modules:
+                    items:
+                      properties:
+                        features:
+                          items:
+                            properties:
+                              id:
+                                type: string
+                              label:
+                                type: string
+                            type: object
+                          type: array
+                        id:
+                          type: string
+                        label:
+                          type: string
+                      type: object
+                    type: array
+                  permissions:
+                    items:
+                      type: string
+                    type: array
+                  version:
+                    type: integer
+                type: object
+              ok:
+                type: boolean
             type: object
       security:
       - JWT_v2: []
@@ -1394,6 +1424,36 @@ paths:
         200:
           description: Updated registry
           schema:
+            properties:
+              data:
+                properties:
+                  modules:
+                    items:
+                      properties:
+                        features:
+                          items:
+                            properties:
+                              id:
+                                type: string
+                              label:
+                                type: string
+                            type: object
+                          type: array
+                        id:
+                          type: string
+                        label:
+                          type: string
+                      type: object
+                    type: array
+                  permissions:
+                    items:
+                      type: string
+                    type: array
+                  version:
+                    type: integer
+                type: object
+              ok:
+                type: boolean
             type: object
       security:
       - JWT_v2: []
@@ -1413,6 +1473,36 @@ paths:
         200:
           description: Saved registry
           schema:
+            properties:
+              data:
+                properties:
+                  modules:
+                    items:
+                      properties:
+                        features:
+                          items:
+                            properties:
+                              id:
+                                type: string
+                              label:
+                                type: string
+                            type: object
+                          type: array
+                        id:
+                          type: string
+                        label:
+                          type: string
+                      type: object
+                    type: array
+                  permissions:
+                    items:
+                      type: string
+                    type: array
+                  version:
+                    type: integer
+                type: object
+              ok:
+                type: boolean
             type: object
       security:
       - JWT_v2: []
