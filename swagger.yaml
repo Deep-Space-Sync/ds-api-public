@@ -4092,6 +4092,8 @@ paths:
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/documents/upload:
     post:
+      consumes:
+      - multipart/form-data
       operationId: v2_uploadDeliveryDocument
       parameters:
       - in: path
@@ -4102,79 +4104,77 @@ paths:
         name: deliveryId
         required: true
         type: string
-      - in: formData
+      - description: Document file to upload
+        in: formData
         name: file
         required: true
         type: file
-        description: Document file to upload
-      - in: formData
+      - description: Document type (delivery_docket, delivery_receipt, invoice, packing_list)
+        in: formData
         name: document_type
         required: true
         type: string
-        description: Document type (delivery_docket, delivery_receipt, invoice, packing_list)
-      - in: formData
+      - description: Document status (pending, approved, rejected)
+        in: formData
         name: status
         required: true
         type: string
-        description: Document status (pending, approved, rejected)
-      - in: formData
+      - description: Related purchase order number
+        in: formData
         name: cost_order_num
         required: false
         type: string
-        description: Related purchase order number
-      - in: formData
+      - description: Supplier name
+        in: formData
         name: supplier
         required: false
         type: string
-        description: Supplier name
-      consumes:
-      - multipart/form-data
       responses:
         200:
           description: Document uploaded successfully
           schema:
-            type: object
             properties:
-              message:
-                type: string
               data:
-                type: object
                 properties:
-                  id:
-                    description: Document ID
-                  document_type:
-                    description: Document type
-                  status:
-                    description: Document status
                   cost_order_num:
                     description: Related order number
-                  supplier:
-                    description: Supplier name
+                  document_type:
+                    description: Document type
+                  id:
+                    description: Document ID
                   related_files:
-                    type: array
                     items:
-                      type: object
                       properties:
-                        id:
-                          description: File ID
-                        file_name:
-                          description: File name
                         display_name:
                           description: Display name
-                        file_url:
-                          description: File URL
-                        file_type:
-                          description: File MIME type
+                        file_name:
+                          description: File name
                         file_size:
                           description: File size in bytes
+                        file_type:
+                          description: File MIME type
+                        file_url:
+                          description: File URL
+                        id:
+                          description: File ID
+                      type: object
+                    type: array
+                  status:
+                    description: Document status
+                  supplier:
+                    description: Supplier name
+                type: object
+              message:
+                type: string
+            type: object
         400:
           description: Bad request - missing required fields or invalid file
           schema:
-            type: object
             properties:
               message:
-                type: string
                 example: 'Missing required fields: document_type, status'
+                type: string
+            type: object
         401:
           description: Unauthorized
         500:
