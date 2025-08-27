@@ -4092,8 +4092,6 @@ paths:
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/documents/upload:
     post:
-      consumes:
-      - multipart/form-data
       operationId: v2_uploadDeliveryDocument
       parameters:
       - in: path
@@ -4104,76 +4102,36 @@ paths:
         name: deliveryId
         required: true
         type: string
-      - description: Document file to upload
-        in: formData
+      - in: formData
         name: file
         required: true
         type: file
-      - description: Document type (delivery_docket, delivery_receipt, invoice, packing_list)
-        in: formData
+      - in: formData
         name: document_type
         required: true
         type: string
-      - description: Document status (pending, approved, rejected)
-        in: formData
+      - in: formData
         name: status
         required: true
         type: string
-      - description: Related purchase order number
-        in: formData
+      - in: formData
         name: cost_order_num
         required: false
         type: string
-      - description: Supplier name
-        in: formData
+      - in: formData
         name: supplier
         required: false
         type: string
+      consumes:
+      - multipart/form-data
       responses:
         200:
           description: Document uploaded successfully
           schema:
-            properties:
-              data:
-                properties:
-                  cost_order_num:
-                    description: Related order number
-                  document_type:
-                    description: Document type
-                  id:
-                    description: Document ID
-                  related_files:
-                    items:
-                      properties:
-                        display_name:
-                          description: Display name
-                        file_name:
-                          description: File name
-                        file_size:
-                          description: File size in bytes
-                        file_type:
-                          description: File MIME type
-                        file_url:
-                          description: File URL
-                        id:
-                          description: File ID
-                      type: object
-                    type: array
-                  status:
-                    description: Document status
-                  supplier:
-                    description: Supplier name
-                type: object
-              message:
-                type: string
             type: object
         400:
-          description: Bad request - missing required fields or invalid file
+          description: Bad request
           schema:
-            properties:
-              message:
-                example: 'Missing required fields: document_type, status'
-                type: string
             type: object
         401:
           description: Unauthorized
