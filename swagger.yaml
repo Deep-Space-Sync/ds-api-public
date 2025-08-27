@@ -3993,6 +3993,12 @@ paths:
           properties:
             assigned_to:
               description: Assigned user ID
+            cost_issue_client_id:
+              description: Issue client ID (auto-generated if not provided)
+            cost_order_num:
+              description: Related order number
+            date_reported:
+              description: Date when issue was reported
             description:
               description: Issue description
             priority:
@@ -4001,6 +4007,8 @@ paths:
               type: array
             status:
               description: Issue status
+            supplier:
+              description: Supplier name
           required:
           - description
           - status
@@ -4018,6 +4026,158 @@ paths:
       security:
       - JWT_v2: []
       summary: Create Delivery Issue
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/deliveries/{deliveryId}/issues/{issueId}:
+    delete:
+      operationId: v2_deleteDeliveryIssueById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      - in: path
+        name: issueId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Issue successfully deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Delivery Issue By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getDeliveryIssueById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      - in: path
+        name: issueId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  assigned_to:
+                    description: Assigned user ID
+                  cost_issue_client_id:
+                    description: Issue client ID
+                  cost_order_num:
+                    description: Related order number
+                  date_reported:
+                    description: Date when issue was reported
+                  description:
+                    description: Issue description
+                  id:
+                    description: Issue ID
+                  priority:
+                    description: Issue priority
+                  related_files:
+                    type: array
+                  status:
+                    description: Issue status
+                  supplier:
+                    description: Supplier name
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Delivery Issue By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchDeliveryIssueById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: deliveryId
+        required: true
+        type: string
+      - in: path
+        name: issueId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assigned_to:
+              description: Assigned user ID
+            cost_issue_client_id:
+              description: Issue client ID
+            cost_order_num:
+              description: Related order number
+            date_reported:
+              description: Date when issue was reported
+            description:
+              description: Issue description
+            priority:
+              description: Issue priority
+            related_files:
+              type: array
+            status:
+              description: Issue status
+            supplier:
+              description: Supplier name
+          type: object
+      responses:
+        200:
+          description: Issue successfully updated
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Delivery Issue By ID
       tags:
       - Cost
       x-ds-test-enabled: true
