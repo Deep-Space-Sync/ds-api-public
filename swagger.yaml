@@ -24260,6 +24260,79 @@ paths:
       summary: Resend invite email to user in workspace
       tags:
       - Users
+  /v2/workspaces/{workspaceId}/data-point-link:
+    get:
+      description: Retrieve data point links with filtering options
+      operationId: v2_getDataPointLinks
+      parameters:
+      - in: path
+        name: workspaceId
+        type: string
+      - in: query
+        name: sourceType
+        type: string
+      - in: query
+        name: sourceId
+        type: string
+      - in: query
+        name: targetType
+        type: string
+      - in: query
+        name: targetId
+        type: string
+      - in: query
+        name: category
+        type: string
+      - in: query
+        name: isDeleted
+        type: string
+      - in: query
+        name: page
+        type: string
+      - in: query
+        name: limit
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved data point links
+      security:
+      - JWT_v2: []
+      summary: Get data point links
+      tags:
+      - DataPointLinks
+    post:
+      description: Create a new data point link between objects
+      operationId: v2_createDataPointLink
+      parameters:
+      - in: path
+        name: workspaceId
+        type: string
+      responses:
+        200:
+          description: Data point link created successfully
+      security:
+      - JWT_v2: []
+      summary: Create a data point link
+      tags:
+      - DataPointLinks
+    delete:
+      description: Soft delete a data point link by ID
+      operationId: v2_deleteDataPointLink
+      parameters:
+      - in: path
+        name: workspaceId
+        type: string
+      - in: query
+        name: linkId
+        type: string
+      responses:
+        200:
+          description: Data point link successfully deleted
+      security:
+      - JWT_v2: []
+      summary: Delete a data point link
+      tags:
+      - DataPointLinks
 schemes:
 - https
 securityDefinitions:
