@@ -3683,19 +3683,24 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - in: query
+      - description: Page number for pagination
+        in: query
         name: page
         type: integer
-      - in: query
+      - description: Number of items per page
+        in: query
         name: limit
         type: integer
-      - in: query
+      - description: Filter by project ID
+        in: query
         name: project_id
         type: integer
-      - in: query
+      - description: Filter by status (issued, draft, acknowledged)
+        in: query
         name: status
         type: string
-      - in: query
+      - description: Filter by work package
+        in: query
         name: work_package
         type: string
       responses:
@@ -3706,6 +3711,12 @@ paths:
               data:
                 items:
                   properties:
+                    cause:
+                      description: Cause of delay
+                      type: string
+                    critical_path:
+                      description: Whether this affects critical path
+                      type: boolean
                     delay_notice_client_id:
                       description: Client-facing delay notice ID
                       type: string
@@ -3717,18 +3728,26 @@ paths:
                       type: string
                     event_date:
                       description: Event date
+                      format: date
                       type: string
                     id:
                       description: Delay notice ID
                       type: string
+                    notice_date:
+                      description: Notice date
+                      format: date
+                      type: string
                     project_id:
                       description: Project ID
                       type: integer
+                    responsible_party:
+                      description: Responsible party
+                      type: string
                     status:
-                      description: Status
+                      description: Status (issued, draft, acknowledged)
                       type: string
                     summary:
-                      description: Summary
+                      description: Summary of delay notice
                       type: string
                     work_package:
                       description: Work package
@@ -3786,9 +3805,11 @@ paths:
               type: string
             event_date:
               description: Event date
+              format: date
               type: string
             notice_date:
               description: Notice date
+              format: date
               type: string
             programme_activity:
               description: Programme activity
@@ -3899,6 +3920,7 @@ paths:
                     type: string
                   event_date:
                     description: Event date
+                    format: date
                     type: string
                   id:
                     description: Delay notice ID
@@ -3973,9 +3995,11 @@ paths:
               type: string
             event_date:
               description: Event date
+              format: date
               type: string
             notice_date:
               description: Notice date
+              format: date
               type: string
             programme_activity:
               description: Programme activity
@@ -4023,433 +4047,6 @@ paths:
       security:
       - JWT_v2: []
       summary: Update Delay Notice By ID
-      tags:
-      - Cost
-      x-ds-test-enabled: true
-      x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/cost/time-extensions:
-    get:
-      operationId: v2_getTimeExtensions
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: query
-        name: page
-        type: integer
-      - in: query
-        name: limit
-        type: integer
-      - in: query
-        name: project_id
-        type: integer
-      - in: query
-        name: status
-        type: string
-      - in: query
-        name: work_package
-        type: string
-      responses:
-        200:
-          description: Successful response
-          schema:
-            properties:
-              data:
-                items:
-                  properties:
-                    critical_path:
-                      description: Whether this affects critical path
-                      type: boolean
-                    days_assessed:
-                      description: Number of days assessed
-                      type: number
-                    days_claimed:
-                      description: Number of days claimed
-                      type: number
-                    delay_notice_num:
-                      description: Related delay notice number
-                      type: string
-                    event_date:
-                      description: Event date
-                      type: string
-                    id:
-                      description: Time extension ID
-                      type: string
-                    project_id:
-                      description: Project ID
-                      type: integer
-                    status:
-                      description: Status
-                      type: string
-                    summary:
-                      description: Summary of time extension
-                      type: string
-                    time_extension_client_id:
-                      description: Client-facing time extension ID
-                      type: string
-                    time_extension_name:
-                      description: Time extension name
-                      type: string
-                    time_extension_num:
-                      description: Time extension number
-                      type: string
-                    work_package:
-                      description: Work package
-                      type: string
-                  type: object
-                type: array
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        403:
-          description: Access denied
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get Time Extensions
-      tags:
-      - Cost
-      x-ds-test-enabled: true
-      x-min-permissions: isCostUser
-    post:
-      operationId: v2_createTimeExtension
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            assessment_due_date:
-              description: Assessment due date
-              type: string
-            cause:
-              description: Cause of time extension
-              type: string
-            claim_date:
-              description: Claim date
-              type: string
-            contract_reference:
-              description: Contract reference
-              type: string
-            correspondence_reference:
-              description: Correspondence reference
-              type: string
-            critical_path:
-              description: Whether this affects critical path
-              type: boolean
-            days_assessed:
-              description: Number of days assessed
-              type: number
-            days_claimed:
-              description: Number of days claimed
-              type: number
-            delay_notice_num:
-              description: Related delay notice number
-              type: string
-            details:
-              description: Detailed description
-              type: string
-            determination_due_by:
-              description: Determination due by date
-              type: string
-            event_date:
-              description: Event date
-              type: string
-            notice_date:
-              description: Notice date
-              type: string
-            original_pc_date:
-              description: Original PC date
-              type: string
-            programme_activity:
-              description: Programme activity
-              type: string
-            project_id:
-              description: Project ID
-              type: integer
-            proposed_revised_pc_date:
-              description: Proposed revised PC date
-              type: string
-            responsible_party:
-              description: Responsible party
-              type: string
-            sop_reference:
-              description: SOP reference
-              type: string
-            status:
-              description: Status of time extension
-              enum:
-              - submitted
-              - rejected
-              - granted
-              - partially_granted
-              type: string
-            summary:
-              description: Summary of time extension
-              type: string
-            time_extension_client_id:
-              description: Client-facing time extension ID (auto-generated if not
-                provided)
-              type: string
-            time_extension_name:
-              description: Time extension name
-              type: string
-            work_package:
-              description: Work package
-              type: string
-          required:
-          - project_id
-          - work_package
-          - event_date
-          - days_claimed
-          - summary
-          type: object
-      responses:
-        201:
-          description: Time extension created successfully
-          schema:
-            properties:
-              data:
-                properties:
-                  days_claimed:
-                    description: Days claimed
-                    type: number
-                  id:
-                    description: Time extension ID
-                    type: string
-                  project_id:
-                    description: Project ID
-                    type: integer
-                  status:
-                    description: Status
-                    type: string
-                  summary:
-                    description: Summary
-                    type: string
-                  time_extension_client_id:
-                    description: Auto-generated client ID
-                    type: string
-                  time_extension_name:
-                    description: Time extension name
-                    type: string
-                  work_package:
-                    description: Work package
-                    type: string
-                type: object
-              message:
-                type: string
-            type: object
-        400:
-          description: Bad request - missing required fields
-        401:
-          description: Unauthorized
-        403:
-          description: Access denied
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Create Time Extension
-      tags:
-      - Cost
-      x-ds-test-enabled: true
-      x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/cost/time-extensions/{timeExtensionId}:
-    get:
-      operationId: v2_getTimeExtensionById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: timeExtensionId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Successful response
-          schema:
-            properties:
-              data:
-                properties:
-                  days_assessed:
-                    description: Days assessed
-                    type: number
-                  days_claimed:
-                    description: Days claimed
-                    type: number
-                  delay_notice_num:
-                    description: Related delay notice number
-                    type: string
-                  details:
-                    description: Detailed description
-                    type: string
-                  event_date:
-                    description: Event date
-                    type: string
-                  id:
-                    description: Time extension ID
-                    type: string
-                  project_id:
-                    description: Project ID
-                    type: integer
-                  status:
-                    description: Status
-                    type: string
-                  summary:
-                    description: Summary
-                    type: string
-                  time_extension_client_id:
-                    description: Client-facing time extension ID
-                    type: string
-                  time_extension_name:
-                    description: Time extension name
-                    type: string
-                  work_package:
-                    description: Work package
-                    type: string
-                type: object
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        403:
-          description: Access denied
-        404:
-          description: Time extension not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get Time Extension By ID
-      tags:
-      - Cost
-      x-ds-test-enabled: true
-      x-min-permissions: isCostUser
-    patch:
-      operationId: v2_updateTimeExtensionById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: timeExtensionId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            assessment_due_date:
-              description: Assessment due date
-              type: string
-            cause:
-              description: Cause of time extension
-              type: string
-            claim_date:
-              description: Claim date
-              type: string
-            contract_reference:
-              description: Contract reference
-              type: string
-            correspondence_reference:
-              description: Correspondence reference
-              type: string
-            critical_path:
-              description: Whether this affects critical path
-              type: boolean
-            days_assessed:
-              description: Number of days assessed
-              type: number
-            days_claimed:
-              description: Number of days claimed
-              type: number
-            delay_notice_num:
-              description: Related delay notice number
-              type: string
-            details:
-              description: Detailed description
-              type: string
-            determination_due_by:
-              description: Determination due by date
-              type: string
-            event_date:
-              description: Event date
-              type: string
-            notice_date:
-              description: Notice date
-              type: string
-            original_pc_date:
-              description: Original PC date
-              type: string
-            programme_activity:
-              description: Programme activity
-              type: string
-            proposed_revised_pc_date:
-              description: Proposed revised PC date
-              type: string
-            responsible_party:
-              description: Responsible party
-              type: string
-            sop_reference:
-              description: SOP reference
-              type: string
-            status:
-              description: Status of time extension
-              enum:
-              - submitted
-              - rejected
-              - granted
-              - partially_granted
-              type: string
-            summary:
-              description: Summary of time extension
-              type: string
-            time_extension_client_id:
-              description: Client-facing time extension ID
-              type: string
-            time_extension_name:
-              description: Time extension name
-              type: string
-            work_package:
-              description: Work package
-              type: string
-          type: object
-      responses:
-        200:
-          description: Time extension updated successfully
-          schema:
-            properties:
-              data:
-                type: object
-              message:
-                type: string
-            type: object
-        400:
-          description: Bad request - no fields to update
-        401:
-          description: Unauthorized
-        403:
-          description: Access denied
-        404:
-          description: Time extension not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Update Time Extension By ID
       tags:
       - Cost
       x-ds-test-enabled: true
@@ -5260,6 +4857,454 @@ paths:
       security:
       - JWT_v2: []
       summary: Update Delivery Item
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/time-extensions:
+    get:
+      operationId: v2_getTimeExtensions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Filter by project ID
+        in: query
+        name: project_id
+        type: integer
+      - description: Filter by status (submitted, rejected, granted, partially_granted)
+        in: query
+        name: status
+        type: string
+      - description: Filter by work package
+        in: query
+        name: work_package
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    critical_path:
+                      description: Whether this affects critical path
+                      type: boolean
+                    days_assessed:
+                      description: Number of days assessed
+                      type: number
+                    days_claimed:
+                      description: Number of days claimed
+                      type: number
+                    delay_notice_num:
+                      description: Related delay notice number
+                      type: string
+                    event_date:
+                      description: Event date
+                      format: date
+                      type: string
+                    id:
+                      description: Time extension ID
+                      type: string
+                    project_id:
+                      description: Project ID
+                      type: integer
+                    status:
+                      description: Status (submitted, rejected, granted, partially_granted)
+                      type: string
+                    summary:
+                      description: Summary of time extension
+                      type: string
+                    time_extension_client_id:
+                      description: Client-facing time extension ID
+                      type: string
+                    time_extension_name:
+                      description: Time extension name
+                      type: string
+                    time_extension_num:
+                      description: Time extension number
+                      type: string
+                    work_package:
+                      description: Work package
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Access denied
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Time Extensions
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createTimeExtension
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assessment_due_date:
+              description: Assessment due date
+              format: date
+              type: string
+            cause:
+              description: Cause of time extension
+              type: string
+            claim_date:
+              description: Claim date
+              format: date
+              type: string
+            contract_reference:
+              description: Contract reference
+              type: string
+            correspondence_reference:
+              description: Correspondence reference
+              type: string
+            critical_path:
+              description: Whether this affects critical path
+              type: boolean
+            days_assessed:
+              description: Number of days assessed
+              type: number
+            days_claimed:
+              description: Number of days claimed
+              type: number
+            delay_notice_num:
+              description: Related delay notice number
+              type: string
+            details:
+              description: Detailed description
+              type: string
+            determination_due_by:
+              description: Determination due by date
+              format: date
+              type: string
+            event_date:
+              description: Event date
+              format: date
+              type: string
+            notice_date:
+              description: Notice date
+              format: date
+              type: string
+            original_pc_date:
+              description: Original PC date
+              format: date
+              type: string
+            programme_activity:
+              description: Programme activity
+              type: string
+            project_id:
+              description: Project ID
+              type: integer
+            proposed_revised_pc_date:
+              description: Proposed revised PC date
+              format: date
+              type: string
+            responsible_party:
+              description: Responsible party
+              type: string
+            sop_reference:
+              description: SOP reference
+              type: string
+            status:
+              description: Status of time extension
+              enum:
+              - submitted
+              - rejected
+              - granted
+              - partially_granted
+              type: string
+            summary:
+              description: Summary of time extension
+              type: string
+            time_extension_client_id:
+              description: Client-facing time extension ID (auto-generated if not
+                provided)
+              type: string
+            time_extension_name:
+              description: Time extension name
+              type: string
+            work_package:
+              description: Work package
+              type: string
+          required:
+          - project_id
+          - work_package
+          - event_date
+          - days_claimed
+          - summary
+          type: object
+      responses:
+        201:
+          description: Time extension created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  days_claimed:
+                    description: Days claimed
+                    type: number
+                  id:
+                    description: Time extension ID
+                    type: string
+                  project_id:
+                    description: Project ID
+                    type: integer
+                  status:
+                    description: Status
+                    type: string
+                  summary:
+                    description: Summary
+                    type: string
+                  time_extension_client_id:
+                    description: Auto-generated client ID
+                    type: string
+                  time_extension_name:
+                    description: Time extension name
+                    type: string
+                  work_package:
+                    description: Work package
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - missing required fields
+        401:
+          description: Unauthorized
+        403:
+          description: Access denied
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Time Extension
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/time-extensions/{timeExtensionId}:
+    get:
+      operationId: v2_getTimeExtensionById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: timeExtensionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  days_assessed:
+                    description: Days assessed
+                    type: number
+                  days_claimed:
+                    description: Days claimed
+                    type: number
+                  delay_notice_num:
+                    description: Related delay notice number
+                    type: string
+                  details:
+                    description: Detailed description
+                    type: string
+                  event_date:
+                    description: Event date
+                    format: date
+                    type: string
+                  id:
+                    description: Time extension ID
+                    type: string
+                  project_id:
+                    description: Project ID
+                    type: integer
+                  status:
+                    description: Status
+                    type: string
+                  summary:
+                    description: Summary
+                    type: string
+                  time_extension_client_id:
+                    description: Client-facing time extension ID
+                    type: string
+                  time_extension_name:
+                    description: Time extension name
+                    type: string
+                  work_package:
+                    description: Work package
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Access denied
+        404:
+          description: Time extension not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Time Extension By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateTimeExtensionById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: timeExtensionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assessment_due_date:
+              description: Assessment due date
+              format: date
+              type: string
+            cause:
+              description: Cause of time extension
+              type: string
+            claim_date:
+              description: Claim date
+              format: date
+              type: string
+            contract_reference:
+              description: Contract reference
+              type: string
+            correspondence_reference:
+              description: Correspondence reference
+              type: string
+            critical_path:
+              description: Whether this affects critical path
+              type: boolean
+            days_assessed:
+              description: Number of days assessed
+              type: number
+            days_claimed:
+              description: Number of days claimed
+              type: number
+            delay_notice_num:
+              description: Related delay notice number
+              type: string
+            details:
+              description: Detailed description
+              type: string
+            determination_due_by:
+              description: Determination due by date
+              format: date
+              type: string
+            event_date:
+              description: Event date
+              format: date
+              type: string
+            notice_date:
+              description: Notice date
+              format: date
+              type: string
+            original_pc_date:
+              description: Original PC date
+              format: date
+              type: string
+            programme_activity:
+              description: Programme activity
+              type: string
+            proposed_revised_pc_date:
+              description: Proposed revised PC date
+              format: date
+              type: string
+            responsible_party:
+              description: Responsible party
+              type: string
+            sop_reference:
+              description: SOP reference
+              type: string
+            status:
+              description: Status of time extension
+              enum:
+              - submitted
+              - rejected
+              - granted
+              - partially_granted
+              type: string
+            summary:
+              description: Summary of time extension
+              type: string
+            time_extension_client_id:
+              description: Client-facing time extension ID
+              type: string
+            time_extension_name:
+              description: Time extension name
+              type: string
+            work_package:
+              description: Work package
+              type: string
+          type: object
+      responses:
+        200:
+          description: Time extension updated successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - no fields to update
+        401:
+          description: Unauthorized
+        403:
+          description: Access denied
+        404:
+          description: Time extension not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Time Extension By ID
       tags:
       - Cost
       x-ds-test-enabled: true
