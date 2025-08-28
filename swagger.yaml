@@ -5345,30 +5345,13 @@ paths:
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/data-point-link:
-    delete:
-      description: Soft delete a data point link by ID
-      operationId: v2_v2_deleteDataPointLink
-      parameters:
-      - in: path
-        name: workspaceId
-        type: string
-      - in: query
-        name: linkId
-        type: string
-      responses:
-        200:
-          description: Data point link successfully deleted
-      security:
-      - JWT_v2: []
-      summary: Delete a data point link
-      tags:
-      - DataPointLinks
     get:
       description: Retrieve data point links with filtering options
-      operationId: v2_v2_getDataPointLinks
+      operationId: v2_getDataPointLink
       parameters:
       - in: path
         name: workspaceId
+        required: true
         type: string
       - in: query
         name: sourceType
@@ -5401,14 +5384,19 @@ paths:
       - JWT_v2: []
       summary: Get data point links
       tags:
-      - DataPointLinks
+      - DataPointLink
     post:
       description: Create a new data point link between objects
-      operationId: v2_v2_createDataPointLink
+      operationId: v2_createDataPointLink
       parameters:
       - in: path
         name: workspaceId
+        required: true
         type: string
+      - in: body
+        name: body
+        schema:
+          type: object
       responses:
         200:
           description: Data point link created successfully
@@ -5416,7 +5404,26 @@ paths:
       - JWT_v2: []
       summary: Create a data point link
       tags:
-      - DataPointLinks
+      - DataPointLink
+    delete:
+      description: Soft delete a data point link by ID
+      operationId: v2_deleteDataPointLink
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: linkId
+        type: string
+      responses:
+        200:
+          description: Data point link successfully deleted
+      security:
+      - JWT_v2: []
+      summary: Delete a data point link
+      tags:
+      - DataPointLink
   /v2/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}:
     get:
       operationId: v2_getConfiguredFormWorkflowEmailById
