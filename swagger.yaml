@@ -13511,6 +13511,200 @@ paths:
       summary: Get Actions with category = Tasks by workspaceId and ProjectId
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/actionDeps:
+    delete:
+      operationId: v2_deleteActionDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of the dependency to delete
+        in: query
+        name: dependencyId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Action dependency deleted successfully
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Dependency not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete action dependency
+      tags:
+      - Actions
+    get:
+      operationId: v2_getActionDependencies
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Optional action ID to get dependencies for specific action
+        in: query
+        name: actionId
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved action dependencies
+          schema:
+            properties:
+              dependencies:
+                items:
+                  properties:
+                    dependency_id:
+                      type: string
+                    predecessor_action_id:
+                      type: string
+                    successor_action_id:
+                      type: string
+                    dependency_type:
+                      type: string
+                    lag_days:
+                      type: integer
+                    relationship:
+                      type: string
+                  type: object
+                type: array
+              count:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get action dependencies
+      tags:
+      - Actions
+    patch:
+      operationId: v2_updateActionDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of the dependency to update
+        in: query
+        name: dependencyId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            dependency_type:
+              description: Type of dependency relationship
+              enum:
+              - finish_to_start
+              - start_to_start
+              - finish_to_finish
+              - start_to_finish
+              - as_soon_as_possible
+              type: string
+            lag_days:
+              description: Number of lag days for the dependency
+              type: integer
+          type: object
+      responses:
+        200:
+          description: Action dependency updated successfully
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Dependency not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update action dependency
+      tags:
+      - Actions
+    post:
+      operationId: v2_createActionDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            predecessor_action_id:
+              description: ID of the predecessor action (Task A)
+              type: string
+            successor_action_id:
+              description: ID of the successor action (Task B)
+              type: string
+            dependency_type:
+              default: finish_to_start
+              description: Type of dependency relationship
+              enum:
+              - finish_to_start
+              - start_to_start
+              - finish_to_finish
+              - start_to_finish
+              - as_soon_as_possible
+              type: string
+            lag_days:
+              default: 0
+              description: Number of lag days for the dependency
+              type: integer
+          required:
+          - predecessor_action_id
+          - successor_action_id
+          type: object
+      responses:
+        201:
+          description: Action dependency created successfully
+          schema:
+            properties:
+              message:
+                type: string
+              dependency_id:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create action dependency
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}:
     get:
       operationId: v2_getSingleAction
