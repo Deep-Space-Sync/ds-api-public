@@ -13814,6 +13814,254 @@ paths:
       summary: Create action dependency
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/constraints:
+    delete:
+      operationId: v2_deleteActionConstraint
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of the constraint to delete
+        in: query
+        name: constraintId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Action constraint deleted successfully
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Constraint not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete action constraint
+      tags:
+      - Actions
+    get:
+      operationId: v2_getActionConstraints
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Optional action ID to get constraints for specific action
+        in: query
+        name: actionId
+        required: false
+        type: string
+      - description: Optional constraint type filter
+        in: query
+        name: constraintType
+        required: false
+        type: string
+      - description: Optional priority filter
+        in: query
+        name: priority
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved action constraints
+          schema:
+            properties:
+              constraints:
+                items:
+                  properties:
+                    constraint_id:
+                      type: string
+                    action_id:
+                      type: string
+                    constraint_type:
+                      type: string
+                    description:
+                      type: string
+                    related_task_id:
+                      type: string
+                    priority:
+                      type: string
+                    impact:
+                      type: integer
+                    due_date:
+                      type: string
+                      format: date-time
+                    owner:
+                      type: string
+                    created_at:
+                      type: string
+                      format: date-time
+                    created_by:
+                      type: string
+                  type: object
+                type: array
+              count:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get action constraints
+      tags:
+      - Actions
+    patch:
+      operationId: v2_updateActionConstraint
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of the constraint to update
+        in: query
+        name: constraintId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            constraint_type:
+              description: Type of constraint
+              type: string
+            description:
+              description: Description of the constraint
+              type: string
+            related_task_id:
+              description: Related task identifier
+              type: string
+            priority:
+              description: Priority level of the constraint
+              enum:
+              - Low
+              - Medium
+              - High
+              - Critical
+              type: string
+            impact:
+              description: Impact level (1-5 scale)
+              type: integer
+              minimum: 1
+              maximum: 5
+            due_date:
+              description: Due date for the constraint
+              type: string
+              format: date-time
+            owner:
+              description: Owner of the constraint
+              type: string
+          type: object
+      responses:
+        200:
+          description: Action constraint updated successfully
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Constraint not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update action constraint
+      tags:
+      - Actions
+    post:
+      operationId: v2_createActionConstraint
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            action_id:
+              description: ID of the scheduling task action
+              type: string
+            constraint_type:
+              description: Type of constraint
+              type: string
+            description:
+              description: Description of the constraint
+              type: string
+            related_task_id:
+              description: Related task identifier
+              type: string
+            priority:
+              default: Medium
+              description: Priority level of the constraint
+              enum:
+              - Low
+              - Medium
+              - High
+              - Critical
+              type: string
+            impact:
+              default: 3
+              description: Impact level (1-5 scale)
+              type: integer
+              minimum: 1
+              maximum: 5
+            due_date:
+              description: Due date for the constraint
+              type: string
+              format: date-time
+            owner:
+              description: Owner of the constraint
+              type: string
+          required:
+          - action_id
+          - constraint_type
+          - description
+          type: object
+      responses:
+        201:
+          description: Action constraint created successfully
+          schema:
+            properties:
+              message:
+                type: string
+              constraint_id:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create action constraint
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}:
     get:
       operationId: v2_getSingleAction
