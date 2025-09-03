@@ -5664,6 +5664,115 @@ paths:
       summary: Create a data point link
       tags:
       - DataPointLink
+  /v2/workspaces/{workspaceId}/projects/{projectId}/comments:
+    delete:
+      description: Soft delete a comment by ID
+      operationId: v2_v2_deleteComment
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: query
+        name: commentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Comment successfully deleted
+      security:
+      - JWT_v2: []
+      summary: Delete a comment
+      tags:
+      - Comments
+    get:
+      description: Retrieve comments or a specific comment by ID
+      operationId: v2_v2_getComments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: query
+        name: commentId
+        type: string
+      - in: query
+        name: q
+        type: string
+      - in: query
+        name: page
+        type: string
+      - in: query
+        name: limit
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved comments
+      security:
+      - JWT_v2: []
+      summary: Get comments
+      tags:
+      - Comments
+    patch:
+      description: Update a comment by ID
+      operationId: v2_v2_updateComment
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: query
+        name: commentId
+        required: true
+        type: string
+      - in: body
+        name: body
+        schema:
+          type: object
+      responses:
+        200:
+          description: Comment updated successfully
+      security:
+      - JWT_v2: []
+      summary: Update a comment
+      tags:
+      - Comments
+    post:
+      description: Create a new comment
+      operationId: v2_v2_createComment
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        schema:
+          type: object
+      responses:
+        201:
+          description: Comment created successfully
+      security:
+      - JWT_v2: []
+      summary: Create a comment
+      tags:
+      - Comments
   /v2/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}:
     get:
       operationId: v2_getConfiguredFormWorkflowEmailById
