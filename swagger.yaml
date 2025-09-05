@@ -22902,6 +22902,189 @@ paths:
       tags:
       - Resources
       x-min-permissions: isRevitUser
+    patch:
+      operationId: v2_updateResources
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            allocation:
+              description: Resource allocation percentage (0.0 to 1.0)
+              type: number
+            allocate_place:
+              description: Location where resource is allocated
+              type: string
+            allocate_time:
+              description: Time when resource is allocated (ISO timestamp)
+              type: string
+            company_id:
+              description: Company ID (required for Subcontractor type)
+              type: integer
+            description:
+              description: Description of the resource
+              type: string
+            resource_name:
+              description: Name of the resource
+              type: string
+            resource_type:
+              description: Type of the resource
+              enum:
+              - Labour
+              - Equipment
+              - Subcontractor
+              type: string
+          type: object
+      responses:
+        200:
+          description: Resource updated successfully
+        400:
+          description: Bad Request - Validation failed
+        401:
+          description: Unauthorized
+        404:
+          description: Resource not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a resource
+      tags:
+      - Resources
+      x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/resources/{resourceId}:
+    delete:
+      operationId: v2_deleteResource
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: resourceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Resource deleted successfully
+        401:
+          description: Unauthorized
+        404:
+          description: Resource not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a resource
+      tags:
+      - Resources
+      x-min-permissions: isRevitUser
+    get:
+      operationId: v2_getResourceById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: resourceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        404:
+          description: Resource not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a resource by ID
+      tags:
+      - Resources
+      x-min-permissions: isRevitUser
+    patch:
+      operationId: v2_updateResource
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: resourceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            allocation:
+              description: Resource allocation percentage (0.0 to 1.0)
+              type: number
+            allocate_place:
+              description: Location where resource is allocated
+              type: string
+            allocate_time:
+              description: Time when resource is allocated (ISO timestamp)
+              type: string
+            company_id:
+              description: Company ID (required for Subcontractor type)
+              type: integer
+            description:
+              description: Description of the resource
+              type: string
+            resource_name:
+              description: Name of the resource
+              type: string
+            resource_type:
+              description: Type of the resource
+              enum:
+              - Labour
+              - Equipment
+              - Subcontractor
+              type: string
+          type: object
+      responses:
+        200:
+          description: Resource updated successfully
+        400:
+          description: Bad Request - Validation failed
+        401:
+          description: Unauthorized
+        404:
+          description: Resource not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a resource by ID
+      tags:
+      - Resources
+      x-min-permissions: isRevitUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/rfq/rfqs:
     get:
       operationId: v2_getRFQs
