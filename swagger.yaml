@@ -5664,6 +5664,115 @@ paths:
       summary: Create a data point link
       tags:
       - DataPointLink
+  /v2/workspaces/{workspaceId}/projects/{projectId}/comments:
+    delete:
+      description: Soft delete a comment by ID
+      operationId: v2_v2_deleteComment
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: query
+        name: commentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Comment successfully deleted
+      security:
+      - JWT_v2: []
+      summary: Delete a comment
+      tags:
+      - Comments
+    get:
+      description: Retrieve comments or a specific comment by ID
+      operationId: v2_v2_getComments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: query
+        name: commentId
+        type: string
+      - in: query
+        name: q
+        type: string
+      - in: query
+        name: page
+        type: string
+      - in: query
+        name: limit
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved comments
+      security:
+      - JWT_v2: []
+      summary: Get comments
+      tags:
+      - Comments
+    patch:
+      description: Update a comment by ID
+      operationId: v2_v2_updateComment
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: query
+        name: commentId
+        required: true
+        type: string
+      - in: body
+        name: body
+        schema:
+          type: object
+      responses:
+        200:
+          description: Comment updated successfully
+      security:
+      - JWT_v2: []
+      summary: Update a comment
+      tags:
+      - Comments
+    post:
+      description: Create a new comment
+      operationId: v2_v2_createComment
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        schema:
+          type: object
+      responses:
+        201:
+          description: Comment created successfully
+      security:
+      - JWT_v2: []
+      summary: Create a comment
+      tags:
+      - Comments
   /v2/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}:
     get:
       operationId: v2_getConfiguredFormWorkflowEmailById
@@ -13509,6 +13618,448 @@ paths:
       security:
       - JWT_v2: []
       summary: Get Actions with category = Tasks by workspaceId and ProjectId
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/actionDeps:
+    delete:
+      operationId: v2_deleteActionDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of the dependency to delete
+        in: query
+        name: dependencyId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Action dependency deleted successfully
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Dependency not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete action dependency
+      tags:
+      - Actions
+    get:
+      operationId: v2_getActionDependencies
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Optional action ID to get dependencies for specific action
+        in: query
+        name: actionId
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved action dependencies
+          schema:
+            properties:
+              dependencies:
+                items:
+                  properties:
+                    dependency_id:
+                      type: string
+                    predecessor_action_id:
+                      type: string
+                    successor_action_id:
+                      type: string
+                    dependency_type:
+                      type: string
+                    lag_days:
+                      type: integer
+                    relationship:
+                      type: string
+                  type: object
+                type: array
+              count:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get action dependencies
+      tags:
+      - Actions
+    patch:
+      operationId: v2_updateActionDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of the dependency to update
+        in: query
+        name: dependencyId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            dependency_type:
+              description: Type of dependency relationship
+              enum:
+              - finish_to_start
+              - start_to_start
+              - finish_to_finish
+              - start_to_finish
+              - as_soon_as_possible
+              type: string
+            lag_days:
+              description: Number of lag days for the dependency
+              type: integer
+          type: object
+      responses:
+        200:
+          description: Action dependency updated successfully
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Dependency not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update action dependency
+      tags:
+      - Actions
+    post:
+      operationId: v2_createActionDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            predecessor_action_id:
+              description: ID of the predecessor action (Task A)
+              type: string
+            successor_action_id:
+              description: ID of the successor action (Task B)
+              type: string
+            dependency_type:
+              default: finish_to_start
+              description: Type of dependency relationship
+              enum:
+              - finish_to_start
+              - start_to_start
+              - finish_to_finish
+              - start_to_finish
+              - as_soon_as_possible
+              type: string
+            lag_days:
+              default: 0
+              description: Number of lag days for the dependency
+              type: integer
+          required:
+          - predecessor_action_id
+          - successor_action_id
+          type: object
+      responses:
+        201:
+          description: Action dependency created successfully
+          schema:
+            properties:
+              message:
+                type: string
+              dependency_id:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create action dependency
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/constraints:
+    delete:
+      operationId: v2_deleteActionConstraint
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of the constraint to delete
+        in: query
+        name: constraintId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Action constraint deleted successfully
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Constraint not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete action constraint
+      tags:
+      - Actions
+    get:
+      operationId: v2_getActionConstraints
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Optional action ID to get constraints for specific action
+        in: query
+        name: actionId
+        required: false
+        type: string
+      - description: Optional constraint type filter
+        in: query
+        name: constraintType
+        required: false
+        type: string
+      - description: Optional priority filter
+        in: query
+        name: priority
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved action constraints
+          schema:
+            properties:
+              constraints:
+                items:
+                  properties:
+                    constraint_id:
+                      type: string
+                    action_id:
+                      type: string
+                    constraint_type:
+                      type: string
+                    description:
+                      type: string
+                    related_task_id:
+                      type: string
+                    priority:
+                      type: string
+                    impact:
+                      type: integer
+                    due_date:
+                      type: string
+                      format: date-time
+                    owner:
+                      type: string
+                    created_at:
+                      type: string
+                      format: date-time
+                    created_by:
+                      type: string
+                  type: object
+                type: array
+              count:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get action constraints
+      tags:
+      - Actions
+    patch:
+      operationId: v2_updateActionConstraint
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of the constraint to update
+        in: query
+        name: constraintId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            constraint_type:
+              description: Type of constraint
+              type: string
+            description:
+              description: Description of the constraint
+              type: string
+            related_task_id:
+              description: Related task identifier
+              type: string
+            priority:
+              description: Priority level of the constraint
+              enum:
+              - Low
+              - Medium
+              - High
+              - Critical
+              type: string
+            impact:
+              description: Impact level (1-5 scale)
+              type: integer
+              minimum: 1
+              maximum: 5
+            due_date:
+              description: Due date for the constraint
+              type: string
+              format: date-time
+            owner:
+              description: Owner of the constraint
+              type: string
+          type: object
+      responses:
+        200:
+          description: Action constraint updated successfully
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Constraint not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update action constraint
+      tags:
+      - Actions
+    post:
+      operationId: v2_createActionConstraint
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            action_id:
+              description: ID of the scheduling task action
+              type: string
+            constraint_type:
+              description: Type of constraint
+              type: string
+            description:
+              description: Description of the constraint
+              type: string
+            related_task_id:
+              description: Related task identifier
+              type: string
+            priority:
+              default: Medium
+              description: Priority level of the constraint
+              enum:
+              - Low
+              - Medium
+              - High
+              - Critical
+              type: string
+            impact:
+              default: 3
+              description: Impact level (1-5 scale)
+              type: integer
+              minimum: 1
+              maximum: 5
+            due_date:
+              description: Due date for the constraint
+              type: string
+              format: date-time
+            owner:
+              description: Owner of the constraint
+              type: string
+          required:
+          - action_id
+          - constraint_type
+          - description
+          type: object
+      responses:
+        201:
+          description: Action constraint created successfully
+          schema:
+            properties:
+              message:
+                type: string
+              constraint_id:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create action constraint
       tags:
       - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}:
@@ -22351,6 +22902,189 @@ paths:
       tags:
       - Resources
       x-min-permissions: isRevitUser
+    patch:
+      operationId: v2_updateResources
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            allocation:
+              description: Resource allocation percentage (0.0 to 1.0)
+              type: number
+            allocate_place:
+              description: Location where resource is allocated
+              type: string
+            allocate_time:
+              description: Time when resource is allocated (ISO timestamp)
+              type: string
+            company_id:
+              description: Company ID (required for Subcontractor type)
+              type: integer
+            description:
+              description: Description of the resource
+              type: string
+            resource_name:
+              description: Name of the resource
+              type: string
+            resource_type:
+              description: Type of the resource
+              enum:
+              - Labour
+              - Equipment
+              - Subcontractor
+              type: string
+          type: object
+      responses:
+        200:
+          description: Resource updated successfully
+        400:
+          description: Bad Request - Validation failed
+        401:
+          description: Unauthorized
+        404:
+          description: Resource not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a resource
+      tags:
+      - Resources
+      x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/resources/{resourceId}:
+    delete:
+      operationId: v2_deleteResource
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: resourceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Resource deleted successfully
+        401:
+          description: Unauthorized
+        404:
+          description: Resource not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a resource
+      tags:
+      - Resources
+      x-min-permissions: isRevitUser
+    get:
+      operationId: v2_getResourceById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: resourceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        404:
+          description: Resource not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a resource by ID
+      tags:
+      - Resources
+      x-min-permissions: isRevitUser
+    patch:
+      operationId: v2_updateResource
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: resourceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            allocation:
+              description: Resource allocation percentage (0.0 to 1.0)
+              type: number
+            allocate_place:
+              description: Location where resource is allocated
+              type: string
+            allocate_time:
+              description: Time when resource is allocated (ISO timestamp)
+              type: string
+            company_id:
+              description: Company ID (required for Subcontractor type)
+              type: integer
+            description:
+              description: Description of the resource
+              type: string
+            resource_name:
+              description: Name of the resource
+              type: string
+            resource_type:
+              description: Type of the resource
+              enum:
+              - Labour
+              - Equipment
+              - Subcontractor
+              type: string
+          type: object
+      responses:
+        200:
+          description: Resource updated successfully
+        400:
+          description: Bad Request - Validation failed
+        401:
+          description: Unauthorized
+        404:
+          description: Resource not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a resource by ID
+      tags:
+      - Resources
+      x-min-permissions: isRevitUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/rfq/rfqs:
     get:
       operationId: v2_getRFQs
@@ -24580,192 +25314,6 @@ paths:
       summary: Resend invite email to user in workspace
       tags:
       - Users
-  /v2/workspaces/{workspaceId}/users_hz:
-    get:
-      description: Returns extended Horizon user records for the workspace (role assignment,
-        department, status, etc.)
-      operationId: v2_listHorizonUsers
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      responses:
-        200:
-          description: List of Horizon users
-          schema:
-            properties:
-              data:
-                properties:
-                  items:
-                    items:
-                      properties:
-                        department:
-                          type: string
-                        email:
-                          type: string
-                        full_name:
-                          type: string
-                        id:
-                          description: Horizon user ID (typically kinde_id)
-                          type: string
-                        notes:
-                          type: string
-                        phone:
-                          type: string
-                        position:
-                          type: string
-                        require_2fa:
-                          type: boolean
-                        role_id:
-                          type: string
-                        status:
-                          type: string
-                      type: object
-                    type: array
-                type: object
-              ok:
-                type: boolean
-            type: object
-      security:
-      - JWT_v2: []
-      summary: List Horizon users (extended user records) for a workspace
-      tags:
-      - Horizon Users
-    post:
-      operationId: v2_createHorizonUser
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            department:
-              type: string
-            email:
-              type: string
-            full_name:
-              type: string
-            id:
-              description: Kinde user id (or unique user id) for the record
-              type: string
-            notes:
-              type: string
-            phone:
-              type: string
-            position:
-              type: string
-            require_2fa:
-              type: boolean
-            role_id:
-              type: string
-            status:
-              type: string
-          type: object
-      responses:
-        201:
-          description: Horizon user created
-          schema:
-            properties:
-              data:
-                type: object
-              ok:
-                type: boolean
-            type: object
-      security:
-      - JWT_v2: []
-      summary: Create a Horizon user record
-      tags:
-      - Horizon Users
-  /v2/workspaces/{workspaceId}/users_hz/{userId}:
-    delete:
-      operationId: v2_deleteHorizonUser
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: userId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Deleted
-          schema:
-            properties:
-              data:
-                properties:
-                  deleted:
-                    type: boolean
-                  id:
-                    type: string
-                type: object
-              ok:
-                type: boolean
-            type: object
-      security:
-      - JWT_v2: []
-      summary: Delete (soft delete) Horizon user record
-      tags:
-      - Horizon Users
-    get:
-      operationId: v2_getHorizonUser
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: userId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Horizon user record
-          schema:
-            properties:
-              data:
-                type: object
-              ok:
-                type: boolean
-            type: object
-        404:
-          description: Not found
-      security:
-      - JWT_v2: []
-      summary: Get Horizon user record by ID
-      tags:
-      - Horizon Users
-    patch:
-      operationId: v2_updateHorizonUser
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: userId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          description: Partial fields to update
-          type: object
-      responses:
-        200:
-          description: Updated Horizon user
-      security:
-      - JWT_v2: []
-      summary: Update Horizon user record
-      tags:
-      - Horizon Users
 schemes:
 - https
 securityDefinitions:
