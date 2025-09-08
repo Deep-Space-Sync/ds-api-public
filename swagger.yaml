@@ -13929,6 +13929,300 @@ paths:
       summary: Create action constraint
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/critical-path:
+    post:
+      description: "Calculates the critical path method (CPM) for scheduling tasks\
+        \ in a project, including early/late start times, float values, and critical\
+        \ path identification. \n\n**Firestore-only endpoint** - Requires X-Horizon-Product:\
+        \ true header.\n\nFeatures:\n- Automatically filters for scheduling tasks\
+        \ only\n- Excludes deleted actions and dependencies (is_deleted=true)\n- Detects\
+        \ and reports dependency cycles\n- Calculates project duration and critical\
+        \ path\n- Provides detailed task scheduling information (ES, EF, LS, LF, float)\n\
+        - Supports both duration_days and start_date/end_date task definitions\n"
+      operationId: v2_calculateCriticalPath
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        example: 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                actions:
+                  description: Array of scheduling tasks/actions
+                  items:
+                    properties:
+                      action_id:
+                        description: Unique action identifier
+                        example: 2a630c8d-acfe-44fd-bf25-cf530ddbc749
+                        type: string
+                      action_status:
+                        description: Current status of the action
+                        example: Not Started
+                        type: string
+                      assignee_individual:
+                        description: Email of assigned individual
+                        example: projectmanager@example.com
+                        nullable: true
+                        type: string
+                      duration_days:
+                        description: Task duration in days
+                        example: 92
+                        type: number
+                      end_date:
+                        description: Task end date (ISO 8601 format, alternative to
+                          duration_days)
+                        example: '2025-09-09T00:00:00+00:00'
+                        format: date-time
+                        type: string
+                      project_id:
+                        description: Project ID (must match request project_id)
+                        example: 79
+                        type: integer
+                      start_date:
+                        description: Task start date (ISO 8601 format, alternative
+                          to duration_days)
+                        example: '2025-09-04T00:00:00+00:00'
+                        format: date-time
+                        type: string
+                      task_name:
+                        description: Name of the task
+                        example: Foundation Phase Milestone
+                        type: string
+                      workspace_id:
+                        description: Workspace ID (must match request workspace_id)
+                        example: holodeck
+                        type: string
+                    required:
+                    - action_id
+                    - task_name
+                    type: object
+                  type: array
+                dependencies:
+                  description: Array of task dependencies
+                  items:
+                    properties:
+                      dependency_type:
+                        default: finish_to_start
+                        description: Type of dependency relationship
+                        enum:
+                        - finish_to_start
+                        - start_to_start
+                        - finish_to_finish
+                        - start_to_finish
+                        - as_soon_as_possible
+                        type: string
+                      lag_days:
+                        default: 0
+                        description: Lag time in days between dependent tasks
+                        example: 2
+                        type: number
+                      predecessor_action_id:
+                        description: Action ID of the predecessor task
+                        example: 2a630c8d-acfe-44fd-bf25-cf530ddbc749
+                        type: string
+                      successor_action_id:
+                        description: Action ID of the successor task
+                        example: 0e73e2ff-ad81-4141-8ed5-0b4499ec349b
+                        type: string
+                    required:
+                    - predecessor_action_id
+                    - successor_action_id
+                    type: object
+                  type: array
+                project_id:
+                  description: Project ID (must match path parameter)
+                  example: 79
+                  type: integer
+                workspace_id:
+                  description: Workspace ID (must match path parameter)
+                  example: holodeck
+                  type: string
+              required:
+              - project_id
+              - workspace_id
+              - actions
+              type: object
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                properties:
+                  critical_paths:
+                    description: Critical path sequences
+                    items:
+                      items:
+                        description: Action ID in critical path sequence
+                        type: string
+                      type: array
+                    type: array
+                  project_finish_day:
+                    description: Total project duration in days
+                    example: 188
+                    type: integer
+                  project_id:
+                    description: Project identifier
+                    example: 79
+                    type: integer
+                  status:
+                    description: Calculation status
+                    example: OK
+                    type: string
+                  summary:
+                    properties:
+                      num_actions:
+                        description: Number of actions processed
+                        example: 34
+                        type: integer
+                      num_critical_tasks:
+                        description: Number of tasks on critical path
+                        example: 2
+                        type: integer
+                      num_dependencies:
+                        description: Number of dependencies processed
+                        example: 12
+                        type: integer
+                    type: object
+                  tasks:
+                    description: Task schedule details
+                    items:
+                      properties:
+                        EF:
+                          description: Early finish day
+                          type: integer
+                        ES:
+                          description: Early start day
+                          type: integer
+                        LF:
+                          description: Late finish day
+                          type: integer
+                        LS:
+                          description: Late start day
+                          type: integer
+                        action_id:
+                          description: Action identifier
+                          type: string
+                        duration_days:
+                          description: Task duration
+                          type: integer
+                        is_critical:
+                          description: Whether task is on critical path
+                          type: boolean
+                        task_name:
+                          description: Task name
+                          type: string
+                        total_float:
+                          description: Total float (slack) in days
+                          type: number
+                      type: object
+                    type: array
+                type: object
+          description: Critical path calculation successful
+        400:
+          content:
+            application/json:
+              schema:
+                properties:
+                  details:
+                    example:
+                    - project_id is required
+                    - actions array must not be empty
+                    items:
+                      type: string
+                    type: array
+                  error:
+                    example: INVALID_REQUEST
+                    type: string
+                type: object
+          description: Invalid request data
+        401:
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    example: MISSING_OR_INVALID_PRODUCT_HEADER
+                    type: string
+                  message:
+                    example: 'This Firestore endpoint requires X-Horizon-Product:
+                      true header'
+                    type: string
+                type: object
+          description: Unauthorized - Missing X-Horizon-Product header or invalid
+            authentication
+        409:
+          content:
+            application/json:
+              schema:
+                properties:
+                  details:
+                    properties:
+                      cycle_actions:
+                        description: Detailed information about actions in the cycle
+                        items:
+                          properties:
+                            action_id:
+                              type: string
+                            action_status:
+                              type: string
+                            assignee_individual:
+                              nullable: true
+                              type: string
+                            task_name:
+                              type: string
+                          type: object
+                        type: array
+                      cycle_path:
+                        description: Action IDs forming the cycle
+                        example:
+                        - 2a630c8d-acfe-44fd-bf25-cf530ddbc749
+                        - 0e73e2ff-ad81-4141-8ed5-0b4499ec349b
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  error:
+                    example: CYCLE_DETECTED
+                    type: string
+                type: object
+          description: Cycle detected in dependencies (rare with proper is_deleted
+            filtering)
+        500:
+          content:
+            application/json:
+              schema:
+                properties:
+                  details:
+                    example: Unexpected error during calculation
+                    type: string
+                  error:
+                    example: INTERNAL_ERROR
+                    type: string
+                type: object
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Calculate Critical Path Method for project actions
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/tasks:
     get:
       operationId: v2_getActionTasksByWorkspaceIdAndProjectId
