@@ -5587,7 +5587,7 @@ paths:
   /v2/workspaces/{workspaceId}/data-point-link:
     delete:
       description: Soft delete a data point link by ID
-      operationId: v2_v2_deleteDataPointLink
+      operationId: v2_deleteDataPointLink
       parameters:
       - in: path
         name: workspaceId
@@ -5606,7 +5606,7 @@ paths:
       - DataPointLink
     get:
       description: Retrieve data point links with filtering options
-      operationId: v2_v2_getDataPointLink
+      operationId: v2_getDataPointLink
       parameters:
       - in: path
         name: workspaceId
@@ -5646,7 +5646,7 @@ paths:
       - DataPointLink
     post:
       description: Create a new data point link between objects
-      operationId: v2_v2_createDataPointLink
+      operationId: v2_createDataPointLink
       parameters:
       - in: path
         name: workspaceId
@@ -5664,115 +5664,6 @@ paths:
       summary: Create a data point link
       tags:
       - DataPointLink
-  /v2/workspaces/{workspaceId}/projects/{projectId}/comments:
-    delete:
-      description: Soft delete a comment by ID
-      operationId: deleteComment
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: string
-      - in: query
-        name: commentId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Comment successfully deleted
-      security:
-      - JWT_v2: []
-      summary: Delete a comment
-      tags:
-      - Comments
-    get:
-      description: Retrieve comments or a specific comment by ID
-      operationId: getComments
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: string
-      - in: query
-        name: commentId
-        type: string
-      - in: query
-        name: q
-        type: string
-      - in: query
-        name: page
-        type: string
-      - in: query
-        name: limit
-        type: string
-      responses:
-        200:
-          description: Successfully retrieved comments
-      security:
-      - JWT_v2: []
-      summary: Get comments
-      tags:
-      - Comments
-    patch:
-      description: Update a comment by ID
-      operationId: updateComment
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: string
-      - in: query
-        name: commentId
-        required: true
-        type: string
-      - in: body
-        name: body
-        schema:
-          type: object
-      responses:
-        200:
-          description: Comment updated successfully
-      security:
-      - JWT_v2: []
-      summary: Update a comment
-      tags:
-      - Comments
-    post:
-      description: Create a new comment
-      operationId: createComment
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: string
-      - in: body
-        name: body
-        schema:
-          type: object
-      responses:
-        201:
-          description: Comment created successfully
-      security:
-      - JWT_v2: []
-      summary: Create a comment
-      tags:
-      - Comments
   /v2/workspaces/{workspaceId}/ds-site/form-workflow-emails/{formWorkflowEmailId}:
     get:
       operationId: v2_getConfiguredFormWorkflowEmailById
@@ -15095,6 +14986,115 @@ paths:
       summary: Create a cloud storage bucket for expected files and return its name
       tags:
       - Navis Integration
+  /v2/workspaces/{workspaceId}/projects/{projectId}/comments:
+    delete:
+      description: Soft delete a comment by ID
+      operationId: v2_deleteComment
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: query
+        name: commentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Comment successfully deleted
+      security:
+      - JWT_v2: []
+      summary: Delete a comment
+      tags:
+      - Comments
+    get:
+      description: Retrieve comments or a specific comment by ID
+      operationId: v2_getComments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: query
+        name: commentId
+        type: string
+      - in: query
+        name: q
+        type: string
+      - in: query
+        name: page
+        type: string
+      - in: query
+        name: limit
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved comments
+      security:
+      - JWT_v2: []
+      summary: Get comments
+      tags:
+      - Comments
+    patch:
+      description: Update a comment by ID
+      operationId: v2_updateComment
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: query
+        name: commentId
+        required: true
+        type: string
+      - in: body
+        name: body
+        schema:
+          type: object
+      responses:
+        200:
+          description: Comment updated successfully
+      security:
+      - JWT_v2: []
+      summary: Update a comment
+      tags:
+      - Comments
+    post:
+      description: Create a new comment
+      operationId: v2_createComment
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        schema:
+          type: object
+      responses:
+        201:
+          description: Comment created successfully
+      security:
+      - JWT_v2: []
+      summary: Create a comment
+      tags:
+      - Comments
   /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence:
     post:
       operationId: v2_logCorrespondence
@@ -22899,189 +22899,6 @@ paths:
       security:
       - JWT_v2: []
       summary: Create a resource
-      tags:
-      - Resources
-      x-min-permissions: isRevitUser
-    patch:
-      operationId: v2_updateResources
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            allocation:
-              description: Resource allocation percentage (0.0 to 1.0)
-              type: number
-            allocate_place:
-              description: Location where resource is allocated
-              type: string
-            allocate_time:
-              description: Time when resource is allocated (ISO timestamp)
-              type: string
-            company_id:
-              description: Company ID (required for Subcontractor type)
-              type: integer
-            description:
-              description: Description of the resource
-              type: string
-            resource_name:
-              description: Name of the resource
-              type: string
-            resource_type:
-              description: Type of the resource
-              enum:
-              - Labour
-              - Equipment
-              - Subcontractor
-              type: string
-          type: object
-      responses:
-        200:
-          description: Resource updated successfully
-        400:
-          description: Bad Request - Validation failed
-        401:
-          description: Unauthorized
-        404:
-          description: Resource not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Update a resource
-      tags:
-      - Resources
-      x-min-permissions: isRevitUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/resources/{resourceId}:
-    delete:
-      operationId: v2_deleteResource
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: resourceId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Resource deleted successfully
-        401:
-          description: Unauthorized
-        404:
-          description: Resource not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Delete a resource
-      tags:
-      - Resources
-      x-min-permissions: isRevitUser
-    get:
-      operationId: v2_getResourceById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: resourceId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Successful response
-        401:
-          description: Unauthorized
-        404:
-          description: Resource not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get a resource by ID
-      tags:
-      - Resources
-      x-min-permissions: isRevitUser
-    patch:
-      operationId: v2_updateResource
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: resourceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            allocation:
-              description: Resource allocation percentage (0.0 to 1.0)
-              type: number
-            allocate_place:
-              description: Location where resource is allocated
-              type: string
-            allocate_time:
-              description: Time when resource is allocated (ISO timestamp)
-              type: string
-            company_id:
-              description: Company ID (required for Subcontractor type)
-              type: integer
-            description:
-              description: Description of the resource
-              type: string
-            resource_name:
-              description: Name of the resource
-              type: string
-            resource_type:
-              description: Type of the resource
-              enum:
-              - Labour
-              - Equipment
-              - Subcontractor
-              type: string
-          type: object
-      responses:
-        200:
-          description: Resource updated successfully
-        400:
-          description: Bad Request - Validation failed
-        401:
-          description: Unauthorized
-        404:
-          description: Resource not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Update a resource by ID
       tags:
       - Resources
       x-min-permissions: isRevitUser
