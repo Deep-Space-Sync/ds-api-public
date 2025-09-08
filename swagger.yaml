@@ -23909,6 +23909,88 @@ paths:
       summary: Get specific resource details
       tags:
       - Resources
+    patch:
+      description: Partially updates an existing resource. Firestore implementation
+        only - requires X-Horizon-Product header.
+      operationId: v2_patchResource
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Resource identifier
+        in: path
+        name: resourceId
+        required: true
+        type: string
+      - description: Required header for Firestore-based resource updates
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - description: Partial resource update data
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            allocate_place:
+              description: Updated allocation location
+              type: string
+            allocate_time:
+              description: Updated allocation time
+              format: date-time
+              type: string
+            allocation:
+              description: Updated allocation percentage
+              maximum: 100
+              minimum: 0
+              type: number
+            company_id:
+              description: Associated company ID (required for Subcontractor resources)
+              type: integer
+            description:
+              description: Updated resource description
+              type: string
+            resource_name:
+              description: Updated name of the resource
+              type: string
+            resource_type:
+              description: Updated resource type
+              enum:
+              - equipment
+              - machinery
+              - tool
+              - material
+              - labor
+              - vehicle
+              - unknown
+              type: string
+          type: object
+      responses:
+        200:
+          description: Resource updated successfully
+        400:
+          description: Invalid update data
+        401:
+          description: Unauthorized - Missing X-Horizon-Product header
+        404:
+          description: Resource not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Partially update resource
+      tags:
+      - Resources
     put:
       description: Updates an existing resource. Firestore implementation only - requires
         X-Horizon-Product header.
@@ -23954,6 +24036,9 @@ paths:
               maximum: 100
               minimum: 0
               type: number
+            company_id:
+              description: Associated company ID (required for Subcontractor resources)
+              type: integer
             description:
               description: Updated resource description
               type: string
