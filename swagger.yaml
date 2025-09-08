@@ -23912,87 +23912,528 @@ paths:
       - Power BI
   /v2/workspaces/{workspaceId}/projects/{projectId}/resources:
     get:
-      operationId: v2_getResources
+      description: 'Retrieves resources for a specific project within a workspace.
+
+
+        **Dual Implementation Available:**
+
+        - **Legacy (MySQL)**: Default behavior, uses BigQuery with project filtering
+
+        - **Firestore**: When X-Horizon-Product: true header is provided
+
+
+        Supports all the same filtering and search capabilities as workspace-level
+        resources.
+
+        '
+      operationId: v2_getProjectResources
       parameters:
-      - in: path
+      - description: Workspace identifier
+        in: path
         name: workspaceId
         required: true
         type: string
-      - in: path
+      - description: Project identifier
+        in: path
         name: projectId
         required: true
+        type: integer
+      - description: Optional header to enable Firestore-based implementation
+        enum:
+        - 'true'
+        example: 'true'
+        in: header
+        name: X-Horizon-Product
+        required: false
+        type: string
+      - description: Search query for resource name, type, or description (Firestore
+          only)
+        example: excavator
+        in: query
+        name: q
+        required: false
+        type: string
+      - description: Filter by resource type
+        example: machinery
+        in: query
+        name: resource_type
+        required: false
+        type: string
+      - default: 100
+        description: Maximum number of resources to return (Firestore only)
+        in: query
+        maximum: 1000
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - default: 0
+        description: Number of resources to skip for pagination (Firestore only)
+        in: query
+        minimum: 0
+        name: offset
+        required: false
         type: integer
       responses:
         200:
-          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    example: Resources retrieved
+                    type: string
+                  resources:
+                    items:
+                      $ref: '#/components/schemas/Resource'
+                    type: array
+                  total_count:
+                    description: Total resources in project (Firestore only)
+                    example: 42
+                    type: integer
+                type: object
+          description: Project resources retrieved successfully
+        400:
+          description: Invalid request parameters
         401:
           description: Unauthorized
+        404:
+          content:
+            application/json:
+              schema:
+                properties:
+                  details:
+                    example: Project 79 not found in workspace holodeck
+                    type: string
+                  error:
+                    example: PROJECT_NOT_FOUND
+                    type: string
+                type: object
+          description: Project not found
         500:
-          description: Internal Server Error
+          description: Internal server error
       security:
       - JWT_v2: []
-      summary: Get resources
+      summary: Get project resources
       tags:
       - Resources
-      x-min-permissions: isRevitUser
     post:
-      operationId: v2_postResources
+      description: 'Creates a new resource within a project.
+
+
+        **Dual Implementation Available:**
+
+        - **Legacy (MySQL)**: Default behavior, creates resource in MySQL database
+
+        - **Firestore**: When X-Horizon-Product: true header is provided
+
+
+        The Firestore version supports enhanced fields like description, allocation
+        tracking, and timestamps.
+
+        '
+      operationId: v2_createProjectResource
       parameters:
-      - in: path
+      - description: Workspace identifier
+        in: path
         name: workspaceId
         required: true
         type: string
-      - in: path
+      - description: Project identifier
+        in: path
         name: projectId
         required: true
         type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            parent_resource_id:
-              description: The parent resource id
-              type: integer
-            resource_mapping:
-              description: The resource mapping
+      - description: Optional header to enable Firestore-based implementation
+        enum:
+        - 'true'
+        example: 'true'
+        in: header
+        name: X-Horizon-Product
+        required: false
+        type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
               properties:
-                related_column:
-                  description: The related column, based on resource_type
+                allocate_place:
+                  description: Location where resource is allocated (Firestore only)
+                  example: Northwest construction area
+                  nullable: true
                   type: string
-                related_key:
-                  description: The related key
+                allocate_time:
+                  description: Time when resource should be allocated (Firestore only)
+                  example: '2025-09-15T08:00:00Z'
+                  format: date-time
+                  nullable: true
                   type: string
-                related_table:
-                  description: The related table, based on resource_type
+                allocation:
+                  description: Resource allocation percentage (Firestore only)
+                  example: 75.0
+                  maximum: 100
+                  minimum: 0
+                  nullable: true
+                  type: number
+                company_id:
+                  description: Associated company ID (Firestore only)
+                  example: 12345
+                  nullable: true
+                  type: integer
+                description:
+                  description: Detailed resource description (Firestore only)
+                  example: Heavy-duty tower crane with 60m reach capacity
+                  nullable: true
+                  type: string
+                parent_resource_id:
+                  description: Parent resource ID for hierarchical organization
+                  example: res_crane_base_001
+                  nullable: true
+                  type: string
+                resource_mapping:
+                  description: Additional resource mapping data (legacy compatibility)
+                  nullable: true
+                  properties:
+                    related_column:
+                      description: Related database column
+                      example: crane_id
+                      type: string
+                    related_table:
+                      description: Related database table
+                      example: equipment_specifications
+                      type: string
+                  type: object
+                resource_name:
+                  description: Name of the resource
+                  example: 'Tower Crane #3'
+                  type: string
+                resource_type:
+                  default: unknown
+                  description: Type of resource
+                  enum:
+                  - equipment
+                  - machinery
+                  - tool
+                  - material
+                  - labor
+                  - vehicle
+                  - unknown
+                  example: equipment
+                  type: string
+              required:
+              - resource_name
+              - resource_type
+              type: object
+        required: true
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    example: Resource created successfully
+                    type: string
+                  resource:
+                    $ref: '#/components/schemas/Resource'
+                  resource_id:
+                    description: ID of the newly created resource
+                    example: res_abc123def456
+                    type: string
+                type: object
+          description: Resource created successfully
+        400:
+          content:
+            application/json:
+              schema:
+                properties:
+                  details:
+                    example:
+                    - resource_name is required
+                    - 'resource_type must be one of: equipment, machinery, tool, material,
+                      labor, vehicle, unknown'
+                    items:
+                      type: string
+                    type: array
+                  error:
+                    example: INVALID_REQUEST_DATA
+                    type: string
+                type: object
+          description: Invalid request data
+        401:
+          description: Unauthorized
+        409:
+          content:
+            application/json:
+              schema:
+                properties:
+                  details:
+                    example: 'Resource with name ''Tower Crane #3'' already exists
+                      in this project'
+                    type: string
+                  error:
+                    example: RESOURCE_ALREADY_EXISTS
+                    type: string
+                type: object
+          description: Resource already exists
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create a new resource
+      tags:
+      - Resources
+  /v2/workspaces/{workspaceId}/projects/{projectId}/resources/{resourceId}:
+    delete:
+      description: 'Soft deletes a resource (sets is_deleted flag to true).
+
+
+        **Firestore Implementation Only**: This endpoint requires X-Horizon-Product:
+        true header.
+
+        Legacy MySQL implementation does not support resource deletion.
+
+        '
+      operationId: v2_deleteResource
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Resource identifier
+        in: path
+        name: resourceId
+        required: true
+        type: string
+      - description: Required header for Firestore-based resource deletion
+        enum:
+        - 'true'
+        example: 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - default: false
+        description: Whether to permanently delete the resource (true) or soft delete
+          (false)
+        in: query
+        name: hard_delete
+        required: false
+        type: boolean
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    example: Resource deleted successfully
+                    type: string
+                  resource_id:
+                    example: res_abc123def456
+                    type: string
+                type: object
+          description: Resource deleted successfully
+        401:
+          description: Unauthorized - Missing X-Horizon-Product header
+        404:
+          description: Resource not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete resource
+      tags:
+      - Resources
+    get:
+      description: 'Retrieves detailed information for a specific resource.
+
+
+        **Firestore Implementation Only**: This endpoint requires X-Horizon-Product:
+        true header.
+
+        Legacy MySQL implementation does not support individual resource retrieval.
+
+        '
+      operationId: v2_getResourceDetails
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Resource identifier
+        in: path
+        name: resourceId
+        required: true
+        type: string
+      - description: Required header for Firestore-based resource details
+        enum:
+        - 'true'
+        example: 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    example: Resource retrieved successfully
+                    type: string
+                  resource:
+                    $ref: '#/components/schemas/Resource'
+                type: object
+          description: Resource details retrieved successfully
+        401:
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    example: MISSING_OR_INVALID_PRODUCT_HEADER
+                    type: string
+                type: object
+          description: Unauthorized - Missing X-Horizon-Product header or invalid
+            authentication
+        404:
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    example: RESOURCE_NOT_FOUND
+                    type: string
+                type: object
+          description: Resource not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get specific resource details
+      tags:
+      - Resources
+    put:
+      description: 'Updates an existing resource.
+
+
+        **Firestore Implementation Only**: This endpoint requires X-Horizon-Product:
+        true header.
+
+        Legacy MySQL implementation does not support resource updates.
+
+        '
+      operationId: v2_updateResource
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Resource identifier
+        in: path
+        name: resourceId
+        required: true
+        type: string
+      - description: Required header for Firestore-based resource updates
+        enum:
+        - 'true'
+        example: 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                allocate_place:
+                  description: Updated allocation location
+                  example: Southeast construction area
+                  nullable: true
+                  type: string
+                allocate_time:
+                  description: Updated allocation time
+                  example: '2025-09-20T06:00:00Z'
+                  format: date-time
+                  nullable: true
+                  type: string
+                allocation:
+                  description: Updated allocation percentage
+                  example: 90.0
+                  maximum: 100
+                  minimum: 0
+                  nullable: true
+                  type: number
+                description:
+                  description: Updated resource description
+                  example: Heavy-duty tower crane with extended 75m reach capacity
+                  nullable: true
+                  type: string
+                resource_name:
+                  description: Updated name of the resource
+                  example: 'Tower Crane #3 - Updated'
+                  type: string
+                resource_type:
+                  description: Updated resource type
+                  enum:
+                  - equipment
+                  - machinery
+                  - tool
+                  - material
+                  - labor
+                  - vehicle
+                  - unknown
+                  example: machinery
                   type: string
               type: object
-            resource_name:
-              description: The name of the resource
-              type: string
-            resource_type:
-              description: The type of the resource, defaults to unknown if not provided
-              enum:
-              - person
-              - team
-              - company
-              type: string
-          required:
-          - resource_name
-          type: object
+        required: true
       responses:
         200:
-          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    example: Resource updated successfully
+                    type: string
+                  resource:
+                    $ref: '#/components/schemas/Resource'
+                type: object
+          description: Resource updated successfully
+        400:
+          description: Invalid update data
         401:
-          description: Unauthorized
+          description: Unauthorized - Missing X-Horizon-Product header
+        404:
+          description: Resource not found
         500:
-          description: Internal Server Error
+          description: Internal server error
       security:
       - JWT_v2: []
-      summary: Create a resource
+      summary: Update resource
       tags:
       - Resources
-      x-min-permissions: isRevitUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/rfq/rfqs:
     get:
       operationId: v2_getRFQs
@@ -25702,25 +26143,190 @@ paths:
       x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/resources:
     get:
-      operationId: v2_getResourcesWS
+      description: "Retrieves resources for a specific workspace. \n\n**Dual Implementation\
+        \ Available:**\n- **Legacy (MySQL)**: Default behavior, uses BigQuery for\
+        \ data retrieval\n- **Firestore**: When X-Horizon-Product: true header is\
+        \ provided\n\nThe Firestore version supports advanced filtering, search capabilities,\
+        \ and enhanced CRUD operations.\n"
+      operationId: v2_getWorkspaceResources
       parameters:
-      - in: path
+      - description: Workspace identifier
+        in: path
         name: workspaceId
         required: true
         type: string
+      - description: Optional header to enable Firestore-based implementation with
+          enhanced features
+        enum:
+        - 'true'
+        example: 'true'
+        in: header
+        name: X-Horizon-Product
+        required: false
+        type: string
+      - description: Search query for resource name, type, or description (Firestore
+          only)
+        example: concrete mixer
+        in: query
+        name: q
+        required: false
+        type: string
+      - description: Filter by resource type
+        example: equipment
+        in: query
+        name: resource_type
+        required: false
+        type: string
+      - description: Filter by project ID
+        example: 79
+        in: query
+        name: project_id
+        required: false
+        type: integer
+      - default: 100
+        description: Maximum number of resources to return (Firestore only)
+        in: query
+        maximum: 1000
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - default: 0
+        description: Number of resources to skip for pagination (Firestore only)
+        in: query
+        minimum: 0
+        name: offset
+        required: false
+        type: integer
       responses:
         200:
-          description: Successful response
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    example: Resources retrieved
+                    type: string
+                  resources:
+                    items:
+                      properties:
+                        allocate_place:
+                          description: Location where resource is allocated (Firestore
+                            only)
+                          example: Building Site A
+                          nullable: true
+                          type: string
+                        allocate_time:
+                          description: Time when resource was allocated (Firestore
+                            only)
+                          example: '2025-09-08T14:30:00Z'
+                          format: date-time
+                          nullable: true
+                          type: string
+                        allocation:
+                          description: Resource allocation percentage (Firestore only)
+                          example: 85.5
+                          nullable: true
+                          type: number
+                        created_at:
+                          description: Creation timestamp (Firestore only)
+                          example: '2025-09-08T10:00:00Z'
+                          format: date-time
+                          type: string
+                        description:
+                          description: Resource description (Firestore only)
+                          example: High-capacity concrete mixer for large pours
+                          nullable: true
+                          type: string
+                        is_deleted:
+                          description: Soft delete flag (Firestore only)
+                          example: false
+                          type: boolean
+                        parent_resource_id:
+                          description: Parent resource ID for hierarchical organization
+                          example: res_parent123
+                          nullable: true
+                          type: string
+                        project_id:
+                          description: Associated project ID
+                          example: 79
+                          nullable: true
+                          type: integer
+                        resource_id:
+                          description: Unique resource identifier
+                          example: res_abc123def456
+                          type: string
+                        resource_name:
+                          description: Name of the resource
+                          example: Concrete Mixer - Large
+                          type: string
+                        resource_type:
+                          description: Type of resource
+                          example: equipment
+                          type: string
+                        updated_at:
+                          description: Last update timestamp (Firestore only)
+                          example: '2025-09-08T15:45:00Z'
+                          format: date-time
+                          type: string
+                        workspace_id:
+                          description: Workspace identifier
+                          example: holodeck
+                          type: string
+                      type: object
+                    type: array
+                  total_count:
+                    description: Total number of resources available (Firestore only
+                      with pagination)
+                    example: 245
+                    type: integer
+                type: object
+          description: Resources retrieved successfully
+        400:
+          content:
+            application/json:
+              schema:
+                properties:
+                  details:
+                    example:
+                    - limit must be between 1 and 1000
+                    - invalid resource_type
+                    items:
+                      type: string
+                    type: array
+                  error:
+                    example: INVALID_QUERY_PARAMETERS
+                    type: string
+                type: object
+          description: Invalid request parameters
         401:
-          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    example: UNAUTHORIZED
+                    type: string
+                type: object
+          description: Unauthorized - Invalid authentication or insufficient permissions
         500:
-          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                properties:
+                  details:
+                    example: Database connection failed
+                    type: string
+                  error:
+                    example: INTERNAL_ERROR
+                    type: string
+                type: object
+          description: Internal server error
       security:
       - JWT_v2: []
-      summary: Get resources
+      summary: Get resources for workspace
       tags:
       - Resources
-      x-min-permissions: isRevitUser
   /v2/workspaces/{workspaceId}/roles:
     get:
       description: Retrieve all roles for the specified workspace
