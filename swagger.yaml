@@ -13931,9 +13931,20 @@ paths:
       - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/critical-path:
     post:
-      description: Calculates critical path method (CPM) for scheduling tasks including
+      description: 'Calculates critical path method (CPM) for scheduling tasks including
         early/late start times, float values, and critical path identification. Firestore-only
         endpoint requiring X-Horizon-Product header.
+
+
+        **Two modes supported:**
+
+        - **Direct Firestore fetch**: POST with empty body or no ''actions'' property
+        - automatically fetches all scheduling tasks from Firestore
+
+        - **Custom data**: POST with ''actions'' and ''dependencies'' in request body
+        - uses provided data for calculation
+
+        '
       operationId: v2_calculateCriticalPath
       parameters:
       - description: Workspace identifier
@@ -13953,14 +13964,16 @@ paths:
         name: X-Horizon-Product
         required: true
         type: string
-      - description: Critical path calculation request data
+      - description: Optional critical path calculation request data. If omitted or
+          empty, data will be fetched directly from Firestore.
         in: body
         name: body
-        required: true
+        required: false
         schema:
           properties:
             actions:
-              description: Array of scheduling tasks/actions
+              description: Array of scheduling tasks/actions (optional - if omitted,
+                fetches from Firestore)
               items:
                 properties:
                   action_id:
@@ -13998,7 +14011,8 @@ paths:
                 type: object
               type: array
             dependencies:
-              description: Array of task dependencies
+              description: Array of task dependencies (optional - if omitted, fetches
+                from Firestore)
               items:
                 properties:
                   dependency_type:
@@ -14027,15 +14041,12 @@ paths:
                 type: object
               type: array
             project_id:
-              description: Project ID (must match path parameter)
+              description: Project ID (optional - must match path parameter if provided)
               type: integer
             workspace_id:
-              description: Workspace ID (must match path parameter)
+              description: Workspace ID (optional - must match path parameter if provided)
               type: string
-          required:
-          - project_id
-          - workspace_id
-          - actions
+          required: []
           type: object
       responses:
         200:
