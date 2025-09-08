@@ -13929,6 +13929,47 @@ paths:
       summary: Create action constraint
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/critical-path:
+    get:
+      description: Calculates critical path method (CPM).
+      operationId: V2_calculateCriticalPath
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: Critical path calculation successful
+        400:
+          description: Invalid request parameters
+        401:
+          description: Unauthorized - Missing X-Horizon-Product header or invalid
+            authentication
+        404:
+          description: No scheduling tasks found for project
+        409:
+          description: Cycle detected in dependencies
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Calculate Critical Path Method for project actions
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/tasks:
     get:
       operationId: v2_getActionTasksByWorkspaceIdAndProjectId
