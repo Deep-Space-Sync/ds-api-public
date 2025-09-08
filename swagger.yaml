@@ -13930,21 +13930,10 @@ paths:
       tags:
       - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/critical-path:
-    post:
-      description: 'Calculates critical path method (CPM) for scheduling tasks including
-        early/late start times, float values, and critical path identification. Firestore-only
-        endpoint requiring X-Horizon-Product header.
-
-
-        **Two modes supported:**
-
-        - **Direct Firestore fetch**: POST with empty body or no ''actions'' property
-        - automatically fetches all scheduling tasks from Firestore
-
-        - **Custom data**: POST with ''actions'' and ''dependencies'' in request body
-        - uses provided data for calculation
-
-        '
+    get:
+      description: Calculates critical path method (CPM) for scheduling tasks including
+        early/late start times, float values, and critical path identification. Automatically
+        fetches all scheduling tasks from Firestore.
       operationId: v2_calculateCriticalPath
       parameters:
       - description: Workspace identifier
@@ -13964,98 +13953,16 @@ paths:
         name: X-Horizon-Product
         required: true
         type: string
-      - description: Optional critical path calculation request data. If omitted or
-          empty, data will be fetched directly from Firestore.
-        in: body
-        name: body
-        required: false
-        schema:
-          properties:
-            actions:
-              description: Array of scheduling tasks/actions (optional - if omitted,
-                fetches from Firestore)
-              items:
-                properties:
-                  action_id:
-                    description: Unique action identifier
-                    type: string
-                  action_status:
-                    description: Current status of the action
-                    type: string
-                  assignee_individual:
-                    description: Email of assigned individual
-                    type: string
-                  duration_days:
-                    description: Task duration in days
-                    type: number
-                  end_date:
-                    description: Task end date (ISO 8601 format)
-                    format: date-time
-                    type: string
-                  project_id:
-                    description: Project ID
-                    type: integer
-                  start_date:
-                    description: Task start date (ISO 8601 format)
-                    format: date-time
-                    type: string
-                  task_name:
-                    description: Name of the task
-                    type: string
-                  workspace_id:
-                    description: Workspace ID
-                    type: string
-                required:
-                - action_id
-                - task_name
-                type: object
-              type: array
-            dependencies:
-              description: Array of task dependencies (optional - if omitted, fetches
-                from Firestore)
-              items:
-                properties:
-                  dependency_type:
-                    default: finish_to_start
-                    description: Type of dependency relationship
-                    enum:
-                    - finish_to_start
-                    - start_to_start
-                    - finish_to_finish
-                    - start_to_finish
-                    - as_soon_as_possible
-                    type: string
-                  lag_days:
-                    default: 0
-                    description: Lag time in days between dependent tasks
-                    type: number
-                  predecessor_action_id:
-                    description: Action ID of the predecessor task
-                    type: string
-                  successor_action_id:
-                    description: Action ID of the successor task
-                    type: string
-                required:
-                - predecessor_action_id
-                - successor_action_id
-                type: object
-              type: array
-            project_id:
-              description: Project ID (optional - must match path parameter if provided)
-              type: integer
-            workspace_id:
-              description: Workspace ID (optional - must match path parameter if provided)
-              type: string
-          required: []
-          type: object
       responses:
         200:
           description: Critical path calculation successful
         400:
-          description: Invalid request data
+          description: Invalid request parameters
         401:
           description: Unauthorized - Missing X-Horizon-Product header or invalid
             authentication
+        404:
+          description: No scheduling tasks found for project
         409:
           description: Cycle detected in dependencies
         500:
