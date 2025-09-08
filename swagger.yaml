@@ -13931,14 +13931,9 @@ paths:
       - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/critical-path:
     post:
-      description: "Calculates the critical path method (CPM) for scheduling tasks\
-        \ in a project, including early/late start times, float values, and critical\
-        \ path identification. \n\n**Firestore-only endpoint** - Requires X-Horizon-Product:\
-        \ true header.\n\nFeatures:\n- Automatically filters for scheduling tasks\
-        \ only\n- Excludes deleted actions and dependencies (is_deleted=true)\n- Detects\
-        \ and reports dependency cycles\n- Calculates project duration and critical\
-        \ path\n- Provides detailed task scheduling information (ES, EF, LS, LF, float)\n\
-        - Supports both duration_days and start_date/end_date task definitions\n"
+      description: Calculates critical path method (CPM) for scheduling tasks including
+        early/late start times, float values, and critical path identification. Firestore-only
+        endpoint requiring X-Horizon-Product header.
       operationId: v2_calculateCriticalPath
       parameters:
       - description: Workspace identifier
@@ -13954,7 +13949,6 @@ paths:
       - description: Required header for Firestore-based endpoints
         enum:
         - 'true'
-        example: 'true'
         in: header
         name: X-Horizon-Product
         required: true
@@ -13971,43 +13965,32 @@ paths:
                 properties:
                   action_id:
                     description: Unique action identifier
-                    example: 2a630c8d-acfe-44fd-bf25-cf530ddbc749
                     type: string
                   action_status:
                     description: Current status of the action
-                    example: Not Started
                     type: string
                   assignee_individual:
                     description: Email of assigned individual
-                    example: projectmanager@example.com
-                    nullable: true
                     type: string
                   duration_days:
                     description: Task duration in days
-                    example: 92
                     type: number
                   end_date:
-                    description: Task end date (ISO 8601 format, alternative to duration_days)
-                    example: '2025-09-09T00:00:00+00:00'
+                    description: Task end date (ISO 8601 format)
                     format: date-time
                     type: string
                   project_id:
-                    description: Project ID (must match request project_id)
-                    example: 79
+                    description: Project ID
                     type: integer
                   start_date:
-                    description: Task start date (ISO 8601 format, alternative to
-                      duration_days)
-                    example: '2025-09-04T00:00:00+00:00'
+                    description: Task start date (ISO 8601 format)
                     format: date-time
                     type: string
                   task_name:
                     description: Name of the task
-                    example: Foundation Phase Milestone
                     type: string
                   workspace_id:
-                    description: Workspace ID (must match request workspace_id)
-                    example: holodeck
+                    description: Workspace ID
                     type: string
                 required:
                 - action_id
@@ -14031,15 +14014,12 @@ paths:
                   lag_days:
                     default: 0
                     description: Lag time in days between dependent tasks
-                    example: 2
                     type: number
                   predecessor_action_id:
                     description: Action ID of the predecessor task
-                    example: 2a630c8d-acfe-44fd-bf25-cf530ddbc749
                     type: string
                   successor_action_id:
                     description: Action ID of the successor task
-                    example: 0e73e2ff-ad81-4141-8ed5-0b4499ec349b
                     type: string
                 required:
                 - predecessor_action_id
@@ -14048,11 +14028,9 @@ paths:
               type: array
             project_id:
               description: Project ID (must match path parameter)
-              example: 79
               type: integer
             workspace_id:
               description: Workspace ID (must match path parameter)
-              example: holodeck
               type: string
           required:
           - project_id
@@ -14062,150 +14040,15 @@ paths:
       responses:
         200:
           description: Critical path calculation successful
-          schema:
-            properties:
-              critical_paths:
-                description: Critical path sequences
-                items:
-                  items:
-                    description: Action ID in critical path sequence
-                    type: string
-                  type: array
-                type: array
-              project_finish_day:
-                description: Total project duration in days
-                example: 188
-                type: integer
-              project_id:
-                description: Project identifier
-                example: 79
-                type: integer
-              status:
-                description: Calculation status
-                example: OK
-                type: string
-              summary:
-                properties:
-                  num_actions:
-                    description: Number of actions processed
-                    example: 34
-                    type: integer
-                  num_critical_tasks:
-                    description: Number of tasks on critical path
-                    example: 2
-                    type: integer
-                  num_dependencies:
-                    description: Number of dependencies processed
-                    example: 12
-                    type: integer
-                type: object
-              tasks:
-                description: Task schedule details
-                items:
-                  properties:
-                    EF:
-                      description: Early finish day
-                      type: integer
-                    ES:
-                      description: Early start day
-                      type: integer
-                    LF:
-                      description: Late finish day
-                      type: integer
-                    LS:
-                      description: Late start day
-                      type: integer
-                    action_id:
-                      description: Action identifier
-                      type: string
-                    duration_days:
-                      description: Task duration
-                      type: integer
-                    is_critical:
-                      description: Whether task is on critical path
-                      type: boolean
-                    task_name:
-                      description: Task name
-                      type: string
-                    total_float:
-                      description: Total float (slack) in days
-                      type: number
-                  type: object
-                type: array
-            type: object
         400:
           description: Invalid request data
-          schema:
-            properties:
-              details:
-                example:
-                - project_id is required
-                - actions array must not be empty
-                items:
-                  type: string
-                type: array
-              error:
-                example: INVALID_REQUEST
-                type: string
-            type: object
         401:
           description: Unauthorized - Missing X-Horizon-Product header or invalid
             authentication
-          schema:
-            properties:
-              error:
-                example: MISSING_OR_INVALID_PRODUCT_HEADER
-                type: string
-              message:
-                example: 'This Firestore endpoint requires X-Horizon-Product: true
-                  header'
-                type: string
-            type: object
         409:
-          description: Cycle detected in dependencies (rare with proper is_deleted
-            filtering)
-          schema:
-            properties:
-              details:
-                properties:
-                  cycle_actions:
-                    description: Detailed information about actions in the cycle
-                    items:
-                      properties:
-                        action_id:
-                          type: string
-                        action_status:
-                          type: string
-                        assignee_individual:
-                          type: string
-                        task_name:
-                          type: string
-                      type: object
-                    type: array
-                  cycle_path:
-                    description: Action IDs forming the cycle
-                    example:
-                    - 2a630c8d-acfe-44fd-bf25-cf530ddbc749
-                    - 0e73e2ff-ad81-4141-8ed5-0b4499ec349b
-                    items:
-                      type: string
-                    type: array
-                type: object
-              error:
-                example: CYCLE_DETECTED
-                type: string
-            type: object
+          description: Cycle detected in dependencies
         500:
           description: Internal Server Error
-          schema:
-            properties:
-              details:
-                example: Unexpected error during calculation
-                type: string
-              error:
-                example: INTERNAL_ERROR
-                type: string
-            type: object
       security:
       - JWT_v2: []
       summary: Calculate Critical Path Method for project actions
@@ -23900,20 +23743,8 @@ paths:
       - Power BI
   /v2/workspaces/{workspaceId}/projects/{projectId}/resources:
     get:
-      description: 'Retrieves resources for a specific project within a workspace.
-
-
-        **Dual Implementation Available:**
-
-        - **Legacy (MySQL)**: Default behavior, uses BigQuery with project filtering
-
-        - **Firestore**: When X-Horizon-Product: true header is provided
-
-
-        Supports all the same filtering and search capabilities as workspace-level
-        resources.
-
-        '
+      description: Retrieves resources for a specific project within a workspace.
+        Supports both legacy and Firestore implementations.
       operationId: v2_getProjectResources
       parameters:
       - description: Workspace identifier
@@ -23929,20 +23760,17 @@ paths:
       - description: Optional header to enable Firestore-based implementation
         enum:
         - 'true'
-        example: 'true'
         in: header
         name: X-Horizon-Product
         required: false
         type: string
       - description: Search query for resource name, type, or description (Firestore
           only)
-        example: excavator
         in: query
         name: q
         required: false
         type: string
       - description: Filter by resource type
-        example: machinery
         in: query
         name: resource_type
         required: false
@@ -23965,35 +23793,12 @@ paths:
       responses:
         200:
           description: Project resources retrieved successfully
-          schema:
-            properties:
-              message:
-                example: Resources retrieved
-                type: string
-              resources:
-                items:
-                  $ref: '#/components/schemas/Resource'
-                type: array
-              total_count:
-                description: Total resources in project (Firestore only)
-                example: 42
-                type: integer
-            type: object
         400:
           description: Invalid request parameters
         401:
           description: Unauthorized
         404:
           description: Project not found
-          schema:
-            properties:
-              details:
-                example: Project 79 not found in workspace holodeck
-                type: string
-              error:
-                example: PROJECT_NOT_FOUND
-                type: string
-            type: object
         500:
           description: Internal server error
       security:
@@ -24002,20 +23807,8 @@ paths:
       tags:
       - Resources
     post:
-      description: 'Creates a new resource within a project.
-
-
-        **Dual Implementation Available:**
-
-        - **Legacy (MySQL)**: Default behavior, creates resource in MySQL database
-
-        - **Firestore**: When X-Horizon-Product: true header is provided
-
-
-        The Firestore version supports enhanced fields like description, allocation
-        tracking, and timestamps.
-
-        '
+      description: Creates a new resource within a project. Supports both legacy and
+        Firestore implementations via X-Horizon-Product header.
       operationId: v2_createProjectResource
       parameters:
       - description: Workspace identifier
@@ -24031,7 +23824,6 @@ paths:
       - description: Optional header to enable Firestore-based implementation
         enum:
         - 'true'
-        example: 'true'
         in: header
         name: X-Horizon-Product
         required: false
@@ -24044,53 +23836,37 @@ paths:
           properties:
             allocate_place:
               description: Location where resource is allocated (Firestore only)
-              example: Northwest construction area
-              nullable: true
               type: string
             allocate_time:
               description: Time when resource should be allocated (Firestore only)
-              example: '2025-09-15T08:00:00Z'
               format: date-time
-              nullable: true
               type: string
             allocation:
               description: Resource allocation percentage (Firestore only)
-              example: 75.0
               maximum: 100
               minimum: 0
-              nullable: true
               type: number
             company_id:
               description: Associated company ID (Firestore only)
-              example: 12345
-              nullable: true
               type: integer
             description:
               description: Detailed resource description (Firestore only)
-              example: Heavy-duty tower crane with 60m reach capacity
-              nullable: true
               type: string
             parent_resource_id:
               description: Parent resource ID for hierarchical organization
-              example: res_crane_base_001
-              nullable: true
               type: string
             resource_mapping:
               description: Additional resource mapping data (legacy compatibility)
-              nullable: true
               properties:
                 related_column:
                   description: Related database column
-                  example: crane_id
                   type: string
                 related_table:
                   description: Related database table
-                  example: equipment_specifications
                   type: string
               type: object
             resource_name:
               description: Name of the resource
-              example: 'Tower Crane #3'
               type: string
             resource_type:
               default: unknown
@@ -24103,7 +23879,6 @@ paths:
               - labor
               - vehicle
               - unknown
-              example: equipment
               type: string
           required:
           - resource_name
@@ -24112,48 +23887,12 @@ paths:
       responses:
         201:
           description: Resource created successfully
-          schema:
-            properties:
-              message:
-                example: Resource created successfully
-                type: string
-              resource:
-                $ref: '#/components/schemas/Resource'
-              resource_id:
-                description: ID of the newly created resource
-                example: res_abc123def456
-                type: string
-            type: object
         400:
           description: Invalid request data
-          schema:
-            properties:
-              details:
-                example:
-                - resource_name is required
-                - 'resource_type must be one of: equipment, machinery, tool, material,
-                  labor, vehicle, unknown'
-                items:
-                  type: string
-                type: array
-              error:
-                example: INVALID_REQUEST_DATA
-                type: string
-            type: object
         401:
           description: Unauthorized
         409:
           description: Resource already exists
-          schema:
-            properties:
-              details:
-                example: 'Resource with name ''Tower Crane #3'' already exists in
-                  this project'
-                type: string
-              error:
-                example: RESOURCE_ALREADY_EXISTS
-                type: string
-            type: object
         500:
           description: Internal server error
       security:
@@ -24163,15 +23902,8 @@ paths:
       - Resources
   /v2/workspaces/{workspaceId}/projects/{projectId}/resources/{resourceId}:
     delete:
-      description: 'Soft deletes a resource (sets is_deleted flag to true).
-
-
-        **Firestore Implementation Only**: This endpoint requires X-Horizon-Product:
-        true header.
-
-        Legacy MySQL implementation does not support resource deletion.
-
-        '
+      description: Soft deletes a resource (sets is_deleted flag to true). Firestore
+        implementation only - requires X-Horizon-Product header.
       operationId: v2_deleteResource
       parameters:
       - description: Workspace identifier
@@ -24192,7 +23924,6 @@ paths:
       - description: Required header for Firestore-based resource deletion
         enum:
         - 'true'
-        example: 'true'
         in: header
         name: X-Horizon-Product
         required: true
@@ -24207,15 +23938,6 @@ paths:
       responses:
         200:
           description: Resource deleted successfully
-          schema:
-            properties:
-              message:
-                example: Resource deleted successfully
-                type: string
-              resource_id:
-                example: res_abc123def456
-                type: string
-            type: object
         401:
           description: Unauthorized - Missing X-Horizon-Product header
         404:
@@ -24228,15 +23950,8 @@ paths:
       tags:
       - Resources
     get:
-      description: 'Retrieves detailed information for a specific resource.
-
-
-        **Firestore Implementation Only**: This endpoint requires X-Horizon-Product:
-        true header.
-
-        Legacy MySQL implementation does not support individual resource retrieval.
-
-        '
+      description: Retrieves detailed information for a specific resource. Firestore
+        implementation only - requires X-Horizon-Product header.
       operationId: v2_getResourceDetails
       parameters:
       - description: Workspace identifier
@@ -24257,7 +23972,6 @@ paths:
       - description: Required header for Firestore-based resource details
         enum:
         - 'true'
-        example: 'true'
         in: header
         name: X-Horizon-Product
         required: true
@@ -24265,31 +23979,11 @@ paths:
       responses:
         200:
           description: Resource details retrieved successfully
-          schema:
-            properties:
-              message:
-                example: Resource retrieved successfully
-                type: string
-              resource:
-                $ref: '#/components/schemas/Resource'
-            type: object
         401:
           description: Unauthorized - Missing X-Horizon-Product header or invalid
             authentication
-          schema:
-            properties:
-              error:
-                example: MISSING_OR_INVALID_PRODUCT_HEADER
-                type: string
-            type: object
         404:
           description: Resource not found
-          schema:
-            properties:
-              error:
-                example: RESOURCE_NOT_FOUND
-                type: string
-            type: object
         500:
           description: Internal server error
       security:
@@ -24298,15 +23992,8 @@ paths:
       tags:
       - Resources
     put:
-      description: 'Updates an existing resource.
-
-
-        **Firestore Implementation Only**: This endpoint requires X-Horizon-Product:
-        true header.
-
-        Legacy MySQL implementation does not support resource updates.
-
-        '
+      description: Updates an existing resource. Firestore implementation only - requires
+        X-Horizon-Product header.
       operationId: v2_updateResource
       parameters:
       - description: Workspace identifier
@@ -24327,7 +24014,6 @@ paths:
       - description: Required header for Firestore-based resource updates
         enum:
         - 'true'
-        example: 'true'
         in: header
         name: X-Horizon-Product
         required: true
@@ -24340,30 +24026,21 @@ paths:
           properties:
             allocate_place:
               description: Updated allocation location
-              example: Southeast construction area
-              nullable: true
               type: string
             allocate_time:
               description: Updated allocation time
-              example: '2025-09-20T06:00:00Z'
               format: date-time
-              nullable: true
               type: string
             allocation:
               description: Updated allocation percentage
-              example: 90.0
               maximum: 100
               minimum: 0
-              nullable: true
               type: number
             description:
               description: Updated resource description
-              example: Heavy-duty tower crane with extended 75m reach capacity
-              nullable: true
               type: string
             resource_name:
               description: Updated name of the resource
-              example: 'Tower Crane #3 - Updated'
               type: string
             resource_type:
               description: Updated resource type
@@ -24375,20 +24052,11 @@ paths:
               - labor
               - vehicle
               - unknown
-              example: machinery
               type: string
           type: object
       responses:
         200:
           description: Resource updated successfully
-          schema:
-            properties:
-              message:
-                example: Resource updated successfully
-                type: string
-              resource:
-                $ref: '#/components/schemas/Resource'
-            type: object
         400:
           description: Invalid update data
         401:
@@ -26111,11 +25779,8 @@ paths:
       x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/resources:
     get:
-      description: "Retrieves resources for a specific workspace. \n\n**Dual Implementation\
-        \ Available:**\n- **Legacy (MySQL)**: Default behavior, uses BigQuery for\
-        \ data retrieval\n- **Firestore**: When X-Horizon-Product: true header is\
-        \ provided\n\nThe Firestore version supports advanced filtering, search capabilities,\
-        \ and enhanced CRUD operations.\n"
+      description: Retrieves resources for a specific workspace. Supports both legacy
+        (MySQL/BigQuery) and Firestore implementations via X-Horizon-Product header.
       operationId: v2_getWorkspaceResources
       parameters:
       - description: Workspace identifier
@@ -26127,26 +25792,22 @@ paths:
           enhanced features
         enum:
         - 'true'
-        example: 'true'
         in: header
         name: X-Horizon-Product
         required: false
         type: string
       - description: Search query for resource name, type, or description (Firestore
           only)
-        example: concrete mixer
         in: query
         name: q
         required: false
         type: string
       - description: Filter by resource type
-        example: equipment
         in: query
         name: resource_type
         required: false
         type: string
       - description: Filter by project ID
-        example: 79
         in: query
         name: project_id
         required: false
@@ -26169,112 +25830,12 @@ paths:
       responses:
         200:
           description: Resources retrieved successfully
-          schema:
-            properties:
-              message:
-                example: Resources retrieved
-                type: string
-              resources:
-                items:
-                  properties:
-                    allocate_place:
-                      description: Location where resource is allocated (Firestore
-                        only)
-                      example: Building Site A
-                      type: string
-                    allocate_time:
-                      description: Time when resource was allocated (Firestore only)
-                      example: '2025-09-08T14:30:00Z'
-                      format: date-time
-                      type: string
-                    allocation:
-                      description: Resource allocation percentage (Firestore only)
-                      example: 85.5
-                      type: number
-                    created_at:
-                      description: Creation timestamp (Firestore only)
-                      example: '2025-09-08T10:00:00Z'
-                      format: date-time
-                      type: string
-                    description:
-                      description: Resource description (Firestore only)
-                      example: High-capacity concrete mixer for large pours
-                      type: string
-                    is_deleted:
-                      description: Soft delete flag (Firestore only)
-                      example: false
-                      type: boolean
-                    parent_resource_id:
-                      description: Parent resource ID for hierarchical organization
-                      example: res_parent123
-                      type: string
-                    project_id:
-                      description: Associated project ID
-                      example: 79
-                      type: integer
-                    resource_id:
-                      description: Unique resource identifier
-                      example: res_abc123def456
-                      type: string
-                    resource_name:
-                      description: Name of the resource
-                      example: Concrete Mixer - Large
-                      type: string
-                    resource_type:
-                      description: Type of resource
-                      example: equipment
-                      type: string
-                    updated_at:
-                      description: Last update timestamp (Firestore only)
-                      example: '2025-09-08T15:45:00Z'
-                      format: date-time
-                      type: string
-                    workspace_id:
-                      description: Workspace identifier
-                      example: holodeck
-                      type: string
-                  type: object
-                type: array
-              total_count:
-                description: Total number of resources available (Firestore only with
-                  pagination)
-                example: 245
-                type: integer
-            type: object
         400:
           description: Invalid request parameters
-          schema:
-            properties:
-              details:
-                example:
-                - limit must be between 1 and 1000
-                - invalid resource_type
-                items:
-                  type: string
-                type: array
-              error:
-                example: INVALID_QUERY_PARAMETERS
-                type: string
-            type: object
         401:
-          description: Unauthorized - Invalid authentication or insufficient permissions
-          schema:
-            properties:
-              error:
-                example: UNAUTHORIZED
-                type: string
-            type: object
+          description: Unauthorized
         500:
           description: Internal server error
-          schema:
-            properties:
-              details:
-                example: Database connection failed
-                type: string
-              error:
-                example: INTERNAL_ERROR
-                type: string
-            type: object
       security:
       - JWT_v2: []
       summary: Get resources for workspace
