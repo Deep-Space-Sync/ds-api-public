@@ -13929,12 +13929,10 @@ paths:
       summary: Create action constraint
       tags:
       - Actions
-  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/critical-path:
+  /v2/workspaces/{workspaceId}/projects/{projectId}/critical-path:
     get:
-      description: Calculates critical path method (CPM) for scheduling tasks including
-        early/late start times, float values, and critical path identification. Automatically
-        fetches all scheduling tasks from Firestore.
-      operationId: v2_calculateCriticalPath
+      description: Calculates critical path method (CPM).
+      operationId: V2_calculateCriticalPath
       parameters:
       - description: Workspace identifier
         in: path
