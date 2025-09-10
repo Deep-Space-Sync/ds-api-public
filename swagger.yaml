@@ -6258,6 +6258,177 @@ paths:
       summary: Get a form in workspace by ID
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/files:
+    get:
+      operationId: v2_getFilesWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by file category
+        in: query
+        name: category
+        required: false
+        type: string
+      - description: Filter by file type
+        in: query
+        name: file_type
+        required: false
+        type: string
+      - description: Filter by related document ID
+        in: query
+        name: related_document_id
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successfully returns files
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get workspace-level files
+      tags:
+      - Get Data
+    post:
+      operationId: v2_postFilesWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Action type (signed-urls, process)
+        in: query
+        name: action
+        required: false
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            files:
+              description: Array of file objects
+              items:
+                properties:
+                  category:
+                    type: string
+                  file_size_bytes:
+                    type: integer
+                  filename:
+                    type: string
+                  filetype:
+                    type: string
+                  related_document_id:
+                    type: string
+                type: object
+              type: array
+          type: object
+      responses:
+        200:
+          description: Successfully returns signed URLs or processes files
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get signed URLs for workspace-level file upload
+      tags:
+      - Upload Data
+  /v2/workspaces/{workspaceId}/files/{fileId}:
+    delete:
+      operationId: v2_deleteFileWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: fileId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully deleted file
+        401:
+          description: Unauthorized
+        404:
+          description: File not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete workspace-level file
+      tags:
+      - Upload Data
+    get:
+      operationId: v2_getFileWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: fileId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully returns file details
+        401:
+          description: Unauthorized
+        404:
+          description: File not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get workspace-level file details
+      tags:
+      - Get Data
+    patch:
+      operationId: v2_patchFileWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: fileId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              type: string
+            description:
+              type: string
+            display_name:
+              type: string
+            related_document_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successfully updated file
+        401:
+          description: Unauthorized
+        404:
+          description: File not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update workspace-level file metadata
+      tags:
+      - Upload Data
   /v2/workspaces/{workspaceId}/hz-commercial-budgets:
     get:
       description: Retrieve budget register entries with optional filters and pagination
@@ -22352,6 +22523,197 @@ paths:
       summary: Download a file from the project
       tags:
       - Download
+  /v2/workspaces/{workspaceId}/projects/{projectId}/files:
+    get:
+      operationId: v2_getFiles
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Filter by file category
+        in: query
+        name: category
+        required: false
+        type: string
+      - description: Filter by file type
+        in: query
+        name: file_type
+        required: false
+        type: string
+      - description: Filter by related document ID
+        in: query
+        name: related_document_id
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successfully returns files
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get list of files
+      tags:
+      - Get Data
+    post:
+      operationId: v2_postFiles
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Action type (signed-urls, process)
+        in: query
+        name: action
+        required: false
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            files:
+              description: Array of file objects
+              items:
+                properties:
+                  category:
+                    type: string
+                  file_size_bytes:
+                    type: integer
+                  filename:
+                    type: string
+                  filetype:
+                    type: string
+                  related_document_id:
+                    type: string
+                type: object
+              type: array
+          type: object
+      responses:
+        200:
+          description: Successfully returns signed URLs or processes files
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get signed URLs for file upload or create file metadata
+      tags:
+      - Upload Data
+  /v2/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}:
+    delete:
+      operationId: v2_deleteFile
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: fileId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully deleted file
+        401:
+          description: Unauthorized
+        404:
+          description: File not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete file
+      tags:
+      - Upload Data
+    get:
+      operationId: v2_getFile
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: fileId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully returns file details
+        401:
+          description: Unauthorized
+        404:
+          description: File not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get single file details
+      tags:
+      - Get Data
+    patch:
+      operationId: v2_patchFile
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: fileId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              type: string
+            description:
+              type: string
+            display_name:
+              type: string
+            related_document_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successfully updated file
+        401:
+          description: Unauthorized
+        404:
+          description: File not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update file metadata
+      tags:
+      - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}/navis/{collectorKey}:
     post:
       consumes:
@@ -22409,376 +22771,6 @@ paths:
       summary: Upload navis data to Deep Space at the file level
       tags:
       - Navis Integration
-  /v2/workspaces/{workspaceId}/projects/{projectId}/files:
-    get:
-      operationId: v2_getFiles
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: query
-        name: category
-        required: false
-        type: string
-        description: Filter by file category
-      - in: query
-        name: file_type
-        required: false
-        type: string
-        description: Filter by file type
-      - in: query
-        name: related_document_id
-        required: false
-        type: string
-        description: Filter by related document ID
-      responses:
-        200:
-          description: Successfully returns files
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get list of files
-      tags:
-      - Files
-    post:
-      consumes:
-      - application/json
-      operationId: v2_postFiles
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: query
-        name: action
-        required: false
-        type: string
-        description: Action type (signed-urls, process)
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          properties:
-            files:
-              type: array
-              description: Array of file objects
-              items:
-                type: object
-                properties:
-                  filename:
-                    type: string
-                  filetype:
-                    type: string
-                  file_size_bytes:
-                    type: integer
-                  category:
-                    type: string
-                  related_document_id:
-                    type: string
-      responses:
-        200:
-          description: Successfully returns signed URLs or processes files
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get signed URLs for file upload or create file metadata
-      tags:
-      - Files
-  /v2/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}:
-    get:
-      operationId: v2_getFile
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: fileId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Successfully returns file details
-        401:
-          description: Unauthorized
-        404:
-          description: File not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get single file details
-      tags:
-      - Files
-    patch:
-      consumes:
-      - application/json
-      operationId: v2_patchFile
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: fileId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          properties:
-            display_name:
-              type: string
-            category:
-              type: string
-            description:
-              type: string
-            related_document_id:
-              type: string
-      responses:
-        200:
-          description: Successfully updated file
-        401:
-          description: Unauthorized
-        404:
-          description: File not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Update file metadata
-      tags:
-      - Files
-    delete:
-      operationId: v2_deleteFile
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: fileId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Successfully deleted file
-        401:
-          description: Unauthorized
-        404:
-          description: File not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Delete file
-      tags:
-      - Files
-  /v2/workspaces/{workspaceId}/files:
-    get:
-      operationId: v2_getFilesWorkspaceLevel
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: query
-        name: category
-        required: false
-        type: string
-        description: Filter by file category
-      - in: query
-        name: file_type
-        required: false
-        type: string
-        description: Filter by file type
-      - in: query
-        name: related_document_id
-        required: false
-        type: string
-        description: Filter by related document ID
-      responses:
-        200:
-          description: Successfully returns files
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get workspace-level files
-      tags:
-      - Files
-    post:
-      consumes:
-      - application/json
-      operationId: v2_postFilesWorkspaceLevel
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: query
-        name: action
-        required: false
-        type: string
-        description: Action type (signed-urls, process)
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          properties:
-            files:
-              type: array
-              description: Array of file objects
-              items:
-                type: object
-                properties:
-                  filename:
-                    type: string
-                  filetype:
-                    type: string
-                  file_size_bytes:
-                    type: integer
-                  category:
-                    type: string
-                  related_document_id:
-                    type: string
-      responses:
-        200:
-          description: Successfully returns signed URLs or processes files
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get signed URLs for workspace-level file upload
-      tags:
-      - Files
-  /v2/workspaces/{workspaceId}/files/{fileId}:
-    get:
-      operationId: v2_getFileWorkspaceLevel
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: fileId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Successfully returns file details
-        401:
-          description: Unauthorized
-        404:
-          description: File not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get workspace-level file details
-      tags:
-      - Files
-    patch:
-      consumes:
-      - application/json
-      operationId: v2_patchFileWorkspaceLevel
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: fileId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          properties:
-            display_name:
-              type: string
-            category:
-              type: string
-            description:
-              type: string
-            related_document_id:
-              type: string
-      responses:
-        200:
-          description: Successfully updated file
-        401:
-          description: Unauthorized
-        404:
-          description: File not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Update workspace-level file metadata
-      tags:
-      - Files
-    delete:
-      operationId: v2_deleteFileWorkspaceLevel
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: fileId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Successfully deleted file
-        401:
-          description: Unauthorized
-        404:
-          description: File not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Delete workspace-level file
-      tags:
-      - Files
   /v2/workspaces/{workspaceId}/projects/{projectId}/implementation:
     get:
       operationId: v2_getProjectImplementationChecklist
