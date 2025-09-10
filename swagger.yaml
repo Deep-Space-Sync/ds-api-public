@@ -123,7 +123,7 @@ paths:
       x-min-permissions: admin
   /v2/files:
     get:
-      operationId: v2_getGlobalFiles
+      operationId: v2_v2_getGlobalFiles
       parameters:
       - description: Filter by file category
         in: query
@@ -163,7 +163,7 @@ paths:
       tags:
       - Get Data
     post:
-      operationId: v2_postGlobalFiles
+      operationId: v2_v2_postGlobalFiles
       parameters:
       - description: Action type (signed-urls, process)
         in: query
@@ -206,7 +206,7 @@ paths:
       - Upload Data
   /v2/files/{fileId}:
     delete:
-      operationId: v2_deleteGlobalFile
+      operationId: v2_v2_deleteGlobalFile
       parameters:
       - in: path
         name: fileId
@@ -227,7 +227,7 @@ paths:
       tags:
       - Upload Data
     get:
-      operationId: v2_getGlobalFile
+      operationId: v2_v2_getGlobalFile
       parameters:
       - in: path
         name: fileId
@@ -248,7 +248,7 @@ paths:
       tags:
       - Get Data
     patch:
-      operationId: v2_patchGlobalFile
+      operationId: v2_v2_patchGlobalFile
       parameters:
       - in: path
         name: fileId
@@ -284,7 +284,7 @@ paths:
       - Upload Data
   /v2/files/{fileId}/new-version:
     post:
-      operationId: v2_postGlobalFileNewVersion
+      operationId: v2_v2_postGlobalFileNewVersion
       parameters:
       - in: path
         name: fileId
@@ -324,7 +324,7 @@ paths:
       - Upload Data
   /v2/files/{fileId}/versions:
     get:
-      operationId: v2_getGlobalFileVersions
+      operationId: v2_v2_getGlobalFileVersions
       parameters:
       - in: path
         name: fileId
@@ -6662,47 +6662,9 @@ paths:
       summary: Update workspace-level file metadata
       tags:
       - Upload Data
-  /v2/workspaces/{workspaceId}/files/{fileId}/versions:
-    get:
-      operationId: v2_getFileVersionsWorkspaceLevel
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: fileId
-        required: true
-        type: string
-      - in: query
-        name: page
-        required: false
-        type: integer
-        description: Page number for pagination
-      - in: query
-        name: limit
-        required: false
-        type: integer
-        description: Number of items per page
-      responses:
-        200:
-          description: Successfully returns file versions
-        401:
-          description: Unauthorized
-        404:
-          description: File not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get workspace-level file version history
-      tags:
-      - Files
   /v2/workspaces/{workspaceId}/files/{fileId}/new-version:
     post:
-      consumes:
-      - application/json
-      operationId: v2_postFileNewVersionWorkspaceLevel
+      operationId: v2_v2_postFileNewVersionWorkspaceLevel
       parameters:
       - in: path
         name: workspaceId
@@ -6716,20 +6678,20 @@ paths:
         name: body
         required: true
         schema:
-          type: object
           properties:
-            new_filename:
-              type: string
-              description: Filename for the new version
             change_description:
-              type: string
               description: Description of changes made
-            file_url:
               type: string
-              description: URL of the uploaded file
             file_size_bytes:
-              type: integer
               description: Size of the file in bytes
+              type: integer
+            file_url:
+              description: URL of the uploaded file
+              type: string
+            new_filename:
+              description: Filename for the new version
+              type: string
+          type: object
       responses:
         200:
           description: Successfully uploaded new version
@@ -6743,7 +6705,43 @@ paths:
       - JWT_v2: []
       summary: Upload new version of workspace-level file
       tags:
-      - Files
+      - Upload Data
+  /v2/workspaces/{workspaceId}/files/{fileId}/versions:
+    get:
+      operationId: v2_v2_getFileVersionsWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: fileId
+        required: true
+        type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        required: false
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successfully returns file versions
+        401:
+          description: Unauthorized
+        404:
+          description: File not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get workspace-level file version history
+      tags:
+      - Get Data
   /v2/workspaces/{workspaceId}/hz-commercial-budgets:
     get:
       description: Retrieve budget register entries with optional filters and pagination
@@ -23029,96 +23027,6 @@ paths:
       summary: Update file metadata
       tags:
       - Upload Data
-  /v2/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}/versions:
-    get:
-      operationId: v2_getFileVersionsProjectLevel
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: fileId
-        required: true
-        type: string
-      - in: query
-        name: page
-        required: false
-        type: integer
-        description: Page number for pagination
-      - in: query
-        name: limit
-        required: false
-        type: integer
-        description: Number of items per page
-      responses:
-        200:
-          description: Successfully returns file versions
-        401:
-          description: Unauthorized
-        404:
-          description: File not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get project-level file version history
-      tags:
-      - Files
-  /v2/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}/new-version:
-    post:
-      consumes:
-      - application/json
-      operationId: v2_postFileNewVersionProjectLevel
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: fileId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          properties:
-            new_filename:
-              type: string
-              description: Filename for the new version
-            change_description:
-              type: string
-              description: Description of changes made
-            file_url:
-              type: string
-              description: URL of the uploaded file
-            file_size_bytes:
-              type: integer
-              description: Size of the file in bytes
-      responses:
-        200:
-          description: Successfully uploaded new version
-        401:
-          description: Unauthorized
-        404:
-          description: File not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Upload new version of project-level file
-      tags:
-      - Files
   /v2/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}/navis/{collectorKey}:
     post:
       consumes:
@@ -23176,6 +23084,94 @@ paths:
       summary: Upload navis data to Deep Space at the file level
       tags:
       - Navis Integration
+  /v2/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}/new-version:
+    post:
+      operationId: v2_v2_postFileNewVersionProjectLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: fileId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            change_description:
+              description: Description of changes made
+              type: string
+            file_size_bytes:
+              description: Size of the file in bytes
+              type: integer
+            file_url:
+              description: URL of the uploaded file
+              type: string
+            new_filename:
+              description: Filename for the new version
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successfully uploaded new version
+        401:
+          description: Unauthorized
+        404:
+          description: File not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upload new version of project-level file
+      tags:
+      - Upload Data
+  /v2/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}/versions:
+    get:
+      operationId: v2_v2_getFileVersionsProjectLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: fileId
+        required: true
+        type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        required: false
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successfully returns file versions
+        401:
+          description: Unauthorized
+        404:
+          description: File not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get project-level file version history
+      tags:
+      - Get Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/implementation:
     get:
       operationId: v2_getProjectImplementationChecklist
