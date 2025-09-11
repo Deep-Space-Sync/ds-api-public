@@ -6498,7 +6498,7 @@ paths:
       - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/files:
     get:
-      operationId: v2_getFilesWorkspaceLevel
+      operationId: v2_v2_getFilesWorkspaceLevel
       parameters:
       - in: path
         name: workspaceId
@@ -6547,7 +6547,7 @@ paths:
       tags:
       - Get Data
     post:
-      operationId: v2_postFilesWorkspaceLevel
+      operationId: v2_v2_postFilesWorkspaceLevel
       parameters:
       - in: path
         name: workspaceId
@@ -6594,7 +6594,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/files/{fileId}:
     delete:
-      operationId: v2_deleteFileWorkspaceLevel
+      operationId: v2_v2_deleteFileWorkspaceLevel
       parameters:
       - in: path
         name: workspaceId
@@ -6619,7 +6619,7 @@ paths:
       tags:
       - Upload Data
     get:
-      operationId: v2_getFileWorkspaceLevel
+      operationId: v2_v2_getFileWorkspaceLevel
       parameters:
       - in: path
         name: workspaceId
@@ -6644,7 +6644,7 @@ paths:
       tags:
       - Get Data
     patch:
-      operationId: v2_patchFileWorkspaceLevel
+      operationId: v2_v2_patchFileWorkspaceLevel
       parameters:
       - in: path
         name: workspaceId
@@ -22858,7 +22858,7 @@ paths:
       - Download
   /v2/workspaces/{workspaceId}/projects/{projectId}/files:
     get:
-      operationId: v2_getFiles
+      operationId: v2_v2_getFiles
       parameters:
       - in: path
         name: workspaceId
@@ -22911,7 +22911,7 @@ paths:
       tags:
       - Get Data
     post:
-      operationId: v2_postFiles
+      operationId: v2_v2_postFiles
       parameters:
       - in: path
         name: workspaceId
@@ -22962,7 +22962,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}:
     delete:
-      operationId: v2_deleteFile
+      operationId: v2_v2_deleteFile
       parameters:
       - in: path
         name: workspaceId
@@ -22991,7 +22991,7 @@ paths:
       tags:
       - Upload Data
     get:
-      operationId: v2_getFile
+      operationId: v2_v2_getFile
       parameters:
       - in: path
         name: workspaceId
@@ -23020,7 +23020,7 @@ paths:
       tags:
       - Get Data
     patch:
-      operationId: v2_patchFile
+      operationId: v2_v2_patchFile
       parameters:
       - in: path
         name: workspaceId
