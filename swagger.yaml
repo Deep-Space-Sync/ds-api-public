@@ -140,6 +140,11 @@ paths:
         name: related_document_id
         required: false
         type: string
+      - description: Include all versions for each file in response
+        in: query
+        name: include_versions
+        required: false
+        type: boolean
       - description: Page number for pagination
         in: query
         name: page
@@ -6514,6 +6519,21 @@ paths:
         name: related_document_id
         required: false
         type: string
+      - description: Include all versions for each file in response
+        in: query
+        name: include_versions
+        required: false
+        type: boolean
+      - description: Page number for pagination
+        in: query
+        name: page
+        required: false
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        required: false
+        type: integer
       responses:
         200:
           description: Successfully returns files
@@ -22863,6 +22883,21 @@ paths:
         name: related_document_id
         required: false
         type: string
+      - description: Include all versions for each file in response
+        in: query
+        name: include_versions
+        required: false
+        type: boolean
+      - description: Page number for pagination
+        in: query
+        name: page
+        required: false
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        required: false
+        type: integer
       responses:
         200:
           description: Successfully returns files
