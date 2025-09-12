@@ -5787,6 +5787,419 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tenders:
+    get:
+      description: Retrieve all tenders for a project
+      operationId: v2_getTenders
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              count:
+                type: integer
+              items:
+                items:
+                  type: object
+                type: array
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Tenders
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      description: Create a new tender
+      operationId: v2_createTender
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Tender data
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            bid_status:
+              enum:
+              - will_bid
+              - undecided
+              type: string
+            client_contact:
+              type: string
+            client_name:
+              type: string
+            description:
+              type: string
+            due_date:
+              type: string
+            location:
+              type: string
+            name:
+              type: string
+            notes:
+              type: string
+            stage:
+              enum:
+              - open
+              - invited
+              - shortlisted
+              type: string
+            tags:
+              items:
+                properties:
+                  tag_id:
+                    type: string
+                  tag_name:
+                    type: string
+                type: object
+              type: array
+            teams:
+              items:
+                properties:
+                  name:
+                    type: string
+                  user_email:
+                    type: string
+                  user_id:
+                    type: string
+                type: object
+              type: array
+            tender_status:
+              enum:
+              - in_progress
+              - review
+              - new
+              type: string
+            type:
+              enum:
+              - commercial
+              - residential
+              - infrastructure
+              - education
+              - healthcare
+              - industrial
+              - retail
+              - other
+              type: string
+            value:
+              type: number
+          required:
+          - name
+          - type
+          - bid_status
+          - tender_status
+          - stage
+          type: object
+      responses:
+        201:
+          description: Tender created successfully
+          schema:
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Tender
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tenders/enums:
+    get:
+      description: Get tender enum values
+      operationId: v2_getTenderEnums
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              bid_statuses:
+                items:
+                  properties:
+                    custom_value:
+                      type: string
+                    label:
+                      type: string
+                    value:
+                      type: string
+                  type: object
+                type: array
+              stages:
+                items:
+                  properties:
+                    custom_value:
+                      type: string
+                    label:
+                      type: string
+                    value:
+                      type: string
+                  type: object
+                type: array
+              tender_statuses:
+                items:
+                  properties:
+                    custom_value:
+                      type: string
+                    label:
+                      type: string
+                    value:
+                      type: string
+                  type: object
+                type: array
+              tender_types:
+                items:
+                  properties:
+                    custom_value:
+                      type: string
+                    label:
+                      type: string
+                    value:
+                      type: string
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Tender Enums
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tenders/{tenderId}:
+    delete:
+      description: Delete a tender by ID (soft delete)
+      operationId: v2_deleteTenderById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Tender identifier
+        in: path
+        name: tenderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tender deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tender not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Tender By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      description: Retrieve a specific tender by ID
+      operationId: v2_getTenderById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Tender identifier
+        in: path
+        name: tenderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tender not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Tender By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      description: Update a tender by ID
+      operationId: v2_updateTenderById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Tender identifier
+        in: path
+        name: tenderId
+        required: true
+        type: string
+      - description: Tender update data
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            bid_status:
+              enum:
+              - will_bid
+              - undecided
+              type: string
+            client_contact:
+              type: string
+            client_name:
+              type: string
+            description:
+              type: string
+            due_date:
+              type: string
+            location:
+              type: string
+            name:
+              type: string
+            notes:
+              type: string
+            stage:
+              enum:
+              - open
+              - invited
+              - shortlisted
+              type: string
+            tags:
+              items:
+                properties:
+                  tag_id:
+                    type: string
+                  tag_name:
+                    type: string
+                type: object
+              type: array
+            teams:
+              items:
+                properties:
+                  name:
+                    type: string
+                  user_email:
+                    type: string
+                  user_id:
+                    type: string
+                type: object
+              type: array
+            tender_status:
+              enum:
+              - in_progress
+              - review
+              - new
+              type: string
+            type:
+              enum:
+              - commercial
+              - residential
+              - infrastructure
+              - education
+              - healthcare
+              - industrial
+              - retail
+              - other
+              type: string
+            value:
+              type: number
+          type: object
+      responses:
+        200:
+          description: Tender updated successfully
+          schema:
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Tender not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Tender By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/xero-sync/{syncId}:
     post:
       operationId: v2_postXeroSync
