@@ -22305,32 +22305,17 @@ paths:
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tenders:
     get:
-      operationId: v2_v2_getTenders
+      operationId: v2_getTenders
       parameters:
-      - description: Workspace identifier
-        in: path
+      - in: path
         name: workspaceId
         required: true
         type: string
-      - description: Project identifier
-        in: path
+      - in: path
         name: projectId
         required: true
         type: integer
-      - description: Page number for pagination
-        in: query
-        name: page
-        type: integer
-      - description: Number of items per page
-        in: query
-        name: limit
-        type: integer
-      - description: Filter by project ID
-        in: query
-        name: project_id
-        type: string
-      - description: Filter by tender type
-        enum:
+      - enum:
         - commercial
         - residential
         - infrastructure
@@ -22341,33 +22326,35 @@ paths:
         - other
         in: query
         name: type
+        required: false
         type: string
-      - description: Filter by bid status
-        enum:
+      - enum:
         - will_bid
         - undecided
         in: query
         name: bid_status
+        required: false
         type: string
-      - description: Filter by tender status
-        enum:
+      - enum:
         - in_progress
         - review
         - new
         in: query
         name: tender_status
+        required: false
         type: string
-      - description: Filter by tender stage
-        enum:
+      - enum:
         - open
         - invited
         - shortlisted
         in: query
         name: stage
+        required: false
         type: string
       - description: Include related project information
         in: query
         name: includeProjectInfo
+        required: false
         type: boolean
       responses:
         200:
@@ -22375,72 +22362,54 @@ paths:
           schema:
             properties:
               count:
-                description: Number of items returned
                 type: integer
               items:
                 items:
                   properties:
                     bid_status:
-                      description: Bid status
                       type: string
                     client_contact:
-                      description: Client contact
                       type: string
                     client_name:
-                      description: Client name
+                      type: string
+                    created_at:
+                      format: date-time
                       type: string
                     description:
-                      description: Tender description
                       type: string
                     due_date:
-                      description: Due date
+                      format: date-time
                       type: string
                     id:
-                      description: Tender ID
                       type: string
                     location:
-                      description: Project location
                       type: string
                     name:
-                      description: Tender name
-                      type: string
-                    notes:
-                      description: Additional notes
                       type: string
                     project_id:
-                      description: Related project ID
                       type: string
-                    project_info:
-                      description: Related project information (if includeProjectInfo=true)
-                      type: object
                     stage:
-                      description: Tender stage
                       type: string
                     tags:
-                      description: Associated tags
                       type: array
                     teams:
-                      description: Team members
                       type: array
                     tender_status:
-                      description: Tender status
                       type: string
                     type:
-                      description: Tender type
+                      type: string
+                    updated_at:
+                      format: date-time
                       type: string
                     value:
-                      description: Tender value
                       type: number
                   type: object
                 type: array
               limit:
-                description: Items per page
                 type: integer
               page:
-                description: Current page number
                 type: integer
               total_count:
-                description: Total number of items available
                 type: integer
             type: object
         401:
@@ -22455,15 +22424,13 @@ paths:
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
     post:
-      operationId: v2_v2_createTender
+      operationId: v2_createTender
       parameters:
-      - description: Workspace identifier
-        in: path
+      - in: path
         name: workspaceId
         required: true
         type: string
-      - description: Project identifier
-        in: path
+      - in: path
         name: projectId
         required: true
         type: integer
@@ -22473,139 +22440,62 @@ paths:
         schema:
           properties:
             bid_status:
-              description: Bid status
               enum:
               - will_bid
               - undecided
               type: string
             client_contact:
-              description: Client contact
               type: string
             client_name:
-              description: Client name
               type: string
             description:
-              description: Tender description
               type: string
             due_date:
-              description: Due date (ISO 8601 format)
               format: date-time
               type: string
             location:
-              description: Project location
               type: string
             name:
-              description: Tender name
               type: string
             notes:
-              description: Additional notes
-              type: string
-            project_id:
-              description: Related project ID
               type: string
             project_info:
-              description: Project information to create new project
-              properties:
-                project_addr_country:
-                  description: Project country
-                  type: string
-                project_addr_postcode:
-                  description: Project postcode
-                  type: integer
-                project_address:
-                  description: Project address
-                  type: string
-                project_client:
-                  description: Project client
-                  type: string
-                project_client_id:
-                  description: Project client ID
-                  type: integer
-                project_description:
-                  description: Project description
-                  type: string
-                project_estimated_finish_date:
-                  description: Estimated finish date
-                  format: date
-                  type: string
-                project_estimated_start_date:
-                  description: Estimated start date
-                  format: date
-                  type: string
-                project_id:
-                  description: Project ID
-                  type: integer
-                project_identifier:
-                  description: Project identifier
-                  type: string
-                project_name:
-                  description: Project name
-                  type: string
-                project_primary_contact_email:
-                  description: Primary contact email
-                  type: string
-                project_primary_contact_name:
-                  description: Primary contact name
-                  type: string
-                project_primary_contact_user_id:
-                  description: Primary contact user ID
-                  type: string
-                project_sector:
-                  description: Project sector
-                  type: string
               type: object
             stage:
-              description: Tender stage
               enum:
               - open
               - invited
               - shortlisted
               type: string
             tags:
-              description: Associated tags
               items:
                 properties:
                   tag_id:
-                    description: Tag ID (auto-generated if not provided)
                     type: string
                   tag_name:
-                    description: Tag name
                     type: string
-                required:
-                - tag_name
                 type: object
               type: array
             teams:
-              description: Team members
               items:
                 properties:
                   name:
-                    description: User name
                     type: string
                   role:
-                    description: User role
                     type: string
                   user_email:
-                    description: User email
                     type: string
                   user_id:
-                    description: User ID
                     type: string
-                required:
-                - user_id
-                - user_email
-                - name
                 type: object
               type: array
             tender_status:
-              description: Tender status
               enum:
               - in_progress
               - review
               - new
               type: string
             type:
-              description: Tender type
               enum:
               - commercial
               - residential
@@ -22617,7 +22507,6 @@ paths:
               - other
               type: string
             value:
-              description: Tender value
               type: number
           required:
           - name
@@ -22628,7 +22517,7 @@ paths:
           type: object
       responses:
         201:
-          description: Tender successfully created
+          description: Tender created successfully
           schema:
             properties:
               data:
@@ -22636,6 +22525,8 @@ paths:
               message:
                 type: string
             type: object
+        400:
+          description: Bad Request
         401:
           description: Unauthorized
         500:
@@ -22649,15 +22540,13 @@ paths:
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tenders/enums:
     get:
-      operationId: v2_v2_getTenderEnums
+      operationId: v2_getTenderEnums
       parameters:
-      - description: Workspace identifier
-        in: path
+      - in: path
         name: workspaceId
         required: true
         type: string
-      - description: Project identifier
-        in: path
+      - in: path
         name: projectId
         required: true
         type: integer
@@ -22667,48 +22556,12 @@ paths:
           schema:
             properties:
               bid_statuses:
-                items:
-                  properties:
-                    custom_value:
-                      type: string
-                    label:
-                      type: string
-                    value:
-                      type: string
-                  type: object
                 type: array
               stages:
-                items:
-                  properties:
-                    custom_value:
-                      type: string
-                    label:
-                      type: string
-                    value:
-                      type: string
-                  type: object
                 type: array
               tender_statuses:
-                items:
-                  properties:
-                    custom_value:
-                      type: string
-                    label:
-                      type: string
-                    value:
-                      type: string
-                  type: object
                 type: array
               tender_types:
-                items:
-                  properties:
-                    custom_value:
-                      type: string
-                    label:
-                      type: string
-                    value:
-                      type: string
-                  type: object
                 type: array
             type: object
         401:
@@ -22724,15 +22577,13 @@ paths:
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tenders/{tenderId}:
     delete:
-      operationId: v2_v2_deleteTenderById
+      operationId: v2_deleteTenderById
       parameters:
-      - description: Workspace identifier
-        in: path
+      - in: path
         name: workspaceId
         required: true
         type: string
-      - description: Project identifier
-        in: path
+      - in: path
         name: projectId
         required: true
         type: integer
@@ -22742,7 +22593,7 @@ paths:
         type: string
       responses:
         200:
-          description: Tender successfully deleted
+          description: Tender deleted successfully
           schema:
             properties:
               message:
@@ -22756,21 +22607,19 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Delete Tender By ID
+      summary: Delete Tender By Id
       tags:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
     get:
-      operationId: v2_v2_getTenderById
+      operationId: v2_getTenderById
       parameters:
-      - description: Workspace identifier
-        in: path
+      - in: path
         name: workspaceId
         required: true
         type: string
-      - description: Project identifier
-        in: path
+      - in: path
         name: projectId
         required: true
         type: integer
@@ -22781,63 +22630,57 @@ paths:
       - description: Include related project information
         in: query
         name: includeProjectInfo
+        required: false
         type: boolean
       responses:
         200:
           description: Successful response
           schema:
             properties:
-              bid_status:
-                description: Bid status
-                type: string
-              client_contact:
-                description: Client contact
-                type: string
-              client_name:
-                description: Client name
-                type: string
-              description:
-                description: Tender description
-                type: string
-              due_date:
-                description: Due date
-                type: string
-              id:
-                description: Tender ID
-                type: string
-              location:
-                description: Project location
-                type: string
-              name:
-                description: Tender name
-                type: string
-              notes:
-                description: Additional notes
-                type: string
-              project_id:
-                description: Related project ID
-                type: string
-              project_info:
-                description: Related project information (if includeProjectInfo=true)
+              data:
+                properties:
+                  bid_status:
+                    type: string
+                  client_contact:
+                    type: string
+                  client_name:
+                    type: string
+                  created_at:
+                    format: date-time
+                    type: string
+                  description:
+                    type: string
+                  due_date:
+                    format: date-time
+                    type: string
+                  id:
+                    type: string
+                  location:
+                    type: string
+                  name:
+                    type: string
+                  notes:
+                    type: string
+                  project_id:
+                    type: string
+                  stage:
+                    type: string
+                  tags:
+                    type: array
+                  teams:
+                    type: array
+                  tender_status:
+                    type: string
+                  type:
+                    type: string
+                  updated_at:
+                    format: date-time
+                    type: string
+                  value:
+                    type: number
                 type: object
-              stage:
-                description: Tender stage
+              message:
                 type: string
-              tags:
-                description: Associated tags
-                type: array
-              teams:
-                description: Team members
-                type: array
-              tender_status:
-                description: Tender status
-                type: string
-              type:
-                description: Tender type
-                type: string
-              value:
-                description: Tender value
-                type: number
             type: object
         401:
           description: Unauthorized
@@ -22847,21 +22690,19 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get Tender By ID
+      summary: Get Tender By Id
       tags:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
-      operationId: v2_v2_updateTenderById
+      operationId: v2_updateTenderById
       parameters:
-      - description: Workspace identifier
-        in: path
+      - in: path
         name: workspaceId
         required: true
         type: string
-      - description: Project identifier
-        in: path
+      - in: path
         name: projectId
         required: true
         type: integer
@@ -22875,88 +22716,42 @@ paths:
         schema:
           properties:
             bid_status:
-              description: Bid status
               enum:
               - will_bid
               - undecided
               type: string
             client_contact:
-              description: Client contact
               type: string
             client_name:
-              description: Client name
               type: string
             description:
-              description: Tender description
               type: string
             due_date:
-              description: Due date (ISO 8601 format)
               format: date-time
               type: string
             location:
-              description: Project location
               type: string
             name:
-              description: Tender name
               type: string
             notes:
-              description: Additional notes
-              type: string
-            project_id:
-              description: Related project ID
               type: string
             stage:
-              description: Tender stage
               enum:
               - open
               - invited
               - shortlisted
               type: string
             tags:
-              description: Associated tags
-              items:
-                properties:
-                  tag_id:
-                    description: Tag ID (auto-generated if not provided)
-                    type: string
-                  tag_name:
-                    description: Tag name
-                    type: string
-                required:
-                - tag_name
-                type: object
               type: array
             teams:
-              description: Team members
-              items:
-                properties:
-                  name:
-                    description: User name
-                    type: string
-                  role:
-                    description: User role
-                    type: string
-                  user_email:
-                    description: User email
-                    type: string
-                  user_id:
-                    description: User ID
-                    type: string
-                required:
-                - user_id
-                - user_email
-                - name
-                type: object
               type: array
             tender_status:
-              description: Tender status
               enum:
               - in_progress
               - review
               - new
               type: string
             type:
-              description: Tender type
               enum:
               - commercial
               - residential
@@ -22968,12 +22763,11 @@ paths:
               - other
               type: string
             value:
-              description: Tender value
               type: number
           type: object
       responses:
         200:
-          description: Tender successfully updated
+          description: Tender updated successfully
           schema:
             properties:
               data:
@@ -22981,6 +22775,8 @@ paths:
               message:
                 type: string
             type: object
+        400:
+          description: Bad Request
         401:
           description: Unauthorized
         404:
@@ -22989,7 +22785,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Update Tender By ID
+      summary: Update Tender By Id
       tags:
       - Cost
       x-ds-test-enabled: true
