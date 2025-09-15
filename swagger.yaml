@@ -22002,6 +22002,676 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto:
+    get:
+      operationId: v2_getQTOs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: QTO type filter
+        in: query
+        name: type
+        required: false
+        type: string
+      - description: QTO status filter
+        enum:
+        - in_progress
+        - completed
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Search query
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        name: page
+        required: false
+        type: integer
+      - default: 50
+        description: Number of items per page
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              count:
+                type: integer
+              items:
+                items:
+                  properties:
+                    author:
+                      type: string
+                    comments_count:
+                      type: integer
+                    created_at:
+                      format: date-time
+                      type: string
+                    estimate_id:
+                      type: string
+                    files_count:
+                      type: integer
+                    items:
+                      items:
+                        type: object
+                      type: array
+                    items_count:
+                      type: integer
+                    project_id:
+                      type: integer
+                    qto_id:
+                      type: string
+                    qto_name:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              limit:
+                type: integer
+              page:
+                type: integer
+              total_count:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get QTOs
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createQTO
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            author:
+              description: Author of the QTO
+              type: string
+            estimate_id:
+              description: Link to estimate
+              type: string
+            items:
+              description: Array of QTO items (optional)
+              items:
+                properties:
+                  assigned_user:
+                    type: string
+                  breakdown:
+                    items:
+                      properties:
+                        description:
+                          type: string
+                        formula:
+                          type: string
+                        result:
+                          type: string
+                      type: object
+                    type: array
+                  code:
+                    type: string
+                  cost_code_id:
+                    type: string
+                  location:
+                    type: string
+                  notes:
+                    type: string
+                  qto_item_name:
+                    type: string
+                  quantity:
+                    type: number
+                  specifications:
+                    items:
+                      properties:
+                        content:
+                          type: string
+                        title:
+                          type: string
+                      type: object
+                    type: array
+                  unit:
+                    type: string
+                  unit_rate:
+                    type: number
+                  volume:
+                    type: number
+                type: object
+              type: array
+            qto_name:
+              description: Name of the QTO
+              type: string
+            status:
+              description: QTO status
+              enum:
+              - in_progress
+              - completed
+              type: string
+            type:
+              description: Type/category of QTO
+              type: string
+          required:
+          - qto_name
+          - type
+          - status
+          type: object
+      responses:
+        201:
+          description: QTO created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create QTO
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}:
+    delete:
+      operationId: v2_deleteQTOById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      responses:
+        200:
+          description: QTO deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: QTO not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete QTO By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getQTOById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  author:
+                    type: string
+                  comments:
+                    type: array
+                  comments_count:
+                    type: integer
+                  created_at:
+                    format: date-time
+                    type: string
+                  estimate_id:
+                    type: string
+                  files:
+                    type: array
+                  files_count:
+                    type: integer
+                  items:
+                    items:
+                      type: object
+                    type: array
+                  items_count:
+                    type: integer
+                  project_id:
+                    type: integer
+                  qto_id:
+                    type: string
+                  qto_name:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                  updated_at:
+                    format: date-time
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: QTO not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get QTO By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateQTOById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            author:
+              type: string
+            estimate_id:
+              type: string
+            items:
+              description: Complete items array replacement
+              items:
+                type: object
+              type: array
+            qto_name:
+              type: string
+            status:
+              enum:
+              - in_progress
+              - completed
+              type: string
+            type:
+              type: string
+          type: object
+      responses:
+        200:
+          description: QTO updated successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: QTO not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update QTO By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/items:
+    get:
+      operationId: v2_getQTOItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              count:
+                type: integer
+              items:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: QTO not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get QTO Items
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createQTOItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assigned_user:
+              type: string
+            breakdown:
+              items:
+                properties:
+                  description:
+                    type: string
+                  formula:
+                    type: string
+                  result:
+                    type: string
+                type: object
+              type: array
+            code:
+              type: string
+            cost_code_id:
+              type: string
+            location:
+              type: string
+            notes:
+              type: string
+            qto_item_name:
+              type: string
+            quantity:
+              type: number
+            specifications:
+              items:
+                properties:
+                  content:
+                    type: string
+                  title:
+                    type: string
+                type: object
+              type: array
+            unit:
+              type: string
+            unit_rate:
+              type: number
+            volume:
+              type: number
+          type: object
+      responses:
+        201:
+          description: QTO item created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: QTO not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create QTO Item
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/items/{itemId}:
+    delete:
+      operationId: v2_deleteQTOItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: path
+        name: itemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: QTO item deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: QTO or item not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete QTO Item By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getQTOItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: path
+        name: itemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: QTO or item not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get QTO Item By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateQTOItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: path
+        name: itemId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assigned_user:
+              type: string
+            breakdown:
+              type: array
+            code:
+              type: string
+            cost_code_id:
+              type: string
+            location:
+              type: string
+            notes:
+              type: string
+            qto_item_name:
+              type: string
+            quantity:
+              type: number
+            specifications:
+              type: array
+            unit:
+              type: string
+            unit_rate:
+              type: number
+            volume:
+              type: number
+          type: object
+      responses:
+        200:
+          description: QTO item updated successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: QTO or item not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update QTO Item By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/retentions:
     get:
       operationId: v2_getRetentionReleases
