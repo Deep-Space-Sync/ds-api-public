@@ -24466,7 +24466,7 @@ paths:
       - in: formData
         name: file
         required: true
-        type: file
+        type: string
       - in: header
         name: X-Horizon-Product
         required: false
@@ -24544,7 +24544,7 @@ paths:
       - in: formData
         name: file
         required: true
-        type: file
+        type: string
       - in: header
         name: X-Horizon-Product
         required: false
