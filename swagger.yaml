@@ -24429,7 +24429,6 @@ paths:
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/data:
     get:
-      description: Returns the supported upload formats for the project
       operationId: v2_getSupportedUploads
       parameters:
       - in: path
@@ -24454,7 +24453,6 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/data/any:
     post:
-      description: Upload any data file to the system
       operationId: v2_uploadAnyData
       parameters:
       - in: path
@@ -24465,13 +24463,11 @@ paths:
         name: projectId
         required: true
         type: integer
-      - description: The file to upload
-        in: formData
+      - in: formData
         name: file
         required: true
         type: file
-      - description: Set to 'true' for Horizon Firestore-based scheduling uploads
-        in: header
+      - in: header
         name: X-Horizon-Product
         required: false
         type: string
@@ -24491,7 +24487,6 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/data/{data_classification}:
     get:
-      description: Returns the supported upload formats for a specific data classification
       operationId: v2_getClassificationFormats
       parameters:
       - in: path
@@ -24502,8 +24497,7 @@ paths:
         name: projectId
         required: true
         type: integer
-      - description: The classification of the data
-        in: path
+      - in: path
         name: data_classification
         required: true
         type: string
@@ -24521,8 +24515,6 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/data/{data_classification}/{data_source}/{export_type}/{export_version}:
     post:
-      description: Upload a data file with specific classification, source, type and
-        version
       operationId: v2_uploadClassifiedData
       parameters:
       - in: path
@@ -24533,82 +24525,35 @@ paths:
         name: projectId
         required: true
         type: integer
-      - description: The classification of the data
-        in: path
+      - in: path
         name: data_classification
         required: true
         type: string
-      - description: The source of the data
-        in: path
+      - in: path
         name: data_source
         required: true
         type: string
-      - description: The export type of the data
-        in: path
+      - in: path
         name: export_type
         required: true
         type: string
-      - description: The export version of the data
-        in: path
+      - in: path
         name: export_version
         required: true
         type: string
-      - description: The file to upload
-        in: formData
+      - in: formData
         name: file
         required: true
         type: file
-      - description: Set to 'true' for Horizon Firestore-based scheduling uploads
-        in: header
+      - in: header
         name: X-Horizon-Product
-        required: false
-        type: string
-      - description: Excel sheet name (for scheduling uploads)
-        in: formData
-        name: sheet_name
-        required: false
-        type: string
-      - description: Whether to create WBS structure (true/false)
-        in: formData
-        name: create_wbs
-        required: false
-        type: string
-      - description: Whether to overwrite existing items (true/false)
-        in: formData
-        name: overwrite_existing
         required: false
         type: string
       responses:
         200:
           description: File uploaded and processed successfully
-          schema:
-            properties:
-              dependencies_created:
-                type: integer
-              message:
-                type: string
-              success:
-                type: boolean
-              tasks_created:
-                type: integer
-              warnings:
-                items:
-                  type: string
-                type: array
-              wbs_items_created:
-                type: integer
-            type: object
         400:
-          description: Bad request or validation error
-          schema:
-            properties:
-              error:
-                type: string
-              step:
-                type: string
-              success:
-                type: boolean
-            type: object
+          description: Bad request
         401:
           description: Unauthorized
         500:
@@ -24620,7 +24565,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/download/{ds_data_type}:
     get:
-      operationId: v2_getProjectDownload
+      operationId: v2_downloadProjectData
       parameters:
       - in: path
         name: workspaceId
@@ -24636,16 +24581,18 @@ paths:
         type: string
       responses:
         200:
-          description: Successful response
+          description: File downloaded successfully
         401:
           description: Unauthorized
+        404:
+          description: Data not found
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Download a file from the project
+      summary: Download project data
       tags:
-      - Download
+      - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/files:
     get:
       operationId: v2_v2_getFiles
