@@ -3052,13 +3052,11 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - description: Project scope; omit or empty for workspace-level
-        in: query
+      - in: query
         name: projectId
         required: false
         type: string
-      - description: Parent folder id; omit to list roots
-        in: query
+      - in: query
         name: parentId
         required: false
         type: string
@@ -3085,17 +3083,6 @@ paths:
         name: body
         required: true
         schema:
-          properties:
-            name:
-              type: string
-            parent_id:
-              description: Optional parent folder id
-              type: string
-            project_id:
-              description: Optional project scope
-              type: string
-          required:
-          - name
           type: object
       responses:
         201:
@@ -3150,11 +3137,6 @@ paths:
         name: body
         required: true
         schema:
-          properties:
-            name:
-              type: string
-            parent_id:
-              type: string
           type: object
       responses:
         200:
