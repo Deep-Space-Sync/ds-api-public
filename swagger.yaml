@@ -3042,6 +3042,234 @@ paths:
       summary: Get signed urls for cde
       tags:
       - Upload Data
+  /v2/workspaces/{workspaceId}/cde-folders:
+    get:
+      description: Returns child folders for a parent folder. Omit parentId to list
+        root folders.
+      operationId: v2_listCdeFolders
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project scope; omit or empty for workspace-level
+        in: query
+        name: projectId
+        required: false
+        type: string
+      - description: Parent folder id; omit to list roots
+        in: query
+        name: parentId
+        required: false
+        type: string
+      responses:
+        200:
+          description: Folders list
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List CDE folders (workspace or project scope)
+      tags:
+      - CDE Folders
+    post:
+      operationId: v2_createCdeFolder
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+            parent_id:
+              description: Optional parent folder id
+              type: string
+            project_id:
+              description: Optional project scope
+              type: string
+          required:
+          - name
+          type: object
+      responses:
+        201:
+          description: Folder created
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a CDE folder
+      tags:
+      - CDE Folders
+  /v2/workspaces/{workspaceId}/cde-folders/{folderId}:
+    delete:
+      operationId: v2_deleteCdeFolder
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: folderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Folder deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a CDE folder (soft delete)
+      tags:
+      - CDE Folders
+    patch:
+      operationId: v2_updateCdeFolder
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: folderId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+            parent_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Folder updated
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a CDE folder (rename/move)
+      tags:
+      - CDE Folders
+  /v2/workspaces/{workspaceId}/cde-placements:
+    get:
+      operationId: v2_listCdePlacements
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: false
+        type: string
+      - description: Omit to list Unfiled placements
+        in: query
+        name: folderId
+        required: false
+        type: string
+      responses:
+        200:
+          description: Placements list
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List CDE placements for a folder
+      tags:
+      - CDE Placements
+    post:
+      operationId: v2_upsertCdePlacement
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cdeSeriesId:
+              type: string
+            folderId:
+              type: string
+            projectId:
+              type: string
+          required:
+          - cdeSeriesId
+          type: object
+      responses:
+        200:
+          description: Placement upserted
+        201:
+          description: Placement created
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upsert a single CDE placement
+      tags:
+      - CDE Placements
+  /v2/workspaces/{workspaceId}/cde-placements:bulkMove:
+    post:
+      operationId: v2_bulkMoveCdePlacements
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cdeSeriesIds:
+              items:
+                type: string
+              type: array
+            projectId:
+              type: string
+            targetFolderId:
+              type: string
+          required:
+          - cdeSeriesIds
+          type: object
+      responses:
+        200:
+          description: Bulk move completed
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Bulk move CDE series to a folder
+      tags:
+      - CDE Placements
   /v2/workspaces/{workspaceId}/cde/process:
     post:
       operationId: v2_processCDEWorkspaceLevel
