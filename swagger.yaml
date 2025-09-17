@@ -3042,234 +3042,6 @@ paths:
       summary: Get signed urls for cde
       tags:
       - Upload Data
-  /v2/workspaces/{workspaceId}/cde-folders:
-    get:
-      description: Returns child folders for a parent folder. Omit parentId to list
-        root folders.
-      operationId: v2_listCdeFolders
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Project scope; omit or empty for workspace-level
-        in: query
-        name: projectId
-        required: false
-        type: string
-      - description: Parent folder id; omit to list roots
-        in: query
-        name: parentId
-        required: false
-        type: string
-      responses:
-        200:
-          description: Folders list
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: List CDE folders (workspace or project scope)
-      tags:
-      - CDE Folders
-    post:
-      operationId: v2_createCdeFolder
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            name:
-              type: string
-            parent_id:
-              description: Optional parent folder id
-              type: string
-            project_id:
-              description: Optional project scope
-              type: string
-          required:
-          - name
-          type: object
-      responses:
-        201:
-          description: Folder created
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Create a CDE folder
-      tags:
-      - CDE Folders
-  /v2/workspaces/{workspaceId}/cde-folders/{folderId}:
-    delete:
-      operationId: v2_deleteCdeFolder
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: folderId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Folder deleted
-        401:
-          description: Unauthorized
-        404:
-          description: Not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Delete a CDE folder (soft delete)
-      tags:
-      - CDE Folders
-    patch:
-      operationId: v2_updateCdeFolder
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: folderId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            name:
-              type: string
-            parent_id:
-              type: string
-          type: object
-      responses:
-        200:
-          description: Folder updated
-        401:
-          description: Unauthorized
-        404:
-          description: Not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Update a CDE folder (rename/move)
-      tags:
-      - CDE Folders
-  /v2/workspaces/{workspaceId}/cde-placements:
-    get:
-      operationId: v2_listCdePlacements
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: query
-        name: projectId
-        required: false
-        type: string
-      - description: Omit to list Unfiled placements
-        in: query
-        name: folderId
-        required: false
-        type: string
-      responses:
-        200:
-          description: Placements list
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: List CDE placements for a folder
-      tags:
-      - CDE Placements
-    post:
-      operationId: v2_upsertCdePlacement
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            cdeSeriesId:
-              type: string
-            folderId:
-              type: string
-            projectId:
-              type: string
-          required:
-          - cdeSeriesId
-          type: object
-      responses:
-        200:
-          description: Placement upserted
-        201:
-          description: Placement created
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Upsert a single CDE placement
-      tags:
-      - CDE Placements
-  /v2/workspaces/{workspaceId}/cde-placements:bulkMove:
-    post:
-      operationId: v2_bulkMoveCdePlacements
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            cdeSeriesIds:
-              items:
-                type: string
-              type: array
-            projectId:
-              type: string
-            targetFolderId:
-              type: string
-          required:
-          - cdeSeriesIds
-          type: object
-      responses:
-        200:
-          description: Bulk move completed
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Bulk move CDE series to a folder
-      tags:
-      - CDE Placements
   /v2/workspaces/{workspaceId}/cde/process:
     post:
       operationId: v2_processCDEWorkspaceLevel
@@ -24429,8 +24201,7 @@ paths:
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/data:
     get:
-      description: Returns the supported upload formats for the project
-      operationId: v2_getSupportedUploads
+      operationId: v2_getDataClassifications
       parameters:
       - in: path
         name: workspaceId
@@ -24442,22 +24213,23 @@ paths:
         type: integer
       responses:
         200:
-          description: List of supported upload formats
+          description: A list of supported data classifications
         401:
           description: Unauthorized
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get supported upload formats
+      summary: Get list of data classifications
       tags:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/data/any:
     post:
       consumes:
       - multipart/form-data
-      description: Upload any data file to the system
-      operationId: v2_uploadAnyData
+      description: Generic endpoint to upload csv data in any format to Deep Space
+        in EAV format.
+      operationId: v2_uploadanydata
       parameters:
       - in: path
         name: workspaceId
@@ -24467,34 +24239,33 @@ paths:
         name: projectId
         required: true
         type: integer
-      - description: The file to upload
+      - description: The CSV file to upload
         in: formData
         name: file
         required: true
-        type: file
-      - description: Set to 'true' for Horizon Firestore-based scheduling uploads
-        in: header
-        name: X-Horizon-Product
-        required: false
+        type: string
+      - description: The unique identifying name to categorise the data type
+        in: formData
+        name: data_classification
+        required: true
         type: string
       responses:
         200:
-          description: File uploaded successfully
-        400:
-          description: Bad request
+          description: ingest_id of successfully loaded data
+          schema:
+            type: string
         401:
           description: Unauthorized
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Upload any data file
+      summary: Upload any data to Deep Space
       tags:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/data/{data_classification}:
     get:
-      description: Returns the supported upload formats for a specific data classification
-      operationId: v2_getClassificationFormats
+      operationId: v2_getDataSources
       parameters:
       - in: path
         name: workspaceId
@@ -24511,23 +24282,23 @@ paths:
         type: string
       responses:
         200:
-          description: List of supported formats for the classification
+          description: A list of supported data sources
+        400:
+          description: Bad Request
         401:
           description: Unauthorized
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get supported formats for data classification
+      summary: Get list of data sources
       tags:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/data/{data_classification}/{data_source}/{export_type}/{export_version}:
     post:
       consumes:
       - multipart/form-data
-      description: Upload a data file with specific classification, source, type and
-        version
-      operationId: v2_uploadClassifiedData
+      operationId: v2_uploaddata
       parameters:
       - in: path
         name: workspaceId
@@ -24547,12 +24318,12 @@ paths:
         name: data_source
         required: true
         type: string
-      - description: The export type of the data
+      - description: The type of export
         in: path
         name: export_type
         required: true
         type: string
-      - description: The export version of the data
+      - description: The version of the export
         in: path
         name: export_version
         required: true
@@ -24561,71 +24332,28 @@ paths:
         in: formData
         name: file
         required: true
-        type: file
-      - description: Set to 'true' for Horizon Firestore-based scheduling uploads
-        in: header
-        name: X-Horizon-Product
-        required: false
-        type: string
-      - description: Excel sheet name (for scheduling uploads)
-        in: formData
-        name: sheet_name
-        required: false
-        type: string
-      - description: Whether to create WBS structure (true/false)
-        in: formData
-        name: create_wbs
-        required: false
-        type: string
-      - description: Whether to overwrite existing items (true/false)
-        in: formData
-        name: overwrite_existing
-        required: false
         type: string
       responses:
         200:
-          description: File uploaded and processed successfully
+          description: crawlId of successfully loaded data
           schema:
-            properties:
-              dependencies_created:
-                type: integer
-              message:
-                type: string
-              success:
-                type: boolean
-              tasks_created:
-                type: integer
-              warnings:
-                items:
-                  type: string
-                type: array
-              wbs_items_created:
-                type: integer
-            type: object
+            type: string
         400:
-          description: Bad request or validation error
-          schema:
-            properties:
-              error:
-                type: string
-              step:
-                type: string
-              success:
-                type: boolean
-            type: object
+          description: Bad Request
         401:
           description: Unauthorized
+        422:
+          description: Unprocessable Entity
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Upload classified data file
+      summary: Upload data to Deep Space from supported formats
       tags:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/download/{ds_data_type}:
     get:
-      description: Download processed data from the project
-      operationId: v2_downloadProjectData
+      operationId: v2_getProjectDownload
       parameters:
       - in: path
         name: workspaceId
@@ -24635,25 +24363,22 @@ paths:
         name: projectId
         required: true
         type: integer
-      - description: The type of data to download
-        in: path
+      - in: path
         name: ds_data_type
         required: true
         type: string
       responses:
         200:
-          description: File downloaded successfully
+          description: Successful response
         401:
           description: Unauthorized
-        404:
-          description: Data not found
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Download project data
+      summary: Download a file from the project
       tags:
-      - Upload Data
+      - Download
   /v2/workspaces/{workspaceId}/projects/{projectId}/files:
     get:
       operationId: v2_v2_getFiles
