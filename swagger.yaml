@@ -3082,8 +3082,6 @@ paths:
       - in: body
         name: body
         required: true
-        schema:
-          type: object
       responses:
         201:
           description: Folder created
@@ -3136,8 +3134,6 @@ paths:
       - in: body
         name: body
         required: true
-        schema:
-          type: object
       responses:
         200:
           description: Folder updated
