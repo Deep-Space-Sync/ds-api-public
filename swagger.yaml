@@ -24228,7 +24228,8 @@ paths:
       consumes:
       - multipart/form-data
       description: Generic endpoint to upload csv data in any format to Deep Space
-        in EAV format.
+        in EAV format. Also supports Horizon scheduling uploads with X-Horizon-Product
+        header.
       operationId: v2_uploadanydata
       parameters:
       - in: path
@@ -24248,6 +24249,26 @@ paths:
         in: formData
         name: data_classification
         required: true
+        type: string
+      - description: Set to 'true' for Horizon Firestore-based scheduling uploads
+        in: header
+        name: X-Horizon-Product
+        required: false
+        type: string
+      - description: Excel sheet name (for scheduling uploads)
+        in: formData
+        name: sheet_name
+        required: false
+        type: string
+      - description: Whether to create WBS structure (true/false)
+        in: formData
+        name: create_wbs
+        required: false
+        type: string
+      - description: Whether to overwrite existing items (true/false)
+        in: formData
+        name: overwrite_existing
+        required: false
         type: string
       responses:
         200:
@@ -24333,11 +24354,46 @@ paths:
         name: file
         required: true
         type: string
+      - description: Set to 'true' for Horizon Firestore-based scheduling uploads
+        in: header
+        name: X-Horizon-Product
+        required: false
+        type: string
+      - description: Excel sheet name (for scheduling uploads)
+        in: formData
+        name: sheet_name
+        required: false
+        type: string
+      - description: Whether to create WBS structure (true/false)
+        in: formData
+        name: create_wbs
+        required: false
+        type: string
+      - description: Whether to overwrite existing items (true/false)
+        in: formData
+        name: overwrite_existing
+        required: false
+        type: string
       responses:
         200:
-          description: crawlId of successfully loaded data
+          description: crawlId of successfully loaded data or scheduling upload results
           schema:
-            type: string
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+              tasks_created:
+                type: integer
+              wbs_items_created:
+                type: integer
+              dependencies_created:
+                type: integer
+              warnings:
+                type: array
+                items:
+                  type: string
         400:
           description: Bad Request
         401:
@@ -24348,7 +24404,8 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Upload data to Deep Space from supported formats
+      summary: Upload data to Deep Space from supported formats, including Horizon
+        scheduling uploads
       tags:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/download/{ds_data_type}:
