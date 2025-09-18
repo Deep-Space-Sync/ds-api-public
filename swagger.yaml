@@ -3178,8 +3178,7 @@ paths:
         name: projectId
         required: false
         type: string
-      - description: Omit to list Unfiled placements
-        in: query
+      - in: query
         name: folderId
         required: false
         type: string
@@ -3213,8 +3212,6 @@ paths:
               type: string
             projectId:
               type: string
-          required:
-          - cdeSeriesId
           type: object
       responses:
         200:
@@ -3230,7 +3227,7 @@ paths:
       summary: Upsert a single CDE placement
       tags:
       - CDE Placements
-  /v2/workspaces/{workspaceId}/cde-placements:bulkMove:
+  /v2/workspaces/{workspaceId}/cde-placements/bulk-move:
     post:
       operationId: v2_bulkMoveCdePlacements
       parameters:
@@ -3251,8 +3248,6 @@ paths:
               type: string
             targetFolderId:
               type: string
-          required:
-          - cdeSeriesIds
           type: object
       responses:
         200:
