@@ -13392,6 +13392,877 @@ paths:
       summary: Start a new job at workpace-level
       tags:
       - Jobs
+  /v2/workspaces/{workspaceId}/labour-rates:
+    delete:
+      description: Soft delete labour rate (sets is_deleted flag)
+      operationId: v2_deleteLabourRate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Labour rate ID to delete
+        in: query
+        name: id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Labour rate deleted successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rate deleted successfully
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Missing ID parameter
+        404:
+          description: Labour rate not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete labour rate
+      tags:
+      - LabourRates
+    get:
+      description: Retrieve labour rates with filtering and pagination support
+      operationId: v2_getLabourRates
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Get specific labour rate by ID
+        in: query
+        name: id
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 20
+        description: Number of items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - description: Filter by level
+        in: query
+        name: level
+        required: false
+        type: string
+      - description: Filter by role
+        in: query
+        name: role
+        required: false
+        type: string
+      - description: Filter by award_id
+        in: query
+        name: award_id
+        required: false
+        type: string
+      - description: Filter by sales_tax_code
+        in: query
+        name: sales_tax_code
+        required: false
+        type: string
+      - description: Search by name
+        in: query
+        name: search
+        required: false
+        type: string
+      responses:
+        200:
+          description: Labour rates retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    award_id:
+                      type: string
+                    cost_rate:
+                      format: float
+                      type: number
+                    created_at:
+                      format: date-time
+                      type: string
+                    effective_date:
+                      format: date
+                      type: string
+                    id:
+                      type: string
+                    level:
+                      type: string
+                    multiplier:
+                      format: float
+                      type: number
+                    name:
+                      type: string
+                    role:
+                      type: string
+                    sales_tax_code:
+                      type: string
+                    sell_rate:
+                      format: float
+                      type: number
+                    updated_at:
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              filters:
+                type: object
+              message:
+                example: Labour rates retrieved successfully
+                type: string
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                  total_pages:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        404:
+          description: Labour rate not found (when querying by ID)
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get labour rates
+      tags:
+      - LabourRates
+    patch:
+      description: Update existing labour rate with partial data
+      operationId: v2_updateLabourRate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Labour rate ID to update
+        in: query
+        name: id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            award_id:
+              maxLength: 50
+              type: string
+            cost_rate:
+              format: float
+              maximum: 10000
+              minimum: 0
+              type: number
+            effective_date:
+              format: date
+              type: string
+            level:
+              maxLength: 100
+              type: string
+            multiplier:
+              format: float
+              maximum: 100
+              minimum: 0
+              type: number
+            name:
+              maxLength: 200
+              type: string
+            role:
+              maxLength: 100
+              type: string
+            sales_tax_code:
+              maxLength: 20
+              type: string
+            sell_rate:
+              format: float
+              maximum: 10000
+              minimum: 0
+              type: number
+          type: object
+      responses:
+        200:
+          description: Labour rate updated successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rate updated successfully
+                type: string
+              updated_fields:
+                items:
+                  type: string
+                type: array
+              warnings:
+                items:
+                  type: string
+                type: array
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Validation failed or missing ID parameter
+        404:
+          description: Labour rate not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update labour rate
+      tags:
+      - LabourRates
+    post:
+      description: Create new labour rate with all required fields
+      operationId: v2_createLabourRate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            award_id:
+              description: Award identification code
+              maxLength: 50
+              type: string
+            cost_rate:
+              description: Cost rate per hour/unit
+              format: float
+              maximum: 10000
+              minimum: 0
+              type: number
+            effective_date:
+              description: Date when the rate becomes effective (YYYY-MM-DD)
+              format: date
+              type: string
+            level:
+              description: Labour level (e.g., Junior, Senior, Lead)
+              maxLength: 100
+              type: string
+            multiplier:
+              description: Multiplier to calculate sell rate
+              format: float
+              maximum: 100
+              minimum: 0
+              type: number
+            name:
+              description: Descriptive name for the labour rate
+              maxLength: 200
+              type: string
+            role:
+              description: Job role (e.g., Developer, Manager, Designer)
+              maxLength: 100
+              type: string
+            sales_tax_code:
+              description: Tax code for billing (e.g., GST, VAT)
+              maxLength: 20
+              type: string
+            sell_rate:
+              description: Selling rate per hour/unit
+              format: float
+              maximum: 10000
+              minimum: 0
+              type: number
+          required:
+          - level
+          - role
+          - award_id
+          - cost_rate
+          - effective_date
+          - multiplier
+          - name
+          - sales_tax_code
+          - sell_rate
+          type: object
+      responses:
+        201:
+          description: Labour rate created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rates created successfully
+                type: string
+              warnings:
+                items:
+                  type: string
+                type: array
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Validation failed or missing required fields
+          schema:
+            properties:
+              errors:
+                items:
+                  type: string
+                type: array
+              message:
+                type: string
+              received_fields:
+                items:
+                  type: string
+                type: array
+              required_fields:
+                items:
+                  type: string
+                type: array
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create labour rate
+      tags:
+      - LabourRates
+  /v2/workspaces/{workspaceId}/labour-rates/award:
+    delete:
+      description: Soft delete labour rate award
+      operationId: v2_deleteLabourRateAward
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Award ID to delete
+        in: query
+        name: id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Labour rate award deleted successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rate award deleted successfully
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Missing ID parameter
+        404:
+          description: Award not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete labour rate award
+      tags:
+      - LabourRates
+    get:
+      description: Retrieve labour rate awards with filtering and pagination support
+      operationId: v2_getLabourRateAwards
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Get specific award by ID
+        in: query
+        name: id
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 20
+        description: Number of items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - description: Filter by name
+        in: query
+        name: name
+        required: false
+        type: string
+      - description: Filter by code
+        in: query
+        name: code
+        required: false
+        type: string
+      - description: Search by name
+        in: query
+        name: search
+        required: false
+        type: string
+      responses:
+        200:
+          description: Labour rate awards retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    code:
+                      type: string
+                    created_at:
+                      format: date-time
+                      type: string
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              filters:
+                type: object
+              message:
+                example: Labour rate awards retrieved successfully
+                type: string
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                  total_pages:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        404:
+          description: Award not found (when querying by ID)
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get labour rate awards
+      tags:
+      - LabourRates
+    patch:
+      description: Update existing labour rate award
+      operationId: v2_updateLabourRateAward
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Award ID to update
+        in: query
+        name: id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              maxLength: 50
+              type: string
+            name:
+              maxLength: 200
+              type: string
+          type: object
+      responses:
+        200:
+          description: Labour rate award updated successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rate award updated successfully
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Validation failed or missing ID parameter
+        404:
+          description: Award not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update labour rate award
+      tags:
+      - LabourRates
+    post:
+      description: Create new labour rate award
+      operationId: v2_createLabourRateAward
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              description: Award code
+              maxLength: 50
+              type: string
+            name:
+              description: Award name
+              maxLength: 200
+              type: string
+          required:
+          - name
+          - code
+          type: object
+      responses:
+        201:
+          description: Labour rate award created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rate award created successfully
+                type: string
+              warnings:
+                items:
+                  type: string
+                type: array
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Validation failed or missing required fields
+          schema:
+            properties:
+              errors:
+                items:
+                  type: string
+                type: array
+              message:
+                type: string
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create labour rate award
+      tags:
+      - LabourRates
+  /v2/workspaces/{workspaceId}/labour-rates/project-overrides:
+    delete:
+      description: Soft delete labour rate project override
+      operationId: v2_deleteLabourRateProjectOverride
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project override ID to delete
+        in: query
+        name: id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Labour rate project override deleted successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rate project override deleted successfully
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Missing ID parameter
+        404:
+          description: Project override not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete labour rate project override
+      tags:
+      - LabourRates
+    get:
+      description: Retrieve labour rate project overrides with filtering and pagination
+        support
+      operationId: v2_getLabourRateProjectOverrides
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Get specific project override by ID
+        in: query
+        name: id
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 20
+        description: Number of items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - description: Filter by labour rate ID
+        in: query
+        name: labour_rate_id
+        required: false
+        type: string
+      - description: Filter by project ID
+        in: query
+        name: project_id
+        required: false
+        type: integer
+      - description: Filter by reason
+        in: query
+        name: reason
+        required: false
+        type: string
+      - description: Filter by minimum override rate
+        format: float
+        in: query
+        name: min_override_rate
+        required: false
+        type: number
+      - description: Filter by maximum override rate
+        format: float
+        in: query
+        name: max_override_rate
+        required: false
+        type: number
+      - description: Search by reason
+        in: query
+        name: search
+        required: false
+        type: string
+      responses:
+        200:
+          description: Labour rate project overrides retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    created_at:
+                      format: date-time
+                      type: string
+                    id:
+                      type: string
+                    labour_rate_id:
+                      type: string
+                    override_rate:
+                      format: float
+                      type: number
+                    project_id:
+                      type: integer
+                    reason:
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              filters:
+                type: object
+              message:
+                example: Labour rate project overrides retrieved successfully
+                type: string
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                  total_pages:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        404:
+          description: Project override not found (when querying by ID)
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get labour rate project overrides
+      tags:
+      - LabourRates
+    patch:
+      description: Update existing labour rate project override
+      operationId: v2_updateLabourRateProjectOverride
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project override ID to update
+        in: query
+        name: id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            labour_rate_id:
+              maxLength: 100
+              type: string
+            override_rate:
+              format: float
+              maximum: 10000
+              minimum: 0
+              type: number
+            project_id:
+              minimum: 1
+              type: integer
+            reason:
+              maxLength: 500
+              type: string
+          type: object
+      responses:
+        200:
+          description: Labour rate project override updated successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rate project override updated successfully
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Validation failed or missing ID parameter
+        404:
+          description: Project override not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update labour rate project override
+      tags:
+      - LabourRates
+    post:
+      description: Create new labour rate project override
+      operationId: v2_createLabourRateProjectOverride
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            labour_rate_id:
+              description: ID of the labour rate being overridden
+              maxLength: 100
+              type: string
+            override_rate:
+              description: Override rate value
+              format: float
+              maximum: 10000
+              minimum: 0
+              type: number
+            project_id:
+              description: Project ID for this override
+              minimum: 1
+              type: integer
+            reason:
+              description: Reason for the override
+              maxLength: 500
+              type: string
+          required:
+          - labour_rate_id
+          - override_rate
+          - project_id
+          - reason
+          type: object
+      responses:
+        201:
+          description: Labour rate project override created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rate project override created successfully
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Validation failed or missing required fields
+          schema:
+            properties:
+              errors:
+                items:
+                  type: string
+                type: array
+              message:
+                type: string
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create labour rate project override
+      tags:
+      - LabourRates
   /v2/workspaces/{workspaceId}/markups:
     get:
       description: Retrieve markups with filtering, pagination, and sorting options
