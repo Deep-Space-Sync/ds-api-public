@@ -3082,6 +3082,15 @@ paths:
       - in: body
         name: body
         required: true
+        schema:
+          properties:
+            name:
+              type: string
+            parent_id:
+              type: string
+            project_id:
+              type: string
+          type: object
       responses:
         201:
           description: Folder created
@@ -3134,6 +3143,15 @@ paths:
       - in: body
         name: body
         required: true
+        schema:
+          properties:
+            name:
+              type: string
+            parent_id:
+              type: string
+            project_id:
+              type: string
+          type: object
       responses:
         200:
           description: Folder updated
