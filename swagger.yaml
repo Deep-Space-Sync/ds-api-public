@@ -23558,6 +23558,1354 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop:
+    get:
+      operationId: v2_getSOPs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: status
+        type: string
+      - in: query
+        name: q
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    change_requests:
+                      type: array
+                    deliverables:
+                      type: array
+                    dependencies:
+                      type: array
+                    description:
+                      description: SOP description
+                    id:
+                      description: SOP ID
+                    linked_rfqs:
+                      type: array
+                    linked_subcontracts:
+                      type: array
+                    milestones:
+                      type: array
+                    original_budget:
+                      description: Original budget
+                    progress:
+                      description: Progress percentage
+                    revised_budget:
+                      description: Revised budget
+                    status:
+                      description: SOP status
+                    title:
+                      description: SOP title
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get SOPs
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postSOP
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            approval_required:
+              type: boolean
+            description:
+              type: string
+            end_date:
+              type: string
+            original_budget:
+              type: number
+            priority_level:
+              type: string
+            progress:
+              type: number
+            responsible_party:
+              type: string
+            revised_budget:
+              type: number
+            start_date:
+              type: string
+            status:
+              type: string
+            title:
+              type: string
+          required:
+          - title
+          - description
+          type: object
+      responses:
+        201:
+          description: SOP successfully created
+          schema:
+            properties:
+              data:
+                properties:
+                  description:
+                    description: SOP description
+                  id:
+                    description: SOP ID
+                  title:
+                    description: SOP title
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create SOP
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}:
+    delete:
+      operationId: v2_deleteSOPById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      responses:
+        200:
+          description: SOP successfully deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete SOP By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getSOPById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  change_requests:
+                    type: array
+                  deliverables:
+                    type: array
+                  dependencies:
+                    type: array
+                  description:
+                    description: SOP description
+                  id:
+                    description: SOP ID
+                  linked_rfqs:
+                    type: array
+                  linked_subcontracts:
+                    type: array
+                  milestones:
+                    type: array
+                  progress:
+                    description: Progress percentage
+                  status:
+                    description: SOP status
+                  title:
+                    description: SOP title
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get SOP By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchSOPById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: SOP successfully updated
+          schema:
+            properties:
+              data:
+                properties:
+                  description:
+                    description: SOP description
+                  id:
+                    description: SOP ID
+                  title:
+                    description: SOP title
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update SOP By ID
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/change_requests:
+    get:
+      operationId: v2_getSOPChangeRequests
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get SOP Change Requests
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postSOPChangeRequest
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            approved_date:
+              type: string
+            cost_impact:
+              type: number
+            description:
+              type: string
+            impact_assessment:
+              type: string
+            reason:
+              type: string
+            requested_date:
+              type: string
+            schedule_impact:
+              type: string
+            status:
+              type: string
+          required:
+          - description
+          - requested_date
+          type: object
+      responses:
+        201:
+          description: Change request successfully created
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create SOP Change Request
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/change_requests/{changeRequestId}:
+    delete:
+      operationId: v2_deleteSOPChangeRequest
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: changeRequestId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Change request successfully deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete SOP Change Request
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchSOPChangeRequest
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: changeRequestId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Change request successfully updated
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update SOP Change Request
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/deliverables:
+    get:
+      operationId: v2_getSOPDeliverables
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get SOP Deliverables
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postSOPDeliverable
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              type: string
+            due_date:
+              type: string
+            name:
+              type: string
+            responsible_party:
+              type: string
+            status:
+              type: string
+          required:
+          - name
+          - due_date
+          type: object
+      responses:
+        201:
+          description: Deliverable successfully created
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create SOP Deliverable
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/deliverables/{deliverableId}:
+    delete:
+      operationId: v2_deleteSOPDeliverable
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: deliverableId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deliverable successfully deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete SOP Deliverable
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchSOPDeliverable
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: deliverableId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Deliverable successfully updated
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update SOP Deliverable
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/dependencies:
+    get:
+      operationId: v2_getSOPDependencies
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get SOP Dependencies
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postSOPDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            dependency_type:
+              type: string
+            lag_time:
+              type: number
+            predecessor_task:
+              type: string
+            successor_task:
+              type: string
+          required:
+          - predecessor_task
+          - successor_task
+          type: object
+      responses:
+        201:
+          description: Dependency successfully created
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create SOP Dependency
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/dependencies/{dependencyId}:
+    delete:
+      operationId: v2_deleteSOPDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: dependencyId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Dependency successfully deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete SOP Dependency
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchSOPDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: dependencyId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Dependency successfully updated
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update SOP Dependency
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/linked_rfqs:
+    get:
+      operationId: v2_getSOPLinkedRFQs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get SOP Linked RFQs
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postSOPLinkedRFQ
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            notes:
+              type: string
+            relationship_type:
+              type: string
+            rfq_id:
+              type: string
+          required:
+          - rfq_id
+          type: object
+      responses:
+        201:
+          description: Linked RFQ successfully created
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create SOP Linked RFQ
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/linked_rfqs/{linkedRfqId}:
+    delete:
+      operationId: v2_deleteSOPLinkedRFQ
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: linkedRfqId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Linked RFQ successfully deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete SOP Linked RFQ
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchSOPLinkedRFQ
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: linkedRfqId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Linked RFQ successfully updated
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update SOP Linked RFQ
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/linked_subcontracts:
+    get:
+      operationId: v2_getSOPLinkedSubcontracts
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get SOP Linked Subcontracts
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postSOPLinkedSubcontract
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            contract_id:
+              type: string
+            notes:
+              type: string
+            relationship_type:
+              type: string
+          required:
+          - contract_id
+          type: object
+      responses:
+        201:
+          description: Linked subcontract successfully created
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create SOP Linked Subcontract
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/linked_subcontracts/{linkedSubcontractId}:
+    delete:
+      operationId: v2_deleteSOPLinkedSubcontract
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: linkedSubcontractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Linked subcontract successfully deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete SOP Linked Subcontract
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchSOPLinkedSubcontract
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: linkedSubcontractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Linked subcontract successfully updated
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update SOP Linked Subcontract
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/milestones:
+    get:
+      operationId: v2_getSOPMilestones
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get SOP Milestones
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postSOPMilestone
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              type: string
+            due_date:
+              type: string
+            name:
+              type: string
+            progress:
+              type: number
+            status:
+              type: string
+          required:
+          - name
+          - due_date
+          type: object
+      responses:
+        201:
+          description: Milestone successfully created
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create SOP Milestone
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop/{sopId}/milestones/{milestoneId}:
+    delete:
+      operationId: v2_deleteSOPMilestone
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: milestoneId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Milestone successfully deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete SOP Milestone
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchSOPMilestone
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sopId
+        required: true
+        type: string
+      - in: path
+        name: milestoneId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Milestone successfully updated
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update SOP Milestone
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tenders:
     get:
       operationId: v2_getTenders
@@ -24556,7 +25904,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/download/{ds_data_type}:
     get:
-      operationId: v2_getProjectDownload
+      operationId: v2_downloadProjectData
       parameters:
       - in: path
         name: workspaceId
@@ -24572,16 +25920,18 @@ paths:
         type: string
       responses:
         200:
-          description: Successful response
+          description: File downloaded successfully
         401:
           description: Unauthorized
+        404:
+          description: Data not found
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Download a file from the project
+      summary: Download project data
       tags:
-      - Download
+      - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/files:
     get:
       operationId: v2_v2_getFiles
