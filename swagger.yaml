@@ -27466,10 +27466,11 @@ paths:
         required: true
         type: integer
       - description: MS Project XML file
+        format: binary
         in: formData
         name: file
         required: true
-        type: file
+        type: string
       - default: true
         description: Whether to create WBS structure
         in: formData
