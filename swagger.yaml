@@ -13744,6 +13744,301 @@ paths:
       summary: Create labour rate
       tags:
       - LabourRates
+  /v2/workspaces/{workspaceId}/labour-rates/allowances:
+    delete:
+      description: Soft delete labour rate allowance
+      operationId: v2_deleteLabourRateAllowance
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Allowance ID to delete
+        in: query
+        name: id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Labour rate allowance deleted successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rate allowance deleted successfully
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Missing ID parameter
+        404:
+          description: Allowance not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete labour rate allowance
+      tags:
+      - LabourRates
+    get:
+      description: Retrieve labour rate allowances with filtering and pagination support
+      operationId: v2_getLabourRateAllowances
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Get specific allowance by ID
+        in: query
+        name: id
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 20
+        description: Number of items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - description: Filter by labour rate ID
+        in: query
+        name: labour_rate_id
+        required: false
+        type: string
+      - description: Filter by name
+        in: query
+        name: name
+        required: false
+        type: string
+      - description: Filter by trigger
+        in: query
+        name: trigger
+        required: false
+        type: string
+      - description: Filter by stackable status
+        in: query
+        name: is_stackable
+        required: false
+        type: boolean
+      - description: Filter by minimum amount
+        format: float
+        in: query
+        name: min_amount
+        required: false
+        type: number
+      - description: Filter by maximum amount
+        format: float
+        in: query
+        name: max_amount
+        required: false
+        type: number
+      - description: Search by name
+        in: query
+        name: search
+        required: false
+        type: string
+      responses:
+        200:
+          description: Labour rate allowances retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    amount:
+                      format: float
+                      type: number
+                    created_at:
+                      format: date-time
+                      type: string
+                    id:
+                      type: string
+                    is_stackable:
+                      type: boolean
+                    labour_rate_id:
+                      type: string
+                    name:
+                      type: string
+                    trigger:
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              filters:
+                type: object
+              message:
+                example: Labour rate allowances retrieved successfully
+                type: string
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                  total_pages:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters
+        404:
+          description: Allowance not found (when querying by ID)
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get labour rate allowances
+      tags:
+      - LabourRates
+    patch:
+      description: Update existing labour rate allowance
+      operationId: v2_updateLabourRateAllowance
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Allowance ID to update
+        in: query
+        name: id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              format: float
+              maximum: 10000
+              minimum: 0
+              type: number
+            is_stackable:
+              type: boolean
+            labour_rate_id:
+              maxLength: 100
+              type: string
+            name:
+              maxLength: 200
+              type: string
+            trigger:
+              maxLength: 500
+              type: string
+          type: object
+      responses:
+        200:
+          description: Labour rate allowance updated successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rate allowance updated successfully
+                type: string
+              updated_fields:
+                items:
+                  type: string
+                type: array
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Validation failed or missing ID parameter
+        404:
+          description: Allowance not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update labour rate allowance
+      tags:
+      - LabourRates
+    post:
+      description: Create new labour rate allowance
+      operationId: v2_createLabourRateAllowance
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              description: Allowance amount
+              format: float
+              maximum: 10000
+              minimum: 0
+              type: number
+            is_stackable:
+              description: Whether allowance can stack with others
+              type: boolean
+            labour_rate_id:
+              description: ID of the associated labour rate
+              maxLength: 100
+              type: string
+            name:
+              description: Allowance name
+              maxLength: 200
+              type: string
+            trigger:
+              description: When allowance is triggered
+              maxLength: 500
+              type: string
+          required:
+          - labour_rate_id
+          - name
+          - amount
+          - trigger
+          - is_stackable
+          type: object
+      responses:
+        201:
+          description: Labour rate allowance created successfully
+          schema:
+            properties:
+              id:
+                type: string
+              message:
+                example: Labour rate allowance created successfully
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Validation failed or missing required fields
+          schema:
+            properties:
+              errors:
+                items:
+                  type: string
+                type: array
+              message:
+                type: string
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create labour rate allowance
+      tags:
+      - LabourRates
   /v2/workspaces/{workspaceId}/labour-rates/award:
     delete:
       description: Soft delete labour rate award
