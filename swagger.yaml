@@ -36,6 +36,142 @@ paths:
       summary: Get Addins
       tags:
       - Addins
+  /v2/business-entities:
+    get:
+      description: Returns MySQL link ids and Firestore metadata blocks for the requested
+        workspace. FE merges and renders.
+      operationId: v2_listBusinessEntities
+      parameters:
+      - description: Workspace identifier (ds_workspace_name)
+        in: query
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Combined MySQL + Firestore blocks
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: List Business Entities (self, parent, children)
+      tags:
+      - Business Entities
+  /v2/business-entities/{parentWorkspaceId}/links:
+    post:
+      description: Creates a pending_review link. Hard-blocks self-link and existing
+        approved parent; may return hasOtherPending=true.
+      operationId: v2_createBusinessEntityLink
+      parameters:
+      - in: path
+        name: parentWorkspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            childWorkspaceId:
+              type: string
+          required:
+          - childWorkspaceId
+          type: object
+      responses:
+        201:
+          description: Draft link created
+          schema:
+            properties:
+              data:
+                properties:
+                  hasOtherPending:
+                    type: boolean
+                  linkId:
+                    type: integer
+                  status:
+                    type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Create draft parent-child link (MySQL)
+      tags:
+      - Business Entities
+  /v2/business-entities/{workspaceId}:
+    get:
+      operationId: v2_getBusinessEntity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Firestore metadata document
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Get Business Entity metadata (Firestore)
+      tags:
+      - Business Entities
+    put:
+      operationId: v2_updateBusinessEntity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            acn:
+              type: string
+            bank:
+              properties:
+                accountName:
+                  type: string
+                accountNumber:
+                  type: string
+                bsb:
+                  type: string
+              type: object
+            contacts:
+              properties:
+                apEmail:
+                  type: string
+              type: object
+            displayName:
+              type: string
+            logoUrl:
+              type: string
+            notes:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Saved metadata
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Update Business Entity metadata (Firestore)
+      tags:
+      - Business Entities
   /v2/channels/{channelAlias}/badges/{badgeTypeId}:
     get:
       description: Retrieves badges for users in a specified global company.
