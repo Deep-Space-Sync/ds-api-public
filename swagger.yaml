@@ -100,314 +100,6 @@ paths:
       summary: Get badges for users in a global company
       tags:
       - Badges
-  /v2/crews:
-    delete:
-      description: Soft delete crew by crew_id
-      operationId: v2_deleteCrew
-      parameters:
-      - description: Workspace ID where the crew exists
-        in: query
-        name: workspaceId
-        required: true
-        type: string
-      - description: Crew ID to delete
-        in: query
-        name: crew_id
-        required: true
-        type: string
-      responses:
-        200:
-          description: Crew deleted successfully
-          schema:
-            properties:
-              crew_id:
-                type: string
-              message:
-                type: string
-            type: object
-        400:
-          description: crew_id not provided or already deleted
-        404:
-          description: Crew not found
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Delete crew
-      tags:
-      - Crews
-    get:
-      description: Retrieve crews with filtering options. Can retrieve specific crew
-        by crew_id or list multiple crews with filters. Workspace-scoped endpoint.
-      operationId: v2_getCrews
-      parameters:
-      - description: Workspace ID to filter crews by
-        in: query
-        name: workspaceId
-        required: true
-        type: string
-      - description: Specific crew ID to retrieve
-        in: query
-        name: crew_id
-        type: string
-      - description: Filter by crew name
-        in: query
-        name: name
-        type: string
-      - description: Filter by trade type
-        in: query
-        name: trade
-        type: string
-      - description: Filter by cost code
-        in: query
-        name: cost_code
-        type: string
-      - description: Filter by tags
-        in: query
-        name: tags
-        type: string
-      - description: Search query for text-based filtering
-        in: query
-        name: q
-        type: string
-      - description: Page number for pagination (default 1)
-        in: query
-        name: page
-        type: string
-      - description: Number of items per page (default 50, max 100)
-        in: query
-        name: limit
-        type: string
-      responses:
-        200:
-          description: Successfully retrieved crews
-          schema:
-            properties:
-              crew:
-                description: Single crew object (when crew_id is specified)
-                type: object
-              crews:
-                items:
-                  properties:
-                    assigned_projects:
-                      description: Array of project IDs
-                      items:
-                        type: number
-                      type: array
-                    cost_code:
-                      description: Cost code
-                      type: string
-                    created_at:
-                      description: Creation timestamp
-                      format: date-time
-                      type: string
-                    created_by_company_id:
-                      description: Company ID of user who created this crew
-                      type: string
-                    created_by_user_email:
-                      description: Email of user who created this crew
-                      type: string
-                    created_by_user_id:
-                      description: ID of user who created this crew
-                      type: string
-                    description:
-                      description: Crew description
-                      type: string
-                    id:
-                      description: Unique crew identifier
-                      type: string
-                    is_deleted:
-                      description: Soft delete flag
-                      type: boolean
-                    members:
-                      description: Array of user IDs
-                      items:
-                        type: string
-                      type: array
-                    name:
-                      description: Crew name
-                      type: string
-                    tags:
-                      description: Array of tags
-                      items:
-                        type: string
-                      type: array
-                    trade:
-                      description: Trade type
-                      type: string
-                    updated_at:
-                      description: Last update timestamp
-                      format: date-time
-                      type: string
-                    workspace_id:
-                      description: Workspace ID
-                      type: string
-                  type: object
-                type: array
-              limit:
-                type: integer
-              message:
-                type: string
-              page:
-                type: integer
-              source:
-                type: string
-              total_count:
-                type: integer
-            type: object
-        404:
-          description: Crew not found (when crew_id specified)
-      security:
-      - JWT_v2: []
-      summary: Get crews
-      tags:
-      - Crews
-    patch:
-      description: Update existing crew by crew_id
-      operationId: v2_updateCrew
-      parameters:
-      - description: Workspace ID where the crew exists
-        in: query
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            assigned_projects:
-              description: Array of project IDs
-              items:
-                type: number
-              type: array
-            cost_code:
-              description: Cost code
-              type: string
-            crew_id:
-              description: ID of the crew to update
-              type: string
-            description:
-              description: Crew description
-              type: string
-            members:
-              description: Array of user IDs
-              items:
-                type: string
-              type: array
-            name:
-              description: Crew name
-              type: string
-            tags:
-              description: Array of tags
-              items:
-                type: string
-              type: array
-            trade:
-              description: Trade type
-              type: string
-          required:
-          - crew_id
-          type: object
-      responses:
-        200:
-          description: Crew updated successfully
-          schema:
-            properties:
-              crew:
-                type: object
-              message:
-                type: string
-            type: object
-        400:
-          description: Validation failed or crew_id not provided
-        404:
-          description: Crew not found
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Update crew
-      tags:
-      - Crews
-    post:
-      description: Create new crew. Workspace-scoped endpoint.
-      operationId: v2_createCrew
-      parameters:
-      - description: Workspace ID where the crew will be created
-        in: query
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            assigned_projects:
-              description: Array of project IDs
-              items:
-                type: number
-              type: array
-            cost_code:
-              description: Cost code
-              type: string
-            description:
-              description: Optional crew description
-              type: string
-            members:
-              description: Array of user IDs
-              items:
-                type: string
-              type: array
-            name:
-              description: Crew name
-              type: string
-            tags:
-              description: Array of tags
-              items:
-                type: string
-              type: array
-            trade:
-              description: Trade type
-              type: string
-          required:
-          - name
-          - trade
-          - cost_code
-          type: object
-      responses:
-        201:
-          description: Crew created successfully
-          schema:
-            properties:
-              crew:
-                type: object
-              message:
-                type: string
-            type: object
-        400:
-          description: Validation failed or missing required fields
-          schema:
-            properties:
-              errors:
-                items:
-                  type: string
-                type: array
-              message:
-                type: string
-              required_fields:
-                items:
-                  type: string
-                type: array
-            type: object
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Create crew
-      tags:
-      - Crews
   /v2/data-sync/system-table/{reportName}:
     get:
       operationId: v2_syncSystemTableToGithub
@@ -6778,6 +6470,314 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/crews:
+    delete:
+      description: Soft delete crew by crew_id
+      operationId: v2_deleteCrew
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Crew ID to delete
+        in: query
+        name: crew_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Crew deleted successfully
+          schema:
+            properties:
+              crew_id:
+                type: string
+              message:
+                type: string
+            type: object
+        400:
+          description: crew_id not provided or already deleted
+        404:
+          description: Crew not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete crew
+      tags:
+      - Crews
+    get:
+      description: Retrieve crews with filtering options. Can retrieve specific crew
+        by crew_id or list multiple crews with filters. Workspace-scoped endpoint.
+      operationId: v2_getCrews
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Specific crew ID to retrieve
+        in: query
+        name: crew_id
+        type: string
+      - description: Filter by crew name
+        in: query
+        name: name
+        type: string
+      - description: Filter by trade type
+        in: query
+        name: trade
+        type: string
+      - description: Filter by cost code
+        in: query
+        name: cost_code
+        type: string
+      - description: Filter by tags
+        in: query
+        name: tags
+        type: string
+      - description: Search query for text-based filtering
+        in: query
+        name: q
+        type: string
+      - description: Page number for pagination (default 1)
+        in: query
+        name: page
+        type: string
+      - description: Number of items per page (default 50, max 100)
+        in: query
+        name: limit
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved crews
+          schema:
+            properties:
+              crew:
+                description: Single crew object (when crew_id is specified)
+                type: object
+              crews:
+                items:
+                  properties:
+                    assigned_projects:
+                      description: Array of project IDs
+                      items:
+                        type: number
+                      type: array
+                    cost_code:
+                      description: Cost code
+                      type: string
+                    created_at:
+                      description: Creation timestamp
+                      format: date-time
+                      type: string
+                    created_by_company_id:
+                      description: Company ID of user who created this crew
+                      type: string
+                    created_by_user_email:
+                      description: Email of user who created this crew
+                      type: string
+                    created_by_user_id:
+                      description: ID of user who created this crew
+                      type: string
+                    description:
+                      description: Crew description
+                      type: string
+                    id:
+                      description: Unique crew identifier
+                      type: string
+                    is_deleted:
+                      description: Soft delete flag
+                      type: boolean
+                    members:
+                      description: Array of user IDs
+                      items:
+                        type: string
+                      type: array
+                    name:
+                      description: Crew name
+                      type: string
+                    tags:
+                      description: Array of tags
+                      items:
+                        type: string
+                      type: array
+                    trade:
+                      description: Trade type
+                      type: string
+                    updated_at:
+                      description: Last update timestamp
+                      format: date-time
+                      type: string
+                    workspace_id:
+                      description: Workspace ID
+                      type: string
+                  type: object
+                type: array
+              limit:
+                type: integer
+              message:
+                type: string
+              page:
+                type: integer
+              source:
+                type: string
+              total_count:
+                type: integer
+            type: object
+        404:
+          description: Crew not found (when crew_id specified)
+      security:
+      - JWT_v2: []
+      summary: Get crews
+      tags:
+      - Crews
+    patch:
+      description: Update existing crew by crew_id
+      operationId: v2_updateCrew
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assigned_projects:
+              description: Array of project IDs
+              items:
+                type: number
+              type: array
+            cost_code:
+              description: Cost code
+              type: string
+            crew_id:
+              description: ID of the crew to update
+              type: string
+            description:
+              description: Crew description
+              type: string
+            members:
+              description: Array of user IDs
+              items:
+                type: string
+              type: array
+            name:
+              description: Crew name
+              type: string
+            tags:
+              description: Array of tags
+              items:
+                type: string
+              type: array
+            trade:
+              description: Trade type
+              type: string
+          required:
+          - crew_id
+          type: object
+      responses:
+        200:
+          description: Crew updated successfully
+          schema:
+            properties:
+              crew:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Validation failed or crew_id not provided
+        404:
+          description: Crew not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update crew
+      tags:
+      - Crews
+    post:
+      description: Create new crew. Workspace-scoped endpoint.
+      operationId: v2_createCrew
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assigned_projects:
+              description: Array of project IDs
+              items:
+                type: number
+              type: array
+            cost_code:
+              description: Cost code
+              type: string
+            description:
+              description: Optional crew description
+              type: string
+            members:
+              description: Array of user IDs
+              items:
+                type: string
+              type: array
+            name:
+              description: Crew name
+              type: string
+            tags:
+              description: Array of tags
+              items:
+                type: string
+              type: array
+            trade:
+              description: Trade type
+              type: string
+          required:
+          - name
+          - trade
+          - cost_code
+          type: object
+      responses:
+        201:
+          description: Crew created successfully
+          schema:
+            properties:
+              crew:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Validation failed or missing required fields
+          schema:
+            properties:
+              errors:
+                items:
+                  type: string
+                type: array
+              message:
+                type: string
+              required_fields:
+                items:
+                  type: string
+                type: array
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create crew
+      tags:
+      - Crews
   /v2/workspaces/{workspaceId}/data-point-link:
     delete:
       description: Soft delete a data point link by ID
