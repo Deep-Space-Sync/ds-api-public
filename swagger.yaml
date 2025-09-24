@@ -6680,7 +6680,7 @@ paths:
         in: query
         name: page
         type: string
-      - description: Number of items per page (default 50, max 100)
+      - description: Number of items per page (default 20, max 100)
         in: query
         name: limit
         type: string
@@ -6689,77 +6689,122 @@ paths:
           description: Successfully retrieved crews
           schema:
             properties:
-              crew:
-                description: Single crew object (when crew_id is specified)
-                type: object
-              crews:
-                items:
+              data:
+                oneOf:
+                - description: Array of crews (when listing)
+                  items:
+                    properties:
+                      assigned_projects:
+                        description: Array of project IDs
+                        items:
+                          type: number
+                        type: array
+                      cost_code:
+                        description: Cost code
+                        type: string
+                      created_at:
+                        description: Creation timestamp
+                        format: date-time
+                        type: string
+                      created_by_company_id:
+                        description: Company ID of user who created this crew
+                        type: string
+                      created_by_user_email:
+                        description: Email of user who created this crew
+                        type: string
+                      created_by_user_id:
+                        description: ID of user who created this crew
+                        type: string
+                      description:
+                        description: Crew description
+                        type: string
+                      id:
+                        description: Unique crew identifier
+                        type: string
+                      is_deleted:
+                        description: Soft delete flag
+                        type: boolean
+                      members:
+                        description: Array of user IDs
+                        items:
+                          type: string
+                        type: array
+                      name:
+                        description: Crew name
+                        type: string
+                      tags:
+                        description: Array of tags
+                        items:
+                          type: string
+                        type: array
+                      trade:
+                        description: Trade type
+                        type: string
+                      updated_at:
+                        description: Last update timestamp
+                        format: date-time
+                        type: string
+                      workspace_id:
+                        description: Workspace ID
+                        type: string
+                    type: object
+                  type: array
+                - description: Single crew object (when crew_id is specified)
                   properties:
                     assigned_projects:
-                      description: Array of project IDs
                       items:
                         type: number
                       type: array
                     cost_code:
-                      description: Cost code
                       type: string
                     created_at:
-                      description: Creation timestamp
                       format: date-time
                       type: string
                     created_by_company_id:
-                      description: Company ID of user who created this crew
                       type: string
                     created_by_user_email:
-                      description: Email of user who created this crew
                       type: string
                     created_by_user_id:
-                      description: ID of user who created this crew
                       type: string
                     description:
-                      description: Crew description
                       type: string
                     id:
-                      description: Unique crew identifier
                       type: string
                     is_deleted:
-                      description: Soft delete flag
                       type: boolean
                     members:
-                      description: Array of user IDs
                       items:
                         type: string
                       type: array
                     name:
-                      description: Crew name
                       type: string
                     tags:
-                      description: Array of tags
                       items:
                         type: string
                       type: array
                     trade:
-                      description: Trade type
                       type: string
                     updated_at:
-                      description: Last update timestamp
                       format: date-time
                       type: string
                     workspace_id:
-                      description: Workspace ID
                       type: string
                   type: object
-                type: array
-              limit:
-                type: integer
+              filters:
+                type: object
               message:
                 type: string
-              page:
-                type: integer
-              source:
-                type: string
-              total_count:
-                type: integer
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                  total_pages:
+                    type: integer
+                type: object
             type: object
         404:
           description: Crew not found (when crew_id specified)
@@ -6820,7 +6865,7 @@ paths:
           description: Crew updated successfully
           schema:
             properties:
-              crew:
+              data:
                 type: object
               message:
                 type: string
@@ -6887,7 +6932,7 @@ paths:
           description: Crew created successfully
           schema:
             properties:
-              crew:
+              data:
                 type: object
               message:
                 type: string
