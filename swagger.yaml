@@ -37,16 +37,26 @@ paths:
       tags:
       - Addins
   /v2/business-entities:
-    get:
+    post:
       description: Returns MySQL link ids and Firestore metadata blocks for the requested
         workspace. FE merges and renders.
       operationId: v2_listBusinessEntities
       parameters:
-      - description: Workspace identifier (ds_workspace_name)
-        in: query
-        name: workspaceId
+      - in: body
+        name: body
         required: true
-        type: string
+        schema:
+          properties:
+            skipSql:
+              default: false
+              description: Skip MySQL queries for testing
+              type: boolean
+            workspaceId:
+              description: Workspace identifier (ds_workspace_name)
+              type: string
+          required:
+          - workspaceId
+          type: object
       responses:
         200:
           description: Combined MySQL + Firestore blocks
