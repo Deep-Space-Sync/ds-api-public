@@ -37,6 +37,35 @@ paths:
       tags:
       - Addins
   /v2/business-entities:
+    get:
+      description: Returns MySQL link ids and Firestore metadata blocks for the requested
+        workspace. FE merges and renders.
+      operationId: v2_listBusinessEntitiesGet
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - default: false
+        in: query
+        name: skipSql
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: Combined MySQL + Firestore blocks
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: List Business Entities (self, parent, children)
+      tags:
+      - Business Entities
     post:
       description: Returns MySQL link ids and Firestore metadata blocks for the requested
         workspace. FE merges and renders.
