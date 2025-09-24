@@ -6690,106 +6690,63 @@ paths:
           schema:
             properties:
               data:
-                oneOf:
-                - description: Array of crews (when listing)
-                  items:
-                    properties:
-                      assigned_projects:
-                        description: Array of project IDs
-                        items:
-                          type: number
-                        type: array
-                      cost_code:
-                        description: Cost code
-                        type: string
-                      created_at:
-                        description: Creation timestamp
-                        format: date-time
-                        type: string
-                      created_by_company_id:
-                        description: Company ID of user who created this crew
-                        type: string
-                      created_by_user_email:
-                        description: Email of user who created this crew
-                        type: string
-                      created_by_user_id:
-                        description: ID of user who created this crew
-                        type: string
-                      description:
-                        description: Crew description
-                        type: string
-                      id:
-                        description: Unique crew identifier
-                        type: string
-                      is_deleted:
-                        description: Soft delete flag
-                        type: boolean
-                      members:
-                        description: Array of user IDs
-                        items:
-                          type: string
-                        type: array
-                      name:
-                        description: Crew name
-                        type: string
-                      tags:
-                        description: Array of tags
-                        items:
-                          type: string
-                        type: array
-                      trade:
-                        description: Trade type
-                        type: string
-                      updated_at:
-                        description: Last update timestamp
-                        format: date-time
-                        type: string
-                      workspace_id:
-                        description: Workspace ID
-                        type: string
-                    type: object
-                  type: array
-                - description: Single crew object (when crew_id is specified)
+                items:
                   properties:
                     assigned_projects:
+                      description: Array of project IDs
                       items:
                         type: number
                       type: array
                     cost_code:
+                      description: Cost code
                       type: string
                     created_at:
+                      description: Creation timestamp
                       format: date-time
                       type: string
                     created_by_company_id:
+                      description: Company ID of user who created this crew
                       type: string
                     created_by_user_email:
+                      description: Email of user who created this crew
                       type: string
                     created_by_user_id:
+                      description: ID of user who created this crew
                       type: string
                     description:
+                      description: Crew description
                       type: string
                     id:
+                      description: Unique crew identifier
                       type: string
                     is_deleted:
+                      description: Soft delete flag
                       type: boolean
                     members:
+                      description: Array of user IDs
                       items:
                         type: string
                       type: array
                     name:
+                      description: Crew name
                       type: string
                     tags:
+                      description: Array of tags
                       items:
                         type: string
                       type: array
                     trade:
+                      description: Trade type
                       type: string
                     updated_at:
+                      description: Last update timestamp
                       format: date-time
                       type: string
                     workspace_id:
+                      description: Workspace ID
                       type: string
                   type: object
+                type: array
               filters:
                 type: object
               message:
@@ -6866,7 +6823,9 @@ paths:
           schema:
             properties:
               data:
-                type: object
+                items:
+                  type: object
+                type: array
               message:
                 type: string
             type: object
@@ -6933,7 +6892,9 @@ paths:
           schema:
             properties:
               data:
-                type: object
+                items:
+                  type: object
+                type: array
               message:
                 type: string
             type: object
