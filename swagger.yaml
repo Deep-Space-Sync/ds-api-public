@@ -16740,6 +16740,129 @@ paths:
       summary: Calculate Critical Path Method for project actions
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/project-constraints-delete:
+    delete:
+      operationId: v2_deleteAllActionConstraints
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully deleted constraints
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Constraints not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete all action constraints
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/project-dependencies-delete:
+    delete:
+      operationId: v2_deleteAllActionDependencies
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully deleted dependencies
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Dependencies not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete all action dependencies
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/project-scheduling-tasks-delete:
+    delete:
+      description: Delete all actions with action_category = 'Scheduling Task' for
+        a specific workspace and project. This operation performs soft delete using
+        Firestore utilities with proper change tracking.
+      operationId: v2_deleteProjectSchedulingTasks
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: Bulk deletion completed successfully
+          schema:
+            properties:
+              deleted_count:
+                description: Number of actions successfully deleted
+                type: integer
+              failed_count:
+                description: Number of failed deletions (only present if failures
+                  occurred)
+                type: integer
+              failed_document_ids:
+                description: List of document IDs that failed to delete (only present
+                  if failures occurred)
+                items:
+                  type: string
+                type: array
+              message:
+                description: Summary message of the operation
+                type: string
+              success:
+                description: Overall success status
+                type: boolean
+              total_found:
+                description: Total number of scheduling task actions found
+                type: integer
+            type: object
+        400:
+          description: Invalid request parameters
+        401:
+          description: Unauthorized - Missing X-Horizon-Product header or invalid
+            authentication
+        404:
+          description: No scheduling task actions found for the specified workspace
+            and project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Bulk delete all scheduling task actions
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/tasks:
     get:
       operationId: v2_getActionTasksByWorkspaceIdAndProjectId
@@ -27961,6 +28084,42 @@ paths:
       tags:
       - Get Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/hz-msprojectupload:
+    delete:
+      description: Delete all scheduling tasks, WBS items, resources, constraints,
+        and dependencies for a project
+      operationId: v2_cleanAllProjectData
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully cleaned all project data
+        207:
+          description: Partially completed - some operations failed
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Clean all project data
+      tags:
+      - MS Project Upload
     post:
       consumes:
       - multipart/form-data
@@ -29359,6 +29518,70 @@ paths:
       summary: Run syncback for power bi app
       tags:
       - Power BI
+  /v2/workspaces/{workspaceId}/projects/{projectId}/project-resources-delete:
+    delete:
+      operationId: v2_deleteAllResources
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successfully deleted resources
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Resources not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete all resources
+      tags:
+      - Resources
+  /v2/workspaces/{workspaceId}/projects/{projectId}/project-wbs-delete:
+    delete:
+      operationId: v2_deleteAllWbsItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully deleted WBS items
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: WBS items not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete all WBS items
+      tags:
+      - WBS
+      x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/projects/{projectId}/resources:
     get:
       description: Retrieves resources for a specific project within a workspace.
