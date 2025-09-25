@@ -1165,6 +1165,514 @@ paths:
       summary: Create new metadata definition for a global company
       tags:
       - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/metadata/hz:
+    get:
+      operationId: v2_getGlobalCompanyMetadataHz
+      parameters:
+      - description: Global Company ID
+        in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      responses:
+        200:
+          description: Successfully retrieved hz metadata
+          schema:
+            properties:
+              data:
+                properties:
+                  capabilities:
+                    items:
+                      properties:
+                        capability:
+                          type: string
+                        capability_id:
+                          type: string
+                      type: object
+                    type: array
+                  created_at:
+                    type: string
+                  engagement:
+                    items:
+                      properties:
+                        date:
+                          type: string
+                        description:
+                          type: string
+                        engagement_id:
+                          type: string
+                        logged_by:
+                          type: string
+                        notes:
+                          type: string
+                        type:
+                          enum:
+                          - phone_call
+                          - meeting
+                          - email
+                          - note
+                          type: string
+                      type: object
+                    type: array
+                  global_company_id:
+                    type: number
+                  global_company_metadata_id:
+                    type: string
+                  lesson:
+                    items:
+                      properties:
+                        description:
+                          type: string
+                        improvement_opportunity:
+                          type: string
+                        lesson_id:
+                          type: string
+                        project_id:
+                          type: number
+                        risk_category:
+                          enum:
+                          - commercial
+                          - quality
+                          - safety
+                          - schedule
+                          - technical
+                          type: string
+                        title:
+                          type: string
+                        trade:
+                          enum:
+                          - electrical
+                          - mechanical_services
+                          - structural_steel
+                          - concrete
+                          - plumbing
+                          type: string
+                        type:
+                          enum:
+                          - positive
+                          - negative
+                          type: string
+                      type: object
+                    type: array
+                  service_region:
+                    items:
+                      properties:
+                        region:
+                          type: string
+                        region_id:
+                          type: string
+                      type: object
+                    type: array
+                  tags:
+                    items:
+                      properties:
+                        tag:
+                          type: string
+                        tag_id:
+                          type: string
+                      type: object
+                    type: array
+                  tax_id:
+                    type: string
+                  updated_at:
+                    type: string
+                  website_url:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - User does not have IsPrimaryCompanyAdmin permission
+        404:
+          description: Not Found - Global company not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get global company hz metadata
+      tags:
+      - Global Company Directory
+    patch:
+      operationId: v2_patchGlobalCompanyMetadataHz
+      parameters:
+      - description: Global Company ID
+        in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            capabilities:
+              items:
+                properties:
+                  capability:
+                    type: string
+                  capability_id:
+                    type: string
+                type: object
+              type: array
+            engagement:
+              items:
+                properties:
+                  date:
+                    type: string
+                  description:
+                    type: string
+                  engagement_id:
+                    type: string
+                  logged_by:
+                    type: string
+                  notes:
+                    type: string
+                  type:
+                    enum:
+                    - phone_call
+                    - meeting
+                    - email
+                    - note
+                    type: string
+                type: object
+              type: array
+            lesson:
+              items:
+                properties:
+                  description:
+                    type: string
+                  improvement_opportunity:
+                    type: string
+                  lesson_id:
+                    type: string
+                  project_id:
+                    type: number
+                  risk_category:
+                    enum:
+                    - commercial
+                    - quality
+                    - safety
+                    - schedule
+                    - technical
+                    type: string
+                  title:
+                    type: string
+                  trade:
+                    enum:
+                    - electrical
+                    - mechanical_services
+                    - structural_steel
+                    - concrete
+                    - plumbing
+                    type: string
+                  type:
+                    enum:
+                    - positive
+                    - negative
+                    type: string
+                type: object
+              type: array
+            service_region:
+              items:
+                properties:
+                  region:
+                    type: string
+                  region_id:
+                    type: string
+                type: object
+              type: array
+            tags:
+              items:
+                properties:
+                  tag:
+                    type: string
+                  tag_id:
+                    type: string
+                type: object
+              type: array
+            website_url:
+              description: Company website URL
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successfully updated hz metadata
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - User does not have IsPrimaryCompanyAdmin permission
+        404:
+          description: Not Found - Global company hz metadata not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update global company hz metadata
+      tags:
+      - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/metadata/hz/{arrayType}:
+    get:
+      operationId: v2_getGlobalCompanyMetadataHzArrayItems
+      parameters:
+      - description: Global Company ID
+        in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - description: Type of array to retrieve
+        enum:
+        - tags
+        - capabilities
+        - service_region
+        - engagement
+        - lesson
+        in: path
+        name: arrayType
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved array items
+          schema:
+            properties:
+              count:
+                type: number
+              items:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid array type
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - User does not have IsPrimaryCompanyAdmin permission
+        404:
+          description: Not Found - Global company hz metadata not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get array items from global company hz metadata
+      tags:
+      - Global Company Directory
+    post:
+      operationId: v2_createGlobalCompanyMetadataHzArrayItem
+      parameters:
+      - description: Global Company ID
+        in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - description: Type of array to add item to
+        enum:
+        - tags
+        - capabilities
+        - service_region
+        - engagement
+        - lesson
+        in: path
+        name: arrayType
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: Item data to add (varies by array type)
+          type: object
+      responses:
+        201:
+          description: Successfully added array item
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data or array type
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - User does not have IsPrimaryCompanyAdmin permission
+        404:
+          description: Not Found - Global company hz metadata not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add new item to global company hz metadata array
+      tags:
+      - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/metadata/hz/{arrayType}/{itemId}:
+    delete:
+      operationId: v2_deleteGlobalCompanyMetadataHzArrayItem
+      parameters:
+      - description: Global Company ID
+        in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - description: Type of array containing the item
+        enum:
+        - tags
+        - capabilities
+        - service_region
+        - engagement
+        - lesson
+        in: path
+        name: arrayType
+        required: true
+        type: string
+      - description: ID of the specific item to delete
+        in: path
+        name: itemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully deleted array item
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid array type
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - User does not have IsPrimaryCompanyAdmin permission
+        404:
+          description: Not Found - Item or metadata not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete specific item from global company hz metadata array
+      tags:
+      - Global Company Directory
+    get:
+      operationId: v2_getGlobalCompanyMetadataHzArrayItem
+      parameters:
+      - description: Global Company ID
+        in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - description: Type of array containing the item
+        enum:
+        - tags
+        - capabilities
+        - service_region
+        - engagement
+        - lesson
+        in: path
+        name: arrayType
+        required: true
+        type: string
+      - description: ID of the specific item to retrieve
+        in: path
+        name: itemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved array item
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid array type
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - User does not have IsPrimaryCompanyAdmin permission
+        404:
+          description: Not Found - Item or metadata not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get specific item from global company hz metadata array
+      tags:
+      - Global Company Directory
+    patch:
+      operationId: v2_updateGlobalCompanyMetadataHzArrayItem
+      parameters:
+      - description: Global Company ID
+        in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - description: Type of array containing the item
+        enum:
+        - tags
+        - capabilities
+        - service_region
+        - engagement
+        - lesson
+        in: path
+        name: arrayType
+        required: true
+        type: string
+      - description: ID of the specific item to update
+        in: path
+        name: itemId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: Partial item data to update (varies by array type)
+          type: object
+      responses:
+        200:
+          description: Successfully updated array item
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid input data or array type
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - User does not have IsPrimaryCompanyAdmin permission
+        404:
+          description: Not Found - Item or metadata not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update specific item in global company hz metadata array
+      tags:
+      - Global Company Directory
   /v2/global-companies/{globalCompanyId}/users:
     get:
       operationId: v2_getGlobalCompanyUsers
@@ -27745,7 +28253,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/download/{ds_data_type}:
     get:
-      operationId: v2_getProjectDownload
+      operationId: v2_downloadProjectData
       parameters:
       - in: path
         name: workspaceId
@@ -27761,16 +28269,18 @@ paths:
         type: string
       responses:
         200:
-          description: Successful response
+          description: File downloaded successfully
         401:
           description: Unauthorized
+        404:
+          description: Data not found
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Download a file from the project
+      summary: Download project data
       tags:
-      - Download
+      - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/files:
     get:
       operationId: v2_v2_getFiles
