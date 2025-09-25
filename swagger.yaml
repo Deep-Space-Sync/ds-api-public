@@ -28253,7 +28253,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/download/{ds_data_type}:
     get:
-      operationId: v2_downloadProjectData
+      operationId: v2_getProjectDownload
       parameters:
       - in: path
         name: workspaceId
@@ -28269,18 +28269,16 @@ paths:
         type: string
       responses:
         200:
-          description: File downloaded successfully
+          description: Successful response
         401:
           description: Unauthorized
-        404:
-          description: Data not found
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Download project data
+      summary: Download a file from the project
       tags:
-      - Upload Data
+      - Download
   /v2/workspaces/{workspaceId}/projects/{projectId}/files:
     get:
       operationId: v2_v2_getFiles
