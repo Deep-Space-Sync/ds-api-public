@@ -816,6 +816,207 @@ paths:
       summary: Update CDE metadata via global company sharing permissions
       tags:
       - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/detailed-users:
+    post:
+      operationId: v2_bulkDetailedUserInvite
+      parameters:
+      - description: Global Company ID
+        in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - description: Only applies for Admin use - doesn't send invite email to users
+        in: query
+        name: skipEmail
+        required: false
+        type: boolean
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            users:
+              items:
+                properties:
+                  email:
+                    description: User's email address (required)
+                    format: email
+                    type: string
+                  extra_details:
+                    description: Worker extra details for Firestore (optional)
+                    properties:
+                      delegation_tier:
+                        description: Worker delegation tier
+                        type: string
+                      employment_type:
+                        description: Type of employment
+                        type: string
+                      job_title:
+                        description: Worker's job title
+                        type: string
+                      labour_rate_id:
+                        description: Labour rate identifier (can be empty string)
+                        type: string
+                      status:
+                        description: Worker status (active/inactive)
+                        type: boolean
+                      tags:
+                        description: Array of tags associated with the worker
+                        items:
+                          type: string
+                        type: array
+                      trade:
+                        description: Worker's trade/profession
+                        type: string
+                    type: object
+                  first_name:
+                    description: User's first name (optional)
+                    type: string
+                  last_name:
+                    description: User's last name (optional)
+                    type: string
+                required:
+                - email
+                type: object
+              maxItems: 50
+              type: array
+          required:
+          - users
+          type: object
+      responses:
+        200:
+          description: Successful response with detailed results
+          schema:
+            properties:
+              belong_to_diff_company_users:
+                properties:
+                  message:
+                    type: string
+                  users:
+                    items:
+                      type: object
+                    type: array
+                type: object
+              extra_details_results:
+                properties:
+                  failed:
+                    properties:
+                      message:
+                        type: string
+                      users:
+                        items:
+                          properties:
+                            email:
+                              type: string
+                            error:
+                              type: string
+                            kinde_id:
+                              type: string
+                            message:
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  skipped:
+                    properties:
+                      message:
+                        type: string
+                      users:
+                        items:
+                          properties:
+                            email:
+                              type: string
+                            kinde_id:
+                              type: string
+                            message:
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  successful:
+                    properties:
+                      message:
+                        type: string
+                      users:
+                        items:
+                          properties:
+                            email:
+                              type: string
+                            kinde_id:
+                              type: string
+                            message:
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                type: object
+              invalid_data:
+                properties:
+                  message:
+                    type: string
+                  users:
+                    items:
+                      properties:
+                        email:
+                          type: string
+                        message:
+                          type: string
+                        status_code:
+                          type: integer
+                      type: object
+                    type: array
+                type: object
+              successful_users:
+                properties:
+                  message:
+                    type: string
+                  users:
+                    items:
+                      properties:
+                        email:
+                          type: string
+                        first_name:
+                          type: string
+                        kinde_id:
+                          type: string
+                        last_name:
+                          type: string
+                        user_id:
+                          type: string
+                        username:
+                          type: string
+                        verified_by_company:
+                          type: boolean
+                        verified_by_user:
+                          type: boolean
+                      type: object
+                    type: array
+                type: object
+            type: object
+        400:
+          description: Bad Request - Validation errors
+          schema:
+            properties:
+              errors:
+                items:
+                  type: string
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - User does not have IsPrimaryCompanyAdmin permission
+        404:
+          description: Not Found - Global company not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Bulk Detailed User Invite (with Worker Extra Details)
+      tags:
+      - Global Company Directory
   /v2/global-companies/{globalCompanyId}/metadata:
     put:
       operationId: v2_saveGlobalCompanyMetadataValues
