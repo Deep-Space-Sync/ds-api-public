@@ -5576,10 +5576,8 @@ paths:
                       type: integer
                     response_date:
                       format: date-time
-                      nullable: true
                       type: string
                     response_message:
-                      nullable: true
                       type: string
                     subject:
                       type: string
@@ -5691,10 +5689,8 @@ paths:
                     type: integer
                   response_date:
                     format: date-time
-                    nullable: true
                     type: string
                   response_message:
-                    nullable: true
                     type: string
                   subject:
                     type: string
@@ -5847,10 +5843,8 @@ paths:
                     type: integer
                   response_date:
                     format: date-time
-                    nullable: true
                     type: string
                   response_message:
-                    nullable: true
                     type: string
                   subject:
                     type: string
