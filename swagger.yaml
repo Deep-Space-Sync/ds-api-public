@@ -18645,6 +18645,155 @@ paths:
       summary: Calculate Critical Path Method for project actions
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/network-diagram:
+    post:
+      description: Optimized bulk data fetching for network diagram visualization.
+        Replaces N+1 dependency queries with single bulk operation. Fetches critical
+        path actions and their dependencies in one request, including related tasks.
+      operationId: v2_getNetworkDiagram
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - description: Network diagram request body
+        in: body
+        name: networkDiagramRequest
+        required: true
+        schema:
+          properties:
+            criticalPathActionIds:
+              description: Array of critical path action IDs to include
+              items:
+                type: string
+              type: array
+            includeRelatedTasks:
+              default: true
+              description: Whether to include related tasks (predecessors/successors)
+              type: boolean
+            layoutHints:
+              description: Optional layout positioning hints
+              properties:
+                criticalPathY:
+                  type: number
+                nodeSpacing:
+                  type: number
+              type: object
+          required:
+          - criticalPathActionIds
+          type: object
+      responses:
+        200:
+          description: Network diagram data retrieved successfully
+          schema:
+            properties:
+              edges:
+                items:
+                  properties:
+                    dependencyType:
+                      type: string
+                    id:
+                      type: string
+                    isCritical:
+                      type: boolean
+                    lagDays:
+                      type: number
+                    source:
+                      type: string
+                    target:
+                      type: string
+                  type: object
+                type: array
+              layoutSuggestions:
+                properties:
+                  nodeSpacing:
+                    type: number
+                  positions:
+                    type: object
+                type: object
+              metadata:
+                properties:
+                  criticalTaskCount:
+                    type: integer
+                  relatedTaskCount:
+                    type: integer
+                  totalDependencies:
+                    type: integer
+                  totalTaskCount:
+                    type: integer
+                type: object
+              nodes:
+                items:
+                  properties:
+                    actionData:
+                      type: object
+                    duration:
+                      type: integer
+                    endDate:
+                      type: string
+                    id:
+                      type: string
+                    isCritical:
+                      type: boolean
+                    isMilestone:
+                      type: boolean
+                    isRelated:
+                      type: boolean
+                    predecessors:
+                      items:
+                        type: string
+                      type: array
+                    startDate:
+                      type: string
+                    successors:
+                      items:
+                        type: string
+                      type: array
+                    taskName:
+                      type: string
+                  type: object
+                type: array
+              requestMetadata:
+                properties:
+                  includeRelatedTasks:
+                    type: boolean
+                  projectId:
+                    type: string
+                  requestedCriticalActions:
+                    type: integer
+                  timestamp:
+                    type: string
+                  workspaceId:
+                    type: string
+                type: object
+            type: object
+        400:
+          description: Invalid request parameters or validation failed
+        401:
+          description: Unauthorized - Missing X-Horizon-Product header or invalid
+            authentication
+        404:
+          description: No scheduling tasks found for project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get optimized network diagram data for critical path visualization
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/fetch-all:
     get:
       description: Fetches all scheduling task actions in a single response by performing
