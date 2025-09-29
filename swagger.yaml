@@ -7547,7 +7547,6 @@ paths:
                 - global_company_id
                 - tax_id
                 - company_name
-                - response
                 type: object
               minItems: 1
               type: array
@@ -7959,6 +7958,64 @@ paths:
       security:
       - JWT_v2: []
       summary: Update Tender Package By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/subcontractors/{taxId}:
+    patch:
+      operationId: v2_updateSubcontractorResponse
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - description: Tax ID of the subcontractor to update
+        in: path
+        name: taxId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            response:
+              description: Updated response from the subcontractor
+              type: string
+          required:
+          - response
+          type: object
+      responses:
+        200:
+          description: Subcontractor response updated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  response:
+                    type: string
+                  tax_id:
+                    type: integer
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package or subcontractor not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Subcontractor Response By Tax ID
       tags:
       - Cost
       x-ds-test-enabled: true
