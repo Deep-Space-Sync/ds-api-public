@@ -18645,6 +18645,107 @@ paths:
       summary: Calculate Critical Path Method for project actions
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/fetch-all:
+    get:
+      description: Fetches all scheduling task actions in a single response by performing
+        backend pagination loops. Uses the robust fetch_all=true parameter implementation
+        with sensible safety limits.
+      operationId: v2_fetchAllSchedulingTasks
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Filter by action status
+        in: query
+        name: action_status
+        required: false
+        type: string
+      - description: Filter by action category (e.g. 'Scheduling Task')
+        in: query
+        name: action_category
+        required: false
+        type: string
+      - description: Filter by assignee
+        in: query
+        name: assignee_individual
+        required: false
+        type: string
+      - description: Filter by task status
+        in: query
+        name: task_status
+        required: false
+        type: string
+      - description: Filter by progress type
+        in: query
+        name: progress_type
+        required: false
+        type: string
+      - description: Filter by trade
+        in: query
+        name: trade
+        required: false
+        type: string
+      - description: Filter by subcontractor
+        in: query
+        name: subcontractor
+        required: false
+        type: string
+      - description: Search query string
+        in: query
+        name: q
+        required: false
+        type: string
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: All scheduling tasks fetched successfully
+          schema:
+            properties:
+              actions:
+                description: All matching scheduling task actions
+                items:
+                  type: object
+                type: array
+              fetch_all:
+                description: Always true for this endpoint
+                type: boolean
+              pages_fetched:
+                description: Number of pages processed by backend
+                type: integer
+              source:
+                description: Data source indicator (firestore_batch)
+                type: string
+              total_count:
+                description: Total number of items returned
+                type: integer
+            type: object
+        400:
+          description: Invalid request parameters
+        401:
+          description: Unauthorized - Missing X-Horizon-Product header or invalid
+            authentication
+        404:
+          description: No scheduling tasks found for project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Fetch all scheduling tasks using backend pagination
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/network-diagram:
     post:
       description: Optimized bulk data fetching for network diagram visualization.
@@ -18792,107 +18893,6 @@ paths:
       security:
       - JWT_v2: []
       summary: Get optimized network diagram data for critical path visualization
-      tags:
-      - Actions
-  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/fetch-all:
-    get:
-      description: Fetches all scheduling task actions in a single response by performing
-        backend pagination loops. Uses the robust fetch_all=true parameter implementation
-        with sensible safety limits.
-      operationId: v2_fetchAllSchedulingTasks
-      parameters:
-      - description: Workspace identifier
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Project identifier
-        in: path
-        name: projectId
-        required: true
-        type: integer
-      - description: Filter by action status
-        in: query
-        name: action_status
-        required: false
-        type: string
-      - description: Filter by action category (e.g. 'Scheduling Task')
-        in: query
-        name: action_category
-        required: false
-        type: string
-      - description: Filter by assignee
-        in: query
-        name: assignee_individual
-        required: false
-        type: string
-      - description: Filter by task status
-        in: query
-        name: task_status
-        required: false
-        type: string
-      - description: Filter by progress type
-        in: query
-        name: progress_type
-        required: false
-        type: string
-      - description: Filter by trade
-        in: query
-        name: trade
-        required: false
-        type: string
-      - description: Filter by subcontractor
-        in: query
-        name: subcontractor
-        required: false
-        type: string
-      - description: Search query string
-        in: query
-        name: q
-        required: false
-        type: string
-      - description: Required header for Firestore-based endpoints
-        enum:
-        - 'true'
-        in: header
-        name: X-Horizon-Product
-        required: true
-        type: string
-      responses:
-        200:
-          description: All scheduling tasks fetched successfully
-          schema:
-            properties:
-              actions:
-                description: All matching scheduling task actions
-                items:
-                  type: object
-                type: array
-              fetch_all:
-                description: Always true for this endpoint
-                type: boolean
-              pages_fetched:
-                description: Number of pages processed by backend
-                type: integer
-              source:
-                description: Data source indicator (firestore_batch)
-                type: string
-              total_count:
-                description: Total number of items returned
-                type: integer
-            type: object
-        400:
-          description: Invalid request parameters
-        401:
-          description: Unauthorized - Missing X-Horizon-Product header or invalid
-            authentication
-        404:
-          description: No scheduling tasks found for project
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Fetch all scheduling tasks using backend pagination
       tags:
       - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/project-constraints-delete:
