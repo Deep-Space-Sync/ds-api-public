@@ -7427,6 +7427,42 @@ paths:
                   properties:
                     bid_form_type:
                       type: string
+                    clarifications:
+                      items:
+                        properties:
+                          clarification_id:
+                            type: string
+                          client_info:
+                            properties:
+                              company_name:
+                                type: string
+                              global_company_id:
+                                type: integer
+                              tax_id:
+                                type: integer
+                            type: object
+                          created_at:
+                            format: date-time
+                            type: string
+                          date_submitted:
+                            format: date-time
+                            type: string
+                          description:
+                            type: string
+                          response_date:
+                            format: date-time
+                            type: string
+                          response_message:
+                            type: string
+                          subject:
+                            type: string
+                          updated_at:
+                            format: date-time
+                            type: string
+                        type: object
+                      type: array
+                    clarifications_count:
+                      type: integer
                     created_at:
                       format: date-time
                       type: string
@@ -7739,6 +7775,42 @@ paths:
                     type: object
                   bid_form_type:
                     type: string
+                  clarifications:
+                    items:
+                      properties:
+                        clarification_id:
+                          type: string
+                        client_info:
+                          properties:
+                            company_name:
+                              type: string
+                            global_company_id:
+                              type: integer
+                            tax_id:
+                              type: integer
+                          type: object
+                        created_at:
+                          format: date-time
+                          type: string
+                        date_submitted:
+                          format: date-time
+                          type: string
+                        description:
+                          type: string
+                        response_date:
+                          format: date-time
+                          type: string
+                        response_message:
+                          type: string
+                        subject:
+                          type: string
+                        updated_at:
+                          format: date-time
+                          type: string
+                      type: object
+                    type: array
+                  clarifications_count:
+                    type: integer
                   created_at:
                     format: date-time
                     type: string
