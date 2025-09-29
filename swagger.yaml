@@ -5513,6 +5513,419 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/clarifications:
+    get:
+      operationId: v2_getClarifications
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by tender package ID
+        in: query
+        name: tender_package_id
+        required: false
+        type: string
+      - description: Page number for pagination (default 1)
+        in: query
+        name: page
+        required: false
+        type: integer
+      - description: Number of items per page (default 50, max 1000)
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: Search query for subject and description
+        in: query
+        name: q
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              count:
+                type: integer
+              items:
+                items:
+                  properties:
+                    clarification_id:
+                      type: string
+                    client_info:
+                      properties:
+                        company_name:
+                          type: string
+                        global_company_id:
+                          type: integer
+                        tax_id:
+                          type: integer
+                      type: object
+                    comments_count:
+                      type: integer
+                    created_at:
+                      format: date-time
+                      type: string
+                    date_submitted:
+                      format: date-time
+                      type: string
+                    description:
+                      type: string
+                    files_count:
+                      type: integer
+                    response_date:
+                      format: date-time
+                      nullable: true
+                      type: string
+                    response_message:
+                      nullable: true
+                      type: string
+                    subject:
+                      type: string
+                    tender_package_id:
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              limit:
+                type: integer
+              message:
+                type: string
+              page:
+                type: integer
+              total_count:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Clarifications
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createClarification
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            client_info:
+              properties:
+                company_name:
+                  description: Name of the company
+                  type: string
+                global_company_id:
+                  description: Global company identifier
+                  type: integer
+                tax_id:
+                  description: Tax identification number
+                  type: integer
+              required:
+              - global_company_id
+              - company_name
+              - tax_id
+              type: object
+            date_submitted:
+              description: Date when clarification was submitted
+              format: date-time
+              type: string
+            description:
+              description: Detailed description of the clarification
+              type: string
+            subject:
+              description: Subject of the clarification
+              type: string
+            tender_package_id:
+              description: ID of the related tender package
+              type: string
+          required:
+          - subject
+          - tender_package_id
+          - client_info
+          - description
+          - date_submitted
+          type: object
+      responses:
+        201:
+          description: Clarification created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  clarification_id:
+                    type: string
+                  client_info:
+                    type: object
+                  comments:
+                    items:
+                      type: object
+                    type: array
+                  comments_count:
+                    type: integer
+                  created_at:
+                    format: date-time
+                    type: string
+                  date_submitted:
+                    format: date-time
+                    type: string
+                  description:
+                    type: string
+                  files:
+                    items:
+                      type: object
+                    type: array
+                  files_count:
+                    type: integer
+                  response_date:
+                    format: date-time
+                    nullable: true
+                    type: string
+                  response_message:
+                    nullable: true
+                    type: string
+                  subject:
+                    type: string
+                  tender_package_id:
+                    type: string
+                  updated_at:
+                    format: date-time
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Clarification
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/clarifications/{clarificationId}:
+    delete:
+      operationId: v2_deleteClarificationById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: clarificationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Clarification deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Clarification not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Clarification By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getClarificationById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: clarificationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  clarification_id:
+                    type: string
+                  client_info:
+                    properties:
+                      company_name:
+                        type: string
+                      global_company_id:
+                        type: integer
+                      tax_id:
+                        type: integer
+                    type: object
+                  comments:
+                    items:
+                      properties:
+                        comment_by:
+                          type: string
+                        comment_text:
+                          type: string
+                        comment_user_id:
+                          type: string
+                        date:
+                          format: date-time
+                          type: string
+                        id:
+                          type: string
+                        related_document_id:
+                          type: string
+                        related_document_type:
+                          type: string
+                        reply_level:
+                          type: integer
+                      type: object
+                    type: array
+                  comments_count:
+                    type: integer
+                  created_at:
+                    format: date-time
+                    type: string
+                  date_submitted:
+                    format: date-time
+                    type: string
+                  description:
+                    type: string
+                  files:
+                    items:
+                      properties:
+                        category:
+                          type: string
+                        created_at:
+                          format: date-time
+                          type: string
+                        description:
+                          type: string
+                        display_name:
+                          type: string
+                        file_size:
+                          type: integer
+                        file_type:
+                          type: string
+                        file_url:
+                          type: string
+                        id:
+                          type: string
+                        related_document_id:
+                          type: string
+                        updated_at:
+                          format: date-time
+                          type: string
+                        uploaded_by:
+                          type: string
+                      type: object
+                    type: array
+                  files_count:
+                    type: integer
+                  response_date:
+                    format: date-time
+                    nullable: true
+                    type: string
+                  response_message:
+                    nullable: true
+                    type: string
+                  subject:
+                    type: string
+                  tender_package_id:
+                    type: string
+                  updated_at:
+                    format: date-time
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Clarification not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Clarification By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateClarificationById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: clarificationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: Only response_date and response_message can be updated
+          properties:
+            response_date:
+              description: Date when response was provided
+              format: date-time
+              type: string
+            response_message:
+              description: Response message to the clarification
+              type: string
+          type: object
+      responses:
+        200:
+          description: Clarification updated successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Clarification not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Clarification By Id (Response Only)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/cost-codes:
     get:
       operationId: v2_getCostCodes
@@ -6932,6 +7345,626 @@ paths:
       security:
       - JWT_v2: []
       summary: Update Delivery Item
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages:
+    get:
+      operationId: v2_getTenderPackages
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by project ID
+        in: query
+        name: project_id
+        required: false
+        type: integer
+      - enum:
+        - mechanical
+        - plumbing
+        - structural
+        - finishes
+        - glazing & facade
+        - site works & landscaping
+        - roofing
+        - concrete
+        - masonry
+        - carpentry
+        - flooring
+        - other
+        in: query
+        name: trade_category
+        required: false
+        type: string
+      - enum:
+        - open tender
+        - selective tender
+        - negotiated tender
+        - single-stage tender
+        - two-stage tender
+        in: query
+        name: tender_type
+        required: false
+        type: string
+      - enum:
+        - lump sum
+        - unit price
+        - detailed breakdown
+        - cost plus
+        in: query
+        name: bid_form_type
+        required: false
+        type: string
+      - enum:
+        - will tender
+        - undecided
+        - will not tender
+        in: query
+        name: tender_status
+        required: false
+        type: string
+      - description: Page number for pagination (default 1)
+        in: query
+        name: page
+        required: false
+        type: integer
+      - description: Number of items per page (default 50, max 1000)
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: Search query for name and description
+        in: query
+        name: q
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              count:
+                type: integer
+              items:
+                items:
+                  properties:
+                    bid_form_type:
+                      type: string
+                    created_at:
+                      format: date-time
+                      type: string
+                    description:
+                      type: string
+                    due_date:
+                      format: date
+                      type: string
+                    estimated_value:
+                      type: number
+                    files_count:
+                      type: integer
+                    invited_subcontractors_count:
+                      type: integer
+                    issue_date:
+                      format: date
+                      type: string
+                    linked_rfis_count:
+                      type: integer
+                    name:
+                      type: string
+                    project_id:
+                      type: integer
+                    tender_package_id:
+                      type: string
+                    tender_status:
+                      type: string
+                    tender_type:
+                      type: string
+                    trade_category:
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              limit:
+                type: integer
+              message:
+                type: string
+              page:
+                type: integer
+              total_count:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Tender Packages
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createTenderPackage
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            additional_options:
+              properties:
+                bid_bond_required:
+                  type: boolean
+                pre_qualification_required:
+                  type: boolean
+                site_visit_required:
+                  type: boolean
+                submit_alternative_proposals:
+                  type: boolean
+              required:
+              - submit_alternative_proposals
+              - site_visit_required
+              - pre_qualification_required
+              - bid_bond_required
+              type: object
+            bid_form_type:
+              enum:
+              - lump sum
+              - unit price
+              - detailed breakdown
+              - cost plus
+              type: string
+            description:
+              type: string
+            document_security:
+              properties:
+                document_view_only:
+                  type: boolean
+              required:
+              - document_view_only
+              type: object
+            due_date:
+              format: date
+              type: string
+            estimated_value:
+              type: number
+            invited_subcontractors:
+              items:
+                properties:
+                  company_name:
+                    type: string
+                  global_company_id:
+                    type: integer
+                  response:
+                    type: string
+                  tax_id:
+                    type: integer
+                required:
+                - global_company_id
+                - tax_id
+                - company_name
+                - response
+                type: object
+              minItems: 1
+              type: array
+            issue_date:
+              format: date
+              type: string
+            linked_rfis:
+              items:
+                properties:
+                  form_id:
+                    type: integer
+                  rfi_name:
+                    type: string
+                required:
+                - form_id
+                - rfi_name
+                type: object
+              type: array
+            name:
+              type: string
+            project_id:
+              type: integer
+            tender_status:
+              enum:
+              - will tender
+              - undecided
+              - will not tender
+              type: string
+            tender_type:
+              enum:
+              - open tender
+              - selective tender
+              - negotiated tender
+              - single-stage tender
+              - two-stage tender
+              type: string
+            trade_category:
+              enum:
+              - mechanical
+              - plumbing
+              - structural
+              - finishes
+              - glazing & facade
+              - site works & landscaping
+              - roofing
+              - concrete
+              - masonry
+              - carpentry
+              - flooring
+              - other
+              type: string
+          required:
+          - name
+          - project_id
+          - trade_category
+          - issue_date
+          - due_date
+          - estimated_value
+          - tender_type
+          - bid_form_type
+          - additional_options
+          - document_security
+          - invited_subcontractors
+          type: object
+      responses:
+        201:
+          description: Tender package created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Tender Package
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/enums:
+    get:
+      operationId: v2_getTenderPackageEnums
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              bid_form_types:
+                items:
+                  type: string
+                type: array
+              tender_statuses:
+                items:
+                  type: string
+                type: array
+              tender_types:
+                items:
+                  type: string
+                type: array
+              trade_categories:
+                items:
+                  type: string
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Tender Package Enums
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}:
+    delete:
+      operationId: v2_deleteTenderPackageById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tender package deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Tender Package By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getTenderPackageById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  additional_options:
+                    properties:
+                      bid_bond_required:
+                        type: boolean
+                      pre_qualification_required:
+                        type: boolean
+                      site_visit_required:
+                        type: boolean
+                      submit_alternative_proposals:
+                        type: boolean
+                    type: object
+                  bid_form_type:
+                    type: string
+                  created_at:
+                    format: date-time
+                    type: string
+                  description:
+                    type: string
+                  document_security:
+                    properties:
+                      document_view_only:
+                        type: boolean
+                    type: object
+                  due_date:
+                    format: date
+                    type: string
+                  estimated_value:
+                    type: number
+                  files:
+                    items:
+                      properties:
+                        display_name:
+                          type: string
+                        file_size:
+                          type: integer
+                        file_type:
+                          type: string
+                        file_url:
+                          type: string
+                        id:
+                          type: string
+                      type: object
+                    type: array
+                  files_count:
+                    type: integer
+                  invited_subcontractors:
+                    items:
+                      properties:
+                        company_name:
+                          type: string
+                        global_company_id:
+                          type: integer
+                        response:
+                          type: string
+                        tax_id:
+                          type: integer
+                      type: object
+                    type: array
+                  invited_subcontractors_count:
+                    type: integer
+                  issue_date:
+                    format: date
+                    type: string
+                  linked_rfis:
+                    items:
+                      properties:
+                        form_id:
+                          type: integer
+                        rfi_name:
+                          type: string
+                      type: object
+                    type: array
+                  linked_rfis_count:
+                    type: integer
+                  name:
+                    type: string
+                  project_id:
+                    type: integer
+                  tender_package_id:
+                    type: string
+                  tender_status:
+                    type: string
+                  tender_type:
+                    type: string
+                  trade_category:
+                    type: string
+                  updated_at:
+                    format: date-time
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Tender Package By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateTenderPackageById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            additional_options:
+              properties:
+                bid_bond_required:
+                  type: boolean
+                pre_qualification_required:
+                  type: boolean
+                site_visit_required:
+                  type: boolean
+                submit_alternative_proposals:
+                  type: boolean
+              type: object
+            bid_form_type:
+              enum:
+              - lump sum
+              - unit price
+              - detailed breakdown
+              - cost plus
+              type: string
+            description:
+              type: string
+            document_security:
+              properties:
+                document_view_only:
+                  type: boolean
+              type: object
+            due_date:
+              format: date
+              type: string
+            estimated_value:
+              type: number
+            invited_subcontractors:
+              items:
+                properties:
+                  company_name:
+                    type: string
+                  global_company_id:
+                    type: integer
+                  response:
+                    type: string
+                  tax_id:
+                    type: integer
+                type: object
+              type: array
+            issue_date:
+              format: date
+              type: string
+            linked_rfis:
+              items:
+                properties:
+                  form_id:
+                    type: integer
+                  rfi_name:
+                    type: string
+                type: object
+              type: array
+            name:
+              type: string
+            project_id:
+              type: integer
+            tender_status:
+              enum:
+              - will tender
+              - undecided
+              - will not tender
+              type: string
+            tender_type:
+              enum:
+              - open tender
+              - selective tender
+              - negotiated tender
+              - single-stage tender
+              - two-stage tender
+              type: string
+            trade_category:
+              enum:
+              - mechanical
+              - plumbing
+              - structural
+              - finishes
+              - glazing & facade
+              - site works & landscaping
+              - roofing
+              - concrete
+              - masonry
+              - carpentry
+              - flooring
+              - other
+              type: string
+          type: object
+      responses:
+        200:
+          description: Tender package updated successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Tender Package By Id
       tags:
       - Cost
       x-ds-test-enabled: true
@@ -28685,7 +29718,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/download/{ds_data_type}:
     get:
-      operationId: v2_getProjectDownload
+      operationId: v2_downloadProjectData
       parameters:
       - in: path
         name: workspaceId
@@ -28701,16 +29734,18 @@ paths:
         type: string
       responses:
         200:
-          description: Successful response
+          description: File downloaded successfully
         401:
           description: Unauthorized
+        404:
+          description: Data not found
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Download a file from the project
+      summary: Download project data
       tags:
-      - Download
+      - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/files:
     get:
       operationId: v2_v2_getFiles
