@@ -5553,15 +5553,6 @@ paths:
                   properties:
                     clarification_id:
                       type: string
-                    client_info:
-                      properties:
-                        company_name:
-                          type: string
-                        global_company_id:
-                          type: integer
-                        tax_id:
-                          type: integer
-                      type: object
                     comments_count:
                       type: integer
                     created_at:
@@ -5620,22 +5611,6 @@ paths:
         required: true
         schema:
           properties:
-            client_info:
-              properties:
-                company_name:
-                  description: Name of the company
-                  type: string
-                global_company_id:
-                  description: Global company identifier
-                  type: integer
-                tax_id:
-                  description: Tax identification number
-                  type: integer
-              required:
-              - global_company_id
-              - company_name
-              - tax_id
-              type: object
             date_submitted:
               description: Date when clarification was submitted
               format: date-time
@@ -5652,7 +5627,6 @@ paths:
           required:
           - subject
           - tender_package_id
-          - client_info
           - description
           - date_submitted
           type: object
@@ -5665,8 +5639,6 @@ paths:
                 properties:
                   clarification_id:
                     type: string
-                  client_info:
-                    type: object
                   comments:
                     items:
                       type: object
@@ -5769,15 +5741,6 @@ paths:
                 properties:
                   clarification_id:
                     type: string
-                  client_info:
-                    properties:
-                      company_name:
-                        type: string
-                      global_company_id:
-                        type: integer
-                      tax_id:
-                        type: integer
-                    type: object
                   comments:
                     items:
                       properties:
