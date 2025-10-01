@@ -2130,6 +2130,126 @@ paths:
       summary: Request vendor sharing
       tags:
       - Global Company Directory
+  /v2/hz-notifications/templates:
+    get:
+      operationId: v2_getHzTemplates
+      responses:
+        200:
+          description: Templates retrieved successfully
+      security:
+      - JWT_v2: []
+      summary: List templates
+      tags:
+      - HzNotifications
+    post:
+      operationId: v2_createHzTemplate
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Template created successfully
+        400:
+          description: Validation failed
+      security:
+      - JWT_v2: []
+      summary: Create template
+      tags:
+      - HzNotifications
+  /v2/hz-notifications/templates/{template_id}:
+    delete:
+      operationId: v2_deleteHzTemplate
+      parameters:
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Template deleted successfully
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Delete template
+      tags:
+      - HzNotifications
+    get:
+      operationId: v2_getHzTemplate
+      parameters:
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Template retrieved successfully
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Get template detail
+      tags:
+      - HzNotifications
+    patch:
+      operationId: v2_updateHzTemplate
+      parameters:
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Template updated successfully
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Update template
+      tags:
+      - HzNotifications
+  /v2/hz-notifications/type:
+    get:
+      operationId: v2_getHzNotificationTypes
+      responses:
+        200:
+          description: Successfully retrieved notification types
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    events:
+                      items:
+                        properties:
+                          id:
+                            type: string
+                          template:
+                            type: object
+                        type: object
+                      type: array
+                    id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List all notification types with events and resolved templates
+      tags:
+      - HzNotifications
   /v2/jobs/{job_guid}/status:
     get:
       operationId: v2_getJobStatusGlobal
@@ -2551,6 +2671,254 @@ paths:
       summary: Process a queued notification (admin only)
       tags:
       - Notifications
+  /v2/notified-users/{kinde_id}/notifications:
+    get:
+      operationId: v2_getHzUserNotifications
+      parameters:
+      - in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: unread_only
+        type: boolean
+      - in: query
+        name: event
+        type: string
+      - in: query
+        name: channel
+        type: string
+      - in: query
+        name: workspace_id
+        type: string
+      responses:
+        200:
+          description: Notifications retrieved successfully
+      security:
+      - JWT_v2: []
+      summary: List user notifications
+      tags:
+      - HzNotifications
+    patch:
+      operationId: v2_patchHzUserNotifications
+      parameters:
+      - in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            notification_ids:
+              items:
+                type: string
+              type: array
+          type: object
+      responses:
+        200:
+          description: Notifications updated successfully
+      security:
+      - JWT_v2: []
+      summary: Bulk mark notifications as read
+      tags:
+      - HzNotifications
+    post:
+      operationId: v2_createHzUserNotification
+      parameters:
+      - in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Notification created successfully
+        400:
+          description: Validation failed
+      security:
+      - JWT_v2: []
+      summary: Create user notification
+      tags:
+      - HzNotifications
+  /v2/notified-users/{kinde_id}/notifications/{notification_id}:
+    delete:
+      operationId: v2_deleteHzUserNotification
+      parameters:
+      - in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: path
+        name: notification_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Notification deleted successfully
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Delete notification
+      tags:
+      - HzNotifications
+    get:
+      operationId: v2_getHzUserNotification
+      parameters:
+      - in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: path
+        name: notification_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Notification retrieved successfully
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Get notification detail
+      tags:
+      - HzNotifications
+  /v2/notified-users/{kinde_id}/subscriptions:
+    get:
+      operationId: v2_getHzUserSubscriptions
+      parameters:
+      - in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: is_mute
+        type: boolean
+      - in: query
+        name: event
+        type: string
+      - in: query
+        name: channel
+        type: string
+      responses:
+        200:
+          description: Subscriptions retrieved successfully
+      security:
+      - JWT_v2: []
+      summary: List user subscriptions
+      tags:
+      - HzNotifications
+    post:
+      operationId: v2_createHzUserSubscription
+      parameters:
+      - in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Subscription created successfully
+        400:
+          description: Validation failed
+      security:
+      - JWT_v2: []
+      summary: Create user subscription
+      tags:
+      - HzNotifications
+  /v2/notified-users/{kinde_id}/subscriptions/{subscription_id}:
+    delete:
+      operationId: v2_deleteHzUserSubscription
+      parameters:
+      - in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: path
+        name: subscription_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Subscription deleted successfully
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Delete subscription
+      tags:
+      - HzNotifications
+    get:
+      operationId: v2_getHzUserSubscription
+      parameters:
+      - in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: path
+        name: subscription_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Subscription retrieved successfully
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Get subscription detail
+      tags:
+      - HzNotifications
+    patch:
+      operationId: v2_updateHzUserSubscription
+      parameters:
+      - in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: path
+        name: subscription_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Subscription updated successfully
+        400:
+          description: Validation failed
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Update subscription
+      tags:
+      - HzNotifications
   /v2/permissions/registry:
     get:
       description: Returns the versioned permissions registry defining modules, features,
