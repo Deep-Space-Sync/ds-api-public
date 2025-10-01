@@ -2130,30 +2130,6 @@ paths:
       summary: Request vendor sharing
       tags:
       - Global Company Directory
-  /v2/hz-notifications/self/subscriptions:
-    get:
-      operationId: v2_getHzSelfSubscriptions
-      parameters:
-      - in: query
-        name: page
-        type: integer
-      - in: query
-        name: limit
-        type: integer
-      - in: query
-        name: event
-        type: string
-      - in: query
-        name: channel
-        type: string
-      responses:
-        200:
-          description: Subscriptions retrieved successfully
-      security:
-      - JWT_v2: []
-      summary: List subscriptions for the authenticated user
-      tags:
-      - HzNotifications
   /v2/hz-notifications/templates:
     get:
       operationId: v2_getHzTemplates
@@ -2833,9 +2809,6 @@ paths:
       - in: query
         name: limit
         type: integer
-      - in: query
-        name: is_mute
-        type: boolean
       - in: query
         name: event
         type: string
