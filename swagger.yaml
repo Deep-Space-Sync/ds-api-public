@@ -2132,9 +2132,6 @@ paths:
       - Global Company Directory
   /v2/hz-notification-categories:
     get:
-      summary: List all notification categories with types
-  /v2/hz-notification-template-variables:
-    get:
       operationId: v2_getHzNotificationCategories
       responses:
         200:
@@ -2154,6 +2151,42 @@ paths:
                           id:
                             type: string
                           name:
+                            type: string
+                        type: object
+                      type: array
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+      security:
+      - JWT_v2: []
+      summary: List all notification categories with types
+      tags:
+      - HzNotifications
+  /v2/hz-notification-template-variables:
+    get:
+      operationId: v2_getHzNotificationTemplateVariables
+      responses:
+        200:
+          description: Successfully retrieved template variables
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    variables:
+                      items:
+                        properties:
+                          field_description:
+                            type: string
+                          field_name:
+                            type: string
+                          id:
                             type: string
                         type: object
                       type: array
