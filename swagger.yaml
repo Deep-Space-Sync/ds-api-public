@@ -12767,6 +12767,8 @@ paths:
               type: array
             subject:
               type: string
+            type:
+              type: string
             version:
               type: integer
           type: object
@@ -12873,6 +12875,8 @@ paths:
                 type: string
               type: array
             subject:
+              type: string
+            type:
               type: string
             version:
               type: integer
