@@ -2130,24 +2130,99 @@ paths:
       summary: Request vendor sharing
       tags:
       - Global Company Directory
-  /v2/hz-notifications/templates:
+  /v2/hz-notification-categories:
     get:
-      operationId: v2_getHzTemplates
+      summary: List all notification categories with types
+  /v2/hz-notification-template-variables:
+    get:
+      operationId: v2_getHzNotificationCategories
+      responses:
+        200:
+          description: Successfully retrieved notification categories
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    id:
+                      type: string
+                    types:
+                      items:
+                        properties:
+                          description:
+                            type: string
+                          id:
+                            type: string
+                          name:
+                            type: string
+                        type: object
+                      type: array
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+      security:
+      - JWT_v2: []
+      summary: List template variable groups with variables
+      tags:
+      - HzNotifications
+  /v2/hz-notification-templates/{channel}:
+    get:
+      operationId: v2_listHzChannelTemplates
+      parameters:
+      - enum:
+        - email
+        - in_app
+        in: path
+        name: channel
+        required: true
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: limit
+        type: integer
       responses:
         200:
           description: Templates retrieved successfully
       security:
       - JWT_v2: []
-      summary: List templates
+      summary: List channel templates
       tags:
       - HzNotifications
     post:
-      operationId: v2_createHzTemplate
+      operationId: v2_createHzChannelTemplate
       parameters:
+      - enum:
+        - email
+        - in_app
+        in: path
+        name: channel
+        required: true
+        type: string
       - in: body
         name: body
         required: true
         schema:
+          properties:
+            category:
+              type: string
+            created_by:
+              type: string
+            email_body:
+              type: string
+            plain_text:
+              type: string
+            required_fields:
+              items:
+                type: string
+              type: array
+            subject:
+              type: string
+            version:
+              type: integer
           type: object
       responses:
         201:
@@ -2156,13 +2231,20 @@ paths:
           description: Validation failed
       security:
       - JWT_v2: []
-      summary: Create template
+      summary: Create channel template
       tags:
       - HzNotifications
-  /v2/hz-notifications/templates/{template_id}:
+  /v2/hz-notification-templates/{channel}/{template_id}:
     delete:
-      operationId: v2_deleteHzTemplate
+      operationId: v2_deleteHzChannelTemplate
       parameters:
+      - enum:
+        - email
+        - in_app
+        in: path
+        name: channel
+        required: true
+        type: string
       - in: path
         name: template_id
         required: true
@@ -2174,12 +2256,19 @@ paths:
           description: Not found
       security:
       - JWT_v2: []
-      summary: Delete template
+      summary: Delete channel template
       tags:
       - HzNotifications
     get:
-      operationId: v2_getHzTemplate
+      operationId: v2_getHzChannelTemplate
       parameters:
+      - enum:
+        - email
+        - in_app
+        in: path
+        name: channel
+        required: true
+        type: string
       - in: path
         name: template_id
         required: true
@@ -2191,12 +2280,19 @@ paths:
           description: Not found
       security:
       - JWT_v2: []
-      summary: Get template detail
+      summary: Get channel template detail
       tags:
       - HzNotifications
     patch:
-      operationId: v2_updateHzTemplate
+      operationId: v2_updateHzChannelTemplate
       parameters:
+      - enum:
+        - email
+        - in_app
+        in: path
+        name: channel
+        required: true
+        type: string
       - in: path
         name: template_id
         required: true
@@ -2205,49 +2301,34 @@ paths:
         name: body
         required: true
         schema:
+          properties:
+            category:
+              type: string
+            created_by:
+              type: string
+            email_body:
+              type: string
+            plain_text:
+              type: string
+            required_fields:
+              items:
+                type: string
+              type: array
+            subject:
+              type: string
+            version:
+              type: integer
           type: object
       responses:
         200:
           description: Template updated successfully
+        400:
+          description: Validation failed
         404:
           description: Not found
       security:
       - JWT_v2: []
-      summary: Update template
-      tags:
-      - HzNotifications
-  /v2/hz-notifications/types:
-    get:
-      operationId: v2_getHzNotificationTypes
-      responses:
-        200:
-          description: Successfully retrieved notification types
-          schema:
-            properties:
-              data:
-                items:
-                  properties:
-                    events:
-                      items:
-                        properties:
-                          id:
-                            type: string
-                          template:
-                            type: object
-                        type: object
-                      type: array
-                    id:
-                      type: string
-                  type: object
-                type: array
-              message:
-                type: string
-            type: object
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: List all notification types with events and resolved templates
+      summary: Update channel template
       tags:
       - HzNotifications
   /v2/jobs/{job_guid}/status:
