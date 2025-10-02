@@ -2200,170 +2200,6 @@ paths:
       summary: List template variable groups with variables
       tags:
       - HzNotifications
-  /v2/hz-notification-templates/{channel}:
-    get:
-      operationId: v2_listHzChannelTemplates
-      parameters:
-      - enum:
-        - email
-        - in_app
-        in: path
-        name: channel
-        required: true
-        type: string
-      - in: query
-        name: page
-        type: integer
-      - in: query
-        name: limit
-        type: integer
-      responses:
-        200:
-          description: Templates retrieved successfully
-      security:
-      - JWT_v2: []
-      summary: List channel templates
-      tags:
-      - HzNotifications
-    post:
-      operationId: v2_createHzChannelTemplate
-      parameters:
-      - enum:
-        - email
-        - in_app
-        in: path
-        name: channel
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            category:
-              type: string
-            created_by:
-              type: string
-            email_body:
-              type: string
-            plain_text:
-              type: string
-            required_fields:
-              items:
-                type: string
-              type: array
-            subject:
-              type: string
-            version:
-              type: integer
-          type: object
-      responses:
-        201:
-          description: Template created successfully
-        400:
-          description: Validation failed
-      security:
-      - JWT_v2: []
-      summary: Create channel template
-      tags:
-      - HzNotifications
-  /v2/hz-notification-templates/{channel}/{template_id}:
-    delete:
-      operationId: v2_deleteHzChannelTemplate
-      parameters:
-      - enum:
-        - email
-        - in_app
-        in: path
-        name: channel
-        required: true
-        type: string
-      - in: path
-        name: template_id
-        required: true
-        type: string
-      responses:
-        200:
-          description: Template deleted successfully
-        404:
-          description: Not found
-      security:
-      - JWT_v2: []
-      summary: Delete channel template
-      tags:
-      - HzNotifications
-    get:
-      operationId: v2_getHzChannelTemplate
-      parameters:
-      - enum:
-        - email
-        - in_app
-        in: path
-        name: channel
-        required: true
-        type: string
-      - in: path
-        name: template_id
-        required: true
-        type: string
-      responses:
-        200:
-          description: Template retrieved successfully
-        404:
-          description: Not found
-      security:
-      - JWT_v2: []
-      summary: Get channel template detail
-      tags:
-      - HzNotifications
-    patch:
-      operationId: v2_updateHzChannelTemplate
-      parameters:
-      - enum:
-        - email
-        - in_app
-        in: path
-        name: channel
-        required: true
-        type: string
-      - in: path
-        name: template_id
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            category:
-              type: string
-            created_by:
-              type: string
-            email_body:
-              type: string
-            plain_text:
-              type: string
-            required_fields:
-              items:
-                type: string
-              type: array
-            subject:
-              type: string
-            version:
-              type: integer
-          type: object
-      responses:
-        200:
-          description: Template updated successfully
-        400:
-          description: Validation failed
-        404:
-          description: Not found
-      security:
-      - JWT_v2: []
-      summary: Update channel template
-      tags:
-      - HzNotifications
   /v2/jobs/{job_guid}/status:
     get:
       operationId: v2_getJobStatusGlobal
@@ -12869,6 +12705,190 @@ paths:
       summary: Update site diary entry
       tags:
       - Delivery
+  /v2/workspaces/{workspaceId}/hz-notification-templates/{channel}:
+    get:
+      operationId: v2_listHzChannelTemplates
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - enum:
+        - email
+        - in_app
+        in: path
+        name: channel
+        required: true
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: limit
+        type: integer
+      responses:
+        200:
+          description: Templates retrieved successfully
+      security:
+      - JWT_v2: []
+      summary: List channel templates
+      tags:
+      - HzNotifications
+    post:
+      operationId: v2_createHzChannelTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - enum:
+        - email
+        - in_app
+        in: path
+        name: channel
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              type: string
+            created_by:
+              type: string
+            email_body:
+              type: string
+            plain_text:
+              type: string
+            required_fields:
+              items:
+                type: string
+              type: array
+            subject:
+              type: string
+            version:
+              type: integer
+          type: object
+      responses:
+        201:
+          description: Template created successfully
+        400:
+          description: Validation failed
+      security:
+      - JWT_v2: []
+      summary: Create channel template
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notification-templates/{channel}/{template_id}:
+    delete:
+      operationId: v2_deleteHzChannelTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - enum:
+        - email
+        - in_app
+        in: path
+        name: channel
+        required: true
+        type: string
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Template deleted successfully
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Delete channel template
+      tags:
+      - HzNotifications
+    get:
+      operationId: v2_getHzChannelTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - enum:
+        - email
+        - in_app
+        in: path
+        name: channel
+        required: true
+        type: string
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Template retrieved successfully
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Get channel template detail
+      tags:
+      - HzNotifications
+    patch:
+      operationId: v2_updateHzChannelTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - enum:
+        - email
+        - in_app
+        in: path
+        name: channel
+        required: true
+        type: string
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              type: string
+            created_by:
+              type: string
+            email_body:
+              type: string
+            plain_text:
+              type: string
+            required_fields:
+              items:
+                type: string
+              type: array
+            subject:
+              type: string
+            version:
+              type: integer
+          type: object
+      responses:
+        200:
+          description: Template updated successfully
+        400:
+          description: Validation failed
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Update channel template
+      tags:
+      - HzNotifications
   /v2/workspaces/{workspaceId}/hz-preconstruction-bid-packages:
     get:
       description: Retrieve bid packages with optional filters and pagination
