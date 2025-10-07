@@ -12901,6 +12901,430 @@ paths:
       summary: Update channel template
       tags:
       - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/preview:
+    post:
+      operationId: v2_previewHzEmail
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              type: string
+            template_variables:
+              type: object
+            type:
+              type: string
+          required:
+          - category
+          - type
+          - template_variables
+          type: object
+      responses:
+        200:
+          description: Template processed successfully
+        400:
+          description: Validation failed
+      security:
+      - JWT_v2: []
+      summary: Preview email without sending
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/queue:
+    get:
+      operationId: v2_listHzEmailQueue
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - enum:
+        - pending
+        - processing
+        - sent
+        - failed
+        in: query
+        name: status
+        type: string
+      - enum:
+        - urgent
+        - normal
+        - low
+        in: query
+        name: priority
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: limit
+        type: integer
+      responses:
+        200:
+          description: Queue items retrieved successfully
+      security:
+      - JWT_v2: []
+      summary: List email queue items
+      tags:
+      - HzNotifications
+    post:
+      operationId: v2_createHzEmailQueueItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Queue item created
+        400:
+          description: Validation failed
+      security:
+      - JWT_v2: []
+      summary: Create email queue item (admin)
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/queue/process:
+    post:
+      operationId: v2_processHzEmailQueue
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        schema:
+          properties:
+            dry_run:
+              default: false
+              type: boolean
+            limit:
+              default: 50
+              type: integer
+          type: object
+      responses:
+        200:
+          description: Queue processing completed
+      security:
+      - JWT_v2: []
+      summary: Process pending email queue items (batch)
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/queue/process-single:
+    post:
+      operationId: v2_processHzEmailQueueSingle
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            queue_id:
+              type: string
+          required:
+          - queue_id
+          type: object
+      responses:
+        200:
+          description: Email sent successfully
+        500:
+          description: Processing failed, will retry
+      security:
+      - JWT_v2: []
+      summary: Process single email queue item (Cloud Tasks)
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/queue/processing-status:
+    get:
+      operationId: v2_getHzEmailQueueProcessingStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Processing status retrieved
+      security:
+      - JWT_v2: []
+      summary: Get email queue processing status
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/queue/statistics:
+    get:
+      operationId: v2_getHzEmailQueueStatistics
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Queue statistics retrieved
+      security:
+      - JWT_v2: []
+      summary: Get email queue statistics
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/queue/{item_id}:
+    delete:
+      operationId: v2_deleteHzEmailQueueItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: item_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Queue item deleted
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Delete email queue item
+      tags:
+      - HzNotifications
+    get:
+      operationId: v2_getHzEmailQueueItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: item_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Queue item retrieved
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Get email queue item
+      tags:
+      - HzNotifications
+    patch:
+      operationId: v2_updateHzEmailQueueItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: item_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Queue item updated
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Update email queue item
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/queue/{item_id}/retry:
+    post:
+      operationId: v2_retryHzEmailQueueItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: item_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Queue item retry initiated
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Retry failed email queue item
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/send:
+    post:
+      operationId: v2_sendHzEmail
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            bcc_recipients:
+              items:
+                properties:
+                  email:
+                    type: string
+                  name:
+                    type: string
+                type: object
+              type: array
+            category:
+              description: Template category (e.g., task_management)
+              type: string
+            cc_recipients:
+              items:
+                properties:
+                  email:
+                    type: string
+                  name:
+                    type: string
+                type: object
+              type: array
+            priority:
+              default: normal
+              enum:
+              - urgent
+              - normal
+              - low
+              type: string
+            template_variables:
+              description: Variables to substitute in template
+              type: object
+            to_recipients:
+              items:
+                properties:
+                  email:
+                    type: string
+                  name:
+                    type: string
+                type: object
+              type: array
+            type:
+              description: Template type (e.g., task_assigned)
+              type: string
+          required:
+          - category
+          - type
+          - template_variables
+          - to_recipients
+          type: object
+      responses:
+        201:
+          description: Email queued successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  category:
+                    type: string
+                  priority:
+                    type: string
+                  queue_id:
+                    type: string
+                  recipient_count:
+                    type: object
+                  status:
+                    type: string
+                  type:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Validation failed
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Send email using template
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/send-bulk:
+    post:
+      operationId: v2_sendHzBulkEmail
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              type: string
+            emails:
+              items:
+                properties:
+                  bcc_recipients:
+                    items:
+                      type: object
+                    type: array
+                  cc_recipients:
+                    items:
+                      type: object
+                    type: array
+                  template_variables:
+                    type: object
+                  to_recipients:
+                    items:
+                      type: object
+                    type: array
+                type: object
+              maxItems: 100
+              type: array
+            priority:
+              enum:
+              - urgent
+              - normal
+              - low
+              type: string
+            type:
+              type: string
+          required:
+          - category
+          - type
+          - emails
+          type: object
+      responses:
+        200:
+          description: Bulk emails processed
+        400:
+          description: Validation failed
+      security:
+      - JWT_v2: []
+      summary: Send bulk emails using same template
+      tags:
+      - HzNotifications
   /v2/workspaces/{workspaceId}/hz-preconstruction-bid-packages:
     get:
       description: Retrieve bid packages with optional filters and pagination
