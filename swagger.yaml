@@ -2200,6 +2200,76 @@ paths:
       summary: List template variable groups with variables
       tags:
       - HzNotifications
+  /v2/hz-notifications/email/queue/process-single:
+    post:
+      description: 'Internal endpoint called by Cloud Tasks to process individual
+        email queue items.
+
+        No authentication required as this is called by trusted Cloud Tasks service.
+
+        Workspace ID is extracted from the queue item itself.
+
+        '
+      operationId: v2_processHzEmailQueueSingleCloudTasks
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            queue_id:
+              description: ID of the email queue item to process
+              type: string
+          required:
+          - queue_id
+          type: object
+      responses:
+        200:
+          description: Email sent successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  queue_id:
+                    type: string
+                  sent_at:
+                    type: string
+                  status:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request
+          schema:
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+            type: object
+        404:
+          description: Queue item not found
+          schema:
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+            type: object
+        500:
+          description: Processing failed, Cloud Tasks will retry
+          schema:
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+            type: object
+      summary: Process single email queue item (Cloud Tasks only)
+      tags:
+      - HzNotificationSender
   /v2/jobs/{job_guid}/status:
     get:
       operationId: v2_getJobStatusGlobal
@@ -13019,34 +13089,6 @@ paths:
       security:
       - JWT_v2: []
       summary: Process pending email queue items (batch)
-      tags:
-      - HzNotifications
-  /v2/workspaces/{workspaceId}/hz-notifications/email/queue/process-single:
-    post:
-      operationId: v2_processHzEmailQueueSingle
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            queue_id:
-              type: string
-          required:
-          - queue_id
-          type: object
-      responses:
-        200:
-          description: Email sent successfully
-        500:
-          description: Processing failed, will retry
-      security:
-      - JWT_v2: []
-      summary: Process single email queue item (Cloud Tasks)
       tags:
       - HzNotifications
   /v2/workspaces/{workspaceId}/hz-notifications/email/queue/processing-status:
