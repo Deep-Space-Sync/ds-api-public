@@ -748,6 +748,58 @@ paths:
       summary: Get All Workers Across Sharing Companies
       tags:
       - Global Company Directory
+  /v2/global-companies/trade-categories:
+    get:
+      operationId: v2_getAllTradeCategories
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    created_at:
+                      description: Timestamp when the trade category was created
+                      format: date-time
+                      type: string
+                    created_by:
+                      description: User who created the trade category
+                      type: string
+                    doc_type:
+                      description: Document type identifier
+                      type: string
+                    id:
+                      description: Unique identifier for the trade category
+                      type: string
+                    is_deleted:
+                      description: Soft delete flag
+                      type: boolean
+                    trade_name:
+                      description: Name of the trade category
+                      type: string
+                    updated_at:
+                      description: Timestamp when the trade category was last updated
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              message:
+                description: Response message
+                type: string
+              total:
+                description: Total number of trade categories returned
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get All Trade Categories
+      tags:
+      - Global Company Directory
   /v2/global-companies/{globalCompanyId}/cde/{cdeId}/metadata:
     put:
       operationId: v2_updateCdeMetadataViaGlobalCompany
