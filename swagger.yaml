@@ -35101,11 +35101,10 @@ paths:
               description: Manual transmittal number (auto-generated if not provided)
               type: string
             wbs_id:
-              description: WBS identifier for the transmittal
+              description: WBS identifier for the transmittal (optional)
               type: integer
           required:
           - transmittal_name
-          - wbs_id
           type: object
       responses:
         201:
