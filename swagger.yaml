@@ -35000,6 +35000,595 @@ paths:
       summary: Get a token for a project
       tags:
       - Tokens
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals:
+    get:
+      description: Retrieve transmittals for a project with optional filters and pagination
+      operationId: v2_listTransmittals
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Filter by status (draft, sent, closed)
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by WBS identifier
+        in: query
+        name: wbs_id
+        required: false
+        type: integer
+      - description: Free text search across transmittal name and description
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of results per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of transmittals
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              limit:
+                type: integer
+              page:
+                type: integer
+              total_count:
+                type: integer
+            type: object
+        400:
+          description: Invalid request parameters
+        403:
+          description: Workspace or project access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List transmittals
+      tags:
+      - Transmittals
+    post:
+      description: Create a new transmittal package for the project
+      operationId: v2_createTransmittal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              description: Optional description of the transmittal
+              type: string
+            transmittal_name:
+              description: Name of the transmittal package
+              type: string
+            transmittal_number:
+              description: Manual transmittal number (auto-generated if not provided)
+              type: string
+            wbs_id:
+              description: WBS identifier for the transmittal
+              type: integer
+          required:
+          - transmittal_name
+          - wbs_id
+          type: object
+      responses:
+        201:
+          description: Transmittal created successfully
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace or project access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create transmittal
+      tags:
+      - Transmittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals/{transmittalId}:
+    delete:
+      description: Soft delete a transmittal (only if status is draft)
+      operationId: v2_deleteTransmittal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Transmittal unique identifier
+        in: path
+        name: transmittalId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Transmittal deleted successfully
+        400:
+          description: Cannot delete - transmittal already sent
+        403:
+          description: Workspace or project access forbidden
+        404:
+          description: Transmittal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete transmittal
+      tags:
+      - Transmittals
+    get:
+      description: Retrieve a specific transmittal by its unique identifier
+      operationId: v2_getTransmittalById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Transmittal unique identifier
+        in: path
+        name: transmittalId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Transmittal details
+          schema:
+            type: object
+        403:
+          description: Workspace or project access forbidden
+        404:
+          description: Transmittal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get transmittal by ID
+      tags:
+      - Transmittals
+    put:
+      description: Update an existing transmittal (only if status is draft)
+      operationId: v2_updateTransmittal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Transmittal unique identifier
+        in: path
+        name: transmittalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              type: string
+            transmittal_name:
+              type: string
+            transmittal_number:
+              type: string
+            wbs_id:
+              type: integer
+          type: object
+      responses:
+        200:
+          description: Updated transmittal
+          schema:
+            type: object
+        400:
+          description: Invalid request data or transmittal already sent
+        403:
+          description: Workspace or project access forbidden
+        404:
+          description: Transmittal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update transmittal
+      tags:
+      - Transmittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals/{transmittalId}/activity:
+    get:
+      description: Retrieve download activity log for the transmittal
+      operationId: v2_getTransmittalActivity
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Transmittal unique identifier
+        in: path
+        name: transmittalId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Transmittal activity log
+          schema:
+            properties:
+              activity:
+                items:
+                  type: object
+                type: array
+              transmittal_id:
+                type: string
+            type: object
+        403:
+          description: Workspace or project access forbidden
+        404:
+          description: Transmittal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get transmittal activity
+      tags:
+      - Transmittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals/{transmittalId}/documents:
+    post:
+      description: Add a CDE document to the transmittal package
+      operationId: v2_addDocumentToTransmittal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Transmittal unique identifier
+        in: path
+        name: transmittalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_id:
+              description: CDE document identifier
+              type: string
+          required:
+          - cde_id
+          type: object
+      responses:
+        200:
+          description: Document added successfully
+          schema:
+            type: object
+        400:
+          description: Invalid CDE document or transmittal already sent
+        403:
+          description: Workspace or project access forbidden
+        404:
+          description: Transmittal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Add document to transmittal
+      tags:
+      - Transmittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals/{transmittalId}/documents/{cdeId}:
+    delete:
+      description: Remove a CDE document from the transmittal package
+      operationId: v2_removeDocumentFromTransmittal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Transmittal unique identifier
+        in: path
+        name: transmittalId
+        required: true
+        type: string
+      - description: CDE document identifier
+        in: path
+        name: cdeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Document removed successfully
+        400:
+          description: Cannot remove - transmittal already sent
+        403:
+          description: Workspace or project access forbidden
+        404:
+          description: Transmittal or document not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Remove document from transmittal
+      tags:
+      - Transmittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals/{transmittalId}/recipients:
+    post:
+      description: Add a recipient to the transmittal package
+      operationId: v2_addRecipientToTransmittal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Transmittal unique identifier
+        in: path
+        name: transmittalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            company:
+              description: Recipient company (optional)
+              type: string
+            email:
+              description: Recipient email address
+              type: string
+            kinde_id:
+              description: Kinde user identifier
+              type: string
+            name:
+              description: Recipient name
+              type: string
+          required:
+          - kinde_id
+          - email
+          - name
+          type: object
+      responses:
+        200:
+          description: Recipient added successfully
+          schema:
+            type: object
+        400:
+          description: Invalid data or transmittal already sent
+        403:
+          description: Workspace or project access forbidden
+        404:
+          description: Transmittal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Add recipient to transmittal
+      tags:
+      - Transmittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals/{transmittalId}/recipients/{kindeId}:
+    delete:
+      description: Remove a recipient from the transmittal package
+      operationId: v2_removeRecipientFromTransmittal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Transmittal unique identifier
+        in: path
+        name: transmittalId
+        required: true
+        type: string
+      - description: Kinde user identifier
+        in: path
+        name: kindeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Recipient removed successfully
+        400:
+          description: Cannot remove - transmittal already sent
+        403:
+          description: Workspace or project access forbidden
+        404:
+          description: Transmittal or recipient not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Remove recipient from transmittal
+      tags:
+      - Transmittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals/{transmittalId}/send:
+    post:
+      description: Send the transmittal package (locks it with purpose)
+      operationId: v2_sendTransmittal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Transmittal unique identifier
+        in: path
+        name: transmittalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            purpose:
+              description: Purpose of transmittal
+              enum:
+              - For Construction
+              - For Approval
+              - For Information
+              - For Review
+              - For Comment
+              - For Tender
+              type: string
+          required:
+          - purpose
+          type: object
+      responses:
+        200:
+          description: Transmittal sent successfully
+          schema:
+            type: object
+        400:
+          description: Invalid request or transmittal already sent
+        403:
+          description: Workspace or project access forbidden
+        404:
+          description: Transmittal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Send transmittal
+      tags:
+      - Transmittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals/{transmittalId}/track-download:
+    post:
+      description: Record download activity when recipient downloads a document
+      operationId: v2_trackTransmittalDownload
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Transmittal unique identifier
+        in: path
+        name: transmittalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_id:
+              description: CDE document identifier
+              type: string
+            ip_address:
+              description: Optional IP address of downloader
+              type: string
+            kinde_id:
+              description: Downloader Kinde user identifier
+              type: string
+          required:
+          - cde_id
+          - kinde_id
+          type: object
+      responses:
+        200:
+          description: Download tracked successfully
+        400:
+          description: Invalid request
+        403:
+          description: Workspace or project access forbidden
+        404:
+          description: Transmittal or document not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Track document download
+      tags:
+      - Transmittals
   /v2/workspaces/{workspaceId}/projects/{projectId}/users:
     get:
       description: Returns all users and user details for a project
