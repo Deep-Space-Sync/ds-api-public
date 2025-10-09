@@ -32978,104 +32978,6 @@ paths:
       tags:
       - WBS
       x-min-permissions: isProjectManager
-  /v2/workspaces/{workspaceId}/projects/{projectId}/reports/cost-forecast/projects:
-    get:
-      description: Returns cost forecast data with budget variance for all projects
-        in workspace
-      operationId: v2_getCostForecastProjects
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Project ID
-        in: path
-        name: projectId
-        required: true
-        type: integer
-      responses:
-        200:
-          description: List of cost forecast projects
-          schema:
-            properties:
-              data:
-                items:
-                  properties:
-                    contractValue:
-                      type: number
-                    costToComplete:
-                      type: number
-                    costToDate:
-                      type: number
-                    currentBudget:
-                      type: number
-                    forecastFinal:
-                      type: number
-                    id:
-                      type: string
-                    percentComplete:
-                      type: number
-                    projectName:
-                      type: string
-                    status:
-                      type: string
-                    variance:
-                      type: number
-                  type: object
-                type: array
-              ok:
-                type: boolean
-            type: object
-      security:
-      - JWT_v2: []
-      summary: Get cost forecast projects list
-      tags:
-      - Reports
-  /v2/workspaces/{workspaceId}/projects/{projectId}/reports/cost-forecast/summary:
-    get:
-      description: Returns aggregated cost-to-complete forecast metrics with budget
-        variance
-      operationId: v2_getCostForecastSummary
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Project ID
-        in: path
-        name: projectId
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Cost forecast summary data
-          schema:
-            properties:
-              data:
-                properties:
-                  costToComplete:
-                    type: number
-                  costToCompletePercentage:
-                    type: number
-                  forecastVariance:
-                    type: number
-                  forecastVariancePercentage:
-                    type: number
-                  totalCostToDate:
-                    type: number
-                  totalCostToDateBudget:
-                    type: number
-                type: object
-              ok:
-                type: boolean
-            type: object
-      security:
-      - JWT_v2: []
-      summary: Get cost forecast summary metrics
-      tags:
-      - Reports
   /v2/workspaces/{workspaceId}/projects/{projectId}/reports/wip/claims-by-month:
     get:
       description: Returns claims grouped by month with variance from previous month
@@ -33124,112 +33026,6 @@ paths:
       security:
       - JWT_v2: []
       summary: Get monthly aggregated claims for a project
-      tags:
-      - Reports
-  /v2/workspaces/{workspaceId}/projects/{projectId}/reports/wip/projects:
-    get:
-      description: Returns Work in Progress data for all projects in workspace
-      operationId: v2_getWIPProjects
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Project ID
-        in: path
-        name: projectId
-        required: true
-        type: integer
-      responses:
-        200:
-          description: List of WIP projects
-          schema:
-            properties:
-              data:
-                items:
-                  properties:
-                    certifiedPercentage:
-                      type: number
-                    certifiedToDate:
-                      type: number
-                    claimedPercentage:
-                      type: number
-                    claimedToDate:
-                      type: number
-                    contractValue:
-                      type: number
-                    costToComplete:
-                      type: number
-                    costToDate:
-                      type: number
-                    forecastFinal:
-                      type: number
-                    forecastMargin:
-                      type: number
-                    forecastMarginPercentage:
-                      type: number
-                    id:
-                      type: string
-                    percentageComplete:
-                      type: number
-                    projectName:
-                      type: string
-                  type: object
-                type: array
-              ok:
-                type: boolean
-            type: object
-      security:
-      - JWT_v2: []
-      summary: Get WIP projects list
-      tags:
-      - Reports
-  /v2/workspaces/{workspaceId}/projects/{projectId}/reports/wip/summary:
-    get:
-      description: Returns Work in Progress summary metrics for a specific project
-      operationId: v2_getWIPSummary
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Project ID
-        in: path
-        name: projectId
-        required: true
-        type: integer
-      responses:
-        200:
-          description: WIP summary data
-          schema:
-            properties:
-              data:
-                properties:
-                  activeProjects:
-                    type: integer
-                  certifiedPercentage:
-                    type: number
-                  claimedPercentage:
-                    type: number
-                  costToComplete:
-                    type: number
-                  costToCompletePercentage:
-                    type: number
-                  totalCertified:
-                    type: number
-                  totalClaimed:
-                    type: number
-                  totalContractValue:
-                    type: number
-                type: object
-              ok:
-                type: boolean
-            type: object
-      security:
-      - JWT_v2: []
-      summary: Get WIP summary metrics for a project
       tags:
       - Reports
   /v2/workspaces/{workspaceId}/projects/{projectId}/resources:
@@ -35941,6 +35737,191 @@ paths:
       tags:
       - WBS
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/reports/cost-forecast/projects:
+    get:
+      description: Returns cost forecast data with budget variance for all projects
+        in workspace
+      operationId: v2_getCostForecastProjects
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of cost forecast projects
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    contractValue:
+                      type: number
+                    costToComplete:
+                      type: number
+                    costToDate:
+                      type: number
+                    currentBudget:
+                      type: number
+                    forecastFinal:
+                      type: number
+                    id:
+                      type: string
+                    percentComplete:
+                      type: number
+                    projectName:
+                      type: string
+                    status:
+                      type: string
+                    variance:
+                      type: number
+                  type: object
+                type: array
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Get cost forecast projects list
+      tags:
+      - Reports
+  /v2/workspaces/{workspaceId}/reports/cost-forecast/summary:
+    get:
+      description: Returns aggregated cost-to-complete forecast metrics with budget
+        variance across all projects
+      operationId: v2_getCostForecastSummary
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Cost forecast summary data
+          schema:
+            properties:
+              data:
+                properties:
+                  costToComplete:
+                    type: number
+                  costToCompletePercentage:
+                    type: number
+                  forecastVariance:
+                    type: number
+                  forecastVariancePercentage:
+                    type: number
+                  totalCostToDate:
+                    type: number
+                  totalCostToDateBudget:
+                    type: number
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Get cost forecast summary metrics for workspace
+      tags:
+      - Reports
+  /v2/workspaces/{workspaceId}/reports/wip/projects:
+    get:
+      description: Returns Work in Progress data for all projects in workspace
+      operationId: v2_getWIPProjects
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of WIP projects
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    certifiedPercentage:
+                      type: number
+                    certifiedToDate:
+                      type: number
+                    claimedPercentage:
+                      type: number
+                    claimedToDate:
+                      type: number
+                    contractValue:
+                      type: number
+                    costToComplete:
+                      type: number
+                    costToDate:
+                      type: number
+                    forecastFinal:
+                      type: number
+                    forecastMargin:
+                      type: number
+                    forecastMarginPercentage:
+                      type: number
+                    id:
+                      type: string
+                    percentageComplete:
+                      type: number
+                    projectName:
+                      type: string
+                  type: object
+                type: array
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Get WIP projects list
+      tags:
+      - Reports
+  /v2/workspaces/{workspaceId}/reports/wip/summary:
+    get:
+      description: Returns Work in Progress summary metrics aggregated across all
+        projects in workspace
+      operationId: v2_getWIPSummary
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: WIP summary data
+          schema:
+            properties:
+              data:
+                properties:
+                  activeProjects:
+                    type: integer
+                  certifiedPercentage:
+                    type: number
+                  claimedPercentage:
+                    type: number
+                  costToComplete:
+                    type: number
+                  costToCompletePercentage:
+                    type: number
+                  totalCertified:
+                    type: number
+                  totalClaimed:
+                    type: number
+                  totalContractValue:
+                    type: number
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Get WIP summary metrics for workspace
+      tags:
+      - Reports
   /v2/workspaces/{workspaceId}/resources:
     get:
       description: Retrieves resources for a specific workspace. Supports both legacy
