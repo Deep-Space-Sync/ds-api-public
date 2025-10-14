@@ -2743,6 +2743,258 @@ paths:
       summary: Process a queued notification (admin only)
       tags:
       - Notifications
+  /v2/notified-users/{kinde_id}/email-accounts:
+    get:
+      operationId: v2_listEmailAccounts
+      parameters:
+      - description: User's Kinde ID (use 'me' or 'self' for current user)
+        in: path
+        name: kinde_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Provider connection statuses retrieved successfully
+          schema:
+            properties:
+              google:
+                properties:
+                  connected_at:
+                    example: '2025-01-15T10:30:00Z'
+                    format: date-time
+                    type: string
+                  email:
+                    example: user@gmail.com
+                    type: string
+                  is_connected:
+                    example: true
+                    type: boolean
+                type: object
+              microsoft:
+                properties:
+                  is_connected:
+                    example: false
+                    type: boolean
+                type: object
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List all email provider connection statuses for user
+      tags:
+      - HzEmailIntegration
+  /v2/notified-users/{kinde_id}/email-accounts/auth-url:
+    get:
+      operationId: v2_getEmailAccountsAuthUrl
+      parameters:
+      - description: User's Kinde ID (use 'me' or 'self' for current user)
+        in: path
+        name: kinde_id
+        required: true
+        type: string
+      - description: Email provider name
+        enum:
+        - google
+        - microsoft
+        in: query
+        name: provider
+        required: true
+        type: string
+      - description: Frontend callback URL where OAuth code will be sent
+        in: query
+        name: redirect_uri
+        required: true
+        type: string
+      responses:
+        200:
+          description: Authorization URL generated successfully
+          schema:
+            properties:
+              auth_url:
+                example: https://accounts.google.com/o/oauth2/v2/auth?...
+                type: string
+              provider:
+                example: google
+                type: string
+              state:
+                description: CSRF protection state parameter
+                example: 978f7077-ad79-4ec2-bc00-5ed2cb6dce5e
+                type: string
+            type: object
+        400:
+          description: Bad request - missing or invalid parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get OAuth authorization URL for email provider
+      tags:
+      - HzEmailIntegration
+  /v2/notified-users/{kinde_id}/email-accounts/callback:
+    post:
+      operationId: v2_emailAccountsCallback
+      parameters:
+      - description: User's Kinde ID (use 'me' or 'self' for current user)
+        in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              description: Authorization code from OAuth provider
+              example: 4/0AfJoh...
+              type: string
+            provider:
+              enum:
+              - google
+              - microsoft
+              example: google
+              type: string
+            redirect_uri:
+              description: Same redirect URI used in auth URL generation
+              example: http://localhost:3000/settings/email-callback
+              type: string
+            state:
+              description: CSRF state parameter (optional, for frontend validation)
+              type: string
+          required:
+          - provider
+          - code
+          - redirect_uri
+          type: object
+      responses:
+        200:
+          description: Email account connected successfully
+          schema:
+            properties:
+              email:
+                example: user@gmail.com
+                type: string
+              is_connected:
+                example: true
+                type: boolean
+              provider:
+                example: google
+                type: string
+              scopes:
+                example:
+                - gmail.send
+                - userinfo.email
+                items:
+                  type: string
+                type: array
+            type: object
+        400:
+          description: Bad request - missing or invalid parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: OAuth callback handler for email provider connection
+      tags:
+      - HzEmailIntegration
+  /v2/notified-users/{kinde_id}/email-accounts/{provider}:
+    delete:
+      operationId: v2_disconnectEmailAccountProvider
+      parameters:
+      - description: User's Kinde ID (use 'me' or 'self' for current user)
+        in: path
+        name: kinde_id
+        required: true
+        type: string
+      - description: Email provider name to disconnect
+        enum:
+        - google
+        - microsoft
+        in: path
+        name: provider
+        required: true
+        type: string
+      responses:
+        200:
+          description: Provider disconnected successfully
+          schema:
+            properties:
+              is_connected:
+                example: false
+                type: boolean
+              message:
+                example: google account disconnected successfully
+                type: string
+              provider:
+                example: google
+                type: string
+            type: object
+        400:
+          description: Bad request - unsupported provider
+        401:
+          description: Unauthorized
+        404:
+          description: Provider not found or already disconnected
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Disconnect email provider
+      tags:
+      - HzEmailIntegration
+    get:
+      operationId: v2_getEmailAccountProvider
+      parameters:
+      - description: User's Kinde ID (use 'me' or 'self' for current user)
+        in: path
+        name: kinde_id
+        required: true
+        type: string
+      - description: Email provider name
+        enum:
+        - google
+        - microsoft
+        in: path
+        name: provider
+        required: true
+        type: string
+      responses:
+        200:
+          description: Provider connection status retrieved successfully
+          schema:
+            properties:
+              connected_at:
+                example: '2025-01-15T10:30:00Z'
+                format: date-time
+                type: string
+              email:
+                example: user@gmail.com
+                type: string
+              is_connected:
+                example: true
+                type: boolean
+              provider:
+                example: google
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Provider not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get specific email provider connection status
+      tags:
+      - HzEmailIntegration
   /v2/notified-users/{kinde_id}/notifications:
     get:
       operationId: v2_getHzUserNotifications
