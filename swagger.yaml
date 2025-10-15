@@ -34744,6 +34744,124 @@ paths:
       summary: Update resource
       tags:
       - Resources
+  /v2/workspaces/{workspaceId}/projects/{projectId}/rfq/responses:
+    get:
+      operationId: v2_getAllRFQResponsesByProject
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - description: Filter by supplier company ID
+        in: query
+        name: supplierCompanyId
+        required: false
+        type: integer
+      - description: Filter by minimum evaluation score
+        in: query
+        name: evaluationScoreMin
+        required: false
+        type: number
+      - description: Filter by maximum evaluation score
+        in: query
+        name: evaluationScoreMax
+        required: false
+        type: number
+      - default: 1
+        description: Page number for pagination
+        format: int32
+        in: query
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of items per page
+        format: int32
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    clarifications:
+                      description: Clarifications text
+                      type: string
+                    created_at:
+                      description: Date response was created
+                    created_by_user_id:
+                      description: User ID who created response
+                    duration:
+                      description: Quoted duration in days
+                      type: integer
+                    evaluation_score:
+                      description: Evaluation score out of 100
+                      type: number
+                    exclusions:
+                      description: Exclusions text
+                      type: string
+                    id:
+                      description: Internal identifier for RFQ response (UUID)
+                    notes:
+                      description: Additional notes
+                      type: string
+                    project_id:
+                      description: Project ID this response belongs to
+                    rfq_id:
+                      description: RFQ ID this response belongs to
+                    scope_of_work_quotes:
+                      description: Array of quotes per scope of work item
+                      items:
+                        type: object
+                      type: array
+                    submitted_date:
+                      description: Date when response was submitted
+                    supplier_company_id:
+                      description: Company ID of the supplier
+                    supplier_company_name:
+                      description: Supplier company name
+                      type: string
+                    total_amount:
+                      description: Total quoted amount
+                      type: number
+                    updated_at:
+                      description: Date response was last updated
+                  type: object
+                type: array
+              limit:
+                description: Items per page
+                type: integer
+              message:
+                description: Response message
+              page:
+                description: Current page number
+                type: integer
+              total_count:
+                description: Total number of items
+                type: integer
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get All RFQ Responses By Project
+      tags:
+      - RFQ
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/rfq/rfqs:
     get:
       operationId: v2_getRFQs
@@ -35193,127 +35311,6 @@ paths:
       security:
       - JWT_v2: []
       summary: Update RFQ By Id
-      tags:
-      - RFQ
-      x-ds-test-enabled: true
-      x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/rfq/responses:
-    get:
-      operationId: v2_getAllRFQResponsesByProject
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: string
-      - description: Filter by supplier company ID
-        in: query
-        name: supplierCompanyId
-        required: false
-        type: integer
-      - description: Filter by minimum evaluation score
-        in: query
-        name: evaluationScoreMin
-        required: false
-        type: number
-      - description: Filter by maximum evaluation score
-        in: query
-        name: evaluationScoreMax
-        required: false
-        type: number
-      - default: 1
-        description: Page number for pagination
-        format: int32
-        in: query
-        name: page
-        required: false
-        type: integer
-      - default: 25
-        description: Number of items per page
-        format: int32
-        in: query
-        name: limit
-        required: false
-        type: integer
-      responses:
-        200:
-          description: Successful response
-          schema:
-            properties:
-              data:
-                items:
-                  properties:
-                    clarifications:
-                      description: Clarifications text
-                      type: string
-                    created_at:
-                      description: Date response was created
-                    created_by_user_id:
-                      description: User ID who created response
-                    duration:
-                      description: Quoted duration in days
-                      type: integer
-                    evaluation_score:
-                      description: Evaluation score out of 100
-                      type: number
-                    exclusions:
-                      description: Exclusions text
-                      type: string
-                    id:
-                      description: Internal identifier for RFQ response (UUID)
-                    notes:
-                      description: Additional notes
-                      type: string
-                    project_id:
-                      description: Project ID this response belongs to
-                      type: string
-                    rfq_id:
-                      description: RFQ ID this response belongs to
-                      type: string
-                    scope_of_work_quotes:
-                      description: Array of scope of work quotes
-                      items:
-                        type: object
-                      type: array
-                    submitted_date:
-                      description: Date response was submitted
-                    supplier_company_id:
-                      description: Supplier company ID
-                      type: integer
-                    supplier_company_name:
-                      description: Supplier company name
-                      type: string
-                    total_amount:
-                      description: Total quoted amount
-                      type: number
-                    updated_at:
-                      description: Date response was last updated
-                  type: object
-                type: array
-              limit:
-                description: Number of items per page
-                type: integer
-              message:
-                type: string
-              page:
-                description: Current page number
-                type: integer
-              total_count:
-                description: Total number of items
-                type: integer
-            type: object
-        400:
-          description: Bad Request
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get All RFQ Responses By Project
       tags:
       - RFQ
       x-ds-test-enabled: true
