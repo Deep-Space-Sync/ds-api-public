@@ -3383,6 +3383,105 @@ paths:
       summary: Create or replace global permissions registry
       tags:
       - Roles
+  /v2/portals/subcontractor-progress-claims:
+    get:
+      description: 'Return progress claims for a subcontractor within the authenticated
+        Horizon workspace/project context.
+
+        Requires `Portals > Subcontractor Portal` view permission in Horizon roles.
+
+        '
+      operationId: v2_getSubcontractorPortalProgressClaims
+      parameters:
+      - description: Workspace identifier that scopes the Horizon Firestore collections
+        in: query
+        name: workspaceId
+        required: true
+        type: string
+      - description: Optional project identifier used to limit results to a project
+          context
+        in: query
+        name: projectId
+        required: false
+        type: string
+      - description: Global company/vendor identifier for the subcontractor whose
+          claims are requested
+        in: query
+        name: vendorId
+        required: true
+        type: string
+      - description: Horizon permission string supplied by the frontend to validate
+          against the role feature
+        in: query
+        name: requiredPermission
+        required: false
+        type: string
+      - description: Page number used for internal pagination when querying Horizon
+          progress claims
+        in: query
+        name: page
+        required: false
+        type: integer
+      - description: Number of results to request from Horizon progress claims (maximum
+          200)
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Filtered list of progress claims matching the subcontractor
+            within the workspace context
+          schema:
+            properties:
+              data:
+                properties:
+                  claims:
+                    items:
+                      $ref: ../hz-commercial/paths.yaml#/workspaces/{workspaceId}/hz-commercial-progress-claims/get/responses/200/schema/properties/items/items
+                    type: array
+                  emptyState:
+                    properties:
+                      isEmpty:
+                        type: boolean
+                      message:
+                        type: string
+                    type: object
+                  pagination:
+                    properties:
+                      limit:
+                        type: integer
+                      page:
+                        type: integer
+                      total:
+                        type: integer
+                    type: object
+                  projectId:
+                    type: string
+                  requiredPermission:
+                    type: string
+                  source:
+                    type: string
+                  vendorId:
+                    type: string
+                  workspaceId:
+                    type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
+        400:
+          description: Missing required parameters
+        403:
+          description: Workspace access forbidden or Horizon role lacks Subcontractor
+            Portal permission
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List subcontractor portal progress claims
+      tags:
+      - Portals
   /v2/powerbi-xmla/system-table/{reportName}:
     get:
       operationId: v2_uploadSystemTables
