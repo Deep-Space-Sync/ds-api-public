@@ -2769,10 +2769,18 @@ paths:
                   is_connected:
                     example: true
                     type: boolean
+                  is_primary:
+                    description: Whether this provider is set as primary for sending
+                      emails
+                    example: false
+                    type: boolean
                 type: object
               microsoft:
                 properties:
                   is_connected:
+                    example: false
+                    type: boolean
+                  is_primary:
                     example: false
                     type: boolean
                 type: object
@@ -2980,6 +2988,10 @@ paths:
               is_connected:
                 example: true
                 type: boolean
+              is_primary:
+                description: Whether this provider is set as primary for sending emails
+                example: false
+                type: boolean
               provider:
                 example: google
                 type: string
@@ -2993,6 +3005,63 @@ paths:
       security:
       - JWT_v2: []
       summary: Get specific email provider connection status
+      tags:
+      - HzEmailIntegration
+  /v2/notified-users/{kinde_id}/email-accounts/{provider}/primary:
+    patch:
+      description: Set the specified provider as the primary email provider for sending
+        emails. Only one provider can be primary at a time. Setting a new primary
+        automatically unsets the previous primary provider.
+      operationId: v2_setPrimaryEmailAccountProvider
+      parameters:
+      - description: User's Kinde ID (use 'me' or 'self' for current user)
+        in: path
+        name: kinde_id
+        required: true
+        type: string
+      - description: Email provider name to set as primary
+        enum:
+        - google
+        - microsoft
+        in: path
+        name: provider
+        required: true
+        type: string
+      responses:
+        200:
+          description: Provider set as primary successfully
+          schema:
+            properties:
+              email:
+                example: user@gmail.com
+                type: string
+              is_primary:
+                example: true
+                type: boolean
+              message:
+                example: google set as primary email provider
+                type: string
+              provider:
+                example: google
+                type: string
+            type: object
+        400:
+          description: Bad request - provider not connected or unsupported provider
+          schema:
+            properties:
+              message:
+                example: Cannot set google as primary - provider is not connected
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Provider not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Set email provider as primary
       tags:
       - HzEmailIntegration
   /v2/notified-users/{kinde_id}/notifications:
