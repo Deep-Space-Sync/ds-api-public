@@ -32019,8 +32019,14 @@ paths:
                     bid_status:
                       type: string
                     client_contact:
+                      description: Denormalized client contact for display
+                      type: string
+                    client_id:
+                      description: Reference to workspace client (Firestore document
+                        ID)
                       type: string
                     client_name:
+                      description: Denormalized client name for display
                       type: string
                     created_at:
                       format: date-time
@@ -32095,8 +32101,14 @@ paths:
               - undecided
               type: string
             client_contact:
+              description: Denormalized client contact for display
+              type: string
+            client_id:
+              description: Reference to workspace client (Firestore document ID, 32-char
+                hex string)
               type: string
             client_name:
+              description: Denormalized client name for display
               type: string
             description:
               type: string
@@ -32292,8 +32304,14 @@ paths:
                   bid_status:
                     type: string
                   client_contact:
+                    description: Denormalized client contact for display
+                    type: string
+                  client_id:
+                    description: Reference to workspace client (Firestore document
+                      ID)
                     type: string
                   client_name:
+                    description: Denormalized client name for display
                     type: string
                   created_at:
                     format: date-time
@@ -32371,8 +32389,14 @@ paths:
               - undecided
               type: string
             client_contact:
+              description: Denormalized client contact for display
+              type: string
+            client_id:
+              description: Reference to workspace client (Firestore document ID, 32-char
+                hex string)
               type: string
             client_name:
+              description: Denormalized client name for display
               type: string
             description:
               type: string
