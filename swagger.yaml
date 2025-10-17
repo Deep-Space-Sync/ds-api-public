@@ -7239,24 +7239,44 @@ paths:
         name: workspaceId
         required: true
         type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Whether to return cost codes in hierarchical tree structure
+        in: query
+        name: treeStructure
+        type: string
       responses:
         200:
           description: Successful response
           schema:
-            items:
-              properties:
-                cost_code_description:
-                  description: Description of cost code
-                cost_code_identifier:
-                  description: User-friendly identifier for cost code
-                cost_code_name:
-                  description: Name of cost code
-                cost_code_num:
-                  description: Internal identifier for cost code
-                parent_cost_code_num:
-                  description: ID of parent cost code
-              type: object
-            type: array
+            properties:
+              data:
+                items:
+                  properties:
+                    cost_code_description:
+                      description: Description of cost code
+                    cost_code_identifier:
+                      description: User-friendly identifier for cost code
+                    cost_code_name:
+                      description: Name of cost code
+                    cost_code_num:
+                      description: Internal identifier for cost code
+                    parent_cost_code_num:
+                      description: ID of parent cost code
+                    project_id:
+                      description: Project ID (optional, only for project-scoped cost
+                        codes)
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
         401:
           description: Unauthorized
         500:
@@ -7281,14 +7301,24 @@ paths:
         schema:
           items:
             properties:
+              cost_budget_category_id:
+                description: Budget category ID this cost code belongs to
+                type: string
               cost_code_client_id:
                 description: User-provided cost code ID
+                type: string
               cost_code_description:
                 description: Description of cost code
+                type: string
               cost_code_name:
                 description: Name of cost code
+                type: string
+              cost_code_original_value:
+                description: Original budget value for this cost code
+                type: number
               parent_cost_code_num:
                 description: ID of parent cost code
+                type: string
             required:
             - costCodeId
             type: object
@@ -7341,14 +7371,24 @@ paths:
         required: true
         schema:
           properties:
+            cost_budget_category_id:
+              description: Budget category ID this cost code belongs to
+              type: string
             cost_code_client_id:
               description: User-provided cost code ID
+              type: string
             cost_code_description:
               description: Description of cost code
+              type: string
             cost_code_name:
               description: Name of cost code
+              type: string
+            cost_code_original_value:
+              description: Original budget value for this cost code
+              type: number
             parent_cost_code_num:
               description: ID of parent cost code
+              type: string
           required:
           - cost_code_name
           type: object
@@ -7357,16 +7397,24 @@ paths:
           description: Object successfully created
           schema:
             properties:
-              cost_code_description:
-                description: Description of cost code
-              cost_code_identifier:
-                description: User-friendly identifier for cost code
-              cost_code_name:
-                description: Name of cost code
-              cost_code_num:
-                description: Internal identifier for cost code
-              parent_cost_code_num:
-                description: ID of parent cost code
+              data:
+                properties:
+                  cost_code_description:
+                    description: Description of cost code
+                  cost_code_identifier:
+                    description: User-friendly identifier for cost code
+                  cost_code_name:
+                    description: Name of cost code
+                  cost_code_num:
+                    description: Internal identifier for cost code
+                  parent_cost_code_num:
+                    description: ID of parent cost code
+                  project_id:
+                    description: Project ID (optional, only for project-scoped cost
+                      codes)
+                type: object
+              message:
+                type: string
             type: object
         401:
           description: Unauthorized
@@ -7396,16 +7444,24 @@ paths:
           description: Successful response
           schema:
             properties:
-              cost_code_description:
-                description: Description of cost code
-              cost_code_identifier:
-                description: User-friendly identifier for cost code
-              cost_code_name:
-                description: Name of cost code
-              cost_code_num:
-                description: Internal identifier for cost code
-              parent_cost_code_num:
-                description: ID of parent cost code
+              data:
+                properties:
+                  cost_code_description:
+                    description: Description of cost code
+                  cost_code_identifier:
+                    description: User-friendly identifier for cost code
+                  cost_code_name:
+                    description: Name of cost code
+                  cost_code_num:
+                    description: Internal identifier for cost code
+                  parent_cost_code_num:
+                    description: ID of parent cost code
+                  project_id:
+                    description: Project ID (optional, only for project-scoped cost
+                      codes)
+                type: object
+              message:
+                type: string
             type: object
         401:
           description: Unauthorized
@@ -7434,28 +7490,48 @@ paths:
         required: true
         schema:
           properties:
+            cost_budget_category_id:
+              description: Budget category ID this cost code belongs to
+              type: string
+            cost_code_client_id:
+              description: User-provided cost code ID
+              type: string
             cost_code_description:
               description: Description of cost code
+              type: string
             cost_code_name:
               description: Name of cost code
+              type: string
+            cost_code_original_value:
+              description: Original budget value for this cost code
+              type: number
             parent_cost_code_num:
               description: ID of parent cost code
+              type: string
           type: object
       responses:
-        201:
+        200:
           description: Object successfully edited
           schema:
             properties:
-              cost_code_description:
-                description: Description of cost code
-              cost_code_identifier:
-                description: User-friendly identifier for cost code
-              cost_code_name:
-                description: Name of cost code
-              cost_code_num:
-                description: Internal identifier for cost code
-              parent_cost_code_num:
-                description: ID of parent cost code
+              data:
+                properties:
+                  cost_code_description:
+                    description: Description of cost code
+                  cost_code_identifier:
+                    description: User-friendly identifier for cost code
+                  cost_code_name:
+                    description: Name of cost code
+                  cost_code_num:
+                    description: Internal identifier for cost code
+                  parent_cost_code_num:
+                    description: ID of parent cost code
+                  project_id:
+                    description: Project ID (optional, only for project-scoped cost
+                      codes)
+                type: object
+              message:
+                type: string
             type: object
         401:
           description: Unauthorized
@@ -24269,261 +24345,6 @@ paths:
       security:
       - JWT_v2: []
       summary: Sync QTO to BOQ
-      tags:
-      - Cost
-      x-ds-test-enabled: true
-      x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes:
-    get:
-      operationId: v2_getProjectCostCodes
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: query
-        name: page
-        type: integer
-      - in: query
-        name: limit
-        type: integer
-      - in: query
-        name: treeStructure
-        type: string
-      responses:
-        200:
-          description: Successful response
-          schema:
-            properties:
-              data:
-                items:
-                  properties:
-                    cost_code_description:
-                      description: Description of cost code
-                    cost_code_identifier:
-                      description: User-friendly identifier for cost code
-                    cost_code_name:
-                      description: Name of cost code
-                    cost_code_num:
-                      description: Internal identifier for cost code
-                    parent_cost_code_num:
-                      description: ID of parent cost code
-                    project_id:
-                      description: Project ID
-                  type: object
-                type: array
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get Cost Codes for Project
-      tags:
-      - Cost
-      x-ds-test-enabled: true
-      x-min-permissions: isCostUser
-    post:
-      operationId: v2_postProjectCostCode
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            cost_code_client_id:
-              description: User-provided cost code ID
-              type: string
-            cost_code_description:
-              description: Description of cost code
-              type: string
-            cost_code_name:
-              description: Name of cost code
-              type: string
-            cost_code_original_value:
-              description: Original budget value
-              type: number
-            cost_budget_category_id:
-              description: Budget category ID
-              type: string
-            parent_cost_code_num:
-              description: ID of parent cost code
-              type: string
-          required:
-          - cost_code_name
-          type: object
-      responses:
-        201:
-          description: Cost code successfully created
-          schema:
-            properties:
-              data:
-                properties:
-                  cost_code_description:
-                    description: Description of cost code
-                  cost_code_identifier:
-                    description: User-friendly identifier for cost code
-                  cost_code_name:
-                    description: Name of cost code
-                  cost_code_num:
-                    description: Internal identifier for cost code
-                  parent_cost_code_num:
-                    description: ID of parent cost code
-                  project_id:
-                    description: Project ID
-                type: object
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Create Cost Code for Project
-      tags:
-      - Cost
-      x-ds-test-enabled: true
-      x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/cost-codes/{costCodeId}:
-    get:
-      operationId: v2_getProjectCostCodeById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: costCodeId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Successful response
-          schema:
-            properties:
-              data:
-                properties:
-                  cost_code_description:
-                    description: Description of cost code
-                  cost_code_identifier:
-                    description: User-friendly identifier for cost code
-                  cost_code_name:
-                    description: Name of cost code
-                  cost_code_num:
-                    description: Internal identifier for cost code
-                  parent_cost_code_num:
-                    description: ID of parent cost code
-                  project_id:
-                    description: Project ID
-                type: object
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        404:
-          description: Cost code not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get Cost Code By Id for Project
-      tags:
-      - Cost
-      x-ds-test-enabled: true
-      x-min-permissions: isCostUser
-    patch:
-      operationId: v2_patchProjectCostCodeById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: costCodeId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            cost_code_client_id:
-              description: User-provided cost code ID
-              type: string
-            cost_code_description:
-              description: Description of cost code
-              type: string
-            cost_code_name:
-              description: Name of cost code
-              type: string
-            cost_code_original_value:
-              description: Original budget value
-              type: number
-            cost_budget_category_id:
-              description: Budget category ID
-              type: string
-            parent_cost_code_num:
-              description: ID of parent cost code
-              type: string
-          type: object
-      responses:
-        200:
-          description: Cost code successfully updated
-          schema:
-            properties:
-              data:
-                properties:
-                  cost_code_description:
-                    description: Description of cost code
-                  cost_code_identifier:
-                    description: User-friendly identifier for cost code
-                  cost_code_name:
-                    description: Name of cost code
-                  cost_code_num:
-                    description: Internal identifier for cost code
-                  parent_cost_code_num:
-                    description: ID of parent cost code
-                  project_id:
-                    description: Project ID
-                type: object
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        404:
-          description: Cost code not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Edit Cost Code By Id for Project
       tags:
       - Cost
       x-ds-test-enabled: true
