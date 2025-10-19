@@ -23575,7 +23575,7 @@ paths:
         name: status
         type: string
       - in: query
-        name: trade
+        name: budget_category
         type: string
       - in: query
         name: q
@@ -23623,6 +23623,8 @@ paths:
         required: true
         schema:
           properties:
+            budget_category:
+              type: string
             items:
               type: array
             qto_id:
@@ -23631,11 +23633,9 @@ paths:
               type: string
             status:
               type: string
-            trade:
-              type: string
           required:
           - qto_name
-          - trade
+          - budget_category
           - status
           type: object
       responses:
@@ -24111,6 +24111,8 @@ paths:
         required: true
         schema:
           properties:
+            budget_category_id:
+              type: string
             contingency:
               type: number
             overheads:
@@ -24119,10 +24121,8 @@ paths:
               type: number
             profit_margin:
               type: number
-            trade_id:
-              type: string
           required:
-          - trade_id
+          - budget_category_id
           - preliminaries
           - overheads
           - profit_margin
@@ -24149,9 +24149,9 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/boq-versions/{versionId}/markup/{tradeId}:
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/boq-versions/{versionId}/markup/{budgetCategoryId}:
     delete:
-      operationId: v2_deleteBOQVersionMarkupByTradeId
+      operationId: v2_deleteBOQVersionMarkupByBudgetCategoryId
       parameters:
       - in: path
         name: workspaceId
@@ -24166,7 +24166,7 @@ paths:
         required: true
         type: string
       - in: path
-        name: tradeId
+        name: budgetCategoryId
         required: true
         type: string
       responses:
@@ -24185,13 +24185,13 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Delete Version Markup By Trade ID
+      summary: Delete Version Markup By Budget Category ID
       tags:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
     get:
-      operationId: v2_getBOQVersionMarkupByTradeId
+      operationId: v2_getBOQVersionMarkupByBudgetCategoryId
       parameters:
       - in: path
         name: workspaceId
@@ -24206,7 +24206,7 @@ paths:
         required: true
         type: string
       - in: path
-        name: tradeId
+        name: budgetCategoryId
         required: true
         type: string
       responses:
@@ -24227,13 +24227,13 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get Version Markup By Trade ID
+      summary: Get Version Markup By Budget Category ID
       tags:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
     patch:
-      operationId: v2_patchBOQVersionMarkupByTradeId
+      operationId: v2_patchBOQVersionMarkupByBudgetCategoryId
       parameters:
       - in: path
         name: workspaceId
@@ -24248,7 +24248,7 @@ paths:
         required: true
         type: string
       - in: path
-        name: tradeId
+        name: budgetCategoryId
         required: true
         type: string
       - in: body
@@ -24256,6 +24256,8 @@ paths:
         required: true
         schema:
           properties:
+            budget_category_id:
+              type: string
             contingency:
               type: number
             overheads:
@@ -24264,10 +24266,8 @@ paths:
               type: number
             profit_margin:
               type: number
-            trade_id:
-              type: string
           required:
-          - trade_id
+          - budget_category_id
           - preliminaries
           - overheads
           - profit_margin
@@ -24291,7 +24291,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Update Version Markup By Trade ID
+      summary: Update Version Markup By Budget Category ID
       tags:
       - Cost
       x-ds-test-enabled: true
@@ -33061,7 +33061,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/download/{ds_data_type}:
     get:
-      operationId: v2_getProjectDownload
+      operationId: v2_downloadProjectData
       parameters:
       - in: path
         name: workspaceId
@@ -33077,16 +33077,18 @@ paths:
         type: string
       responses:
         200:
-          description: Successful response
+          description: File downloaded successfully
         401:
           description: Unauthorized
+        404:
+          description: Data not found
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Download a file from the project
+      summary: Download project data
       tags:
-      - Download
+      - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/files:
     get:
       operationId: v2_v2_getFiles
