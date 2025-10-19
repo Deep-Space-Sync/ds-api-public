@@ -37719,6 +37719,50 @@ paths:
       tags:
       - Users
   /v2/workspaces/{workspaceId}/projects/{projectId}/wbs:
+    delete:
+      description: Delete a single WBS item by ID. Requires X-Horizon-Product header
+        for Firestore-based deletion. Cannot delete WBS items that have children.
+      operationId: v2_deleteWBS
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: WBS item ID to delete
+        in: query
+        name: wbsId
+        required: true
+        type: string
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: WBS item deleted successfully
+        400:
+          description: Bad Request - WBS has children or invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: WBS item not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a WBS item
+      tags:
+      - WBS
+      x-min-permissions: isProjectManager
     get:
       operationId: v2_getWBS
       parameters:
