@@ -9573,6 +9573,9 @@ paths:
                     due_date:
                       format: date-time
                       type: string
+                    estimator:
+                      description: Optional estimator name or identifier
+                      type: string
                     id:
                       type: string
                     location:
@@ -9647,6 +9650,9 @@ paths:
               type: string
             due_date:
               format: date-time
+              type: string
+            estimator:
+              description: Optional estimator name or identifier
               type: string
             location:
               type: string
@@ -9848,6 +9854,9 @@ paths:
                   due_date:
                     format: date-time
                     type: string
+                  estimator:
+                    description: Optional estimator name or identifier
+                    type: string
                   id:
                     type: string
                   location:
@@ -9925,6 +9934,9 @@ paths:
               type: string
             due_date:
               format: date-time
+              type: string
+            estimator:
+              description: Optional estimator name or identifier
               type: string
             location:
               type: string
@@ -32634,6 +32646,9 @@ paths:
                     due_date:
                       format: date-time
                       type: string
+                    estimator:
+                      description: Optional estimator name or identifier
+                      type: string
                     id:
                       type: string
                     location:
@@ -32712,6 +32727,9 @@ paths:
               type: string
             due_date:
               format: date-time
+              type: string
+            estimator:
+              description: Optional estimator name or identifier
               type: string
             location:
               type: string
@@ -32919,6 +32937,9 @@ paths:
                   due_date:
                     format: date-time
                     type: string
+                  estimator:
+                    description: Optional estimator name or identifier
+                    type: string
                   id:
                     type: string
                   location:
@@ -33000,6 +33021,9 @@ paths:
               type: string
             due_date:
               format: date-time
+              type: string
+            estimator:
+              description: Optional estimator name or identifier
               type: string
             location:
               type: string
