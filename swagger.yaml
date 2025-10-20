@@ -3064,135 +3064,6 @@ paths:
       summary: Set email provider as primary
       tags:
       - HzEmailIntegration
-  /v2/notified-users/{kinde_id}/in-app/notifications:
-    get:
-      operationId: v2_getHzUserInAppNotifications
-      parameters:
-      - description: User's Kinde ID (use 'me' or 'self' for current user)
-        in: path
-        name: kinde_id
-        required: true
-        type: string
-      - default: false
-        description: Filter to show only unread notifications
-        in: query
-        name: unread_only
-        type: boolean
-      - description: Filter by workspace ID
-        in: query
-        name: workspace_id
-        type: string
-      - description: Filter by importance level
-        enum:
-        - notification
-        - warning
-        - alert
-        in: query
-        name: importance
-        type: string
-      - default: 1
-        description: Page number for pagination
-        in: query
-        name: page
-        type: integer
-      - default: 50
-        description: Number of items per page (max 100)
-        in: query
-        name: limit
-        type: integer
-      responses:
-        200:
-          description: In-app notifications retrieved successfully
-          schema:
-            properties:
-              data:
-                items:
-                  properties:
-                    category:
-                      type: string
-                    created_at:
-                      format: date-time
-                      type: string
-                    id:
-                      type: string
-                    importance:
-                      type: string
-                    is_action_required:
-                      type: boolean
-                    read_at:
-                      format: date-time
-                      type: string
-                    recipient_kinde_id:
-                      type: string
-                    simplified_fields:
-                      items:
-                        type: string
-                      type: array
-                    simplified_fields_value:
-                      type: object
-                    status:
-                      enum:
-                      - unread
-                      - read
-                      - archived
-                      type: string
-                    template_id:
-                      type: string
-                    title:
-                      type: string
-                    type:
-                      type: string
-                    workspace_id:
-                      type: string
-                  type: object
-                type: array
-              message:
-                example: In-app notifications retrieved successfully
-                type: string
-              pagination:
-                properties:
-                  has_next:
-                    type: boolean
-                  has_previous:
-                    type: boolean
-                  limit:
-                    type: integer
-                  page:
-                    type: integer
-                  total_count:
-                    type: integer
-                  total_pages:
-                    type: integer
-                type: object
-              summary:
-                properties:
-                  page_count:
-                    description: Number of notifications on current page
-                    type: integer
-                  total_count:
-                    description: Total number of notifications
-                    type: integer
-                  unread_count:
-                    description: Total number of unread notifications
-                    type: integer
-                type: object
-            type: object
-        400:
-          description: Invalid query parameters
-          schema:
-            properties:
-              error:
-                type: string
-              message:
-                type: string
-            type: object
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: List in-app notifications for a user
-      tags:
-      - HzNotifications
   /v2/notified-users/{kinde_id}/notifications:
     get:
       operationId: v2_getHzUserNotifications
@@ -14955,6 +14826,135 @@ paths:
       security:
       - JWT_v2: []
       summary: Send bulk emails using same template
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/in-app:
+    get:
+      operationId: v2_getHzUserInAppNotifications
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: User's Kinde ID (if not provided, uses authenticated user's ID)
+        in: query
+        name: recipient_kinde_id
+        type: string
+      - default: false
+        description: Filter to show only unread notifications
+        in: query
+        name: unread_only
+        type: boolean
+      - description: Filter by importance level
+        enum:
+        - notification
+        - warning
+        - alert
+        in: query
+        name: importance
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - default: 50
+        description: Number of items per page (max 100)
+        in: query
+        name: limit
+        type: integer
+      responses:
+        200:
+          description: In-app notifications retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    category:
+                      type: string
+                    created_at:
+                      format: date-time
+                      type: string
+                    id:
+                      type: string
+                    importance:
+                      type: string
+                    is_action_required:
+                      type: boolean
+                    read_at:
+                      format: date-time
+                      type: string
+                    recipient_kinde_id:
+                      type: string
+                    simplified_fields:
+                      items:
+                        type: string
+                      type: array
+                    simplified_fields_value:
+                      type: object
+                    status:
+                      enum:
+                      - unread
+                      - read
+                      - archived
+                      type: string
+                    template_id:
+                      type: string
+                    title:
+                      type: string
+                    type:
+                      type: string
+                    workspace_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                example: In-app notifications retrieved successfully
+                type: string
+              pagination:
+                properties:
+                  has_next:
+                    type: boolean
+                  has_previous:
+                    type: boolean
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                  total_pages:
+                    type: integer
+                type: object
+              summary:
+                properties:
+                  page_count:
+                    description: Number of notifications on current page
+                    type: integer
+                  total_count:
+                    description: Total number of notifications
+                    type: integer
+                  unread_count:
+                    description: Total number of unread notifications
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid query parameters
+          schema:
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List in-app notifications for a user
       tags:
       - HzNotifications
   /v2/workspaces/{workspaceId}/hz-notifications/in-app/send:
