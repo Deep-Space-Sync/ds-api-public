@@ -15073,6 +15073,125 @@ paths:
       summary: Send in-app notification using template
       tags:
       - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/in-app/{notification_id}:
+    patch:
+      operationId: v2_patchHzInAppNotification
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Notification ID to update
+        in: path
+        name: notification_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            is_mark_as_read:
+              description: Mark notification as read (true) or unread (false)
+              example: true
+              type: boolean
+          required:
+          - is_mark_as_read
+          type: object
+      responses:
+        200:
+          description: Notification updated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  category:
+                    type: string
+                  created_at:
+                    format: date-time
+                    type: string
+                  id:
+                    type: string
+                  importance:
+                    enum:
+                    - notification
+                    - warning
+                    - alert
+                    type: string
+                  is_action_required:
+                    type: boolean
+                  is_mark_as_read:
+                    type: boolean
+                  is_unread:
+                    type: boolean
+                  read_at:
+                    format: date-time
+                    type: string
+                  recipient_kinde_id:
+                    type: string
+                  simplified_fields:
+                    items:
+                      type: string
+                    type: array
+                  simplified_fields_value:
+                    type: object
+                  status:
+                    enum:
+                    - pending
+                    - delivered
+                    - read
+                    - failed
+                    type: string
+                  template_id:
+                    type: string
+                  title:
+                    type: string
+                  type:
+                    type: string
+                  updated_at:
+                    format: date-time
+                    type: string
+                  workspace_id:
+                    type: string
+                type: object
+              message:
+                example: Notification updated successfully
+                type: string
+            type: object
+        400:
+          description: Bad request - missing or invalid fields
+          schema:
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+            type: object
+        404:
+          description: Notification not found
+          schema:
+            properties:
+              message:
+                example: Notification not found
+                type: string
+            type: object
+        500:
+          description: Internal server error
+          schema:
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+              request_id:
+                type: string
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Mark in-app notification as read
+      tags:
+      - HzNotifications
   /v2/workspaces/{workspaceId}/hz-preconstruction-bid-packages:
     get:
       description: Retrieve bid packages with optional filters and pagination
