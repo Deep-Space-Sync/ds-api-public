@@ -3064,6 +3064,135 @@ paths:
       summary: Set email provider as primary
       tags:
       - HzEmailIntegration
+  /v2/notified-users/{kinde_id}/in-app/notifications:
+    get:
+      operationId: v2_getHzUserInAppNotifications
+      parameters:
+      - description: User's Kinde ID (use 'me' or 'self' for current user)
+        in: path
+        name: kinde_id
+        required: true
+        type: string
+      - default: false
+        description: Filter to show only unread notifications
+        in: query
+        name: unread_only
+        type: boolean
+      - description: Filter by workspace ID
+        in: query
+        name: workspace_id
+        type: string
+      - description: Filter by importance level
+        enum:
+        - notification
+        - warning
+        - alert
+        in: query
+        name: importance
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - default: 50
+        description: Number of items per page (max 100)
+        in: query
+        name: limit
+        type: integer
+      responses:
+        200:
+          description: In-app notifications retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    category:
+                      type: string
+                    created_at:
+                      format: date-time
+                      type: string
+                    id:
+                      type: string
+                    importance:
+                      type: string
+                    is_action_required:
+                      type: boolean
+                    read_at:
+                      format: date-time
+                      type: string
+                    recipient_kinde_id:
+                      type: string
+                    simplified_fields:
+                      items:
+                        type: string
+                      type: array
+                    simplified_fields_value:
+                      type: object
+                    status:
+                      enum:
+                      - unread
+                      - read
+                      - archived
+                      type: string
+                    template_id:
+                      type: string
+                    title:
+                      type: string
+                    type:
+                      type: string
+                    workspace_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                example: In-app notifications retrieved successfully
+                type: string
+              pagination:
+                properties:
+                  has_next:
+                    type: boolean
+                  has_previous:
+                    type: boolean
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                  total_pages:
+                    type: integer
+                type: object
+              summary:
+                properties:
+                  page_count:
+                    description: Number of notifications on current page
+                    type: integer
+                  total_count:
+                    description: Total number of notifications
+                    type: integer
+                  unread_count:
+                    description: Total number of unread notifications
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid query parameters
+          schema:
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List in-app notifications for a user
+      tags:
+      - HzNotifications
   /v2/notified-users/{kinde_id}/notifications:
     get:
       operationId: v2_getHzUserNotifications
@@ -14826,6 +14955,122 @@ paths:
       security:
       - JWT_v2: []
       summary: Send bulk emails using same template
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/in-app/send:
+    post:
+      operationId: v2_sendHzInAppNotification
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              description: Template category (e.g., progress_claims, task_management)
+              example: progress_claims
+              type: string
+            importance:
+              default: notification
+              description: Importance level of the notification
+              enum:
+              - notification
+              - warning
+              - alert
+              type: string
+            is_action_required:
+              default: false
+              description: Whether action is required from the recipient
+              type: boolean
+            recipient_kinde_id:
+              description: Kinde ID of the notification recipient
+              example: kp_abc123xyz
+              type: string
+            simplified_fields_value:
+              description: Simplified field values for display
+              example:
+                amount: $1,245,350
+                submitted_by: Sarah Wong
+              type: object
+            template_variables:
+              description: Variables to substitute in template
+              example:
+                claim_amount: $1,245,350
+                user_email: sarah@example.com
+              type: object
+            type:
+              description: Template type (e.g., claim_submitted, task_assigned)
+              example: claim_submitted
+              type: string
+          required:
+          - category
+          - type
+          - template_variables
+          - simplified_fields_value
+          - recipient_kinde_id
+          type: object
+      responses:
+        201:
+          description: In-app notification sent successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  category:
+                    example: progress_claims
+                    type: string
+                  created_at:
+                    format: date-time
+                    type: string
+                  importance:
+                    example: notification
+                    type: string
+                  notification_id:
+                    example: notif_abc123
+                    type: string
+                  recipient_kinde_id:
+                    example: kp_abc123xyz
+                    type: string
+                  status:
+                    example: unread
+                    type: string
+                  template_id:
+                    example: tpl_xyz789
+                    type: string
+                  type:
+                    example: claim_submitted
+                    type: string
+                  workspace_id:
+                    example: workspace-123
+                    type: string
+                type: object
+              message:
+                example: In-app notification sent successfully
+                type: string
+            type: object
+        400:
+          description: Validation failed - missing or invalid fields
+          schema:
+            properties:
+              message:
+                type: string
+              required_field:
+                type: string
+              required_fields:
+                items:
+                  type: string
+                type: array
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Send in-app notification using template
       tags:
       - HzNotifications
   /v2/workspaces/{workspaceId}/hz-preconstruction-bid-packages:
