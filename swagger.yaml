@@ -21581,6 +21581,9 @@ paths:
       - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/project-constraints-delete:
     delete:
+      description: Bulk delete all action constraints for a workspace and project.
+        Uses Firestore batch operations for efficient processing of large datasets
+        (processes in batches of 500 documents).
       operationId: v2_deleteAllActionConstraints
       parameters:
       - in: path
@@ -21609,6 +21612,8 @@ paths:
       - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/project-dependencies-delete:
     delete:
+      description: Bulk delete all action dependencies for a workspace and project.
+        Includes cleanup of embedded dependency data in action documents.
       operationId: v2_deleteAllActionDependencies
       parameters:
       - in: path
@@ -21639,7 +21644,8 @@ paths:
     delete:
       description: Delete all actions with action_category = 'Scheduling Task' for
         a specific workspace and project. This operation performs soft delete using
-        Firestore utilities with proper change tracking.
+        Firestore batch operations for efficient processing of large datasets (processes
+        in batches of 500 documents).
       operationId: v2_deleteProjectSchedulingTasks
       parameters:
       - description: Workspace identifier
@@ -35465,6 +35471,9 @@ paths:
       - Power BI
   /v2/workspaces/{workspaceId}/projects/{projectId}/project-resources-delete:
     delete:
+      description: Bulk delete all resources for a workspace and project. Uses Firestore
+        batch operations for efficient processing of large datasets (processes in
+        batches of 500 documents).
       operationId: v2_deleteAllResources
       parameters:
       - in: path
@@ -35493,6 +35502,9 @@ paths:
       - Resources
   /v2/workspaces/{workspaceId}/projects/{projectId}/project-wbs-delete:
     delete:
+      description: Bulk delete all WBS items for a workspace and project. Uses Firestore
+        batch operations for efficient processing of large datasets (processes in
+        batches of 500 documents).
       operationId: v2_deleteAllWbsItems
       parameters:
       - in: path
