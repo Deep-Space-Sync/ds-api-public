@@ -15115,7 +15115,6 @@ paths:
       operationId: v2_streamHzInAppNotifications
       parameters:
       - description: Workspace ID for filtering notifications
-        example: workspace-123
         in: path
         name: workspaceId
         required: true
@@ -15125,7 +15124,6 @@ paths:
           If not provided, uses the authenticated user''s ID from JWT token.
 
           '
-        example: kp_abc123xyz
         in: query
         name: recipient_kinde_id
         required: false
