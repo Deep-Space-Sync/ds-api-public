@@ -5191,7 +5191,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/cde/v2:
     get:
-      operationId: v2_getCdeDocsWorkspaceLevel
+      operationId: v2_getCdeDocsWorkspaceLevelV2
       parameters:
       - in: path
         name: workspaceId
@@ -5225,7 +5225,7 @@ paths:
       tags:
       - Get Data
     post:
-      operationId: v2_postCdeWorkspaceLevel
+      operationId: v2_postCdeWorkspaceLevelV2
       parameters:
       - in: path
         name: workspaceId
@@ -5279,7 +5279,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/cde/v2/process:
     post:
-      operationId: v2_processCDEWorkspaceLevel
+      operationId: v2_processCDEWorkspaceLevelV2
       parameters:
       - in: path
         name: workspaceId
@@ -5318,7 +5318,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/cde/v2/types:
     get:
-      operationId: v2_getCDETypes
+      operationId: v2_getCDETypesV2
       parameters:
       - in: path
         name: workspaceId
@@ -5339,7 +5339,7 @@ paths:
   /v2/workspaces/{workspaceId}/cde/v2/{cdeId}:
     delete:
       description: Invalidates a CDE entry for failed uploads
-      operationId: v2_invalidateCdeEntryWorkspaceLevel
+      operationId: v2_invalidateCdeEntryWorkspaceLevelV2
       parameters:
       - in: path
         name: workspaceId
@@ -5362,7 +5362,7 @@ paths:
       tags:
       - Upload Data
     get:
-      operationId: v2_getCdeFileWorkspaceLevel
+      operationId: v2_getCdeFileWorkspaceLevelV2
       parameters:
       - in: path
         name: workspaceId
@@ -5386,7 +5386,7 @@ paths:
       - Get Data
   /v2/workspaces/{workspaceId}/cde/v2/{cdeId}/metadata:
     put:
-      operationId: v2_putCdeMetadataWorkspaceLevel
+      operationId: v2_putCdeMetadataWorkspaceLevelV2
       parameters:
       - in: path
         name: workspaceId
@@ -5425,7 +5425,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/cde/v2/{cdeId}/status:
     put:
-      operationId: v2_putCdeStatusWorkspaceLevel
+      operationId: v2_putCdeStatusWorkspaceLevelV2
       parameters:
       - in: path
         name: workspaceId
@@ -23346,7 +23346,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2:
     get:
-      operationId: v2_getCdeDocs
+      operationId: v2_getCdeDocsV2
       parameters:
       - in: path
         name: workspaceId
@@ -23369,7 +23369,7 @@ paths:
       tags:
       - Get Data
     post:
-      operationId: v2_postCde
+      operationId: v2_postCdeV2
       parameters:
       - in: path
         name: workspaceId
@@ -23419,7 +23419,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/process:
     post:
-      operationId: v2_processCDE
+      operationId: v2_processCDEV2
       parameters:
       - in: path
         name: workspaceId
@@ -23463,7 +23463,7 @@ paths:
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/{cdeId}:
     delete:
       description: Invalidates a CDE entry for failed uploads
-      operationId: v2_invalidateCdeEntry
+      operationId: v2_invalidateCdeEntryV2
       parameters:
       - in: path
         name: workspaceId
@@ -23490,7 +23490,7 @@ paths:
       tags:
       - Upload Data
     get:
-      operationId: v2_getCdeFile
+      operationId: v2_getCdeFileV2
       parameters:
       - in: path
         name: workspaceId
@@ -23523,7 +23523,7 @@ paths:
       - Get Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/{cdeId}/metadata:
     put:
-      operationId: v2_putCdeMetadata
+      operationId: v2_putCdeMetadataV2
       parameters:
       - in: path
         name: workspaceId
@@ -23566,7 +23566,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/{cdeId}/status:
     put:
-      operationId: v2_putCdeStatus
+      operationId: v2_putCdeStatusV2
       parameters:
       - in: path
         name: workspaceId
