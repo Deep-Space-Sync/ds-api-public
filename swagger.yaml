@@ -2322,6 +2322,44 @@ paths:
       summary: Process single email queue item (Cloud Tasks only)
       tags:
       - HzNotificationSender
+  /v2/hz-tender-documents-available-sections:
+    get:
+      description: Retrieve the global list of available tender document sections
+        from Firestore
+      operationId: v2_listHzTenderDocumentsAvailableSections
+      responses:
+        200:
+          description: Available sections retrieved successfully
+          schema:
+            properties:
+              sections:
+                items:
+                  properties:
+                    description:
+                      description: Description of what this section contains
+                      type: string
+                    is_required:
+                      description: Whether this section is required in documents
+                      type: boolean
+                    name:
+                      description: Display name of the section
+                      type: string
+                    section_key:
+                      description: Snake_case section identifier (document ID)
+                      type: string
+                  type: object
+                type: array
+              total:
+                description: Total number of available sections
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: Get all available tender document sections
+      tags:
+      - HzTenderDocuments
   /v2/jobs/{job_guid}/status:
     get:
       operationId: v2_getJobStatusGlobal
@@ -18546,6 +18584,334 @@ paths:
       summary: Get resource planning data
       tags:
       - Scheduling
+  /v2/workspaces/{workspaceId}/hz-tender-documents:
+    get:
+      operationId: v2_listHzTenderDocuments
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        name: page
+        type: integer
+      - default: 50
+        description: Items per page (max 100)
+        in: query
+        name: limit
+        type: integer
+      responses:
+        200:
+          description: Tender documents retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    created_at:
+                      format: date-time
+                      type: string
+                    created_by:
+                      type: string
+                    document_sections:
+                      additionalProperties:
+                        properties:
+                          content:
+                            type: string
+                          required_fields:
+                            items:
+                              type: string
+                            type: array
+                        type: object
+                      type: object
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                    workspace_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                  total_pages:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch
+      security:
+      - JWT_v2: []
+      summary: List all tender documents for a workspace
+      tags:
+      - HzTenderDocuments
+    post:
+      operationId: v2_createHzTenderDocument
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_sections:
+              additionalProperties:
+                properties:
+                  content:
+                    description: HTML + CSS content for the section
+                    type: string
+                  required_fields:
+                    description: Array of required field names
+                    items:
+                      type: string
+                    type: array
+                required:
+                - content
+                type: object
+              description: Customizable sections with snake_case keys
+              type: object
+            title:
+              description: Name/title of the tender document
+              type: string
+          required:
+          - title
+          - document_sections
+          type: object
+      responses:
+        201:
+          description: Tender document created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  created_at:
+                    format: date-time
+                    type: string
+                  created_by:
+                    type: string
+                  document_sections:
+                    type: object
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  updated_at:
+                    format: date-time
+                    type: string
+                  workspace_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - validation failed
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch
+      security:
+      - JWT_v2: []
+      summary: Create a new tender document
+      tags:
+      - HzTenderDocuments
+  /v2/workspaces/{workspaceId}/hz-tender-documents/{documentId}:
+    delete:
+      operationId: v2_deleteHzTenderDocument
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tender document deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch
+        404:
+          description: Document not found or unauthorized
+      security:
+      - JWT_v2: []
+      summary: Delete a tender document (soft delete)
+      tags:
+      - HzTenderDocuments
+    get:
+      operationId: v2_getHzTenderDocument
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tender document retrieved successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  created_at:
+                    format: date-time
+                    type: string
+                  created_by:
+                    type: string
+                  document_sections:
+                    additionalProperties:
+                      properties:
+                        content:
+                          type: string
+                        required_fields:
+                          items:
+                            type: string
+                          type: array
+                      type: object
+                    type: object
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  updated_at:
+                    format: date-time
+                    type: string
+                  workspace_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch
+        404:
+          description: Document not found
+      security:
+      - JWT_v2: []
+      summary: Get a specific tender document
+      tags:
+      - HzTenderDocuments
+    put:
+      operationId: v2_updateHzTenderDocument
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_sections:
+              additionalProperties:
+                properties:
+                  content:
+                    description: HTML + CSS content for the section
+                    type: string
+                  required_fields:
+                    description: Array of required field names
+                    items:
+                      type: string
+                    type: array
+                required:
+                - content
+                type: object
+              description: Customizable sections with snake_case keys
+              type: object
+            title:
+              description: Name/title of the tender document
+              type: string
+          type: object
+      responses:
+        200:
+          description: Tender document updated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  created_at:
+                    format: date-time
+                    type: string
+                  created_by:
+                    type: string
+                  document_sections:
+                    type: object
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  updated_at:
+                    format: date-time
+                    type: string
+                  workspace_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - validation failed
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch or unauthorized
+        404:
+          description: Document not found
+      security:
+      - JWT_v2: []
+      summary: Update a tender document
+      tags:
+      - HzTenderDocuments
   /v2/workspaces/{workspaceId}/implementation:
     get:
       operationId: v2_getWorkspaceImplementationChecklist
