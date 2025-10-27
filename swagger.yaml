@@ -39508,6 +39508,69 @@ paths:
       tags:
       - WBS
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/projects/{projectId}/wbs/recalculate-dates:
+    post:
+      description: Manually trigger recalculation of start_date and end_date for all
+        WBS items based on their children (tasks and nested WBS). WBS dates are calculated
+        as earliest start and latest end among all descendants. Processes WBS hierarchy
+        in bottom-up order for correct propagation.
+      operationId: v2_recalculateWbsDates
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: WBS dates recalculated successfully
+          schema:
+            properties:
+              failed_count:
+                description: Number of WBS items that failed to update
+                type: integer
+              failed_wbs_ids:
+                description: IDs of WBS items that failed (if any)
+                items:
+                  type: string
+                type: array
+              message:
+                description: Summary message
+                type: string
+              success:
+                description: Whether recalculation succeeded
+                type: boolean
+              total_wbs:
+                description: Total number of WBS items found
+                type: integer
+              updated_count:
+                description: Number of WBS items updated
+                type: integer
+            type: object
+        400:
+          description: Bad Request - invalid parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error - recalculation failed
+      security:
+      - JWT_v2: []
+      summary: Recalculate all WBS dates for project
+      tags:
+      - WBS
+      x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/reports/cost-forecast/projects:
     get:
       description: Returns cost forecast data with budget variance for all projects
