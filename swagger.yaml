@@ -7596,6 +7596,9 @@ paths:
                   description: Project ID the contract belongs to
                 receiving_company_id:
                   description: Internal identifier for the receiving company
+                region:
+                  description: Region associated with the contract
+                  type: string
                 retention_cap_value:
                   description: Retention cap value
                 start_date:
@@ -27740,6 +27743,9 @@ paths:
                   description: Practical completion date
                 receiving_company_id:
                   description: Internal identifier for the receiving company
+                region:
+                  description: Region associated with the contract
+                  type: string
                 retention_cap_value:
                   description: Retention cap value
                 start_date:
@@ -27801,6 +27807,9 @@ paths:
               description: Practical completion date
             receiving_company_id:
               description: Internal identifier for the receiving company
+            region:
+              description: Region associated with the contract
+              type: string
             retention_cap_value:
               description: Retention cap value
             start_date:
@@ -27850,6 +27859,9 @@ paths:
                 description: Practical completion date
               receiving_company_id:
                 description: Internal identifier for the receiving company
+              region:
+                description: Region associated with the contract
+                type: string
               retention_cap_value:
                 description: Retention cap value
               start_date:
@@ -27935,6 +27947,9 @@ paths:
                 description: Practical completion date
               receiving_company_id:
                 description: Internal identifier for the receiving company
+              region:
+                description: Region associated with the contract
+                type: string
               retention_cap_value:
                 description: Retention cap value
               start_date:
@@ -27999,6 +28014,9 @@ paths:
               description: Practical completion date
             receiving_company_id:
               description: Internal identifier for the receiving company
+            region:
+              description: Region associated with the contract
+              type: string
             retention_cap_value:
               description: Retention cap value
             start_date:
@@ -28043,6 +28061,9 @@ paths:
                 description: Practical completion date
               receiving_company_id:
                 description: Internal identifier for the receiving company
+              region:
+                description: Region associated with the contract
+                type: string
               retention_cap_value:
                 description: Retention cap value
               start_date:
