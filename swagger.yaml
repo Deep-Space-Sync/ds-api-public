@@ -7538,6 +7538,85 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/contracts:
+    get:
+      operationId: v2_getCostContractsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Page number for pagination (default 1)
+        in: query
+        name: page
+        required: false
+        type: integer
+      - description: Number of items per page (default 50)
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            items:
+              properties:
+                award_date:
+                  description: Date the contract was awarded
+                contract_currency:
+                  description: Currency of the cost contract
+                contract_identifier:
+                  description: User-friendly identifier for cost contract
+                contract_risk:
+                  description: Risk level of the contract (Low/Medium/High)
+                contract_status:
+                  description: Status of the contract (Draft/Active/Completed/Cancelled)
+                contract_type:
+                  description: Type of contract (SUBCONTRACT/HEAD)
+                contract_value:
+                  description: Value of the cost contract
+                cost_contract_name:
+                  description: Name of the cost contract
+                cost_contract_num:
+                  description: Internal identifier for cost contract
+                cost_contract_scope_of_work:
+                  description: Scope of work for the cost contract
+                created_at:
+                  description: Date the contract was created
+                created_by_user_id:
+                  description: User ID of the person who created the contract
+                dlp_end:
+                  description: Defects liability period end date
+                issuing_company_id:
+                  description: Internal identifier for the issuing company
+                pc_date:
+                  description: Practical completion date
+                project_id:
+                  description: Project ID the contract belongs to
+                receiving_company_id:
+                  description: Internal identifier for the receiving company
+                retention_cap_value:
+                  description: Retention cap value
+                start_date:
+                  description: Start date of the contract
+                trade:
+                  description: Trade associated with the contract
+                updated_at:
+                  description: Date the contract was last updated
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Cost Contracts (Workspace Level)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/cost-codes:
     get:
       operationId: v2_getCostCodes
