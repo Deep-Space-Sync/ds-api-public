@@ -19194,6 +19194,76 @@ paths:
       summary: Get Workspace Implementation Checklist
       tags:
       - implementation
+    post:
+      consumes:
+      - application/json
+      operationId: v2_createImplementationCheck
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            check_name:
+              description: Human-readable check name
+              type: string
+            check_query:
+              description: SQL query with {project_id} placeholder
+              type: string
+            check_workload:
+              description: Workload identifier
+              type: string
+            first_metric_name:
+              description: Name of first metric
+              type: string
+            help_link:
+              description: Link to documentation
+              type: string
+            negative_text_feedback:
+              description: Feedback when check fails
+              type: string
+            order_field:
+              description: Display order
+              type: integer
+            positive_text_feedback:
+              description: Feedback when check passes
+              type: string
+            scope:
+              description: Scope (ProjectConfig, WorkspaceConfig, etc)
+              type: string
+          required:
+          - scope
+          - check_workload
+          - check_name
+          - check_query
+          - positive_text_feedback
+          - negative_text_feedback
+          type: object
+      responses:
+        201:
+          description: Implementation check created
+          schema:
+            properties:
+              id_implementation_checks:
+                type: integer
+              message:
+                type: string
+              success:
+                type: boolean
+            type: object
+        403:
+          description: Missing or invalid admin password header
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create New Implementation Check
+      tags:
+      - implementation
   /v2/workspaces/{workspaceId}/integrations:
     get:
       operationId: v2_getWorkspaceIntegrations
