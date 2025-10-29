@@ -24704,6 +24704,110 @@ paths:
       summary: Plan a configuration operation
       tags:
       - Automated Config
+  /v2/workspaces/{workspaceId}/projects/{projectId}/config/registry/operations:
+    get:
+      description: Returns list of all operations registered in Firestore
+      operationId: v2_listRegistryOperations
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of operations
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: List all operations in registry
+      tags:
+      - Automated Config Registry
+    post:
+      description: Create or update an operation definition in Firestore
+      operationId: v2_upsertRegistryOperation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Operation created/updated
+        400:
+          description: Invalid request
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: Upsert operation in registry
+      tags:
+      - Automated Config Registry
+  /v2/workspaces/{workspaceId}/projects/{projectId}/config/registry/operations/{operationName}:
+    delete:
+      description: Removes an operation definition from Firestore
+      operationId: v2_deleteRegistryOperation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: operationName
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Operation deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Operation not found
+      security:
+      - JWT_v2: []
+      summary: Delete operation from registry
+      tags:
+      - Automated Config Registry
+    get:
+      description: Returns full operation definition from Firestore
+      operationId: v2_getRegistryOperation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: operationName
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Operation definition
+        401:
+          description: Unauthorized
+        404:
+          description: Operation not found
+      security:
+      - JWT_v2: []
+      summary: Get specific operation from registry
+      tags:
+      - Automated Config Registry
   /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence:
     post:
       operationId: v2_logCorrespondence
