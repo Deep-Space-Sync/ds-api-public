@@ -2254,15 +2254,20 @@ paths:
       - HzNotifications
   /v2/hz-notifications/email/queue/process-single:
     post:
-      description: 'Internal endpoint called by Cloud Tasks to process individual
-        email queue items.
+      description: 'Internal endpoint called by Cloud Tasks to process queue items.
 
         No authentication required as this is called by trusted Cloud Tasks service.
+
+        Supports two types of queue processing:
+
+        - Notification emails (type: "email" or omitted)
+
+        - Tender document emails with PDF attachments (type: "tender_document")
 
         Workspace ID is extracted from the queue item itself.
 
         '
-      operationId: v2_processHzEmailQueueSingleCloudTasks
+      operationId: v2_processHzQueueItemCloudTasks
       parameters:
       - in: body
         name: body
@@ -2270,7 +2275,21 @@ paths:
         schema:
           properties:
             queue_id:
-              description: ID of the email queue item to process
+              description: ID of the queue item to process (from hz_email_queue or
+                hz_tender_document_email_queue)
+              type: string
+            type:
+              default: email
+              description: 'Type of queue item to process:
+
+                - "email": Process notification email queue item (default)
+
+                - "tender_document": Process tender document email with PDF attachment
+
+                '
+              enum:
+              - email
+              - tender_document
               type: string
           required:
           - queue_id
@@ -2319,7 +2338,7 @@ paths:
               message:
                 type: string
             type: object
-      summary: Process single email queue item (Cloud Tasks only)
+      summary: Process queue item - email or tender document (Cloud Tasks only)
       tags:
       - HzNotificationSender
   /v2/hz-tender-documents-available-sections:
@@ -18817,6 +18836,147 @@ paths:
       security:
       - JWT_v2: []
       summary: Create a new tender document
+      tags:
+      - HzTenderDocuments
+  /v2/workspaces/{workspaceId}/hz-tender-documents/send:
+    post:
+      description: Queue tender document email for sending via user's connected email
+        provider (Gmail/Outlook) with PDF attachment
+      operationId: v2_sendHzTenderDocument
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            bcc_recipients:
+              description: List of BCC recipients (optional)
+              items:
+                properties:
+                  email:
+                    format: email
+                    type: string
+                  name:
+                    type: string
+                required:
+                - email
+                type: object
+              type: array
+            cc_recipients:
+              description: List of CC recipients (optional)
+              items:
+                properties:
+                  email:
+                    format: email
+                    type: string
+                  name:
+                    type: string
+                required:
+                - email
+                type: object
+              type: array
+            email_body_html:
+              description: HTML body content for the email
+              type: string
+            email_subject:
+              description: Subject line for the email
+              type: string
+            pdf_filename:
+              description: Filename for the PDF attachment
+              type: string
+            template_variables:
+              additionalProperties:
+                type: string
+              description: Optional variables to substitute in document content (e.g.
+                ${project_name} -> "ABC Building")
+              type: object
+            tender_document_id:
+              description: ID of the tender document to send
+              type: string
+            to_recipients:
+              description: List of primary recipients
+              items:
+                properties:
+                  email:
+                    format: email
+                    type: string
+                  name:
+                    type: string
+                required:
+                - email
+                type: object
+              type: array
+          required:
+          - tender_document_id
+          - to_recipients
+          - email_subject
+          - email_body_html
+          - pdf_filename
+          type: object
+      responses:
+        201:
+          description: Tender document email queued successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  created_at:
+                    format: date-time
+                    type: string
+                  queue_id:
+                    description: ID of the queue item
+                    type: string
+                  recipient_count:
+                    properties:
+                      bcc:
+                        type: integer
+                      cc:
+                        type: integer
+                      to:
+                        type: integer
+                      total:
+                        type: integer
+                    type: object
+                  status:
+                    enum:
+                    - pending
+                    - processing
+                    - sent
+                    - failed
+                    type: string
+                  tender_document_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - validation failed or email integration required
+          schema:
+            properties:
+              error:
+                type: string
+              errors:
+                items:
+                  type: string
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch
+        404:
+          description: Tender document not found
+      security:
+      - JWT_v2: []
+      summary: Send tender document via email with PDF attachment
       tags:
       - HzTenderDocuments
   /v2/workspaces/{workspaceId}/hz-tender-documents/{documentId}:
