@@ -19259,8 +19259,6 @@ paths:
           description: Missing or invalid admin password header
         500:
           description: Internal Server Error
-      security:
-      - JWT_v2: []
       summary: Create New Implementation Check
       tags:
       - implementation
