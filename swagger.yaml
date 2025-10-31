@@ -23175,6 +23175,256 @@ paths:
       summary: Bulk delete all scheduling task actions
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/schedule/bulk-update:
+    post:
+      description: Create a bulk update job to update multiple scheduling tasks at
+        once. Supports per-task field updates with async job processing. Maximum 50
+        tasks per request. Returns immediately with job ID for status polling.
+      operationId: v2_bulkUpdateSchedulingTasks
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - description: Bulk update request with array of task updates
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            updates:
+              description: Array of task updates (max 50 tasks)
+              items:
+                properties:
+                  action_description:
+                    description: Task description
+                    type: string
+                  action_id:
+                    description: UUID of the scheduling task to update
+                    type: string
+                  actual_end_date:
+                    description: Actual end date
+                    format: date
+                    type: string
+                  actual_start_date:
+                    description: Actual start date
+                    format: date
+                    type: string
+                  cost_code:
+                    description: Cost code
+                    type: string
+                  end_date:
+                    description: Planned end date (triggers propagation)
+                    format: date
+                    type: string
+                  progress_percentage:
+                    description: Task completion percentage
+                    maximum: 100
+                    minimum: 0
+                    type: number
+                  resources:
+                    description: Assigned resources
+                    type: string
+                  start_date:
+                    description: Planned start date (triggers propagation)
+                    format: date
+                    type: string
+                  subcontractor:
+                    description: Subcontractor name
+                    type: string
+                  trade:
+                    description: Trade assignment
+                    type: string
+                required:
+                - action_id
+                type: object
+              maxItems: 50
+              type: array
+          required:
+          - updates
+          type: object
+      responses:
+        202:
+          description: Bulk update job created successfully
+          schema:
+            properties:
+              job_id:
+                description: Unique job identifier for status polling
+                type: string
+              message:
+                description: Success message
+                type: string
+              status:
+                description: Initial job status
+                enum:
+                - pending
+                type: string
+              status_url:
+                description: URL to poll for job status
+                type: string
+              total_tasks:
+                description: Number of tasks to be updated
+                type: integer
+            type: object
+        400:
+          description: Bad Request - Invalid input (>50 tasks, missing action_id,
+            etc.)
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Bulk update scheduling tasks
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/schedule/bulk-update/jobs/{jobId}:
+    get:
+      description: Poll the status of a bulk update job. Returns current progress,
+        results, and propagation status. Poll every 1-2 seconds until status is 'completed'
+        or 'failed'.
+      operationId: v2_getBulkUpdateJobStatus
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Job identifier from bulk update response
+        in: path
+        name: jobId
+        required: true
+        type: string
+      - description: Job identifier (also required as query parameter for backend
+          routing)
+        in: query
+        name: jobId
+        required: true
+        type: string
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: Job status retrieved successfully
+          schema:
+            properties:
+              completed_at:
+                description: Completion timestamp (null if not completed)
+                format: date-time
+                type: string
+              created_at:
+                description: Job creation timestamp
+                format: date-time
+                type: string
+              job_id:
+                description: Job identifier
+                type: string
+              progress:
+                properties:
+                  completed:
+                    description: Number of tasks processed
+                    type: integer
+                  failed:
+                    description: Number of failed tasks
+                    type: integer
+                  succeeded:
+                    description: Number of successfully updated tasks
+                    type: integer
+                  total:
+                    description: Total number of tasks
+                    type: integer
+                type: object
+              propagation_result:
+                description: Propagation result details
+                properties:
+                  cycles_detected:
+                    items:
+                      type: string
+                    type: array
+                  errors:
+                    items:
+                      type: string
+                    type: array
+                  updated_tasks:
+                    items:
+                      type: object
+                    type: array
+                  updated_tasks_count:
+                    type: integer
+                type: object
+              propagation_status:
+                description: Date propagation status
+                enum:
+                - not_needed
+                - pending
+                - completed
+                - failed
+                type: string
+              results:
+                description: Individual task results
+                items:
+                  properties:
+                    action_id:
+                      type: string
+                    error:
+                      description: Error message if failed
+                      type: string
+                    status:
+                      enum:
+                      - success
+                      - failed
+                      type: string
+                  type: object
+                type: array
+              status:
+                description: Current job status
+                enum:
+                - pending
+                - processing
+                - completed
+                - failed
+                type: string
+              updated_at:
+                description: Last update timestamp
+                format: date-time
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid job ID
+        401:
+          description: Unauthorized
+        404:
+          description: Job not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get bulk update job status
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/tasks:
     get:
       operationId: v2_getActionTasksByWorkspaceIdAndProjectId
