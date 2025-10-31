@@ -23313,12 +23313,6 @@ paths:
         name: jobId
         required: true
         type: string
-      - description: Job identifier (also required as query parameter for backend
-          routing)
-        in: query
-        name: jobId
-        required: true
-        type: string
       - description: Required header for Firestore-based endpoints
         enum:
         - 'true'
