@@ -42123,6 +42123,354 @@ paths:
       summary: Update an existing form link
       tags:
       - HzFormLinks
+  /v2/workspaces/{workspace_id}/hz-sub-form-links:
+    get:
+      operationId: v2_listSubFormLinks
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Filter links by father type (parent form type)
+        in: query
+        name: father_type
+        required: false
+        type: string
+      - description: Filter links by form alias
+        in: query
+        name: form_alias
+        required: false
+        type: string
+      - description: Filter links by active status
+        in: query
+        name: is_active
+        required: false
+        type: boolean
+      - description: Text search across father_type and form_alias
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Sub-form links retrieved successfully
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    created_at:
+                      example: '2025-11-03T10:30:00.123456Z'
+                      format: date-time
+                      type: string
+                    created_by_user_id:
+                      example: user_abc123
+                      type: string
+                    father_type:
+                      example: incident_report
+                      type: string
+                    form_alias:
+                      example: injury_details
+                      type: string
+                    id:
+                      example: b2c3d4e5-f6g7-8901-bcde-fg2345678901
+                      type: string
+                    is_active:
+                      example: true
+                      type: boolean
+                    is_deleted:
+                      example: false
+                      type: boolean
+                    updated_at:
+                      example: '2025-11-03T10:30:00.123456Z'
+                      format: date-time
+                      type: string
+                    workspace_id:
+                      example: your-workspace-id
+                      type: string
+                  type: object
+                type: array
+              limit:
+                example: 25
+                type: integer
+              page:
+                example: 1
+                type: integer
+              source:
+                example: firestore
+                type: string
+              total_count:
+                example: 3
+                type: integer
+            type: object
+        400:
+          description: Bad request - invalid parameters
+        401:
+          description: Unauthorized
+        403:
+          description: Workspace ID mismatch
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List all sub-form links for a workspace
+      tags:
+      - HzSubFormLinks
+    post:
+      operationId: v2_createSubFormLink
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            father_type:
+              description: Parent form type that contains this sub-form
+              example: incident_report
+              type: string
+            form_alias:
+              description: DS Site sub-form alias
+              example: injury_details
+              type: string
+            is_active:
+              description: Whether this sub-form link is active (defaults to true)
+              example: true
+              type: boolean
+          required:
+          - father_type
+          - form_alias
+          type: object
+      responses:
+        201:
+          description: Sub-form link created successfully
+          schema:
+            properties:
+              created_at:
+                example: '2025-11-03T10:30:00.123456Z'
+                format: date-time
+                type: string
+              created_by:
+                example: user_abc123
+                type: string
+              created_by_user_id:
+                example: user_abc123
+                type: string
+              doc_type:
+                example: hz_ds_site_sub_form_links
+                type: string
+              father_type:
+                example: incident_report
+                type: string
+              form_alias:
+                example: injury_details
+                type: string
+              id:
+                example: b2c3d4e5-f6g7-8901-bcde-fg2345678901
+                type: string
+              is_active:
+                example: true
+                type: boolean
+              is_deleted:
+                example: false
+                type: boolean
+              updated_at:
+                example: '2025-11-03T10:30:00.123456Z'
+                format: date-time
+                type: string
+              workspace_id:
+                example: your-workspace-id
+                type: string
+            type: object
+        400:
+          description: Bad request - missing required fields
+          schema:
+            properties:
+              message:
+                example: Missing required fields
+                type: string
+              missing:
+                example:
+                - form_alias
+                - father_type
+                items:
+                  type: string
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Workspace ID mismatch
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a new sub-form link
+      tags:
+      - HzSubFormLinks
+  /v2/workspaces/{workspace_id}/hz-sub-form-links/{link_id}:
+    get:
+      operationId: v2_getSubFormLink
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Sub-form link ID
+        in: path
+        name: link_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Sub-form link retrieved successfully
+          schema:
+            properties:
+              created_at:
+                example: '2025-11-03T10:30:00.123456Z'
+                format: date-time
+                type: string
+              created_by_user_id:
+                example: user_abc123
+                type: string
+              father_type:
+                example: incident_report
+                type: string
+              form_alias:
+                example: injury_details
+                type: string
+              id:
+                example: b2c3d4e5-f6g7-8901-bcde-fg2345678901
+                type: string
+              is_active:
+                example: true
+                type: boolean
+              is_deleted:
+                example: false
+                type: boolean
+              updated_at:
+                example: '2025-11-03T10:30:00.123456Z'
+                format: date-time
+                type: string
+              workspace_id:
+                example: your-workspace-id
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Workspace ID mismatch
+        404:
+          description: Sub-form link not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a specific sub-form link by ID
+      tags:
+      - HzSubFormLinks
+    put:
+      operationId: v2_updateSubFormLink
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Sub-form link ID
+        in: path
+        name: link_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            father_type:
+              example: incident_report
+              type: string
+            form_alias:
+              example: injury_details
+              type: string
+            is_active:
+              example: false
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: Sub-form link updated successfully
+          schema:
+            properties:
+              created_at:
+                example: '2025-11-03T10:30:00.123456Z'
+                format: date-time
+                type: string
+              created_by_user_id:
+                example: user_abc123
+                type: string
+              father_type:
+                example: incident_report
+                type: string
+              form_alias:
+                example: injury_details
+                type: string
+              id:
+                example: b2c3d4e5-f6g7-8901-bcde-fg2345678901
+                type: string
+              is_active:
+                example: false
+                type: boolean
+              is_deleted:
+                example: false
+                type: boolean
+              updated_at:
+                example: '2025-11-03T11:45:00.123456Z'
+                format: date-time
+                type: string
+              updated_by:
+                example: user_abc123
+                type: string
+              workspace_id:
+                example: your-workspace-id
+                type: string
+            type: object
+        400:
+          description: Bad request - invalid request body
+        401:
+          description: Unauthorized
+        403:
+          description: Workspace ID mismatch
+        404:
+          description: Sub-form link not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update an existing sub-form link
+      tags:
+      - HzSubFormLinks
 schemes:
 - https
 securityDefinitions:
