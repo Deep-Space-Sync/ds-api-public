@@ -41703,6 +41703,426 @@ paths:
       summary: Update Horizon user record
       tags:
       - Horizon Users
+  /v2/workspaces/{workspace_id}/hz-form-links:
+    get:
+      operationId: v2_listFormLinks
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Filter links by category
+        enum:
+        - HSEQ
+        - Delivery
+        in: query
+        name: category
+        required: false
+        type: string
+      - description: Filter links by form alias
+        in: query
+        name: form_alias
+        required: false
+        type: string
+      - description: Text search across form_alias, display_label, description, and
+          category
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Number of items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Form links retrieved successfully
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    category:
+                      enum:
+                      - HSEQ
+                      - Delivery
+                      example: HSEQ
+                      type: string
+                    created_at:
+                      example: '2025-11-03T10:30:00.123456Z'
+                      format: date-time
+                      type: string
+                    created_by_user_id:
+                      example: user_abc123
+                      type: string
+                    description:
+                      example: Use this form to report safety incidents on site
+                      type: string
+                    display_label:
+                      example: Incident Report Form
+                      type: string
+                    form_alias:
+                      example: incident_report
+                      type: string
+                    id:
+                      example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                      type: string
+                    is_deleted:
+                      example: false
+                      type: boolean
+                    updated_at:
+                      example: '2025-11-03T10:30:00.123456Z'
+                      format: date-time
+                      type: string
+                    workspace_id:
+                      example: your-workspace-id
+                      type: string
+                  type: object
+                type: array
+              limit:
+                example: 25
+                type: integer
+              page:
+                example: 1
+                type: integer
+              source:
+                example: firestore
+                type: string
+              total_count:
+                example: 5
+                type: integer
+            type: object
+        400:
+          description: Bad request - invalid parameters
+        401:
+          description: Unauthorized
+        403:
+          description: Workspace ID mismatch
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List all form links for a workspace
+      tags:
+      - HzFormLinks
+    post:
+      operationId: v2_createFormLink
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              description: Category for organizing form links
+              enum:
+              - HSEQ
+              - Delivery
+              example: HSEQ
+              type: string
+            description:
+              description: Optional description
+              example: Use this form to report safety incidents on site
+              type: string
+            display_label:
+              description: User-friendly display name
+              example: Incident Report Form
+              type: string
+            form_alias:
+              description: DS Site form alias
+              example: incident_report
+              type: string
+          required:
+          - category
+          - form_alias
+          - display_label
+          type: object
+      responses:
+        201:
+          description: Form link created successfully
+          schema:
+            properties:
+              category:
+                enum:
+                - HSEQ
+                - Delivery
+                example: HSEQ
+                type: string
+              created_at:
+                example: '2025-11-03T10:30:00.123456Z'
+                format: date-time
+                type: string
+              created_by:
+                example: user_abc123
+                type: string
+              created_by_user_id:
+                example: user_abc123
+                type: string
+              description:
+                example: Use this form to report safety incidents on site
+                type: string
+              display_label:
+                example: Incident Report Form
+                type: string
+              doc_type:
+                example: hz_ds_site_form_links
+                type: string
+              form_alias:
+                example: incident_report
+                type: string
+              id:
+                example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                type: string
+              is_deleted:
+                example: false
+                type: boolean
+              updated_at:
+                example: '2025-11-03T10:30:00.123456Z'
+                format: date-time
+                type: string
+              workspace_id:
+                example: your-workspace-id
+                type: string
+            type: object
+        400:
+          description: Bad request - missing required fields or invalid category
+          schema:
+            properties:
+              message:
+                example: Missing required fields
+                type: string
+              missing:
+                example:
+                - form_alias
+                - category
+                items:
+                  type: string
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Workspace ID mismatch
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a new form link
+      tags:
+      - HzFormLinks
+  /v2/workspaces/{workspace_id}/hz-form-links/{link_id}:
+    delete:
+      operationId: v2_deleteFormLink
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Form link ID
+        in: path
+        name: link_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Form link deleted successfully
+          schema:
+            properties:
+              message:
+                example: Form link deleted successfully
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Workspace ID mismatch
+        404:
+          description: Form link not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a form link (soft delete)
+      tags:
+      - HzFormLinks
+    get:
+      operationId: v2_getFormLink
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Form link ID
+        in: path
+        name: link_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Form link retrieved successfully
+          schema:
+            properties:
+              category:
+                enum:
+                - HSEQ
+                - Delivery
+                example: HSEQ
+                type: string
+              created_at:
+                example: '2025-11-03T10:30:00.123456Z'
+                format: date-time
+                type: string
+              created_by_user_id:
+                example: user_abc123
+                type: string
+              description:
+                example: Use this form to report safety incidents on site
+                type: string
+              display_label:
+                example: Incident Report Form
+                type: string
+              form_alias:
+                example: incident_report
+                type: string
+              id:
+                example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                type: string
+              is_deleted:
+                example: false
+                type: boolean
+              updated_at:
+                example: '2025-11-03T10:30:00.123456Z'
+                format: date-time
+                type: string
+              workspace_id:
+                example: your-workspace-id
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Workspace ID mismatch
+        404:
+          description: Form link not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a specific form link by ID
+      tags:
+      - HzFormLinks
+    put:
+      operationId: v2_updateFormLink
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Form link ID
+        in: path
+        name: link_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              enum:
+              - HSEQ
+              - Delivery
+              example: HSEQ
+              type: string
+            description:
+              example: Updated description
+              type: string
+            display_label:
+              example: Updated Incident Report Form
+              type: string
+            form_alias:
+              example: incident_report
+              type: string
+          type: object
+      responses:
+        200:
+          description: Form link updated successfully
+          schema:
+            properties:
+              category:
+                enum:
+                - HSEQ
+                - Delivery
+                example: HSEQ
+                type: string
+              created_at:
+                example: '2025-11-03T10:30:00.123456Z'
+                format: date-time
+                type: string
+              created_by_user_id:
+                example: user_abc123
+                type: string
+              description:
+                example: Updated description
+                type: string
+              display_label:
+                example: Updated Incident Report Form
+                type: string
+              form_alias:
+                example: incident_report
+                type: string
+              id:
+                example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                type: string
+              is_deleted:
+                example: false
+                type: boolean
+              updated_at:
+                example: '2025-11-03T11:45:00.123456Z'
+                format: date-time
+                type: string
+              updated_by:
+                example: user_abc123
+                type: string
+              workspace_id:
+                example: your-workspace-id
+                type: string
+            type: object
+        400:
+          description: Bad request - invalid request body
+        401:
+          description: Unauthorized
+        403:
+          description: Workspace ID mismatch
+        404:
+          description: Form link not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update an existing form link
+      tags:
+      - HzFormLinks
 schemes:
 - https
 securityDefinitions:
