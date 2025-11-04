@@ -21984,6 +21984,264 @@ paths:
       summary: Create a new project
       tags:
       - Project
+  /v2/workspaces/{workspaceId}/projects/config/operations:
+    get:
+      description: Returns list of operations (plans) for a project
+      operationId: v2_listConfigOperations
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      - description: Filter by status (pending, applied, failed)
+        in: query
+        name: status
+        required: false
+        type: string
+      - default: 10
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of operations
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List configuration operations
+      tags:
+      - Automated Config
+  /v2/workspaces/{workspaceId}/projects/config/ops:
+    get:
+      description: Returns list of available configuration operations with their schemas
+      operationId: v2_discoverConfigOperations
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of operations
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Discover available config operations
+      tags:
+      - Automated Config
+  /v2/workspaces/{workspaceId}/projects/config/ops/{operationName}/apply:
+    post:
+      description: Executes a previously planned configuration change
+      operationId: v2_applyConfigOperation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: operationName
+        required: true
+        type: string
+      - in: header
+        name: Idempotency-Key
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            if_match_version:
+              description: Expected config version for optimistic locking
+              type: integer
+            plan_id:
+              description: ID of the plan to apply
+              type: string
+          required:
+          - plan_id
+          - if_match_version
+          type: object
+      responses:
+        200:
+          description: Operation applied successfully
+        400:
+          description: Validation error or version mismatch
+        401:
+          description: Unauthorized
+        404:
+          description: Plan not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Apply a configuration operation
+      tags:
+      - Automated Config
+  /v2/workspaces/{workspaceId}/projects/config/ops/{operationName}/plan:
+    post:
+      description: Validates and creates a plan for a configuration change without
+        applying it
+      operationId: v2_planConfigOperation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: operationName
+        required: true
+        type: string
+      - in: header
+        name: Idempotency-Key
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: Operation-specific parameters
+          type: object
+      responses:
+        200:
+          description: Plan created successfully
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Plan a configuration operation
+      tags:
+      - Automated Config
+  /v2/workspaces/{workspaceId}/projects/config/registry/operations:
+    get:
+      description: Returns list of all operations registered in Firestore
+      operationId: v2_listRegistryOperations
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of operations
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: List all operations in registry
+      tags:
+      - Automated Config Registry
+    post:
+      description: Create or update an operation definition in Firestore
+      operationId: v2_upsertRegistryOperation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Operation created/updated
+        400:
+          description: Invalid request
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: Upsert operation in registry
+      tags:
+      - Automated Config Registry
+  /v2/workspaces/{workspaceId}/projects/config/registry/operations/{operationName}:
+    delete:
+      description: Removes an operation definition from Firestore
+      operationId: v2_deleteRegistryOperation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: operationName
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Operation deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Operation not found
+      security:
+      - JWT_v2: []
+      summary: Delete operation from registry
+      tags:
+      - Automated Config Registry
+    get:
+      description: Returns full operation definition from Firestore
+      operationId: v2_getRegistryOperation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: operationName
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Operation definition
+        401:
+          description: Unauthorized
+        404:
+          description: Operation not found
+      security:
+      - JWT_v2: []
+      summary: Get specific operation from registry
+      tags:
+      - Automated Config Registry
   /v2/workspaces/{workspaceId}/projects/{projectId}:
     delete:
       consumes:
@@ -24862,264 +25120,6 @@ paths:
       summary: Create a comment
       tags:
       - Comments
-  /v2/workspaces/{workspaceId}/projects/{projectId}/config/operations:
-    get:
-      description: Returns list of operations (plans) for a project
-      operationId: v2_listConfigOperations
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: query
-        name: projectId
-        required: true
-        type: string
-      - description: Filter by status (pending, applied, failed)
-        in: query
-        name: status
-        required: false
-        type: string
-      - default: 10
-        in: query
-        name: limit
-        required: false
-        type: integer
-      responses:
-        200:
-          description: List of operations
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: List configuration operations
-      tags:
-      - Automated Config
-  /v2/workspaces/{workspaceId}/projects/{projectId}/config/ops:
-    get:
-      description: Returns list of available configuration operations with their schemas
-      operationId: v2_discoverConfigOperations
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: query
-        name: projectId
-        required: true
-        type: string
-      responses:
-        200:
-          description: List of operations
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Discover available config operations
-      tags:
-      - Automated Config
-  /v2/workspaces/{workspaceId}/projects/{projectId}/config/ops/{operationName}/apply:
-    post:
-      description: Executes a previously planned configuration change
-      operationId: v2_applyConfigOperation
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: query
-        name: projectId
-        required: true
-        type: string
-      - in: path
-        name: operationName
-        required: true
-        type: string
-      - in: header
-        name: Idempotency-Key
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            if_match_version:
-              description: Expected config version for optimistic locking
-              type: integer
-            plan_id:
-              description: ID of the plan to apply
-              type: string
-          required:
-          - plan_id
-          - if_match_version
-          type: object
-      responses:
-        200:
-          description: Operation applied successfully
-        400:
-          description: Validation error or version mismatch
-        401:
-          description: Unauthorized
-        404:
-          description: Plan not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Apply a configuration operation
-      tags:
-      - Automated Config
-  /v2/workspaces/{workspaceId}/projects/{projectId}/config/ops/{operationName}/plan:
-    post:
-      description: Validates and creates a plan for a configuration change without
-        applying it
-      operationId: v2_planConfigOperation
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: query
-        name: projectId
-        required: true
-        type: string
-      - in: path
-        name: operationName
-        required: true
-        type: string
-      - in: header
-        name: Idempotency-Key
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          description: Operation-specific parameters
-          type: object
-      responses:
-        200:
-          description: Plan created successfully
-        400:
-          description: Validation error
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Plan a configuration operation
-      tags:
-      - Automated Config
-  /v2/workspaces/{workspaceId}/projects/{projectId}/config/registry/operations:
-    get:
-      description: Returns list of all operations registered in Firestore
-      operationId: v2_listRegistryOperations
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: query
-        name: projectId
-        required: true
-        type: string
-      responses:
-        200:
-          description: List of operations
-        401:
-          description: Unauthorized
-      security:
-      - JWT_v2: []
-      summary: List all operations in registry
-      tags:
-      - Automated Config Registry
-    post:
-      description: Create or update an operation definition in Firestore
-      operationId: v2_upsertRegistryOperation
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: query
-        name: projectId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Operation created/updated
-        400:
-          description: Invalid request
-        401:
-          description: Unauthorized
-      security:
-      - JWT_v2: []
-      summary: Upsert operation in registry
-      tags:
-      - Automated Config Registry
-  /v2/workspaces/{workspaceId}/projects/{projectId}/config/registry/operations/{operationName}:
-    delete:
-      description: Removes an operation definition from Firestore
-      operationId: v2_deleteRegistryOperation
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: operationName
-        required: true
-        type: string
-      - in: query
-        name: projectId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Operation deleted
-        401:
-          description: Unauthorized
-        404:
-          description: Operation not found
-      security:
-      - JWT_v2: []
-      summary: Delete operation from registry
-      tags:
-      - Automated Config Registry
-    get:
-      description: Returns full operation definition from Firestore
-      operationId: v2_getRegistryOperation
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: operationName
-        required: true
-        type: string
-      - in: query
-        name: projectId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Operation definition
-        401:
-          description: Unauthorized
-        404:
-          description: Operation not found
-      security:
-      - JWT_v2: []
-      summary: Get specific operation from registry
-      tags:
-      - Automated Config Registry
   /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence:
     post:
       operationId: v2_logCorrespondence
