@@ -18838,6 +18838,513 @@ paths:
       summary: Create a new tender document
       tags:
       - HzTenderDocuments
+  /v2/workspaces/{workspaceId}/hz-tender-documents/google-docs/auth-url:
+    get:
+      description: Generate OAuth authorization URL for connecting Google account
+        to enable Google Docs integration
+      operationId: v2_getGoogleDocsAuthUrl
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Frontend callback URL for OAuth redirect
+        in: query
+        name: redirect_uri
+        required: true
+        type: string
+      responses:
+        200:
+          description: Auth URL generated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  auth_url:
+                    description: Google OAuth authorization URL to redirect user to
+                    type: string
+                  state:
+                    description: CSRF protection state parameter
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - missing redirect_uri
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: Get Google OAuth authorization URL
+      tags:
+      - HzTenderDocuments
+  /v2/workspaces/{workspaceId}/hz-tender-documents/google-docs/callback:
+    post:
+      description: Exchange authorization code for access tokens and save to Firestore
+      operationId: v2_handleGoogleDocsOAuthCallback
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              description: Authorization code from Google OAuth redirect
+              type: string
+            redirect_uri:
+              description: Same redirect_uri used in auth URL generation
+              type: string
+            state:
+              description: State parameter for CSRF validation
+              type: string
+          required:
+          - code
+          - redirect_uri
+          - state
+          type: object
+      responses:
+        200:
+          description: Connected to Google Docs successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  connected:
+                    type: boolean
+                  user_email:
+                    description: Connected Google account email
+                    format: email
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - missing parameters or invalid state
+        401:
+          description: Unauthorized
+        500:
+          description: Failed to exchange code for tokens
+      security:
+      - JWT_v2: []
+      summary: Handle Google OAuth callback
+      tags:
+      - HzTenderDocuments
+  /v2/workspaces/{workspaceId}/hz-tender-documents/google-docs/create:
+    post:
+      description: Create a new Google Doc with pre-populated section headings and
+        share to user
+      operationId: v2_createGoogleDocTenderDocument
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            section_keys:
+              description: Array of section keys to include as headings (e.g. ["invitation_to_tender",
+                "bill_of_quantities"])
+              items:
+                type: string
+              type: array
+            title:
+              description: Document title
+              type: string
+          required:
+          - title
+          - section_keys
+          type: object
+      responses:
+        201:
+          description: Google Doc created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  document_id:
+                    description: Google Docs document ID
+                    type: string
+                  edit_url:
+                    description: URL to edit the document in Google Docs
+                    type: string
+                  title:
+                    description: Document title
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - missing title or invalid section keys
+        401:
+          description: Unauthorized or user not connected to Google Docs
+        500:
+          description: Failed to create Google Doc
+      security:
+      - JWT_v2: []
+      summary: Create tender document in Google Docs
+      tags:
+      - HzTenderDocuments
+  /v2/workspaces/{workspaceId}/hz-tender-documents/google-docs/disconnect:
+    delete:
+      description: Revoke OAuth tokens and disconnect user's Google account
+      operationId: v2_disconnectGoogleDocs
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Disconnected successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  connected:
+                    type: boolean
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Failed to disconnect
+      security:
+      - JWT_v2: []
+      summary: Disconnect Google Docs account
+      tags:
+      - HzTenderDocuments
+  /v2/workspaces/{workspaceId}/hz-tender-documents/google-docs/links:
+    get:
+      description: Retrieve all saved Google Docs tender document links for workspace
+      operationId: v2_listGoogleDocsLinks
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Links retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    created_at:
+                      format: date-time
+                      type: string
+                    created_by:
+                      type: string
+                    google_document_id:
+                      description: Google Docs document ID
+                      type: string
+                    id:
+                      type: string
+                    is_deleted:
+                      type: boolean
+                    name:
+                      description: Document name
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                    url:
+                      description: Google Docs edit URL
+                      type: string
+                    workspace_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Failed to retrieve links
+      security:
+      - JWT_v2: []
+      summary: List saved Google Docs links
+      tags:
+      - HzTenderDocuments
+  /v2/workspaces/{workspaceId}/hz-tender-documents/google-docs/links/{linkId}:
+    delete:
+      description: Soft delete a saved Google Docs link
+      operationId: v2_deleteGoogleDocLink
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Link ID
+        in: path
+        name: linkId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Link deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - link does not belong to workspace
+        404:
+          description: Link not found
+        500:
+          description: Failed to delete link
+      security:
+      - JWT_v2: []
+      summary: Delete Google Docs link
+      tags:
+      - HzTenderDocuments
+    get:
+      description: Retrieve a specific saved Google Docs link by ID
+      operationId: v2_getGoogleDocLink
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Link ID
+        in: path
+        name: linkId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Link retrieved successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  created_at:
+                    format: date-time
+                    type: string
+                  created_by:
+                    type: string
+                  google_document_id:
+                    type: string
+                  id:
+                    type: string
+                  is_deleted:
+                    type: boolean
+                  name:
+                    type: string
+                  updated_at:
+                    format: date-time
+                    type: string
+                  url:
+                    type: string
+                  workspace_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - link does not belong to workspace
+        404:
+          description: Link not found or deleted
+        500:
+          description: Failed to retrieve link
+      security:
+      - JWT_v2: []
+      summary: Get specific Google Docs link
+      tags:
+      - HzTenderDocuments
+  /v2/workspaces/{workspaceId}/hz-tender-documents/google-docs/save-link:
+    post:
+      description: Save a Google Docs document link (called by Apps Script sidebar)
+      operationId: v2_saveGoogleDocLink
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_id:
+              description: Google Docs document ID (optional)
+              type: string
+            name:
+              description: Document name
+              type: string
+            url:
+              description: Google Docs edit URL
+              type: string
+          required:
+          - name
+          - url
+          type: object
+      responses:
+        201:
+          description: Link saved successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  created_at:
+                    format: date-time
+                    type: string
+                  created_by:
+                    type: string
+                  google_document_id:
+                    type: string
+                  id:
+                    type: string
+                  is_deleted:
+                    type: boolean
+                  name:
+                    type: string
+                  updated_at:
+                    format: date-time
+                    type: string
+                  url:
+                    type: string
+                  workspace_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - missing name or url, or invalid URL format
+        401:
+          description: Unauthorized
+        500:
+          description: Failed to save link
+      security:
+      - JWT_v2: []
+      summary: Save Google Docs link
+      tags:
+      - HzTenderDocuments
+  /v2/workspaces/{workspaceId}/hz-tender-documents/google-docs/status:
+    get:
+      description: Check if user has connected their Google account for Docs integration
+      operationId: v2_getGoogleDocsConnectionStatus
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Connection status retrieved
+          schema:
+            properties:
+              data:
+                properties:
+                  connected:
+                    description: Whether user has connected Google account
+                    type: boolean
+                  user_email:
+                    description: Connected Google account email (only if connected)
+                    format: email
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: Get Google Docs connection status
+      tags:
+      - HzTenderDocuments
+  /v2/workspaces/{workspaceId}/hz-tender-documents/google-docs/variables:
+    get:
+      description: Retrieve template variables for insertion via Google Docs Apps
+        Script sidebar
+      operationId: v2_getGoogleDocsTemplateVariables
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Template variables retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    description:
+                      description: Variable group description
+                      type: string
+                    id:
+                      description: Variable group ID
+                      type: string
+                    name:
+                      description: Variable group name
+                      type: string
+                    variables:
+                      items:
+                        properties:
+                          description:
+                            description: Variable description
+                            type: string
+                          example:
+                            description: Example value
+                            type: string
+                          id:
+                            description: Variable ID
+                            type: string
+                          key:
+                            description: Variable key for ${key} substitution
+                            type: string
+                          name:
+                            description: Variable display name
+                            type: string
+                        type: object
+                      type: array
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Failed to retrieve variables
+      security:
+      - JWT_v2: []
+      summary: Get template variables for Apps Script
+      tags:
+      - HzTenderDocuments
   /v2/workspaces/{workspaceId}/hz-tender-documents/send:
     post:
       description: Queue tender document email for sending via user's connected email
