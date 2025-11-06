@@ -27503,6 +27503,128 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register:
+    get:
+      operationId: v2_getBudgetRegister
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Set to 'true' to recalculate and update budget register (preserving
+          original_budget)
+        in: query
+        name: update_without_qto
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              br_data:
+                description: Budget register data with categories and cost codes
+                type: object
+              message:
+                description: Response message
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Budget register data not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Budget Register
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchBudgetRegister
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Must be set to 'true' for full update including QTO recalculation
+        in: query
+        name: full_update
+        required: true
+        type: string
+      responses:
+        200:
+          description: Budget register data fully updated
+          schema:
+            properties:
+              br_data:
+                description: Updated budget register data
+                type: object
+              message:
+                description: Response message
+                type: string
+            type: object
+        400:
+          description: Bad request - full_update parameter required
+        401:
+          description: Unauthorized
+        404:
+          description: Budget register data not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Budget Register with Full Recalculation
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postBudgetRegister
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        201:
+          description: Budget register snapshot created successfully
+          schema:
+            properties:
+              br_data:
+                description: Created budget register data
+                type: object
+              message:
+                description: Response message
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        409:
+          description: Budget register snapshot already exists
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Budget Register Snapshot
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-snapshots:
     get:
       operationId: v2_getBudgetSnapshots
