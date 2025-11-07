@@ -28132,6 +28132,130 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register/notes:
+    delete:
+      operationId: v2_deleteBudgetRegisterNote
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of the note to delete
+        in: query
+        name: note_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Note deleted successfully
+          schema:
+            properties:
+              message:
+                type: string
+              note_id:
+                type: string
+            type: object
+        400:
+          description: Bad request - note_id required
+        401:
+          description: Unauthorized
+        404:
+          description: Note not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Budget Register Note
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getBudgetRegisterNotes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              message:
+                type: string
+              notes:
+                items:
+                  type: object
+                type: array
+              total:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Budget register data not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Budget Register Notes
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postBudgetRegisterNote
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            note_content:
+              type: string
+          type: object
+      responses:
+        201:
+          description: Note created successfully
+          schema:
+            properties:
+              message:
+                type: string
+              note:
+                type: object
+            type: object
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        404:
+          description: Budget register data not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Budget Register Note
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-snapshots:
     get:
       operationId: v2_getBudgetSnapshots
