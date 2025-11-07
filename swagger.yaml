@@ -25628,6 +25628,119 @@ paths:
       tags:
       - Comments
   /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence:
+    get:
+      operationId: v2_getCorrespondence
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Filter by module type (opportunity, client, action, general)
+        in: query
+        name: target_module
+        required: false
+        type: string
+      - description: Filter by specific entity ID
+        in: query
+        name: target_entity_id
+        required: false
+        type: string
+      - default: 50
+        description: Number of results to return (default 50, max 200)
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - default: 0
+        description: Number of results to skip (default 0)
+        in: query
+        name: offset
+        required: false
+        type: integer
+      - description: Filter by correspondence date after (ISO8601 format)
+        in: query
+        name: after_date
+        required: false
+        type: string
+      - description: Filter by correspondence date before (ISO8601 format)
+        in: query
+        name: before_date
+        required: false
+        type: string
+      - description: Filter by sender email or name (partial match)
+        in: query
+        name: sender
+        required: false
+        type: string
+      - description: Search in email subject (partial match)
+        in: query
+        name: search
+        required: false
+        type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            properties:
+              limit:
+                description: Limit used in the query
+                type: integer
+              offset:
+                description: Offset used in the query
+                type: integer
+              results:
+                description: Array of correspondence records
+                items:
+                  properties:
+                    associations:
+                      description: Array of entity associations
+                      items:
+                        properties:
+                          target_entity_id:
+                            description: The entity ID
+                            type: string
+                          target_module:
+                            description: The module type
+                            type: string
+                        type: object
+                      type: array
+                    correspondence_date:
+                      description: When the email was sent (ISO8601)
+                      type: string
+                    correspondence_id:
+                      description: The correspondence ID
+                      type: integer
+                    email_subject:
+                      description: The email subject
+                      type: string
+                    logged_date:
+                      description: When the email was logged (ISO8601)
+                      type: string
+                    sender_email:
+                      description: The sender email
+                      type: string
+                    sender_name:
+                      description: The sender name
+                      type: string
+                  type: object
+                type: array
+              total:
+                description: Total number of correspondence records matching filters
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get correspondence logs for a project
+      tags:
+      - Correspondence Logging
     post:
       operationId: v2_logCorrespondence
       parameters:
@@ -25644,6 +25757,28 @@ paths:
         required: true
         schema:
           properties:
+            associations:
+              description: array of association objects linking correspondence to
+                entities
+              items:
+                properties:
+                  target_entity_id:
+                    description: The Firestore entity ID (e.g., UUID)
+                    maxLength: 255
+                    type: string
+                  target_module:
+                    description: The module type (opportunity, client, action, general)
+                    enum:
+                    - opportunity
+                    - client
+                    - action
+                    - general
+                    type: string
+                required:
+                - target_module
+                - target_entity_id
+                type: object
+              type: array
             attachments:
               description: array of attachment objects
               items:
@@ -25704,6 +25839,15 @@ paths:
       responses:
         200:
           description: A successful response
+          schema:
+            properties:
+              associations_created:
+                description: The number of associations created
+                type: integer
+              correspondence_id:
+                description: The ID of the created correspondence
+                type: integer
+            type: object
         401:
           description: Unauthorized
         500:
