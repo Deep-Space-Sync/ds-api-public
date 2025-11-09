@@ -28166,8 +28166,8 @@ paths:
         name: projectId
         required: true
         type: integer
-      - description: Set to 'true' to recalculate and update budget register (preserving
-          original_budget)
+      - description: Set to 'true' to recalculate and update budget register using
+          stored BOQ version
         in: query
         name: update_without_qto
         required: false
@@ -28208,7 +28208,8 @@ paths:
         name: projectId
         required: true
         type: integer
-      - description: Must be set to 'true' for full update including QTO recalculation
+      - description: Must be set to 'true' for full update including BOQ recalculation
+          using stored BOQ version
         in: query
         name: full_update
         required: true
@@ -28226,16 +28227,17 @@ paths:
                 type: string
             type: object
         400:
-          description: Bad request - full_update parameter required
+          description: Bad request - full_update parameter required or budget register
+            created before BOQ version tracking
         401:
           description: Unauthorized
         404:
-          description: Budget register data not found
+          description: Budget register data not found or BOQ version not found
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Update Budget Register with Full Recalculation
+      summary: Update Budget Register with Full Recalculation from Stored BOQ Version
       tags:
       - Cost
       x-ds-test-enabled: true
@@ -28251,6 +28253,11 @@ paths:
         name: projectId
         required: true
         type: integer
+      - description: BOQ version ID to use for calculating original budget
+        in: query
+        name: boq_version_id
+        required: true
+        type: string
       responses:
         201:
           description: Budget register snapshot created successfully
@@ -28263,15 +28270,22 @@ paths:
                 description: Response message
                 type: string
             type: object
+        400:
+          description: Bad request - boq_version_id parameter required or BOQ version
+            does not belong to project
         401:
           description: Unauthorized
+        404:
+          description: BOQ version not found
         409:
           description: Budget register snapshot already exists
+        422:
+          description: No BOQ data found for this version
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Create Budget Register Snapshot
+      summary: Create Budget Register Snapshot from BOQ
       tags:
       - Cost
       x-ds-test-enabled: true
