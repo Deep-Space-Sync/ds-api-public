@@ -27556,9 +27556,7 @@ paths:
         name: body
         required: true
         schema:
-          items:
-            type: object
-          type: array
+          type: object
       responses:
         201:
           description: Items created successfully
