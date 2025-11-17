@@ -27557,88 +27557,21 @@ paths:
         required: true
         schema:
           items:
-            properties:
-              budget_category:
-                description: Budget category ID (required for grouping into BOQs)
-                type: string
-              cost_code_id:
-                description: Cost code ID (optional)
-                type: string
-              description:
-                description: Description of the item
-                type: string
-              qto_item_name:
-                description: Name of the BOQ item
-                type: string
-              quantity:
-                description: Quantity of the item
-                type: number
-              rate:
-                description: Unit rate/cost
-                type: number
-              source:
-                description: Source of the item (e.g., "Import", "Manual")
-                type: string
-              unit:
-                description: Unit of measurement
-                type: string
-            required:
-            - qto_item_name
-            - quantity
-            - rate
-            - budget_category
             type: object
           type: array
       responses:
         201:
           description: Items created successfully
           schema:
-            properties:
-              boqs_affected:
-                description: Number of BOQs affected
-                type: integer
-              details:
-                items:
-                  properties:
-                    boq_created:
-                      type: boolean
-                    boq_id:
-                      type: string
-                    budget_category:
-                      type: string
-                    items_added:
-                      type: integer
-                  type: object
-                type: array
-              items_created:
-                description: Total number of items created
-                type: integer
-              success:
-                type: boolean
             type: object
         207:
-          description: Partial success with some errors
-          schema:
-            properties:
-              boqs_affected:
-                type: integer
-              details:
-                type: array
-              errors:
-                items:
-                  type: string
-                type: array
-              items_created:
-                type: integer
-              success:
-                type: boolean
-            type: object
+          description: Partial success
         400:
-          description: Bad request (invalid input)
+          description: Bad request
         401:
           description: Unauthorized
         404:
-          description: BOQ version not found
+          description: Not found
         500:
           description: Internal Server Error
       security:
