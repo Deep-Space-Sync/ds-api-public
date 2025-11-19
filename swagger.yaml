@@ -24267,140 +24267,6 @@ paths:
       summary: Update fields in existing action
       tags:
       - Actions
-  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/request-changes:
-    patch:
-      description: Submit a change request for scheduling task dates and progress
-      operationId: v2_submitChangeRequest
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: query
-        name: actionId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            requested_start_date:
-              description: Requested new start date
-              type: string
-              format: date-time
-            requested_end_date:
-              description: Requested new end date
-              type: string
-              format: date-time
-            requested_progress_percentage:
-              description: Requested progress percentage (0-100)
-              type: number
-              minimum: 0
-              maximum: 100
-            change_request_reason:
-              description: Reason for the change request
-              type: string
-          required:
-          - change_request_reason
-          type: object
-      responses:
-        200:
-          description: Change request submitted successfully
-        400:
-          description: Bad Request
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Submit change request for scheduling task
-      tags:
-      - Actions
-  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/change-request-response:
-    patch:
-      description: Approve or reject a pending change request
-      operationId: v2_respondToChangeRequest
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: query
-        name: actionId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            action:
-              description: Action to take on the change request
-              type: string
-              enum:
-              - approve
-              - reject
-            response_reason:
-              description: Optional reason for the response
-              type: string
-          required:
-          - action
-          type: object
-      responses:
-        200:
-          description: Change request response processed successfully
-        400:
-          description: Bad Request
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Approve or reject change request
-      tags:
-      - Actions
-  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/change-request:
-    delete:
-      description: Clear/cancel a pending change request
-      operationId: v2_clearChangeRequest
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: query
-        name: actionId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Change request cleared successfully
-        400:
-          description: Bad Request
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Clear/cancel change request
-      tags:
-      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/{actionId}/associations/{associationIdentifier}:
     get:
       operationId: v2_getActionAssociation
@@ -42450,6 +42316,268 @@ paths:
       summary: Update role
       tags:
       - Roles
+  /v2/workspaces/{workspaceId}/subcontractors:
+    get:
+      description: Retrieve all subcontractor extended metadata for a workspace with
+        optional filtering
+      operationId: v2_listSubcontractorDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Full-text search across trade specialties, service regions, and
+          notes
+        in: query
+        name: search
+        required: false
+        type: string
+      - description: Filter by status (preferred, active, under_review, blocked)
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by trade specialty
+        in: query
+        name: trade
+        required: false
+        type: string
+      - description: Filter by service region
+        in: query
+        name: region
+        required: false
+        type: string
+      - description: Comma separated list of tags to match (any match)
+        in: query
+        name: tags
+        required: false
+        type: string
+      - default: false
+        description: Include soft deleted records when true
+        in: query
+        name: includeDeleted
+        required: false
+        type: boolean
+      - default: 1
+        description: Result page to return
+        in: query
+        name: page
+        required: false
+        type: integer
+      - default: 50
+        description: Number of items per page
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Subcontractor details list
+          schema:
+            properties:
+              limit:
+                type: integer
+              page:
+                type: integer
+              subcontractors:
+                items:
+                  $ref: '#/definitions/SubcontractorExtraDetails'
+                type: array
+              total_count:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List subcontractor extra details
+      tags:
+      - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/details:
+    delete:
+      description: Soft delete extended metadata for a subcontractor
+      operationId: v2_deleteSubcontractorDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Soft deleted subcontractor details
+          schema:
+            properties:
+              deleted_at:
+                format: date-time
+                type: string
+              deleted_by:
+                type: string
+              global_company_id:
+                type: integer
+              is_deleted:
+                type: boolean
+              workspace_id:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Subcontractor details not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Soft delete subcontractor extra details
+      tags:
+      - Subcontractor Extra Details
+    get:
+      description: Get extended metadata for a specific subcontractor. Auto-creates
+        with defaults if not exists.
+      operationId: v2_getSubcontractorDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Existing subcontractor details
+          schema:
+            $ref: '#/definitions/SubcontractorExtraDetails'
+        201:
+          description: Auto-created subcontractor details (first access)
+          schema:
+            $ref: '#/definitions/SubcontractorExtraDetails'
+        400:
+          description: Invalid global company ID
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get subcontractor extra details
+      tags:
+      - Subcontractor Extra Details
+    patch:
+      description: Update extended metadata fields for a subcontractor
+      operationId: v2_updateSubcontractorDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/SubcontractorDetailsInput'
+      responses:
+        200:
+          description: Updated subcontractor details
+          schema:
+            $ref: '#/definitions/SubcontractorExtraDetails'
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Subcontractor details not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update subcontractor extra details
+      tags:
+      - Subcontractor Extra Details
+    post:
+      description: Explicitly create extended metadata for a subcontractor
+      operationId: v2_createSubcontractorDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/SubcontractorDetailsInput'
+      responses:
+        201:
+          description: Created subcontractor details
+          schema:
+            $ref: '#/definitions/SubcontractorExtraDetails'
+        400:
+          description: Validation error or already exists
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create subcontractor extra details
+      tags:
+      - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/details/restore:
+    post:
+      description: Restore soft deleted extended metadata for a subcontractor
+      operationId: v2_restoreSubcontractorDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Restored subcontractor details
+          schema:
+            $ref: '#/definitions/SubcontractorExtraDetails'
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Deleted subcontractor details not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Restore subcontractor extra details
+      tags:
+      - Subcontractor Extra Details
   /v2/workspaces/{workspaceId}/tokens/{tokenId}:
     get:
       operationId: v2_getWorkpaceToken
@@ -43627,6 +43755,261 @@ paths:
       summary: Update an existing sub-form link
       tags:
       - HzSubFormLinks
+  /v2definitions:
+    ContractReference:
+      properties:
+        contract_id:
+          type: string
+        contract_value:
+          type: number
+        end_date:
+          format: date
+          type: string
+        project_id:
+          type: integer
+        project_name:
+          type: string
+        start_date:
+          format: date
+          type: string
+        status:
+          enum:
+          - active
+          - completed
+          - terminated
+          type: string
+      type: object
+    EngagementLogEntry:
+      properties:
+        date:
+          format: date-time
+          type: string
+        description:
+          type: string
+        engagement_id:
+          type: string
+        logged_by:
+          type: string
+        logged_by_id:
+          type: string
+        type:
+          enum:
+          - meeting
+          - email
+          - phone_call
+          - note
+          type: string
+      type: object
+    PerformanceReview:
+      properties:
+        comments:
+          type: string
+        date:
+          format: date-time
+          type: string
+        overall_score:
+          maximum: 10
+          minimum: 0
+          type: number
+        project_id:
+          type: integer
+        quality_score:
+          maximum: 10
+          minimum: 0
+          type: number
+        review_id:
+          type: string
+        reviewer_id:
+          type: string
+        reviewer_name:
+          type: string
+        safety_score:
+          maximum: 10
+          minimum: 0
+          type: number
+        timeliness_score:
+          maximum: 10
+          minimum: 0
+          type: number
+      type: object
+    SubcontractorDetailsInput:
+      properties:
+        certifications:
+          items:
+            type: string
+          type: array
+        communication_rating:
+          maximum: 5
+          minimum: 0
+          type: number
+        company_size:
+          enum:
+          - small
+          - medium
+          - large
+          type: string
+        contracts:
+          items:
+            $ref: '#/definitions/ContractReference'
+          type: array
+        engagement_log:
+          items:
+            $ref: '#/definitions/EngagementLogEntry'
+          type: array
+        insurance_expiry:
+          format: date
+          type: string
+        notes:
+          type: string
+        overall_rating:
+          maximum: 5
+          minimum: 0
+          type: number
+        performance_reviews:
+          items:
+            $ref: '#/definitions/PerformanceReview'
+          type: array
+        quality_rating:
+          maximum: 5
+          minimum: 0
+          type: number
+        safety_rating:
+          maximum: 5
+          minimum: 0
+          type: number
+        service_regions:
+          items:
+            type: string
+          type: array
+        status:
+          enum:
+          - preferred
+          - active
+          - under_review
+          - blocked
+          type: string
+        tags:
+          items:
+            type: string
+          type: array
+        timeliness_rating:
+          maximum: 5
+          minimum: 0
+          type: number
+        trade_specialties:
+          items:
+            type: string
+          type: array
+      type: object
+    SubcontractorExtraDetails:
+      properties:
+        certifications:
+          description: List of certifications (e.g., ["ISO9001", "SafeWork"])
+          items:
+            type: string
+          type: array
+        communication_rating:
+          description: Communication performance rating (0-5)
+          maximum: 5
+          minimum: 0
+          type: number
+        company_size:
+          description: Company size classification
+          enum:
+          - small
+          - medium
+          - large
+          type: string
+        contracts:
+          description: Nested collection of contract references
+          items:
+            $ref: '#/definitions/ContractReference'
+          type: array
+        created_at:
+          format: date-time
+          type: string
+        created_by:
+          type: string
+        deleted_at:
+          format: date-time
+          type: string
+        deleted_by:
+          type: string
+        engagement_log:
+          description: Nested collection of engagement history
+          items:
+            $ref: '#/definitions/EngagementLogEntry'
+          type: array
+        global_company_id:
+          type: integer
+        id:
+          description: Firestore document ID
+          type: string
+        insurance_expiry:
+          description: Insurance expiry date (ISO format)
+          format: date
+          type: string
+        is_deleted:
+          type: boolean
+        notes:
+          description: Internal notes about the subcontractor
+          type: string
+        overall_rating:
+          description: Overall performance rating (0-5)
+          maximum: 5
+          minimum: 0
+          type: number
+        performance_reviews:
+          description: Nested collection of performance reviews
+          items:
+            $ref: '#/definitions/PerformanceReview'
+          type: array
+        quality_rating:
+          description: Quality performance rating (0-5)
+          maximum: 5
+          minimum: 0
+          type: number
+        safety_rating:
+          description: Safety performance rating (0-5)
+          maximum: 5
+          minimum: 0
+          type: number
+        service_regions:
+          description: List of service regions (e.g., ["NSW", "VIC"])
+          items:
+            type: string
+          type: array
+        status:
+          description: Subcontractor status
+          enum:
+          - preferred
+          - active
+          - under_review
+          - blocked
+          type: string
+        tags:
+          description: Custom tags
+          items:
+            type: string
+          type: array
+        timeliness_rating:
+          description: Timeliness performance rating (0-5)
+          maximum: 5
+          minimum: 0
+          type: number
+        trade_specialties:
+          description: List of trade specialties (e.g., ["Electrical", "HVAC"])
+          items:
+            type: string
+          type: array
+        updated_at:
+          format: date-time
+          type: string
+        updated_by:
+          type: string
+        workspace_id:
+          type: string
+      type: object
 schemes:
 - https
 securityDefinitions:
