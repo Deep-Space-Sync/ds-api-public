@@ -5796,6 +5796,62 @@ paths:
       summary: Update CDE status
       tags:
       - Upload Data
+  /v2/workspaces/{workspaceId}/cde/{cdeId}/type:
+    put:
+      description: Updates the CDE type for an existing workspace-level document (e.g.,
+        promote to registered document)
+      operationId: v2_putCdeTypeWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_type_id:
+              description: New CDE type ID (must exist in global_cde_types table)
+              example: ds-registered-document
+              type: string
+          required:
+          - cde_type_id
+          type: object
+      responses:
+        200:
+          description: Successfully updated CDE type
+          schema:
+            properties:
+              data:
+                properties:
+                  cde_id:
+                    type: integer
+                  cde_type_id:
+                    type: string
+                  previous_cde_type_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request (invalid cde_type_id or missing body)
+        401:
+          description: Unauthorized
+        404:
+          description: CDE document not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update CDE type (workspace level)
+      tags:
+      - Upload Data
   /v2/workspaces/{workspaceId}/clients:
     get:
       description: Retrieve workspace clients with optional search and filtering
@@ -25429,6 +25485,66 @@ paths:
       security:
       - JWT_v2: []
       summary: Update CDE status
+      tags:
+      - Upload Data
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/{cdeId}/type:
+    put:
+      description: Updates the CDE type for an existing document (e.g., promote to
+        registered document)
+      operationId: v2_putCdeType
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: cdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_type_id:
+              description: New CDE type ID (must exist in global_cde_types table)
+              example: ds-registered-document
+              type: string
+          required:
+          - cde_type_id
+          type: object
+      responses:
+        200:
+          description: Successfully updated CDE type
+          schema:
+            properties:
+              data:
+                properties:
+                  cde_id:
+                    type: integer
+                  cde_type_id:
+                    type: string
+                  previous_cde_type_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request (invalid cde_type_id or missing body)
+        401:
+          description: Unauthorized
+        404:
+          description: CDE document not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update CDE type
       tags:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/cloudstoragebucket:
