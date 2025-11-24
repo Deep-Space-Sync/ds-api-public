@@ -40682,6 +40682,66 @@ paths:
       summary: Create a sourcefile in a project
       tags:
       - Files
+  /v2/workspaces/{workspaceId}/projects/{projectId}/stage:
+    patch:
+      consumes:
+      - application/json
+      operationId: v2_updateProjectStage
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            current_stage:
+              description: The new stage for the project. Use DELETE endpoint to archive
+                projects.
+              enum:
+              - Opportunity
+              - Tender
+              - Delivery
+              - DLP
+              type: string
+          required:
+          - current_stage
+          type: object
+      responses:
+        200:
+          description: Project stage updated successfully
+          schema:
+            properties:
+              message:
+                type: string
+              new_stage:
+                type: string
+              old_stage:
+                type: string
+              project_id:
+                type: string
+              project_name:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid stage or missing parameters
+        401:
+          description: Unauthorized
+        404:
+          description: Project not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update project stage
+      tags:
+      - Project
   /v2/workspaces/{workspaceId}/projects/{projectId}/teams:
     get:
       operationId: v2_getTeams
