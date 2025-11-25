@@ -22547,6 +22547,87 @@ paths:
       summary: Create a new project
       tags:
       - Project
+  /v2/workspaces/{workspaceId}/projects/config/loi-advanced:
+    get:
+      description: Returns full LOI Advanced configuration as raw table JSON from
+        MySQL
+      operationId: v2_getLoiAdvancedConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: LOI Advanced config JSON
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Download LOI Advanced config
+      tags:
+      - Automated Config
+    post:
+      description: Plan or apply changes to LOI Advanced configuration (full sync)
+      operationId: v2_postLoiAdvancedConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: string
+      - in: header
+        name: Idempotency-Key
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            action:
+              description: Action to perform
+              enum:
+              - plan
+              - apply
+              type: string
+            config:
+              description: Config JSON (required for plan)
+              type: object
+            if_match_version:
+              description: Version for optimistic locking (required for apply)
+              type: integer
+            plan_id:
+              description: Plan ID (required for apply)
+              type: string
+          required:
+          - action
+          type: object
+      responses:
+        200:
+          description: Plan created or changes applied
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        409:
+          description: Version conflict
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upload LOI Advanced config
+      tags:
+      - Automated Config
   /v2/workspaces/{workspaceId}/projects/config/operations:
     get:
       description: Returns list of operations (plans) for a project
