@@ -5092,6 +5092,150 @@ paths:
       summary: Update a CDE folder (rename/move)
       tags:
       - CDE Folders
+  /v2/workspaces/{workspaceId}/cde-helper/jobs/{jobId}:
+    get:
+      description: 'Poll this endpoint to check the status of an async job (e.g.,
+        from-url download).
+
+        Status values:
+
+        - pending: Job is queued
+
+        - processing: Job is being processed
+
+        - completed: Job finished successfully (result field populated)
+
+        - failed: Job failed (error field populated)
+
+        '
+      operationId: v2_getJobStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: jobId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Job status retrieved
+          schema:
+            properties:
+              data:
+                properties:
+                  completed_at:
+                    description: Job completion timestamp
+                    type: string
+                  created_at:
+                    description: Job creation timestamp
+                    type: string
+                  error:
+                    description: Error message when failed
+                    type: string
+                  job_id:
+                    type: string
+                  progress:
+                    description: Progress percentage (0-100)
+                    maximum: 100
+                    minimum: 0
+                    type: integer
+                  result:
+                    description: Job result when completed
+                    type: object
+                  status:
+                    enum:
+                    - pending
+                    - processing
+                    - completed
+                    - failed
+                    type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Job not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get job status for async operations
+      tags:
+      - CDE Helper
+  /v2/workspaces/{workspaceId}/cde-helper/prepare-upload:
+    post:
+      description: 'Step 1 of direct upload workflow: Generates a signed URL for direct
+        file upload to GCS.
+
+        After calling this endpoint:
+
+        1. PUT your file to the returned signed_url
+
+        2. Call POST /finalize with the upload_id to create folder/placement/CDE records
+
+        '
+      operationId: v2_prepareUpload
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            file_actual_name:
+              description: Original filename
+              type: string
+            file_size_bytes:
+              description: Optional file size in bytes
+              type: integer
+            filetype:
+              description: MIME type of the file
+              type: string
+          required:
+          - file_actual_name
+          - filetype
+          type: object
+      responses:
+        201:
+          description: Successfully prepared upload
+          schema:
+            properties:
+              data:
+                properties:
+                  blob_name:
+                    description: GCS blob path
+                    type: string
+                  expires_at:
+                    description: URL expiration timestamp
+                    type: string
+                  signed_url:
+                    description: Pre-signed URL for uploading file
+                    type: string
+                  upload_id:
+                    description: Upload identifier for finalize step
+                    type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
+        400:
+          description: Invalid request parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Prepare a file upload by generating a signed URL
+      tags:
+      - CDE Helper
   /v2/workspaces/{workspaceId}/cde-placements:
     get:
       operationId: v2_listCdePlacements
@@ -25123,6 +25267,203 @@ paths:
       summary: Get signed urls for cde
       tags:
       - Upload Data
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde-folders/create-path:
+    post:
+      description: Creates all missing folders in the given path. Returns 409 if full
+        path already exists.
+      operationId: v2_createCdeFolderPath
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project association
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            path:
+              description: Full folder path like "/a/b/c/d"
+              type: string
+          required:
+          - path
+          type: object
+      responses:
+        201:
+          description: Folder chain created
+        400:
+          description: Invalid path
+        401:
+          description: Unauthorized
+        409:
+          description: Full path already exists
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create folder hierarchy from path
+      tags:
+      - CDE Folders
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde-helper/finalize:
+    post:
+      description: 'Step 3 of direct upload workflow: After successfully uploading
+        file to GCS via signed URL,
+
+        call this endpoint to:
+
+        1. Verify the blob exists in GCS
+
+        2. Create missing folders in the path hierarchy
+
+        3. Create CDE record in MySQL
+
+        4. Create placement record linking cdeSeriesId to folder
+
+        '
+      operationId: v2_finalizeUpload
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project association
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_type:
+              description: Optional CDE type name
+              type: string
+            cde_type_id:
+              description: Optional CDE type identifier
+              type: string
+            entityId:
+              description: Optional entity association
+              type: string
+            folder_path:
+              description: Destination folder path like "/a/b/c"
+              type: string
+            upload_id:
+              description: Upload identifier from prepare-upload
+              type: string
+          required:
+          - upload_id
+          - folder_path
+          type: object
+      responses:
+        201:
+          description: Successfully finalized upload with folder, CDE, and placement
+            created
+        400:
+          description: Invalid request or upload not found
+        401:
+          description: Unauthorized
+        404:
+          description: Upload not found or blob not found in GCS
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Finalize upload by creating folder, placement, and CDE records
+      tags:
+      - CDE Helper
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde-helper/from-url:
+    post:
+      description: 'URL download workflow: Downloads a file from an external URL asynchronously.
+
+        Creates a job and queues a Cloud Task to:
+
+        1. Download file from source_url
+
+        2. Upload to GCS
+
+        3. Create folder hierarchy, CDE record, and placement
+
+
+        Poll GET /jobs/{job_id} to check job status.
+
+        '
+      operationId: v2_downloadFromUrl
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project association
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_type:
+              description: Optional CDE type name
+              type: string
+            cde_type_id:
+              description: Optional CDE type identifier
+              type: string
+            entityId:
+              description: Optional entity association
+              type: string
+            file_actual_name:
+              description: Desired filename
+              type: string
+            filetype:
+              description: MIME type of the file
+              type: string
+            folder_path:
+              description: Destination folder path like "/a/b/c"
+              type: string
+            source_url:
+              description: URL to download file from (must start with http:// or https://)
+              type: string
+          required:
+          - source_url
+          - folder_path
+          - file_actual_name
+          - filetype
+          type: object
+      responses:
+        202:
+          description: Job queued for async processing
+          schema:
+            properties:
+              data:
+                properties:
+                  job_id:
+                    description: Job identifier for status polling
+                    type: string
+                  status:
+                    description: Initial job status (pending)
+                    type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
+        400:
+          description: Invalid request parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Queue a file download from URL for async processing
+      tags:
+      - CDE Helper
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/process:
     post:
       operationId: v2_processCDE
