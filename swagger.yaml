@@ -39343,6 +39343,566 @@ paths:
       tags:
       - WBS
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/projects/{projectId}/recipe/{recipeId}:
+    delete:
+      description: Soft deletes a recipe by setting the is_deleted flag to true
+      operationId: v2_deleteRecipe
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Recipe document ID
+        in: path
+        name: recipeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Recipe deleted successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  created_at:
+                    format: date-time
+                    title: Created At
+                    type: string
+                  created_by:
+                    title: Created By
+                    type: string
+                  created_by_user_id:
+                    title: Created By User Id
+                    type: string
+                  ingredients:
+                    items:
+                      properties:
+                        amount:
+                          title: Amount
+                          type: string
+                        name:
+                          title: Name
+                          type: string
+                      required:
+                      - name
+                      - amount
+                      type: object
+                    title: Ingredients
+                    type: array
+                  is_deleted:
+                    default: false
+                    title: Is Deleted
+                    type: boolean
+                  name:
+                    title: Name
+                    type: string
+                  steps:
+                    items:
+                      type: string
+                    title: Steps
+                    type: array
+                  updated_at:
+                    format: date-time
+                    title: Updated At
+                    type: string
+                  workspace_id:
+                    title: Workspace Id
+                    type: string
+                required:
+                - workspace_id
+                - created_by
+                - created_by_user_id
+                - name
+                - ingredients
+                - steps
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Recipe not found or already deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a recipe (soft delete)
+      tags:
+      - Recipes
+    get:
+      operationId: v2_getRecipeById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Recipe document ID
+        in: path
+        name: recipeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully retrieved recipe
+          schema:
+            properties:
+              created_at:
+                format: date-time
+                title: Created At
+                type: string
+              created_by:
+                title: Created By
+                type: string
+              created_by_user_id:
+                title: Created By User Id
+                type: string
+              ingredients:
+                items:
+                  properties:
+                    amount:
+                      title: Amount
+                      type: string
+                    name:
+                      title: Name
+                      type: string
+                  required:
+                  - name
+                  - amount
+                  type: object
+                title: Ingredients
+                type: array
+              is_deleted:
+                default: false
+                title: Is Deleted
+                type: boolean
+              name:
+                title: Name
+                type: string
+              steps:
+                items:
+                  type: string
+                title: Steps
+                type: array
+              updated_at:
+                format: date-time
+                title: Updated At
+                type: string
+              workspace_id:
+                title: Workspace Id
+                type: string
+            required:
+            - workspace_id
+            - created_by
+            - created_by_user_id
+            - name
+            - ingredients
+            - steps
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Recipe not found
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a single recipe by ID
+      tags:
+      - Recipes
+    patch:
+      operationId: v2_updateRecipe
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Recipe document ID
+        in: path
+        name: recipeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            ingredients:
+              items:
+                properties:
+                  amount:
+                    title: Amount
+                    type: string
+                  name:
+                    title: Name
+                    type: string
+                required:
+                - name
+                - amount
+                type: object
+              title: Ingredients
+              type: array
+            name:
+              title: Name
+              type: string
+            steps:
+              items:
+                type: string
+              title: Steps
+              type: array
+          type: object
+      responses:
+        200:
+          description: Recipe updated successfully
+          schema:
+            properties:
+              created_at:
+                format: date-time
+                title: Created At
+                type: string
+              created_by:
+                title: Created By
+                type: string
+              created_by_user_id:
+                title: Created By User Id
+                type: string
+              ingredients:
+                items:
+                  properties:
+                    amount:
+                      title: Amount
+                      type: string
+                    name:
+                      title: Name
+                      type: string
+                  required:
+                  - name
+                  - amount
+                  type: object
+                title: Ingredients
+                type: array
+              is_deleted:
+                default: false
+                title: Is Deleted
+                type: boolean
+              name:
+                title: Name
+                type: string
+              steps:
+                items:
+                  type: string
+                title: Steps
+                type: array
+              updated_at:
+                format: date-time
+                title: Updated At
+                type: string
+              workspace_id:
+                title: Workspace Id
+                type: string
+            required:
+            - workspace_id
+            - created_by
+            - created_by_user_id
+            - name
+            - ingredients
+            - steps
+            type: object
+        400:
+          description: Bad Request - Validation error
+          schema:
+            properties:
+              errors:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Recipe not found
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update an existing recipe
+      tags:
+      - Recipes
+  /v2/workspaces/{workspaceId}/projects/{projectId}/recipes:
+    get:
+      operationId: v2_getRecipes
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Pagination cursor for retrieving the next page of results
+        in: query
+        name: cursor
+        required: false
+        type: string
+      - description: Search query string to filter recipes
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 10
+        description: Number of items per page (default 10)
+        in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successfully retrieved recipes
+          schema:
+            properties:
+              has_more:
+                description: Boolean indicating whether more results are available
+                  for pagination
+                type: boolean
+              items:
+                items:
+                  properties:
+                    created_at:
+                      format: date-time
+                      title: Created At
+                      type: string
+                    created_by:
+                      title: Created By
+                      type: string
+                    created_by_user_id:
+                      title: Created By User Id
+                      type: string
+                    ingredients:
+                      items:
+                        properties:
+                          amount:
+                            title: Amount
+                            type: string
+                          name:
+                            title: Name
+                            type: string
+                        required:
+                        - name
+                        - amount
+                        type: object
+                      title: Ingredients
+                      type: array
+                    is_deleted:
+                      default: false
+                      title: Is Deleted
+                      type: boolean
+                    name:
+                      title: Name
+                      type: string
+                    steps:
+                      items:
+                        type: string
+                      title: Steps
+                      type: array
+                    updated_at:
+                      format: date-time
+                      title: Updated At
+                      type: string
+                    workspace_id:
+                      title: Workspace Id
+                      type: string
+                  required:
+                  - workspace_id
+                  - created_by
+                  - created_by_user_id
+                  - name
+                  - ingredients
+                  - steps
+                  type: object
+                type: array
+              next_cursor:
+                description: Cursor token for retrieving the next page of results
+                  (pass this value to the 'cursor' query parameter)
+                type: string
+              page_size:
+                description: Number of items returned in the current page
+                type: integer
+              source:
+                description: Data source identifier (e.g., 'firestore')
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get all recipes with optional filtering and pagination
+      tags:
+      - Recipes
+    post:
+      operationId: v2_createRecipe
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            ingredients:
+              description: List of ingredients required for the recipe
+              items:
+                properties:
+                  amount:
+                    title: Amount
+                    type: string
+                  name:
+                    title: Name
+                    type: string
+                required:
+                - name
+                - amount
+                type: object
+              type: array
+            name:
+              description: Name of the recipe
+              type: string
+            steps:
+              description: Ordered list of cooking steps
+              items:
+                type: string
+              type: array
+          required:
+          - name
+          - ingredients
+          - steps
+          type: object
+      responses:
+        201:
+          description: Recipe created successfully
+          schema:
+            properties:
+              created_at:
+                format: date-time
+                title: Created At
+                type: string
+              created_by:
+                title: Created By
+                type: string
+              created_by_user_id:
+                title: Created By User Id
+                type: string
+              ingredients:
+                items:
+                  properties:
+                    amount:
+                      title: Amount
+                      type: string
+                    name:
+                      title: Name
+                      type: string
+                  required:
+                  - name
+                  - amount
+                  type: object
+                title: Ingredients
+                type: array
+              is_deleted:
+                default: false
+                title: Is Deleted
+                type: boolean
+              name:
+                title: Name
+                type: string
+              steps:
+                items:
+                  type: string
+                title: Steps
+                type: array
+              updated_at:
+                format: date-time
+                title: Updated At
+                type: string
+              workspace_id:
+                title: Workspace Id
+                type: string
+            required:
+            - workspace_id
+            - created_by
+            - created_by_user_id
+            - name
+            - ingredients
+            - steps
+            type: object
+        400:
+          description: Bad Request - Validation error
+          schema:
+            properties:
+              errors:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create new recipe
+      tags:
+      - Recipes
   /v2/workspaces/{workspaceId}/projects/{projectId}/reports/wip/claims-by-month:
     get:
       description: Returns claims grouped by month with variance from previous month
