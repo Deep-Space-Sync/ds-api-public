@@ -5108,7 +5108,7 @@ paths:
         - failed: Job failed (error field populated)
 
         '
-      operationId: v2_getJobStatus
+      operationId: v2_getCdeHelperJobStatus
       parameters:
       - in: path
         name: workspaceId
