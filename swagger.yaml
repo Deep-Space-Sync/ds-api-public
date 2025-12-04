@@ -748,6 +748,130 @@ paths:
       summary: Get All Workers Across Sharing Companies
       tags:
       - Global Company Directory
+  /v2/global-companies/batch-verify-tax-ids:
+    post:
+      description: 'Admin-only endpoint to verify tax IDs (ABN/NZBN) for global companies
+
+        that have not been verified. Useful for companies synced from Xero where
+
+        tax ID verification was skipped. Updates records with verified data including
+
+        organisation name, entity type, and location.
+
+        '
+      operationId: v2_batchVerifyTaxIds
+      parameters:
+      - description: Maximum number of companies to process (useful for testing)
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: If true, only report what would be verified without updating
+        in: query
+        name: dry_run
+        required: false
+        type: boolean
+      - description: Filter to specific country only
+        enum:
+        - Australia
+        - New Zealand
+        in: query
+        name: country
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              failed:
+                description: Number of companies that failed to process
+                type: integer
+              failed_companies:
+                items:
+                  properties:
+                    country:
+                      type: string
+                    error:
+                      description: Error message
+                      type: string
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    tax_id:
+                      type: string
+                  type: object
+                type: array
+              invalid:
+                description: Number of companies with invalid tax IDs
+                type: integer
+              invalid_companies:
+                items:
+                  properties:
+                    country:
+                      type: string
+                    error:
+                      description: Reason for invalid status
+                      type: string
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    tax_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                description: Status message
+                type: string
+              verified:
+                description: Number of companies successfully verified
+                type: integer
+              verified_companies:
+                items:
+                  properties:
+                    country:
+                      description: Country (Australia or New Zealand)
+                      type: string
+                    entity_type:
+                      description: Entity type code
+                      type: string
+                    id:
+                      description: Global company ID
+                      type: integer
+                    name:
+                      description: Company name
+                      type: string
+                    organisation_name:
+                      description: Official organisation name from registry
+                      type: string
+                    postcode:
+                      description: Postcode
+                      type: string
+                    state_code:
+                      description: State/province code
+                      type: string
+                    tax_id:
+                      description: Company tax ID (ABN/NZBN)
+                      type: string
+                    trading_name:
+                      description: Trading name from registry
+                      type: string
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - Requires cs-admin or admin scope
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Batch Verify Tax IDs for Global Companies
+      tags:
+      - Global Company Directory
   /v2/global-companies/create-missing-workspaces:
     post:
       description: 'Admin-only endpoint to trigger workspace creation for all global
