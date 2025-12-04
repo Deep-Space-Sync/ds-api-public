@@ -748,6 +748,77 @@ paths:
       summary: Get All Workers Across Sharing Companies
       tags:
       - Global Company Directory
+  /v2/global-companies/create-missing-workspaces:
+    post:
+      description: 'Admin-only endpoint to trigger workspace creation for all global
+        companies
+
+        that are missing workspaces. Companies must have tax_id_verified=1 and
+
+        main_contact_email set. Messages are queued via Pub/Sub for async processing.
+
+        '
+      operationId: v2_createMissingWorkspaces
+      parameters:
+      - description: Maximum number of companies to process (useful for testing)
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              failed:
+                description: Number of companies that failed to queue
+                type: integer
+              failed_companies:
+                items:
+                  properties:
+                    error:
+                      description: Error message
+                      type: string
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    tax_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                description: Status message
+                type: string
+              queued:
+                description: Number of companies queued for workspace creation
+                type: integer
+              queued_companies:
+                items:
+                  properties:
+                    id:
+                      description: Global company ID
+                      type: integer
+                    name:
+                      description: Company name
+                      type: string
+                    tax_id:
+                      description: Company tax ID (ABN/NZBN)
+                      type: string
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Missing Workspaces for Global Companies
+      tags:
+      - Global Company Directory
   /v2/global-companies/trade-categories:
     get:
       operationId: v2_getAllTradeCategories
