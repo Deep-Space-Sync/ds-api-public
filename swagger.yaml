@@ -25462,6 +25462,52 @@ paths:
       summary: Get signed urls for cde
       tags:
       - Upload Data
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde-folders/bulk-create-defaults:
+    post:
+      description: 'Creates the default folder hierarchy for a project including static
+        folders
+
+        (Preconstruction, Procurement, Commercial, Forms, Delivery, HSEQ, Portals)
+
+        and dynamic folders for clients and subcontractors under Portals.
+
+        '
+      operationId: v2_bulkCreateDefaultCdeFolders
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project to create folders for
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            global_company_id:
+              description: Global company ID for fetching subcontractors
+              type: integer
+          required:
+          - global_company_id
+          type: object
+      responses:
+        201:
+          description: Default folders created successfully
+        400:
+          description: Missing required parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create default folder structure for project
+      tags:
+      - CDE Folders
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde-folders/create-path:
     post:
       description: Creates all missing folders in the given path. Returns 409 if full
