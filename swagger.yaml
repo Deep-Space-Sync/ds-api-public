@@ -5224,6 +5224,80 @@ paths:
       summary: Create a CDE folder
       tags:
       - CDE Folders
+  /v2/workspaces/{workspaceId}/cde-folders/party-types:
+    get:
+      description: Returns the list of available party types (client, subcontractor)
+        and permission levels (read, write, admin).
+      operationId: v2_getCdeFolderPartyTypes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Party types and permission levels
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get available party types and permission levels
+      tags:
+      - CDE Folder Permissions
+  /v2/workspaces/{workspaceId}/cde-folders/portal-tree:
+    get:
+      description: 'Returns the folder tree filtered for a specific party''s portal
+        view.
+
+        Includes the party''s own portal folder (implicit access) and folders
+
+        with explicit permissions. Ancestor folders are included for navigation
+
+        but marked as non-accessible.
+
+        '
+      operationId: v2_getCdeFolderPortalTree
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Type of party (client, subcontractor)
+        in: query
+        name: partyType
+        required: true
+        type: string
+      - description: ID of the party
+        in: query
+        name: partyId
+        required: true
+        type: string
+      - description: Name of the party (for portal folder path)
+        in: query
+        name: partyName
+        required: true
+        type: string
+      - description: Optional project filter
+        in: query
+        name: projectId
+        required: false
+        type: string
+      responses:
+        200:
+          description: Filtered folder tree
+        400:
+          description: Missing required parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get filtered folder tree for party portal
+      tags:
+      - CDE Folder Permissions
   /v2/workspaces/{workspaceId}/cde-folders/{folderId}:
     delete:
       operationId: v2_deleteCdeFolder
@@ -5287,6 +5361,159 @@ paths:
       summary: Update a CDE folder (rename/move)
       tags:
       - CDE Folders
+  /v2/workspaces/{workspaceId}/cde-folders/{folderId}/permissions:
+    get:
+      description: Returns all permissions for a specific folder.
+      operationId: v2_listCdeFolderPermissions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: folderId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: false
+        type: string
+      responses:
+        200:
+          description: List of permissions
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List folder permissions
+      tags:
+      - CDE Folder Permissions
+    post:
+      description: Creates a new permission to share a folder with a party (client
+        or subcontractor).
+      operationId: v2_shareCdeFolder
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: folderId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            party_id:
+              description: ID of the party
+              type: string
+            party_type:
+              description: Type of party (client, subcontractor)
+              type: string
+            permission_level:
+              description: Permission level (read, write, admin). Defaults to read.
+              type: string
+            project_id:
+              description: Optional project association
+              type: string
+          required:
+          - party_type
+          - party_id
+          type: object
+      responses:
+        201:
+          description: Permission created
+        400:
+          description: Missing required parameters
+        401:
+          description: Unauthorized
+        409:
+          description: Permission already exists
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Share folder with a party
+      tags:
+      - CDE Folder Permissions
+  /v2/workspaces/{workspaceId}/cde-folders/{folderId}/permissions/{permissionId}:
+    delete:
+      description: Removes (soft deletes) a folder permission.
+      operationId: v2_removeCdeFolderPermission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: folderId
+        required: true
+        type: string
+      - in: path
+        name: permissionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Permission removed
+        401:
+          description: Unauthorized
+        404:
+          description: Permission not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove folder permission
+      tags:
+      - CDE Folder Permissions
+    patch:
+      description: Updates the permission level for an existing folder permission.
+      operationId: v2_updateCdeFolderPermission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: folderId
+        required: true
+        type: string
+      - in: path
+        name: permissionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            permission_level:
+              description: New permission level (read, write, admin)
+              type: string
+          required:
+          - permission_level
+          type: object
+      responses:
+        200:
+          description: Permission updated
+        400:
+          description: Missing required parameters
+        401:
+          description: Unauthorized
+        404:
+          description: Permission not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update folder permission
+      tags:
+      - CDE Folder Permissions
   /v2/workspaces/{workspaceId}/cde-helper/jobs/{jobId}:
     get:
       description: 'Poll this endpoint to check the status of an async job (e.g.,
