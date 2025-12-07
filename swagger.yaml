@@ -8205,14 +8205,23 @@ paths:
               properties:
                 award_date:
                   description: Date the contract was awarded
+                claim_cycle_type:
+                  description: Claim cycle type
+                  type: string
                 contract_currency:
                   description: Currency of the cost contract
+                contract_date:
+                  description: Contract date
+                  type: string
                 contract_identifier:
                   description: User-friendly identifier for cost contract
                 contract_risk:
                   description: Risk level of the contract (Low/Medium/High)
                 contract_status:
                   description: Status of the contract (Draft/Active/Completed/Cancelled)
+                contract_template_set:
+                  description: Contract template set
+                  type: string
                 contract_type:
                   description: Type of contract (SUBCONTRACT/HEAD)
                 contract_value:
@@ -8229,19 +8238,55 @@ paths:
                   description: User ID of the person who created the contract
                 dlp_end:
                   description: Defects liability period end date
+                dlp_setting:
+                  description: DLP setting configuration
+                  type: object
+                gst:
+                  description: GST percentage
+                  type: number
+                internal_reference:
+                  description: Internal reference identifier
+                  type: string
                 issuing_company_id:
                   description: Internal identifier for the issuing company
+                opportunity_tender_reference:
+                  description: Opportunity/tender reference
+                  type: string
+                payment_term:
+                  description: Payment term in days
+                  type: integer
                 pc_date:
                   description: Practical completion date
                 project_id:
                   description: Project ID the contract belongs to
                 receiving_company_id:
                   description: Internal identifier for the receiving company
+                reference_date:
+                  description: Reference date (day of month)
+                  type: integer
                 region:
                   description: Region associated with the contract
                   type: string
                 retention_cap_value:
                   description: Retention cap value
+                retention_setting:
+                  description: Retention setting configuration
+                  type: object
+                scope_of_work:
+                  description: Detailed scope of work
+                  type: string
+                sector:
+                  description: Sector of the contract
+                  type: string
+                signed_contract_pack:
+                  description: Signed contract pack CDE file ID
+                  type: integer
+                sov_structure:
+                  description: SOV structure type
+                  type: string
+                sovs:
+                  description: Schedule of Values array
+                  type: array
                 start_date:
                   description: Start date of the contract
                 trade:
@@ -30455,8 +30500,8 @@ paths:
         200:
           description: Successful response
           schema:
-            items:
-              properties:
+            properties:
+              data:
                 attachments:
                   description: Array of attachments associated with the contract
                   items:
@@ -30471,22 +30516,29 @@ paths:
                   type: array
                 award_date:
                   description: Date the contract was awarded
+                claim_cycle_type:
+                  description: Claim cycle type
+                  type: string
                 contract_currency:
                   description: Currency of the cost contract
+                contract_date:
+                  description: Contract date
+                  type: string
                 contract_identifier:
                   description: User-friendly identifier for cost contract
                 contract_risk:
                   description: Risk level of the contract (Low/Medium/High)
                 contract_status:
                   description: Status of the contract (Draft/Active/Completed/Cancelled)
+                contract_template_set:
+                  description: Contract template set
+                  type: string
                 contract_type:
                   description: Type of contract (SUBCONTRACT/HEAD)
                 contract_value:
                   description: Value of the cost contract
                 cost_contract_name:
                   description: Name of the cost contract
-                cost_contract_num:
-                  description: Internal identifier for cost contract
                 cost_contract_scope_of_work:
                   description: Scope of work for the cost contract
                 created_at:
@@ -30495,25 +30547,68 @@ paths:
                   description: User ID of the person who created the contract
                 dlp_end:
                   description: Defects liability period end date
+                dlp_setting:
+                  description: DLP setting configuration
+                  type: object
+                gst:
+                  description: GST percentage
+                  type: number
+                internal_reference:
+                  description: Internal reference identifier
+                  type: string
                 issuing_company_id:
                   description: Internal identifier for the issuing company
+                items:
+                  properties:
+                    cost_contract_num:
+                      description: Internal identifier for cost contract
+                  type: object
+                opportunity_tender_reference:
+                  description: Opportunity/tender reference
+                  type: string
+                payment_term:
+                  description: Payment term in days
+                  type: integer
                 pc_date:
                   description: Practical completion date
                 receiving_company_id:
                   description: Internal identifier for the receiving company
+                reference_date:
+                  description: Reference date (day of month)
+                  type: integer
                 region:
                   description: Region associated with the contract
                   type: string
                 retention_cap_value:
                   description: Retention cap value
+                retention_setting:
+                  description: Retention setting configuration
+                  type: object
+                scope_of_work:
+                  description: Detailed scope of work
+                  type: string
+                sector:
+                  description: Sector of the contract
+                  type: string
+                signed_contract_pack:
+                  description: Signed contract pack CDE file ID
+                  type: integer
+                sov_structure:
+                  description: SOV structure type
+                  type: string
+                sovs:
+                  description: Schedule of Values array
+                  type: array
                 start_date:
                   description: Start date of the contract
                 trade:
                   description: Trade associated with the contract
+                type: array
                 updated_at:
                   description: Date the contract was last updated
-              type: object
-            type: array
+              message:
+                type: string
+            type: object
         401:
           description: Unauthorized
         500:
@@ -30543,12 +30638,22 @@ paths:
           properties:
             award_date:
               description: Date the contract was awarded
+            claim_cycle_type:
+              description: Claim cycle type
+              type: string
             contract_currency:
               description: Currency of the cost contract
+            contract_date:
+              description: Contract date
+              format: date-time
+              type: string
             contract_risk:
               description: Risk level of the contract (Low/Medium/High)
             contract_status:
               description: Status of the contract (Draft/Active/Completed/Cancelled)
+            contract_template_set:
+              description: Contract template set (AS4000/AS4902/ABIC SW/NZS 3910/Custom/Other)
+              type: string
             contract_type:
               description: Type of contract (SUBCONTRACT/HEAD)
             contract_value:
@@ -30561,15 +30666,84 @@ paths:
               description: Scope of work for the cost contract
             dlp_end:
               description: Defects liability period end date
+            dlp_setting:
+              description: DLP setting configuration
+              properties:
+                type:
+                  description: DLP type (Weeks/Months)
+                  type: string
+                value:
+                  description: DLP value
+                  type: integer
+              type: object
+            gst:
+              description: GST percentage
+              type: number
+            internal_reference:
+              description: Internal reference identifier
+              type: string
+            opportunity_tender_reference:
+              description: Opportunity/tender reference
+              type: string
+            payment_term:
+              description: Payment term in days
+              type: integer
             pc_date:
               description: Practical completion date
             receiving_company_id:
               description: Internal identifier for the receiving company
+            reference_date:
+              description: Reference date (day of month)
+              type: integer
             region:
               description: Region associated with the contract
               type: string
             retention_cap_value:
               description: Retention cap value
+            retention_setting:
+              description: Retention setting configuration
+              properties:
+                type:
+                  description: Retention type (None/Percentage of Each Claim/Fixed
+                    Amount)
+                  type: string
+                value:
+                  description: Retention value
+                  type: number
+              type: object
+            scope_of_work:
+              description: Detailed scope of work
+              type: string
+            sector:
+              description: Sector of the contract (Health/Education/Commercial/Residential/Infrastructure/Industrial/Retail/Hospitality/Other)
+              type: string
+            signed_contract_pack:
+              description: Signed contract pack CDE file ID
+              type: integer
+            sov_structure:
+              description: SOV structure type (Lump Sum / GMP/Cost Plus / Construction
+                Management/Schedule of Rates/Other)
+              type: string
+            sovs:
+              description: Schedule of Values array
+              items:
+                properties:
+                  budget_category_id:
+                    description: Budget category ID
+                    type: string
+                  contract_num:
+                    description: Contract number/value
+                    type: number
+                  linked_cost_code:
+                    description: Array of linked cost code numbers
+                    items:
+                      type: string
+                    type: array
+                required:
+                - budget_category_id
+                - contract_num
+                type: object
+              type: array
             start_date:
               description: Start date of the contract
             trade:
@@ -30587,14 +30761,23 @@ paths:
             properties:
               award_date:
                 description: Date the contract was awarded
+              claim_cycle_type:
+                description: Claim cycle type
+                type: string
               contract_currency:
                 description: Currency of the cost contract
+              contract_date:
+                description: Contract date
+                type: string
               contract_identifier:
                 description: User-friendly identifier for cost contract
               contract_risk:
                 description: Risk level of the contract (Low/Medium/High)
               contract_status:
                 description: Status of the contract (Draft/Active/Completed/Cancelled)
+              contract_template_set:
+                description: Contract template set
+                type: string
               contract_type:
                 description: Type of contract (SUBCONTRACT/HEAD)
               contract_value:
@@ -30611,17 +30794,53 @@ paths:
                 description: User ID of the person who created the contract
               dlp_end:
                 description: Defects liability period end date
+              dlp_setting:
+                description: DLP setting configuration
+                type: object
+              gst:
+                description: GST percentage
+                type: number
+              internal_reference:
+                description: Internal reference identifier
+                type: string
               issuing_company_id:
                 description: Internal identifier for the issuing company
+              opportunity_tender_reference:
+                description: Opportunity/tender reference
+                type: string
+              payment_term:
+                description: Payment term in days
+                type: integer
               pc_date:
                 description: Practical completion date
               receiving_company_id:
                 description: Internal identifier for the receiving company
+              reference_date:
+                description: Reference date (day of month)
+                type: integer
               region:
                 description: Region associated with the contract
                 type: string
               retention_cap_value:
                 description: Retention cap value
+              retention_setting:
+                description: Retention setting configuration
+                type: object
+              scope_of_work:
+                description: Detailed scope of work
+                type: string
+              sector:
+                description: Sector of the contract
+                type: string
+              signed_contract_pack:
+                description: Signed contract pack CDE file ID
+                type: integer
+              sov_structure:
+                description: SOV structure type
+                type: string
+              sovs:
+                description: Schedule of Values array
+                type: array
               start_date:
                 description: Start date of the contract
               trade:
@@ -30675,14 +30894,23 @@ paths:
                 type: array
               award_date:
                 description: Date the contract was awarded
+              claim_cycle_type:
+                description: Claim cycle type
+                type: string
               contract_currency:
                 description: Currency of the cost contract
+              contract_date:
+                description: Contract date
+                type: string
               contract_identifier:
                 description: User-friendly identifier for cost contract
               contract_risk:
                 description: Risk level of the contract (Low/Medium/High)
               contract_status:
                 description: Status of the contract (Draft/Active/Completed/Cancelled)
+              contract_template_set:
+                description: Contract template set
+                type: string
               contract_type:
                 description: Type of contract (SUBCONTRACT/HEAD)
               contract_value:
@@ -30699,17 +30927,53 @@ paths:
                 description: User ID of the person who created the contract
               dlp_end:
                 description: Defects liability period end date
+              dlp_setting:
+                description: DLP setting configuration
+                type: object
+              gst:
+                description: GST percentage
+                type: number
+              internal_reference:
+                description: Internal reference identifier
+                type: string
               issuing_company_id:
                 description: Internal identifier for the issuing company
+              opportunity_tender_reference:
+                description: Opportunity/tender reference
+                type: string
+              payment_term:
+                description: Payment term in days
+                type: integer
               pc_date:
                 description: Practical completion date
               receiving_company_id:
                 description: Internal identifier for the receiving company
+              reference_date:
+                description: Reference date (day of month)
+                type: integer
               region:
                 description: Region associated with the contract
                 type: string
               retention_cap_value:
                 description: Retention cap value
+              retention_setting:
+                description: Retention setting configuration
+                type: object
+              scope_of_work:
+                description: Detailed scope of work
+                type: string
+              sector:
+                description: Sector of the contract
+                type: string
+              signed_contract_pack:
+                description: Signed contract pack CDE file ID
+                type: integer
+              sov_structure:
+                description: SOV structure type
+                type: string
+              sovs:
+                description: Schedule of Values array
+                type: array
               start_date:
                 description: Start date of the contract
               trade:
@@ -30750,12 +31014,22 @@ paths:
           properties:
             award_date:
               description: Date the contract was awarded
+            claim_cycle_type:
+              description: Claim cycle type
+              type: string
             contract_currency:
               description: Currency of the cost contract
+            contract_date:
+              description: Contract date
+              format: date-time
+              type: string
             contract_risk:
               description: Risk level of the contract (Low/Medium/High)
             contract_status:
               description: Status of the contract (Draft/Active/Completed/Cancelled)
+            contract_template_set:
+              description: Contract template set
+              type: string
             contract_type:
               description: Type of contract (SUBCONTRACT/HEAD)
             contract_value:
@@ -30768,15 +31042,79 @@ paths:
               description: Scope of work for the cost contract
             dlp_end:
               description: Defects liability period end date
+            dlp_setting:
+              description: DLP setting configuration
+              properties:
+                type:
+                  description: DLP type
+                  type: string
+                value:
+                  description: DLP value
+                  type: integer
+              type: object
+            gst:
+              description: GST percentage
+              type: number
+            internal_reference:
+              description: Internal reference identifier
+              type: string
+            opportunity_tender_reference:
+              description: Opportunity/tender reference
+              type: string
+            payment_term:
+              description: Payment term in days
+              type: integer
             pc_date:
               description: Practical completion date
             receiving_company_id:
               description: Internal identifier for the receiving company
+            reference_date:
+              description: Reference date (day of month)
+              type: integer
             region:
               description: Region associated with the contract
               type: string
             retention_cap_value:
               description: Retention cap value
+            retention_setting:
+              description: Retention setting configuration
+              properties:
+                type:
+                  description: Retention type
+                  type: string
+                value:
+                  description: Retention value
+                  type: number
+              type: object
+            scope_of_work:
+              description: Detailed scope of work
+              type: string
+            sector:
+              description: Sector of the contract
+              type: string
+            signed_contract_pack:
+              description: Signed contract pack CDE file ID
+              type: integer
+            sov_structure:
+              description: SOV structure type
+              type: string
+            sovs:
+              description: Schedule of Values array
+              items:
+                properties:
+                  budget_category_id:
+                    description: Budget category ID
+                    type: string
+                  contract_num:
+                    description: Contract number/value
+                    type: number
+                  linked_cost_code:
+                    description: Array of linked cost code numbers
+                    items:
+                      type: string
+                    type: array
+                type: object
+              type: array
             start_date:
               description: Start date of the contract
             trade:
@@ -30789,14 +31127,23 @@ paths:
             properties:
               award_date:
                 description: Date the contract was awarded
+              claim_cycle_type:
+                description: Claim cycle type
+                type: string
               contract_currency:
                 description: Currency of the cost contract
+              contract_date:
+                description: Contract date
+                type: string
               contract_identifier:
                 description: User-friendly identifier for cost contract
               contract_risk:
                 description: Risk level of the contract (Low/Medium/High)
               contract_status:
                 description: Status of the contract (Draft/Active/Completed/Cancelled)
+              contract_template_set:
+                description: Contract template set
+                type: string
               contract_type:
                 description: Type of contract (SUBCONTRACT/HEAD)
               contract_value:
@@ -30813,17 +31160,53 @@ paths:
                 description: User ID of the person who created the contract
               dlp_end:
                 description: Defects liability period end date
+              dlp_setting:
+                description: DLP setting configuration
+                type: object
+              gst:
+                description: GST percentage
+                type: number
+              internal_reference:
+                description: Internal reference identifier
+                type: string
               issuing_company_id:
                 description: Internal identifier for the issuing company
+              opportunity_tender_reference:
+                description: Opportunity/tender reference
+                type: string
+              payment_term:
+                description: Payment term in days
+                type: integer
               pc_date:
                 description: Practical completion date
               receiving_company_id:
                 description: Internal identifier for the receiving company
+              reference_date:
+                description: Reference date (day of month)
+                type: integer
               region:
                 description: Region associated with the contract
                 type: string
               retention_cap_value:
                 description: Retention cap value
+              retention_setting:
+                description: Retention setting configuration
+                type: object
+              scope_of_work:
+                description: Detailed scope of work
+                type: string
+              sector:
+                description: Sector of the contract
+                type: string
+              signed_contract_pack:
+                description: Signed contract pack CDE file ID
+                type: integer
+              sov_structure:
+                description: SOV structure type
+                type: string
+              sovs:
+                description: Schedule of Values array
+                type: array
               start_date:
                 description: Start date of the contract
               trade:
@@ -30838,6 +31221,310 @@ paths:
       security:
       - JWT_v2: []
       summary: Edit Cost Contract By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/sovs:
+    get:
+      operationId: v2_getContractSovs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    budget_category_id:
+                      description: Budget category ID
+                      type: string
+                    contract_num:
+                      description: Contract number/value
+                      type: number
+                    linked_cost_code:
+                      description: Array of linked cost code numbers
+                      items:
+                        type: string
+                      type: array
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Contract not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Contract SOVs
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postContractSov
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            budget_category_id:
+              description: Budget category ID
+              type: string
+            contract_num:
+              description: Contract number/value
+              type: number
+            linked_cost_code:
+              description: Array of linked cost code numbers
+              items:
+                type: string
+              type: array
+          required:
+          - budget_category_id
+          - contract_num
+          type: object
+      responses:
+        201:
+          description: SOV added successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  budget_category_id:
+                    type: string
+                  contract_num:
+                    type: number
+                  linked_cost_code:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              index:
+                description: Index of the new SOV in the array
+                type: integer
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request body
+        401:
+          description: Unauthorized
+        404:
+          description: Contract not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add Contract SOV
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/sovs/{sovId}:
+    delete:
+      operationId: v2_deleteContractSov
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - description: Index of the SOV in the array
+        in: path
+        name: sovId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: SOV deleted successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  budget_category_id:
+                    type: string
+                  contract_num:
+                    type: number
+                  linked_cost_code:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: SOV not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Contract SOV
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getContractSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - description: Index of the SOV in the array
+        in: path
+        name: sovId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  budget_category_id:
+                    type: string
+                  contract_num:
+                    type: number
+                  linked_cost_code:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: SOV not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Contract SOV By Index
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchContractSov
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - description: Index of the SOV in the array
+        in: path
+        name: sovId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            budget_category_id:
+              description: Budget category ID
+              type: string
+            contract_num:
+              description: Contract number/value
+              type: number
+            linked_cost_code:
+              description: Array of linked cost code numbers
+              items:
+                type: string
+              type: array
+          required:
+          - budget_category_id
+          - contract_num
+          type: object
+      responses:
+        200:
+          description: SOV updated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  budget_category_id:
+                    type: string
+                  contract_num:
+                    type: number
+                  linked_cost_code:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request body
+        401:
+          description: Unauthorized
+        404:
+          description: SOV not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Contract SOV
       tags:
       - Cost
       x-ds-test-enabled: true
