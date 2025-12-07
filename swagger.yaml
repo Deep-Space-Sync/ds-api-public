@@ -8244,6 +8244,10 @@ paths:
                 gst:
                   description: GST percentage
                   type: number
+                head_contract_type:
+                  description: Head contract type (Lump Sum, GMP, Cost Plus, Construction
+                    Management, Schedule of Rates, Other)
+                  type: string
                 internal_reference:
                   description: Internal reference identifier
                   type: string
@@ -30551,6 +30555,8 @@ paths:
                       type: object
                     gst:
                       type: number
+                    head_contract_type:
+                      type: string
                     internal_reference:
                       type: string
                     issuing_company_id:
@@ -30654,6 +30660,10 @@ paths:
               type: object
             gst:
               type: number
+            head_contract_type:
+              description: Head contract type (Lump Sum, GMP, Cost Plus, Construction
+                Management, Schedule of Rates, Other)
+              type: string
             internal_reference:
               type: string
             opportunity_tender_reference:
@@ -30752,6 +30762,8 @@ paths:
                 type: object
               gst:
                 type: number
+              head_contract_type:
+                type: string
               internal_reference:
                 type: string
               issuing_company_id:
@@ -30868,6 +30880,8 @@ paths:
                 type: object
               gst:
                 type: number
+              head_contract_type:
+                type: string
               internal_reference:
                 type: string
               issuing_company_id:
@@ -30971,6 +30985,10 @@ paths:
               type: object
             gst:
               type: number
+            head_contract_type:
+              description: Head contract type (Lump Sum, GMP, Cost Plus, Construction
+                Management, Schedule of Rates, Other)
+              type: string
             internal_reference:
               type: string
             opportunity_tender_reference:
@@ -31061,6 +31079,8 @@ paths:
                 type: object
               gst:
                 type: number
+              head_contract_type:
+                type: string
               internal_reference:
                 type: string
               issuing_company_id:
