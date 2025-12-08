@@ -43943,6 +43943,85 @@ paths:
       tags:
       - WBS
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/projects/{projectId}/wbs/lock:
+    post:
+      description: Performs full sync of WBS between Firestore and MySQL, then locks
+        the project to Firestore-managed mode. Auto-matches items by name, parent,
+        and cost code. After locking, all WBS edits should be done in Firestore with
+        automatic sync to MySQL.
+      operationId: v2_lockWbs
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: WBS Sync & Lock completed
+          schema:
+            properties:
+              message:
+                type: string
+              report:
+                properties:
+                  errors:
+                    description: Sync errors
+                    type: array
+                  imported:
+                    description: MySQL items imported to Firestore
+                    type: array
+                  linked:
+                    description: Items already linked
+                    type: array
+                  locked:
+                    description: Whether lock was successful
+                    type: boolean
+                  matched:
+                    description: Items matched by name/code
+                    type: array
+                  pushed:
+                    description: Firestore items pushed to MySQL
+                    type: array
+                  summary:
+                    properties:
+                      error_count:
+                        type: integer
+                      imported_count:
+                        type: integer
+                      linked_count:
+                        type: integer
+                      matched_count:
+                        type: integer
+                      pushed_count:
+                        type: integer
+                    type: object
+                type: object
+            type: object
+        401:
+          description: Unauthorized
+        409:
+          description: Conflict - Project WBS is already locked
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Sync & Lock project WBS
+      tags:
+      - WBS
+      x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/projects/{projectId}/wbs/recalculate-dates:
     post:
       description: Manually trigger recalculation of start_date and end_date for all
@@ -44006,6 +44085,271 @@ paths:
       tags:
       - WBS
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/projects/{projectId}/wbs/settings:
+    get:
+      description: Returns WBS settings for a project including lock status.
+      operationId: v2_getWbsSettings
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: WBS settings retrieved successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  allow_system_writes:
+                    description: Whether direct MySQL writes are allowed when locked
+                    type: boolean
+                  project_id:
+                    type: integer
+                  wbs_locked:
+                    description: Whether WBS is locked to Firestore management
+                    type: boolean
+                  wbs_locked_at:
+                    description: When lock was applied
+                    format: date-time
+                    type: string
+                  wbs_locked_by:
+                    description: User who locked
+                    type: string
+                  workspace_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get project WBS settings
+      tags:
+      - WBS
+    patch:
+      description: Update WBS settings such as lock status. Use the /wbs/lock endpoint
+        for initial sync & lock.
+      operationId: v2_updateWbsSettings
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            allow_system_writes:
+              description: Whether to allow direct MySQL writes when locked
+              type: boolean
+            wbs_locked:
+              description: Set to true to lock, false to unlock
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: WBS settings updated successfully
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update project WBS settings
+      tags:
+      - WBS
+      x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/projects/{projectId}/wbs/sync:
+    post:
+      description: Sync specified WBS items between systems. Supports import_from_mysql
+        (create Firestore from MySQL), push_to_mysql (create/update MySQL from Firestore),
+        and link (connect existing items).
+      operationId: v2_syncWbsItems
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            items:
+              description: Items to sync
+              items:
+                properties:
+                  action:
+                    description: Sync action to perform
+                    enum:
+                    - import_from_mysql
+                    - push_to_mysql
+                    - link
+                    type: string
+                  firestore_id:
+                    description: Firestore document ID (for push_to_mysql, link)
+                    type: string
+                  mysql_wbs_id:
+                    description: MySQL wbs_id (for import_from_mysql, link)
+                    type: integer
+                required:
+                - action
+                type: object
+              type: array
+          required:
+          - items
+          type: object
+      responses:
+        200:
+          description: Sync completed
+          schema:
+            properties:
+              message:
+                type: string
+              results:
+                properties:
+                  errors:
+                    items:
+                      type: object
+                    type: array
+                  success:
+                    items:
+                      type: object
+                    type: array
+                  total:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Sync WBS items between Firestore and MySQL
+      tags:
+      - WBS
+      x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/projects/{projectId}/wbs/unified:
+    get:
+      description: Returns merged WBS from both Firestore and MySQL with sync status
+        for each item. Items are classified as 'synced', 'firestore_only', or 'mysql_only'.
+      operationId: v2_getUnifiedWbs
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Return as tree structure (default false)
+        in: query
+        name: treeStructure
+        required: false
+        type: boolean
+      - description: Required header for Firestore-based endpoints
+        enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: Unified WBS retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    mysql_wbs_id:
+                      description: MySQL wbs_id (null for firestore_only items)
+                      type: integer
+                    parent_wbs_id:
+                      type: string
+                    source:
+                      enum:
+                      - firestore
+                      - mysql
+                      type: string
+                    sync_status:
+                      enum:
+                      - synced
+                      - firestore_only
+                      - mysql_only
+                      type: string
+                    wbs_id:
+                      description: Firestore UUID (null for mysql_only items)
+                      type: string
+                    wbs_name:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get unified WBS with sync status
+      tags:
+      - WBS
   /v2/workspaces/{workspaceId}/reports/cost-forecast/projects:
     get:
       description: Returns cost forecast data with budget variance for all projects
