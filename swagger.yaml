@@ -15987,6 +15987,90 @@ paths:
       summary: Send bulk emails using same template
       tags:
       - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/settings:
+    delete:
+      description: Remove custom email settings for the workspace, reverting to defaults.
+      operationId: v2_deleteHzEmailSettings
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Email settings deleted, reverting to defaults
+      security:
+      - JWT_v2: []
+      summary: Delete email settings
+      tags:
+      - HzNotifications
+    get:
+      description: Retrieve email branding settings (logo, footer) for the workspace.
+        Returns defaults if no custom settings exist.
+      operationId: v2_getHzEmailSettings
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Email settings retrieved successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  footer_text:
+                    type: string
+                  logo_url:
+                    type: string
+                  source:
+                    enum:
+                    - workspace
+                    - default
+                    type: string
+                  workspace_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Get email settings for workspace
+      tags:
+      - HzNotifications
+    put:
+      description: Set email branding settings (logo, footer) for the workspace. Creates
+        new settings or updates existing.
+      operationId: v2_upsertHzEmailSettings
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            footer_text:
+              description: HTML footer content for emails
+              type: string
+            logo_url:
+              description: URL to workspace logo image
+              type: string
+          type: object
+      responses:
+        200:
+          description: Email settings updated successfully
+        400:
+          description: Validation failed
+      security:
+      - JWT_v2: []
+      summary: Create or update email settings
+      tags:
+      - HzNotifications
   /v2/workspaces/{workspaceId}/hz-notifications/in-app:
     get:
       operationId: v2_getHzUserInAppNotifications
