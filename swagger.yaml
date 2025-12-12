@@ -8515,7 +8515,6 @@ paths:
         required: true
         type: string
       - in: body
-        name: body
         required: true
         schema:
           items:
