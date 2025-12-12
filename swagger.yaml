@@ -8518,36 +8518,42 @@ paths:
         name: body
         required: true
         schema:
-          items:
-            properties:
-              client_id:
-                description: User-provided unique identifier for cost code (used for
-                  hierarchy)
-                type: string
-              cost_budget_category_id:
-                description: Budget category ID this cost code belongs to
-                type: string
-              cost_code_description:
-                description: Description of cost code
-                type: string
-              cost_code_name:
-                description: Name of cost code
-                type: string
-              cost_code_original_value:
-                description: Original budget value for this cost code
-                type: number
-              parent_client_id:
-                description: client_id of parent cost code (empty string for root
-                  nodes)
-                type: string
-              project_id:
-                description: Project ID (optional, only for project-scoped cost codes)
-                type: integer
-            required:
-            - cost_code_name
-            - client_id
-            type: object
-          type: array
+          properties:
+            cost_codes:
+              items:
+                properties:
+                  client_id:
+                    description: User-provided unique identifier for cost code (used
+                      for hierarchy)
+                    type: string
+                  cost_budget_category_id:
+                    description: Budget category ID this cost code belongs to
+                    type: string
+                  cost_code_description:
+                    description: Description of cost code
+                    type: string
+                  cost_code_name:
+                    description: Name of cost code
+                    type: string
+                  cost_code_original_value:
+                    description: Original budget value for this cost code
+                    type: number
+                  parent_client_id:
+                    description: client_id of parent cost code (empty string for root
+                      nodes)
+                    type: string
+                  project_id:
+                    description: Project ID (optional, only for project-scoped cost
+                      codes)
+                    type: integer
+                required:
+                - cost_code_name
+                - client_id
+                type: object
+              type: array
+          required:
+          - cost_codes
+          type: object
       responses:
         201:
           description: Cost codes successfully created
