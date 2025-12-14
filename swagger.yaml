@@ -39220,7 +39220,50 @@ paths:
             properties:
               data:
                 items:
-                  $ref: '#/definitions/ApprovalInstance'
+                  properties:
+                    approval_id:
+                      description: Unique identifier for the approval instance
+                      type: string
+                    completed_at:
+                      description: Unix timestamp in milliseconds (null if not completed)
+                      type: integer
+                    context_snapshot:
+                      description: Frozen context data (immutable after creation)
+                      type: object
+                    created_at:
+                      description: Unix timestamp in milliseconds
+                      type: integer
+                    created_by_user_email:
+                      type: string
+                    created_by_user_id:
+                      type: string
+                    current_step_index:
+                      description: Index of the current active step
+                      type: integer
+                    entity_id:
+                      description: ID of the entity being approved
+                      type: string
+                    entity_type:
+                      description: Type of entity being approved
+                      type: string
+                    project_id:
+                      type: string
+                    status:
+                      enum:
+                      - IN_REVIEW
+                      - APPROVED
+                      - REJECTED
+                      - CANCELLED
+                      type: string
+                    updated_at:
+                      description: Unix timestamp in milliseconds
+                      type: integer
+                    workflow_snapshot:
+                      description: Frozen workflow definition
+                      type: object
+                    workspace_id:
+                      type: string
+                  type: object
                 type: array
               message:
                 type: string
@@ -39326,7 +39369,110 @@ paths:
           schema:
             properties:
               data:
-                $ref: '#/definitions/ApprovalInstanceWithDetails'
+                properties:
+                  approval_id:
+                    description: Unique identifier for the approval instance
+                    type: string
+                  completed_at:
+                    description: Unix timestamp in milliseconds (null if not completed)
+                    type: integer
+                  context_snapshot:
+                    description: Frozen context data (immutable after creation)
+                    type: object
+                  created_at:
+                    description: Unix timestamp in milliseconds
+                    type: integer
+                  created_by_user_email:
+                    type: string
+                  created_by_user_id:
+                    type: string
+                  current_step_index:
+                    description: Index of the current active step
+                    type: integer
+                  decisions:
+                    items:
+                      properties:
+                        action:
+                          enum:
+                          - APPROVE
+                          - REJECT
+                          - COMMENT
+                          type: string
+                        actor_user_email:
+                          type: string
+                        actor_user_id:
+                          type: string
+                        attachments:
+                          items:
+                            type: object
+                          type: array
+                        comment:
+                          type: string
+                        created_at:
+                          description: Unix timestamp in milliseconds
+                          type: integer
+                        decision_id:
+                          type: string
+                        step_index:
+                          type: integer
+                      type: object
+                    type: array
+                  entity_id:
+                    description: ID of the entity being approved
+                    type: string
+                  entity_type:
+                    description: Type of entity being approved
+                    type: string
+                  project_id:
+                    type: string
+                  status:
+                    enum:
+                    - IN_REVIEW
+                    - APPROVED
+                    - REJECTED
+                    - CANCELLED
+                    type: string
+                  steps:
+                    items:
+                      properties:
+                        candidates_snapshot:
+                          description: Snapshot of eligible approvers
+                          type: object
+                        closed_at:
+                          description: Unix timestamp in milliseconds (null if not
+                            closed)
+                          type: integer
+                        decision_rule:
+                          description: Rule for approving this step (MVP only supports
+                            mode=ANY)
+                          type: object
+                        name:
+                          type: string
+                        opened_at:
+                          description: Unix timestamp in milliseconds
+                          type: integer
+                        status:
+                          enum:
+                          - PENDING
+                          - IN_REVIEW
+                          - APPROVED
+                          - REJECTED
+                          type: string
+                        step_id:
+                          type: string
+                        step_index:
+                          type: integer
+                      type: object
+                    type: array
+                  updated_at:
+                    description: Unix timestamp in milliseconds
+                    type: integer
+                  workflow_snapshot:
+                    description: Frozen workflow definition
+                    type: object
+                  workspace_id:
+                    type: string
+                type: object
               message:
                 type: string
             type: object
@@ -39371,7 +39517,110 @@ paths:
           schema:
             properties:
               data:
-                $ref: '#/definitions/ApprovalInstanceWithDetails'
+                properties:
+                  approval_id:
+                    description: Unique identifier for the approval instance
+                    type: string
+                  completed_at:
+                    description: Unix timestamp in milliseconds (null if not completed)
+                    type: integer
+                  context_snapshot:
+                    description: Frozen context data (immutable after creation)
+                    type: object
+                  created_at:
+                    description: Unix timestamp in milliseconds
+                    type: integer
+                  created_by_user_email:
+                    type: string
+                  created_by_user_id:
+                    type: string
+                  current_step_index:
+                    description: Index of the current active step
+                    type: integer
+                  decisions:
+                    items:
+                      properties:
+                        action:
+                          enum:
+                          - APPROVE
+                          - REJECT
+                          - COMMENT
+                          type: string
+                        actor_user_email:
+                          type: string
+                        actor_user_id:
+                          type: string
+                        attachments:
+                          items:
+                            type: object
+                          type: array
+                        comment:
+                          type: string
+                        created_at:
+                          description: Unix timestamp in milliseconds
+                          type: integer
+                        decision_id:
+                          type: string
+                        step_index:
+                          type: integer
+                      type: object
+                    type: array
+                  entity_id:
+                    description: ID of the entity being approved
+                    type: string
+                  entity_type:
+                    description: Type of entity being approved
+                    type: string
+                  project_id:
+                    type: string
+                  status:
+                    enum:
+                    - IN_REVIEW
+                    - APPROVED
+                    - REJECTED
+                    - CANCELLED
+                    type: string
+                  steps:
+                    items:
+                      properties:
+                        candidates_snapshot:
+                          description: Snapshot of eligible approvers
+                          type: object
+                        closed_at:
+                          description: Unix timestamp in milliseconds (null if not
+                            closed)
+                          type: integer
+                        decision_rule:
+                          description: Rule for approving this step (MVP only supports
+                            mode=ANY)
+                          type: object
+                        name:
+                          type: string
+                        opened_at:
+                          description: Unix timestamp in milliseconds
+                          type: integer
+                        status:
+                          enum:
+                          - PENDING
+                          - IN_REVIEW
+                          - APPROVED
+                          - REJECTED
+                          type: string
+                        step_id:
+                          type: string
+                        step_index:
+                          type: integer
+                      type: object
+                    type: array
+                  updated_at:
+                    description: Unix timestamp in milliseconds
+                    type: integer
+                  workflow_snapshot:
+                    description: Frozen workflow definition
+                    type: object
+                  workspace_id:
+                    type: string
+                type: object
               message:
                 type: string
             type: object
@@ -39456,9 +39705,76 @@ paths:
                   affected_step_id:
                     type: string
                   approval_instance:
-                    $ref: '#/definitions/ApprovalInstance'
+                    properties:
+                      approval_id:
+                        description: Unique identifier for the approval instance
+                        type: string
+                      completed_at:
+                        description: Unix timestamp in milliseconds (null if not completed)
+                        type: integer
+                      context_snapshot:
+                        description: Frozen context data (immutable after creation)
+                        type: object
+                      created_at:
+                        description: Unix timestamp in milliseconds
+                        type: integer
+                      created_by_user_email:
+                        type: string
+                      created_by_user_id:
+                        type: string
+                      current_step_index:
+                        description: Index of the current active step
+                        type: integer
+                      entity_id:
+                        description: ID of the entity being approved
+                        type: string
+                      entity_type:
+                        description: Type of entity being approved
+                        type: string
+                      project_id:
+                        type: string
+                      status:
+                        enum:
+                        - IN_REVIEW
+                        - APPROVED
+                        - REJECTED
+                        - CANCELLED
+                        type: string
+                      updated_at:
+                        description: Unix timestamp in milliseconds
+                        type: integer
+                      workflow_snapshot:
+                        description: Frozen workflow definition
+                        type: object
+                      workspace_id:
+                        type: string
+                    type: object
                   decision:
-                    $ref: '#/definitions/ApprovalDecision'
+                    properties:
+                      action:
+                        enum:
+                        - APPROVE
+                        - REJECT
+                        - COMMENT
+                        type: string
+                      actor_user_email:
+                        type: string
+                      actor_user_id:
+                        type: string
+                      attachments:
+                        items:
+                          type: object
+                        type: array
+                      comment:
+                        type: string
+                      created_at:
+                        description: Unix timestamp in milliseconds
+                        type: integer
+                      decision_id:
+                        type: string
+                      step_index:
+                        type: integer
+                    type: object
                 type: object
               message:
                 type: string
@@ -48232,119 +48548,6 @@ paths:
       summary: Update an existing sub-form link
       tags:
       - HzSubFormLinks
-  /v2definitions:
-    ApprovalDecision:
-      properties:
-        action:
-          enum:
-          - APPROVE
-          - REJECT
-          - COMMENT
-          type: string
-        actor_user_email:
-          type: string
-        actor_user_id:
-          type: string
-        attachments:
-          items:
-            type: object
-          type: array
-        comment:
-          type: string
-        created_at:
-          description: Unix timestamp in milliseconds
-          type: integer
-        decision_id:
-          type: string
-        step_index:
-          type: integer
-      type: object
-    ApprovalInstance:
-      properties:
-        approval_id:
-          description: Unique identifier for the approval instance
-          type: string
-        completed_at:
-          description: Unix timestamp in milliseconds (null if not completed)
-          type: integer
-        context_snapshot:
-          description: Frozen context data (immutable after creation)
-          type: object
-        created_at:
-          description: Unix timestamp in milliseconds
-          type: integer
-        created_by_user_email:
-          type: string
-        created_by_user_id:
-          type: string
-        current_step_index:
-          description: Index of the current active step
-          type: integer
-        entity_id:
-          description: ID of the entity being approved
-          type: string
-        entity_type:
-          description: Type of entity being approved
-          type: string
-        project_id:
-          type: string
-        status:
-          enum:
-          - IN_REVIEW
-          - APPROVED
-          - REJECTED
-          - CANCELLED
-          type: string
-        updated_at:
-          description: Unix timestamp in milliseconds
-          type: integer
-        workflow_snapshot:
-          description: Frozen workflow definition
-          type: object
-        workspace_id:
-          type: string
-      type: object
-    ApprovalInstanceWithDetails:
-      allOf:
-      - $ref: '#/definitions/ApprovalInstance'
-      - properties:
-          decisions:
-            items:
-              $ref: '#/definitions/ApprovalDecision'
-            type: array
-          steps:
-            items:
-              $ref: '#/definitions/ApprovalStep'
-            type: array
-        type: object
-    ApprovalStep:
-      properties:
-        candidates_snapshot:
-          description: Snapshot of eligible approvers
-          type: object
-        closed_at:
-          description: Unix timestamp in milliseconds (null if not closed)
-          type: integer
-        decision_rule:
-          description: Rule for approving this step (MVP only supports mode=ANY)
-          type: object
-        name:
-          type: string
-        opened_at:
-          description: Unix timestamp in milliseconds
-          type: integer
-        status:
-          enum:
-          - PENDING
-          - IN_REVIEW
-          - APPROVED
-          - REJECTED
-          type: string
-        step_id:
-          type: string
-        step_index:
-          type: integer
-      type: object
 schemes:
 - https
 securityDefinitions:
