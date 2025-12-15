@@ -39977,6 +39977,335 @@ paths:
       summary: Upload MS Project XML file
       tags:
       - MS Project Upload
+  /v2/workspaces/{workspaceId}/projects/{projectId}/hz-workflows:
+    get:
+      description: 'List workflow templates for a workspace with optional filtering.
+
+        Results are ordered by created_at descending (newest first).
+
+        '
+      operationId: v2_v2_listHzWorkflows
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: Filter by entity type (e.g., "PO", "SWMS")
+        in: query
+        name: entity_type
+        type: string
+      - description: Filter by active status (true/false)
+        in: query
+        name: is_active
+        type: boolean
+      - default: 1
+        description: Page number (1-based)
+        in: query
+        name: page
+        type: integer
+      - default: 50
+        description: Items per page
+        in: query
+        maximum: 100
+        name: limit
+        type: integer
+      responses:
+        200:
+          description: Workflows retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/Workflow'
+                type: array
+              message:
+                type: string
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                type: object
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List workflow templates
+      tags:
+      - HzWorkflow
+    post:
+      description: 'Create a new workflow template. Workflows define the approval
+        steps
+
+        for a specific entity type. When creating an approval instance,
+
+        the system automatically looks up the matching workflow.
+
+        '
+      operationId: v2_v2_createHzWorkflow
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              description: Optional description of the workflow
+              example: Workflow for purchase order approvals
+              type: string
+            entity_type:
+              description: Entity type this workflow applies to (e.g., "PO", "SWMS")
+              example: PO
+              type: string
+            name:
+              description: Workflow template name
+              example: Standard PO Approval
+              type: string
+            steps:
+              description: List of approval steps
+              items:
+                properties:
+                  candidates_snapshot:
+                    default:
+                      type: manual
+                      users: []
+                    description: Definition of eligible approvers
+                    type: object
+                  decision_rule:
+                    default:
+                      mode: ANY
+                    description: Rule for approving this step
+                    type: object
+                  name:
+                    example: Department Manager Approval
+                    type: string
+                required:
+                - name
+                type: object
+              minItems: 1
+              type: array
+            thresholds:
+              default: {}
+              description: Reserved for future use - threshold conditions
+              type: object
+          required:
+          - name
+          - entity_type
+          - steps
+          type: object
+      responses:
+        201:
+          description: Workflow created successfully
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/Workflow'
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create workflow template
+      tags:
+      - HzWorkflow
+  /v2/workspaces/{workspaceId}/projects/{projectId}/hz-workflows/{workflowId}:
+    delete:
+      description: 'Delete a workflow template. By default, performs a soft delete
+
+        (sets is_active=false). Use ?hard=true for permanent deletion.
+
+        '
+      operationId: v2_v2_deleteHzWorkflow
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: Workflow template ID
+        in: path
+        name: workflowId
+        required: true
+        type: string
+      - default: false
+        description: If true, permanently delete. Otherwise soft delete (set is_active=false)
+        in: query
+        name: hard
+        type: boolean
+      responses:
+        200:
+          description: Workflow deleted/deactivated successfully
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Workflow not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete workflow template
+      tags:
+      - HzWorkflow
+    get:
+      description: Get workflow template details by ID.
+      operationId: v2_v2_getHzWorkflow
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: Workflow template ID
+        in: path
+        name: workflowId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Workflow retrieved successfully
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/Workflow'
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Workflow not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get workflow template
+      tags:
+      - HzWorkflow
+    put:
+      description: 'Update a workflow template. Note that updating a workflow does
+        NOT
+
+        affect existing approval instances since they store a snapshot of
+
+        the workflow at creation time.
+
+        '
+      operationId: v2_v2_updateHzWorkflow
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: Workflow template ID
+        in: path
+        name: workflowId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              description: Description of the workflow
+              type: string
+            is_active:
+              description: Whether the workflow is active
+              type: boolean
+            name:
+              description: Workflow template name
+              type: string
+            steps:
+              description: List of approval steps
+              items:
+                properties:
+                  candidates_snapshot:
+                    type: object
+                  decision_rule:
+                    type: object
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              minItems: 1
+              type: array
+            thresholds:
+              description: Reserved for future use
+              type: object
+          type: object
+      responses:
+        200:
+          description: Workflow updated successfully
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/Workflow'
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Workflow not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update workflow template
+      tags:
+      - HzWorkflow
   /v2/workspaces/{workspaceId}/projects/{projectId}/implementation:
     get:
       operationId: v2_getProjectImplementationChecklist
@@ -48548,6 +48877,79 @@ paths:
       summary: Update an existing sub-form link
       tags:
       - HzSubFormLinks
+  /v2definitions:
+    Workflow:
+      properties:
+        created_at:
+          description: Unix timestamp in milliseconds
+          type: integer
+        created_by_user_email:
+          description: Email of creator
+          type: string
+        created_by_user_id:
+          description: Kinde user ID of creator
+          type: string
+        description:
+          description: Description of the workflow
+          type: string
+        entity_type:
+          description: Entity type this workflow applies to (e.g., "PO", "SWMS")
+          type: string
+        is_active:
+          description: Whether the workflow is active and can be used
+          type: boolean
+        name:
+          description: Workflow template name
+          type: string
+        steps:
+          description: List of approval steps
+          items:
+            properties:
+              candidates_snapshot:
+                description: Definition of eligible approvers
+                properties:
+                  type:
+                    enum:
+                    - manual
+                    - role
+                    - dynamic
+                    type: string
+                  users:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              decision_rule:
+                description: Rule for approving this step
+                properties:
+                  mode:
+                    description: ANY = one approval, ALL = all must approve
+                    enum:
+                    - ANY
+                    - ALL
+                    type: string
+                type: object
+              name:
+                description: Step name
+                type: string
+            type: object
+          type: array
+        thresholds:
+          description: Reserved for future use - threshold conditions
+          type: object
+        updated_at:
+          description: Unix timestamp in milliseconds
+          type: integer
+        version:
+          description: Version number (increments on each update)
+          type: integer
+        workflow_id:
+          description: Unique identifier for the workflow template
+          type: string
+        workspace_id:
+          description: Workspace this workflow belongs to
+          type: string
+      type: object
 schemes:
 - https
 securityDefinitions:
