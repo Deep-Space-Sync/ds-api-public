@@ -5814,9 +5814,15 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/cde/v2:
     get:
+      description: 'Fetches CDE documents grouped by document_series_id.
+
+        Workspace-level query (no project_id filter).
+
+        '
       operationId: v2_getCdeDocsWorkspaceLevelV2
       parameters:
-      - in: path
+      - description: Workspace ID
+        in: path
         name: workspaceId
         required: true
         type: string
@@ -5825,39 +5831,100 @@ paths:
         name: cde_type_id
         required: false
         type: string
-      - description: Filter by worker ID for worker-specific documents
+      - description: Filter by worker ID
         in: query
         name: worker_id
         required: false
         type: string
-      - description: Optional filter for CDE status (e.g. active, archived)
+      - description: Filter by CDE status (e.g. active, archived)
         in: query
         name: cde_status
         required: false
         type: string
       responses:
         200:
-          description: Successfully returns CDE docs
+          description: Successfully returns CDE documents
+          schema:
+            items:
+              properties:
+                cde_type_id:
+                  type: string
+                display_file_name:
+                  type: string
+                document_series_id:
+                  type: string
+                owner_workspace_id:
+                  type: string
+                versions:
+                  items:
+                    properties:
+                      cde_id:
+                        type: integer
+                      cde_link:
+                        type: string
+                      cde_log_entry_created:
+                        type: string
+                      cde_log_entry_updated:
+                        type: string
+                      cde_status:
+                        type: string
+                      cde_type:
+                        type: string
+                      cde_type_id:
+                        type: string
+                      document_series_id:
+                        type: string
+                      file_name:
+                        type: string
+                      file_size_bytes:
+                        type: integer
+                      file_type:
+                        type: string
+                      is_latest_version:
+                        type: boolean
+                      metadata:
+                        items:
+                          properties:
+                            metadata_key:
+                              type: string
+                            metadata_value:
+                              type: string
+                          type: object
+                        type: array
+                      uploaded_by:
+                        type: string
+                      uploaded_by_user_id:
+                        type: string
+                      version:
+                        type: integer
+                    type: object
+                  type: array
+              type: object
+            type: array
         401:
           description: Unauthorized
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get CDE docs
+      summary: Get workspace-level CDE documents with version grouping
       tags:
-      - Get Data
+      - CDE Documents
     post:
+      description: 'Returns signed URLs for uploading files to Cloud Storage and creates
+        CDE records.
+
+        Workspace-level upload (no project_id required).
+
+        Supports document versioning via document_series_id.
+
+        '
       operationId: v2_postCdeWorkspaceLevelV2
       parameters:
-      - in: path
+      - description: Workspace ID
+        in: path
         name: workspaceId
         required: true
-        type: string
-      - description: Worker ID for worker-specific document uploads
-        in: query
-        name: worker_id
-        required: false
         type: string
       - in: body
         name: body
@@ -5865,222 +5932,85 @@ paths:
         schema:
           properties:
             cde_type:
-              description: The type of CDE upload
+              description: CDE type name
               type: string
             cde_type_id:
-              description: The CDE type ID
+              description: CDE type ID
               type: string
             files:
-              description: A list of file objects
+              description: List of files to upload
               items:
                 properties:
+                  document_series_id:
+                    description: 'UUID to group document versions.
+
+                      - Omit or pass null to create a new document (new UUID generated)
+
+                      - Pass existing UUID to add a version to existing document series
+
+                      '
+                    type: string
+                  file_size_bytes:
+                    description: File size in bytes
+                    type: integer
                   filename:
-                    description: The name of the file
+                    description: Display filename
                     type: string
                   filetype:
-                    description: The type of the file
+                    description: MIME type of the file
                     type: string
                 required:
                 - filename
                 - filetype
                 type: object
               type: array
+            uploaded_by:
+              description: Override uploaded_by username
+              type: string
           required:
           - files
           type: object
       responses:
         200:
-          description: Successfully returns CDE urls
+          description: Successfully returns signed URLs and CDE records
+          schema:
+            items:
+              properties:
+                cde_id:
+                  type: integer
+                cde_link:
+                  type: string
+                cde_type_id:
+                  type: string
+                display_filename:
+                  type: string
+                document_series_id:
+                  type: string
+                file_size_bytes:
+                  type: integer
+                filename:
+                  type: string
+                filetype:
+                  type: string
+                signed_url:
+                  type: string
+                uploaded_by:
+                  type: string
+                uploaded_by_user_id:
+                  type: string
+              type: object
+            type: array
+        400:
+          description: Bad request - missing required fields
         401:
           description: Unauthorized
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get signed urls for cde
+      summary: Get signed URLs for workspace-level CDE upload
       tags:
-      - Upload Data
-  /v2/workspaces/{workspaceId}/cde/v2/process:
-    post:
-      operationId: v2_processCDEWorkspaceLevelV2
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            files:
-              description: A list of file objects
-              items:
-                properties:
-                  cde_id:
-                    description: The CDE ID of the file
-                    type: integer
-                required:
-                - cde_id
-                type: object
-              type: array
-          required:
-          - files
-          type: object
-      responses:
-        200:
-          description: Successfully processed files
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Process files uploaded to CDE
-      tags:
-      - Upload Data
-  /v2/workspaces/{workspaceId}/cde/v2/types:
-    get:
-      operationId: v2_getCDETypesV2
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Successfully returns CDE types
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get workspace-level CDE types
-      tags:
-      - Upload Data
-  /v2/workspaces/{workspaceId}/cde/v2/{cdeId}:
-    delete:
-      description: Invalidates a CDE entry for failed uploads
-      operationId: v2_invalidateCdeEntryWorkspaceLevelV2
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: cdeId
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Successfully invalidated CDE entry
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Invalidate CDE Entry
-      tags:
-      - Upload Data
-    get:
-      operationId: v2_getCdeFileWorkspaceLevelV2
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: cdeId
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Successfully returns CDE url
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get signed url to access cde file
-      tags:
-      - Get Data
-  /v2/workspaces/{workspaceId}/cde/v2/{cdeId}/metadata:
-    put:
-      operationId: v2_putCdeMetadataWorkspaceLevelV2
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: cdeId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            metadata_key:
-              description: The key of the metadata
-              type: string
-            metadata_value:
-              description: The value of the metadata
-              type: string
-          required:
-          - metadata_key
-          - metadata_value
-          type: object
-      responses:
-        200:
-          description: Successfully updated CDE metadata
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Update CDE metadata
-      tags:
-      - Upload Data
-  /v2/workspaces/{workspaceId}/cde/v2/{cdeId}/status:
-    put:
-      operationId: v2_putCdeStatusWorkspaceLevelV2
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: cdeId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            cde_status:
-              description: New CDE status (e.g. active, archived)
-              type: string
-          required:
-          - cde_status
-          type: object
-      responses:
-        200:
-          description: Successfully updated CDE status
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Update CDE status
-      tags:
-      - Upload Data
+      - CDE Documents
   /v2/workspaces/{workspaceId}/cde/{cdeId}:
     delete:
       description: Invalidates a CDE entry for failed uploads
@@ -26294,36 +26224,133 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2:
     get:
+      description: 'Fetches CDE documents grouped by document_series_id.
+
+        Returns documents with all versions included.
+
+        Version grouping uses document_series_id (with fallback to filename for legacy
+        data).
+
+        '
       operationId: v2_getCdeDocsV2
       parameters:
-      - in: path
+      - description: Workspace ID
+        in: path
         name: workspaceId
         required: true
         type: string
-      - in: path
+      - description: Project ID
+        in: path
         name: projectId
         required: true
         type: integer
+      - description: Filter by CDE type ID
+        in: query
+        name: cde_type_id
+        required: false
+        type: string
+      - description: Filter by worker ID
+        in: query
+        name: worker_id
+        required: false
+        type: string
+      - description: Filter by CDE status (e.g. active, archived)
+        in: query
+        name: cde_status
+        required: false
+        type: string
       responses:
         200:
-          description: Successfully returns CDE docs
+          description: Successfully returns CDE documents
+          schema:
+            items:
+              properties:
+                cde_type_id:
+                  type: string
+                display_file_name:
+                  type: string
+                document_series_id:
+                  description: UUID grouping document versions
+                  type: string
+                owner_workspace_id:
+                  type: string
+                versions:
+                  description: All versions of this document
+                  items:
+                    properties:
+                      cde_id:
+                        type: integer
+                      cde_link:
+                        type: string
+                      cde_log_entry_created:
+                        type: string
+                      cde_log_entry_updated:
+                        type: string
+                      cde_status:
+                        type: string
+                      cde_type:
+                        type: string
+                      cde_type_id:
+                        type: string
+                      document_series_id:
+                        type: string
+                      file_name:
+                        type: string
+                      file_size_bytes:
+                        type: integer
+                      file_type:
+                        type: string
+                      is_latest_version:
+                        type: boolean
+                      metadata:
+                        items:
+                          properties:
+                            metadata_key:
+                              type: string
+                            metadata_value:
+                              type: string
+                          type: object
+                        type: array
+                      uploaded_by:
+                        type: string
+                      uploaded_by_user_id:
+                        type: string
+                      version:
+                        description: Version number (1, 2, 3, ...)
+                        type: integer
+                    type: object
+                  type: array
+              type: object
+            type: array
         401:
           description: Unauthorized
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get CDE docs
+      summary: Get CDE documents with version grouping
       tags:
-      - Get Data
+      - CDE Documents
     post:
+      description: 'Returns signed URLs for uploading files to Cloud Storage and creates
+        CDE records.
+
+        Supports document versioning via document_series_id.
+
+        - Pass null/omit document_series_id to create a new document
+
+        - Pass existing document_series_id to add a new version to existing document
+
+        '
       operationId: v2_postCdeV2
       parameters:
-      - in: path
+      - description: Workspace ID
+        in: path
         name: workspaceId
         required: true
         type: string
-      - in: path
+      - description: Project ID
+        in: path
         name: projectId
         required: true
         type: integer
@@ -26333,224 +26360,92 @@ paths:
         schema:
           properties:
             cde_type:
-              description: The type of CDE upload
+              description: CDE type name
+              type: string
+            cde_type_id:
+              description: CDE type ID
               type: string
             files:
-              description: A list of file objects
+              description: List of files to upload
               items:
                 properties:
+                  document_series_id:
+                    description: 'UUID to group document versions.
+
+                      - Omit or pass null to create a new document (new UUID generated)
+
+                      - Pass existing UUID to add a version to existing document series
+
+                      '
+                    type: string
+                  file_size_bytes:
+                    description: File size in bytes
+                    type: integer
                   filename:
-                    description: The name of the file
+                    description: Display filename
                     type: string
                   filetype:
-                    description: The type of the file
+                    description: MIME type of the file
                     type: string
                 required:
                 - filename
                 - filetype
                 type: object
               type: array
+            uploaded_by:
+              description: Override uploaded_by username
+              type: string
           required:
           - files
           type: object
       responses:
         200:
-          description: Successfully returns CDE urls
+          description: Successfully returns signed URLs and CDE records
+          schema:
+            items:
+              properties:
+                cde_id:
+                  description: Created CDE record ID
+                  type: integer
+                cde_link:
+                  description: Cloud Storage URL
+                  type: string
+                cde_type_id:
+                  type: string
+                display_filename:
+                  description: Display filename
+                  type: string
+                document_series_id:
+                  description: UUID for the document series (new or existing)
+                  type: string
+                file_size_bytes:
+                  type: integer
+                filename:
+                  description: Storage filename (timestamped)
+                  type: string
+                filetype:
+                  description: MIME type
+                  type: string
+                signed_url:
+                  description: Signed URL for file upload
+                  type: string
+                uploaded_by:
+                  type: string
+                uploaded_by_user_id:
+                  type: string
+              type: object
+            type: array
+        400:
+          description: Bad request - missing required fields
         401:
           description: Unauthorized
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get signed urls for cde
+      summary: Get signed URLs for CDE upload
       tags:
-      - Upload Data
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/process:
-    post:
-      operationId: v2_processCDEV2
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            files:
-              description: A list of file objects
-              items:
-                properties:
-                  cde_id:
-                    description: The CDE ID of the file
-                    type: integer
-                required:
-                - cde_id
-                type: object
-              type: array
-          required:
-          - files
-          type: object
-      responses:
-        200:
-          description: Successfully processed files
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Process files uploaded to CDE
-      tags:
-      - Upload Data
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/{cdeId}:
-    delete:
-      description: Invalidates a CDE entry for failed uploads
-      operationId: v2_invalidateCdeEntryV2
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: cdeId
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Successfully invalidated CDE entry
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Invalidate CDE Entry
-      tags:
-      - Upload Data
-    get:
-      operationId: v2_getCdeFileV2
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - description: Optional filter for CDE status (e.g. active, archived)
-        in: query
-        name: cde_status
-        required: false
-        type: string
-      - in: path
-        name: cdeId
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Successfully returns CDE url
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get signed url to access cde file
-      tags:
-      - Get Data
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/{cdeId}/metadata:
-    put:
-      operationId: v2_putCdeMetadataV2
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: cdeId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            metadata_key:
-              description: The key of the metadata
-              type: string
-            metadata_value:
-              description: The value of the metadata
-              type: string
-          required:
-          - metadata_key
-          - metadata_value
-          type: object
-      responses:
-        200:
-          description: Successfully updated CDE metadata
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Update CDE metadata
-      tags:
-      - Upload Data
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/{cdeId}/status:
-    put:
-      operationId: v2_putCdeStatusV2
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: cdeId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            cde_status:
-              description: New CDE status (e.g. active, archived)
-              type: string
-          required:
-          - cde_status
-          type: object
-      responses:
-        200:
-          description: Successfully updated CDE status
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Update CDE status
-      tags:
-      - Upload Data
+      - CDE Documents
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/{cdeId}:
     delete:
       description: Invalidates a CDE entry for failed uploads
