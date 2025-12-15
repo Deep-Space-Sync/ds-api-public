@@ -40022,7 +40022,78 @@ paths:
             properties:
               data:
                 items:
-                  $ref: '#/definitions/Workflow'
+                  properties:
+                    created_at:
+                      description: Unix timestamp in milliseconds
+                      type: integer
+                    created_by_user_email:
+                      description: Email of creator
+                      type: string
+                    created_by_user_id:
+                      description: Kinde user ID of creator
+                      type: string
+                    description:
+                      description: Description of the workflow
+                      type: string
+                    entity_type:
+                      description: Entity type this workflow applies to (e.g., "PO",
+                        "SWMS")
+                      type: string
+                    is_active:
+                      description: Whether the workflow is active and can be used
+                      type: boolean
+                    name:
+                      description: Workflow template name
+                      type: string
+                    steps:
+                      description: List of approval steps
+                      items:
+                        properties:
+                          candidates_snapshot:
+                            description: Definition of eligible approvers
+                            properties:
+                              type:
+                                enum:
+                                - manual
+                                - role
+                                - dynamic
+                                type: string
+                              users:
+                                items:
+                                  type: string
+                                type: array
+                            type: object
+                          decision_rule:
+                            description: Rule for approving this step
+                            properties:
+                              mode:
+                                description: ANY = one approval, ALL = all must approve
+                                enum:
+                                - ANY
+                                - ALL
+                                type: string
+                            type: object
+                          name:
+                            description: Step name
+                            type: string
+                        type: object
+                      type: array
+                    thresholds:
+                      description: Reserved for future use - threshold conditions
+                      type: object
+                    updated_at:
+                      description: Unix timestamp in milliseconds
+                      type: integer
+                    version:
+                      description: Version number (increments on each update)
+                      type: integer
+                    workflow_id:
+                      description: Unique identifier for the workflow template
+                      type: string
+                    workspace_id:
+                      description: Workspace this workflow belongs to
+                      type: string
+                  type: object
                 type: array
               message:
                 type: string
@@ -40121,7 +40192,78 @@ paths:
           schema:
             properties:
               data:
-                $ref: '#/definitions/Workflow'
+                properties:
+                  created_at:
+                    description: Unix timestamp in milliseconds
+                    type: integer
+                  created_by_user_email:
+                    description: Email of creator
+                    type: string
+                  created_by_user_id:
+                    description: Kinde user ID of creator
+                    type: string
+                  description:
+                    description: Description of the workflow
+                    type: string
+                  entity_type:
+                    description: Entity type this workflow applies to (e.g., "PO",
+                      "SWMS")
+                    type: string
+                  is_active:
+                    description: Whether the workflow is active and can be used
+                    type: boolean
+                  name:
+                    description: Workflow template name
+                    type: string
+                  steps:
+                    description: List of approval steps
+                    items:
+                      properties:
+                        candidates_snapshot:
+                          description: Definition of eligible approvers
+                          properties:
+                            type:
+                              enum:
+                              - manual
+                              - role
+                              - dynamic
+                              type: string
+                            users:
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                        decision_rule:
+                          description: Rule for approving this step
+                          properties:
+                            mode:
+                              description: ANY = one approval, ALL = all must approve
+                              enum:
+                              - ANY
+                              - ALL
+                              type: string
+                          type: object
+                        name:
+                          description: Step name
+                          type: string
+                      type: object
+                    type: array
+                  thresholds:
+                    description: Reserved for future use - threshold conditions
+                    type: object
+                  updated_at:
+                    description: Unix timestamp in milliseconds
+                    type: integer
+                  version:
+                    description: Version number (increments on each update)
+                    type: integer
+                  workflow_id:
+                    description: Unique identifier for the workflow template
+                    type: string
+                  workspace_id:
+                    description: Workspace this workflow belongs to
+                    type: string
+                type: object
               message:
                 type: string
             type: object
@@ -40209,7 +40351,78 @@ paths:
           schema:
             properties:
               data:
-                $ref: '#/definitions/Workflow'
+                properties:
+                  created_at:
+                    description: Unix timestamp in milliseconds
+                    type: integer
+                  created_by_user_email:
+                    description: Email of creator
+                    type: string
+                  created_by_user_id:
+                    description: Kinde user ID of creator
+                    type: string
+                  description:
+                    description: Description of the workflow
+                    type: string
+                  entity_type:
+                    description: Entity type this workflow applies to (e.g., "PO",
+                      "SWMS")
+                    type: string
+                  is_active:
+                    description: Whether the workflow is active and can be used
+                    type: boolean
+                  name:
+                    description: Workflow template name
+                    type: string
+                  steps:
+                    description: List of approval steps
+                    items:
+                      properties:
+                        candidates_snapshot:
+                          description: Definition of eligible approvers
+                          properties:
+                            type:
+                              enum:
+                              - manual
+                              - role
+                              - dynamic
+                              type: string
+                            users:
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                        decision_rule:
+                          description: Rule for approving this step
+                          properties:
+                            mode:
+                              description: ANY = one approval, ALL = all must approve
+                              enum:
+                              - ANY
+                              - ALL
+                              type: string
+                          type: object
+                        name:
+                          description: Step name
+                          type: string
+                      type: object
+                    type: array
+                  thresholds:
+                    description: Reserved for future use - threshold conditions
+                    type: object
+                  updated_at:
+                    description: Unix timestamp in milliseconds
+                    type: integer
+                  version:
+                    description: Version number (increments on each update)
+                    type: integer
+                  workflow_id:
+                    description: Unique identifier for the workflow template
+                    type: string
+                  workspace_id:
+                    description: Workspace this workflow belongs to
+                    type: string
+                type: object
               message:
                 type: string
             type: object
@@ -40289,7 +40502,78 @@ paths:
           schema:
             properties:
               data:
-                $ref: '#/definitions/Workflow'
+                properties:
+                  created_at:
+                    description: Unix timestamp in milliseconds
+                    type: integer
+                  created_by_user_email:
+                    description: Email of creator
+                    type: string
+                  created_by_user_id:
+                    description: Kinde user ID of creator
+                    type: string
+                  description:
+                    description: Description of the workflow
+                    type: string
+                  entity_type:
+                    description: Entity type this workflow applies to (e.g., "PO",
+                      "SWMS")
+                    type: string
+                  is_active:
+                    description: Whether the workflow is active and can be used
+                    type: boolean
+                  name:
+                    description: Workflow template name
+                    type: string
+                  steps:
+                    description: List of approval steps
+                    items:
+                      properties:
+                        candidates_snapshot:
+                          description: Definition of eligible approvers
+                          properties:
+                            type:
+                              enum:
+                              - manual
+                              - role
+                              - dynamic
+                              type: string
+                            users:
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                        decision_rule:
+                          description: Rule for approving this step
+                          properties:
+                            mode:
+                              description: ANY = one approval, ALL = all must approve
+                              enum:
+                              - ANY
+                              - ALL
+                              type: string
+                          type: object
+                        name:
+                          description: Step name
+                          type: string
+                      type: object
+                    type: array
+                  thresholds:
+                    description: Reserved for future use - threshold conditions
+                    type: object
+                  updated_at:
+                    description: Unix timestamp in milliseconds
+                    type: integer
+                  version:
+                    description: Version number (increments on each update)
+                    type: integer
+                  workflow_id:
+                    description: Unique identifier for the workflow template
+                    type: string
+                  workspace_id:
+                    description: Workspace this workflow belongs to
+                    type: string
+                type: object
               message:
                 type: string
             type: object
@@ -48877,79 +49161,6 @@ paths:
       summary: Update an existing sub-form link
       tags:
       - HzSubFormLinks
-  /v2definitions:
-    Workflow:
-      properties:
-        created_at:
-          description: Unix timestamp in milliseconds
-          type: integer
-        created_by_user_email:
-          description: Email of creator
-          type: string
-        created_by_user_id:
-          description: Kinde user ID of creator
-          type: string
-        description:
-          description: Description of the workflow
-          type: string
-        entity_type:
-          description: Entity type this workflow applies to (e.g., "PO", "SWMS")
-          type: string
-        is_active:
-          description: Whether the workflow is active and can be used
-          type: boolean
-        name:
-          description: Workflow template name
-          type: string
-        steps:
-          description: List of approval steps
-          items:
-            properties:
-              candidates_snapshot:
-                description: Definition of eligible approvers
-                properties:
-                  type:
-                    enum:
-                    - manual
-                    - role
-                    - dynamic
-                    type: string
-                  users:
-                    items:
-                      type: string
-                    type: array
-                type: object
-              decision_rule:
-                description: Rule for approving this step
-                properties:
-                  mode:
-                    description: ANY = one approval, ALL = all must approve
-                    enum:
-                    - ANY
-                    - ALL
-                    type: string
-                type: object
-              name:
-                description: Step name
-                type: string
-            type: object
-          type: array
-        thresholds:
-          description: Reserved for future use - threshold conditions
-          type: object
-        updated_at:
-          description: Unix timestamp in milliseconds
-          type: integer
-        version:
-          description: Version number (increments on each update)
-          type: integer
-        workflow_id:
-          description: Unique identifier for the workflow template
-          type: string
-        workspace_id:
-          description: Workspace this workflow belongs to
-          type: string
-      type: object
 schemes:
 - https
 securityDefinitions:
