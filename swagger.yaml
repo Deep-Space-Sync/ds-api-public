@@ -41856,6 +41856,45 @@ paths:
       - Links
       x-min-permissions: isRevitUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/locations:
+    delete:
+      operationId: v2_deleteLocation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of the location to delete
+        in: query
+        name: locationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Location successfully deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - missing locationId
+        401:
+          description: Unauthorized
+        404:
+          description: Location not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Location by ID
+      tags:
+      - Locations
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
     get:
       operationId: v2_getLocations
       parameters:
@@ -41867,15 +41906,21 @@ paths:
         name: projectId
         required: true
         type: integer
-      - description: Page number for pagination
+      - description: Optional location ID to retrieve a single location
+        in: query
+        name: locationId
+        type: string
+      - description: Page number for pagination (only used when locationId is not
+          provided)
         in: query
         name: page
         type: integer
-      - description: Number of items per page
+      - description: Number of items per page (only used when locationId is not provided)
         in: query
         name: limit
         type: integer
-      - description: Whether to return locations in hierarchical tree structure
+      - description: Whether to return locations in hierarchical tree structure (only
+          used when locationId is not provided)
         in: query
         name: treeStructure
         type: string
@@ -41885,7 +41930,8 @@ paths:
           schema:
             properties:
               data:
-                items:
+                oneOf:
+                - description: Single location object when locationId is provided
                   properties:
                     location_description:
                       description: Description of location
@@ -41898,10 +41944,25 @@ paths:
                     project_id:
                       description: Project ID
                   type: object
-                type: array
+                - description: Array of locations when locationId is not provided
+                  items:
+                    properties:
+                      location_description:
+                        description: Description of location
+                      location_id:
+                        description: Internal identifier for location
+                      location_name:
+                        description: Name of location
+                      parent_location_id:
+                        description: ID of parent location
+                      project_id:
+                        description: Project ID
+                    type: object
+                  type: array
               message:
                 type: string
               pagination:
+                description: Only present when locationId is not provided
                 properties:
                   limit:
                     type: integer
@@ -41913,11 +41974,80 @@ paths:
             type: object
         401:
           description: Unauthorized
+        404:
+          description: Location not found (when locationId is provided)
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get Locations
+      summary: Get Locations or Single Location by ID
+      tags:
+      - Locations
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
+    patch:
+      operationId: v2_patchLocation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: ID of the location to update
+        in: query
+        name: locationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            location_description:
+              description: Description of location
+              type: string
+            location_name:
+              description: Name of location
+              type: string
+            parent_location_id:
+              description: ID of parent location
+              type: string
+          type: object
+      responses:
+        200:
+          description: Location successfully updated
+          schema:
+            properties:
+              data:
+                properties:
+                  location_description:
+                    description: Description of location
+                  location_id:
+                    description: Internal identifier for location
+                  location_name:
+                    description: Name of location
+                  parent_location_id:
+                    description: ID of parent location
+                  project_id:
+                    description: Project ID
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - missing locationId or no fields to update
+        401:
+          description: Unauthorized
+        404:
+          description: Location not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Location by ID
       tags:
       - Locations
       x-ds-test-enabled: true
@@ -42000,25 +42130,23 @@ paths:
         schema:
           properties:
             locations:
+              description: Array of locations to import. Supports hierarchical parent-child
+                relationships using location_name as identifier.
               items:
                 properties:
-                  client_id:
-                    description: User-provided unique identifier for location (used
-                      for hierarchy)
-                    type: string
                   location_description:
                     description: Description of location
                     type: string
                   location_name:
-                    description: Name of location
+                    description: Name of location (serves as temporary identifier
+                      for hierarchy)
                     type: string
-                  parent_client_id:
-                    description: client_id of parent location (empty string for root
-                      nodes)
+                  parent_location_name:
+                    description: location_name of parent location (null or omitted
+                      for root nodes)
                     type: string
                 required:
                 - location_name
-                - client_id
                 type: object
               type: array
           required:
@@ -42049,17 +42177,18 @@ paths:
                 type: string
             type: object
         400:
-          description: Bad Request - validation error or circular dependency
+          description: Bad Request - validation error, duplicate location_name, or
+            unresolvable parent references
           schema:
             properties:
-              client_id:
-                description: ID of problematic location (if applicable)
+              location_name:
+                description: Name of problematic location (if applicable)
                 type: string
               message:
                 type: string
-              unresolved_client_ids:
-                description: List of client_ids that couldn't be resolved due to missing
-                  parents
+              unresolved_location_names:
+                description: List of location_names that couldn't be resolved due
+                  to missing parents
                 items:
                   type: string
                 type: array
@@ -42071,156 +42200,6 @@ paths:
       security:
       - JWT_v2: []
       summary: Batch Import Locations
-      tags:
-      - Locations
-      x-ds-test-enabled: true
-      x-min-permissions: isProjectMember
-  /v2/workspaces/{workspaceId}/projects/{projectId}/locations/{locationId}:
-    delete:
-      operationId: v2_deleteLocationById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: locationId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Location successfully deleted
-          schema:
-            properties:
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        404:
-          description: Location not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Delete Location By Id
-      tags:
-      - Locations
-      x-ds-test-enabled: true
-      x-min-permissions: isProjectMember
-    get:
-      operationId: v2_getLocationById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: locationId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Successful response
-          schema:
-            properties:
-              data:
-                properties:
-                  location_description:
-                    description: Description of location
-                  location_id:
-                    description: Internal identifier for location
-                  location_name:
-                    description: Name of location
-                  parent_location_id:
-                    description: ID of parent location
-                  project_id:
-                    description: Project ID
-                type: object
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        404:
-          description: Location not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get Location By Id
-      tags:
-      - Locations
-      x-ds-test-enabled: true
-      x-min-permissions: isProjectMember
-    patch:
-      operationId: v2_patchLocationById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: locationId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            location_description:
-              description: Description of location
-              type: string
-            location_name:
-              description: Name of location
-              type: string
-            parent_location_id:
-              description: ID of parent location
-              type: string
-          type: object
-      responses:
-        200:
-          description: Object successfully edited
-          schema:
-            properties:
-              data:
-                properties:
-                  location_description:
-                    description: Description of location
-                  location_id:
-                    description: Internal identifier for location
-                  location_name:
-                    description: Name of location
-                  parent_location_id:
-                    description: ID of parent location
-                  project_id:
-                    description: Project ID
-                type: object
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        404:
-          description: Location not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Edit Location By Id
       tags:
       - Locations
       x-ds-test-enabled: true
