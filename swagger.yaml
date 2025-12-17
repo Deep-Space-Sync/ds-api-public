@@ -41420,6 +41420,376 @@ paths:
       tags:
       - Links
       x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/locations:
+    get:
+      operationId: v2_getLocations
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Whether to return locations in hierarchical tree structure
+        in: query
+        name: treeStructure
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    location_description:
+                      description: Description of location
+                    location_id:
+                      description: Internal identifier for location
+                    location_name:
+                      description: Name of location
+                    parent_location_id:
+                      description: ID of parent location
+                    project_id:
+                      description: Project ID
+                  type: object
+                type: array
+              message:
+                type: string
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                type: object
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Locations
+      tags:
+      - Locations
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
+    post:
+      operationId: v2_postLocation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            location_description:
+              description: Description of location
+              type: string
+            location_name:
+              description: Name of location
+              type: string
+            parent_location_id:
+              description: ID of parent location
+              type: string
+          required:
+          - location_name
+          type: object
+      responses:
+        201:
+          description: Object successfully created
+          schema:
+            properties:
+              data:
+                properties:
+                  location_description:
+                    description: Description of location
+                  location_id:
+                    description: Internal identifier for location
+                  location_name:
+                    description: Name of location
+                  parent_location_id:
+                    description: ID of parent location
+                  project_id:
+                    description: Project ID
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Location
+      tags:
+      - Locations
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
+  /v2/workspaces/{workspaceId}/projects/{projectId}/locations/import:
+    post:
+      operationId: v2_postLocationsImport
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            locations:
+              items:
+                properties:
+                  client_id:
+                    description: User-provided unique identifier for location (used
+                      for hierarchy)
+                    type: string
+                  location_description:
+                    description: Description of location
+                    type: string
+                  location_name:
+                    description: Name of location
+                    type: string
+                  parent_client_id:
+                    description: client_id of parent location (empty string for root
+                      nodes)
+                    type: string
+                required:
+                - location_name
+                - client_id
+                type: object
+              type: array
+          required:
+          - locations
+          type: object
+      responses:
+        201:
+          description: Locations successfully created
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    location_description:
+                      description: Description of location
+                    location_id:
+                      description: Internal identifier for location
+                    location_name:
+                      description: Name of location
+                    parent_location_id:
+                      description: ID of parent location
+                    project_id:
+                      description: Project ID
+                  type: object
+                type: array
+              message:
+                example: Batch locations created successfully
+                type: string
+            type: object
+        400:
+          description: Bad Request - validation error or circular dependency
+          schema:
+            properties:
+              client_id:
+                description: ID of problematic location (if applicable)
+                type: string
+              message:
+                type: string
+              unresolved_client_ids:
+                description: List of client_ids that couldn't be resolved due to missing
+                  parents
+                items:
+                  type: string
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Batch Import Locations
+      tags:
+      - Locations
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
+  /v2/workspaces/{workspaceId}/projects/{projectId}/locations/{locationId}:
+    delete:
+      operationId: v2_deleteLocationById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: locationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Location successfully deleted
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Location not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Location By Id
+      tags:
+      - Locations
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
+    get:
+      operationId: v2_getLocationById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: locationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                properties:
+                  location_description:
+                    description: Description of location
+                  location_id:
+                    description: Internal identifier for location
+                  location_name:
+                    description: Name of location
+                  parent_location_id:
+                    description: ID of parent location
+                  project_id:
+                    description: Project ID
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Location not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Location By Id
+      tags:
+      - Locations
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
+    patch:
+      operationId: v2_patchLocationById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: locationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            location_description:
+              description: Description of location
+              type: string
+            location_name:
+              description: Name of location
+              type: string
+            parent_location_id:
+              description: ID of parent location
+              type: string
+          type: object
+      responses:
+        200:
+          description: Object successfully edited
+          schema:
+            properties:
+              data:
+                properties:
+                  location_description:
+                    description: Description of location
+                  location_id:
+                    description: Internal identifier for location
+                  location_name:
+                    description: Name of location
+                  parent_location_id:
+                    description: ID of parent location
+                  project_id:
+                    description: Project ID
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Location not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Location By Id
+      tags:
+      - Locations
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
   /v2/workspaces/{workspaceId}/projects/{projectId}/logout/{userId}:
     post:
       description: Used to track logout times, mainly for concurrent seat licenses
