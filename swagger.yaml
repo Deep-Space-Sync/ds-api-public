@@ -39617,6 +39617,10 @@ paths:
                       name:
                         example: Department Manager Approval
                         type: string
+                      required_role_id:
+                        description: Role ID required to approve/reject this step
+                        example: dcbc79c2-0118-4989-ad72-1727d5998f20
+                        type: string
                     required:
                     - name
                     type: object
@@ -39721,6 +39725,10 @@ paths:
                         opened_at:
                           description: Unix timestamp in milliseconds
                           type: integer
+                        required_role_id:
+                          description: Role ID required to approve/reject this step
+                            (null if any role can act)
+                          type: string
                         status:
                           enum:
                           - PENDING
@@ -39869,6 +39877,10 @@ paths:
                         opened_at:
                           description: Unix timestamp in milliseconds
                           type: integer
+                        required_role_id:
+                          description: Role ID required to approve/reject this step
+                            (null if any role can act)
+                          type: string
                         status:
                           enum:
                           - PENDING
@@ -39962,6 +39974,14 @@ paths:
             comment:
               description: Optional comment explaining the action
               type: string
+            role_id:
+              description: 'User''s role ID for authorization. Required for APPROVE/REJECT
+                actions
+
+                if the current step has a required_role_id configured.
+
+                '
+              type: string
           required:
           - action
           type: object
@@ -40050,7 +40070,7 @@ paths:
                 type: string
             type: object
         400:
-          description: Bad request - invalid action or state
+          description: Bad request - invalid action, state, or role mismatch
         401:
           description: Unauthorized
         404:
