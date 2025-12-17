@@ -41878,6 +41878,7 @@ paths:
           schema:
             properties:
               message:
+                description: Success message
                 type: string
             type: object
         400:
@@ -41914,11 +41915,11 @@ paths:
           provided)
         in: query
         name: page
-        type: integer
+        type: string
       - description: Number of items per page (only used when locationId is not provided)
         in: query
         name: limit
-        type: integer
+        type: string
       - description: Whether to return locations in hierarchical tree structure (only
           used when locationId is not provided)
         in: query
@@ -41926,49 +41927,47 @@ paths:
         type: string
       responses:
         200:
-          description: Successful response
+          description: Successful response. Returns single location object in data
+            field when locationId query parameter is provided, otherwise returns array
+            of locations with pagination.
           schema:
             properties:
               data:
-                oneOf:
-                - description: Single location object when locationId is provided
+                description: Array of location objects (or single object when locationId
+                  is provided)
+                items:
                   properties:
                     location_description:
                       description: Description of location
+                      type: string
                     location_id:
                       description: Internal identifier for location
+                      type: string
                     location_name:
                       description: Name of location
+                      type: string
                     parent_location_id:
                       description: ID of parent location
+                      type: string
                     project_id:
                       description: Project ID
+                      type: integer
                   type: object
-                - description: Array of locations when locationId is not provided
-                  items:
-                    properties:
-                      location_description:
-                        description: Description of location
-                      location_id:
-                        description: Internal identifier for location
-                      location_name:
-                        description: Name of location
-                      parent_location_id:
-                        description: ID of parent location
-                      project_id:
-                        description: Project ID
-                    type: object
-                  type: array
+                type: array
               message:
+                description: Response message
                 type: string
               pagination:
                 description: Only present when locationId is not provided
                 properties:
                   limit:
+                    description: Items per page
                     type: integer
                   page:
+                    description: Current page number
                     type: integer
                   total_count:
+                    description: Total number of items
                     type: integer
                 type: object
             type: object
@@ -42022,19 +42021,26 @@ paths:
           schema:
             properties:
               data:
+                description: Updated location object
                 properties:
                   location_description:
                     description: Description of location
+                    type: string
                   location_id:
                     description: Internal identifier for location
+                    type: string
                   location_name:
                     description: Name of location
+                    type: string
                   parent_location_id:
                     description: ID of parent location
+                    type: string
                   project_id:
                     description: Project ID
+                    type: integer
                 type: object
               message:
+                description: Success message
                 type: string
             type: object
         400:
@@ -42086,21 +42092,30 @@ paths:
           schema:
             properties:
               data:
+                description: Created location object
                 properties:
                   location_description:
                     description: Description of location
+                    type: string
                   location_id:
                     description: Internal identifier for location
+                    type: string
                   location_name:
                     description: Name of location
+                    type: string
                   parent_location_id:
                     description: ID of parent location
+                    type: string
                   project_id:
                     description: Project ID
+                    type: integer
                 type: object
               message:
+                description: Success message
                 type: string
             type: object
+        400:
+          description: Bad Request - validation error
         401:
           description: Unauthorized
         500:
@@ -42158,21 +42173,28 @@ paths:
           schema:
             properties:
               data:
+                description: Array of created location objects
                 items:
                   properties:
                     location_description:
                       description: Description of location
+                      type: string
                     location_id:
                       description: Internal identifier for location
+                      type: string
                     location_name:
                       description: Name of location
+                      type: string
                     parent_location_id:
                       description: ID of parent location
+                      type: string
                     project_id:
                       description: Project ID
+                      type: integer
                   type: object
                 type: array
               message:
+                description: Success message
                 example: Batch locations created successfully
                 type: string
             type: object
@@ -42185,6 +42207,7 @@ paths:
                 description: Name of problematic location (if applicable)
                 type: string
               message:
+                description: Error message
                 type: string
               unresolved_location_names:
                 description: List of location_names that couldn't be resolved due
