@@ -27271,6 +27271,479 @@ paths:
       summary: Log a correspondence in Deep Space
       tags:
       - Correspondence Logging
+  /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/emails:
+    post:
+      description: Ingest a new email into the system. Threading is computed automatically.
+      operationId: v2_ingestEmail
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            additional_headers:
+              additionalProperties:
+                type: string
+              description: Additional headers not explicitly modeled
+              type: object
+            attachments:
+              items:
+                properties:
+                  cde_id:
+                    description: ID of attachment from CDE service
+                    type: string
+                  content_base64:
+                    description: Base64-encoded file content (transient, for upload
+                      processing)
+                    type: string
+                  content_disposition:
+                    default: attachment
+                    description: '''attachment'' or ''inline'''
+                    type: string
+                  content_id:
+                    description: RFC 2392
+                    type: string
+                  content_type:
+                    description: MIME type (e.g., 'application/pdf')
+                    type: string
+                  filename:
+                    description: Original filename of the attachment
+                    type: string
+                required:
+                - filename
+                - content_type
+                type: object
+              type: array
+            bcc:
+              items:
+                properties:
+                  address:
+                    format: email
+                    type: string
+                  display_name:
+                    type: string
+                type: object
+              type: array
+            cc:
+              items:
+                properties:
+                  address:
+                    format: email
+                    type: string
+                  display_name:
+                    type: string
+                type: object
+              type: array
+            comments:
+              description: Additional comments
+              type: string
+            date:
+              description: Date and time the message was composed
+              format: date-time
+              type: string
+            direction:
+              description: Whether email is inbound (received) or outbound (sent)
+              enum:
+              - inbound
+              - outbound
+              type: string
+            from:
+              properties:
+                address:
+                  description: Email address (local-part@domain)
+                  format: email
+                  type: string
+                display_name:
+                  description: Display name (optional)
+                  type: string
+              required:
+              - address
+              type: object
+            in_reply_to:
+              description: Message-ID(s) of the parent message(s) this replies to
+              items:
+                type: string
+              type: array
+            keywords:
+              description: Keywords/tags
+              items:
+                type: string
+              type: array
+            message_id:
+              description: Unique message identifier in format <id-left@id-right>
+              type: string
+            references:
+              description: Thread chain of Message-IDs
+              items:
+                type: string
+              type: array
+            reply_to:
+              items:
+                properties:
+                  address:
+                    format: email
+                    type: string
+                  display_name:
+                    type: string
+                type: object
+              type: array
+            sender:
+              properties:
+                address:
+                  format: email
+                  type: string
+                display_name:
+                  type: string
+              type: object
+            subject:
+              description: Subject line
+              type: string
+            text_html:
+              description: HTML body (text/html)
+              type: string
+            text_plain:
+              description: Plain text body (text/plain)
+              type: string
+            to:
+              items:
+                properties:
+                  address:
+                    format: email
+                    type: string
+                  display_name:
+                    type: string
+                required:
+                - address
+                type: object
+              type: array
+          required:
+          - date
+          - from
+          - message_id
+          - direction
+          type: object
+      responses:
+        201:
+          description: Email ingested successfully
+          schema:
+            properties:
+              cc:
+                items:
+                  properties:
+                    address:
+                      type: string
+                    display_name:
+                      type: string
+                  type: object
+                type: array
+              created_at:
+                format: date-time
+                type: string
+              date:
+                format: date-time
+                type: string
+              direction:
+                enum:
+                - inbound
+                - outbound
+                type: string
+              from:
+                properties:
+                  address:
+                    type: string
+                  display_name:
+                    type: string
+                type: object
+              id:
+                description: ID of firestore item
+                format: uuid
+                type: string
+              message_id:
+                type: string
+              project_id:
+                type: integer
+              subject:
+                type: string
+              thread_id:
+                type: string
+              to:
+                items:
+                  properties:
+                    address:
+                      type: string
+                    display_name:
+                      type: string
+                  type: object
+                type: array
+              workspace_id:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Ingest an email
+      tags:
+      - Correspondence
+  /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/threads:
+    get:
+      description: Get email threads for a project with cursor-based pagination.
+      operationId: v2_listThreads
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 50
+        description: Number of items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - description: Thread doc ID - get older threads
+        in: query
+        name: after
+        required: false
+        type: string
+      - description: Thread doc ID - get newer threads
+        in: query
+        name: before
+        required: false
+        type: string
+      responses:
+        200:
+          description: List of email threads
+          schema:
+            properties:
+              next_cursor:
+                description: Cursor for next page (null if no more results)
+                type: string
+              page_size:
+                type: integer
+              prev_cursor:
+                description: Cursor for previous page (null if at start)
+                type: string
+              results:
+                items:
+                  properties:
+                    created_at:
+                      format: date-time
+                      type: string
+                    first_message_date:
+                      description: Timestamp of the first message (thread start)
+                      format: date-time
+                      type: string
+                    id:
+                      description: Firestore document ID
+                      type: string
+                    last_message_date:
+                      description: Timestamp of the most recent message
+                      format: date-time
+                      type: string
+                    participant_addresses:
+                      description: Unique email addresses of all participants
+                      items:
+                        type: string
+                      type: array
+                    project_id:
+                      type: integer
+                    subject:
+                      description: Thread subject (from first message in thread)
+                      type: string
+                    thread_id:
+                      description: Thread identifier (root message's Message-ID)
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                    workspace_id:
+                      type: string
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List email threads
+      tags:
+      - Correspondence
+  /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/threads/{threadDocId}:
+    get:
+      description: Get a single thread summary along with all its messages.
+      operationId: v2_getThread
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Thread document ID
+        in: path
+        name: threadDocId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Thread with all messages
+          schema:
+            properties:
+              created_at:
+                format: date-time
+                type: string
+              first_message_date:
+                description: Timestamp of the first message (thread start)
+                format: date-time
+                type: string
+              id:
+                description: Firestore document ID
+                type: string
+              last_message_date:
+                description: Timestamp of the most recent message
+                format: date-time
+                type: string
+              messages:
+                description: Messages in the thread, ordered by date
+                items:
+                  properties:
+                    attachments:
+                      items:
+                        properties:
+                          cde_id:
+                            type: string
+                          content_type:
+                            type: string
+                          filename:
+                            type: string
+                        type: object
+                      type: array
+                    cc:
+                      items:
+                        properties:
+                          address:
+                            type: string
+                          display_name:
+                            type: string
+                        type: object
+                      type: array
+                    created_at:
+                      format: date-time
+                      type: string
+                    date:
+                      format: date-time
+                      type: string
+                    direction:
+                      enum:
+                      - inbound
+                      - outbound
+                      type: string
+                    from:
+                      properties:
+                        address:
+                          type: string
+                        display_name:
+                          type: string
+                      type: object
+                    id:
+                      format: uuid
+                      type: string
+                    in_reply_to:
+                      items:
+                        type: string
+                      type: array
+                    message_id:
+                      type: string
+                    project_id:
+                      type: integer
+                    references:
+                      items:
+                        type: string
+                      type: array
+                    subject:
+                      type: string
+                    text_html:
+                      type: string
+                    text_plain:
+                      type: string
+                    thread_id:
+                      type: string
+                    to:
+                      items:
+                        properties:
+                          address:
+                            type: string
+                          display_name:
+                            type: string
+                        type: object
+                      type: array
+                    workspace_id:
+                      type: string
+                  type: object
+                minItems: 1
+                type: array
+              participant_addresses:
+                description: Unique email addresses of all participants
+                items:
+                  type: string
+                type: array
+              project_id:
+                type: integer
+              subject:
+                description: Thread subject (from first message in thread)
+                type: string
+              thread_id:
+                description: Thread identifier (root message's Message-ID)
+                type: string
+              updated_at:
+                format: date-time
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Thread not found
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a thread with all messages
+      tags:
+      - Correspondence
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/aggregate:
     post:
       operationId: v2_postCostAggregateProject
