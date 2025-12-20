@@ -9865,6 +9865,22 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/head-contract-invoices:
+    get:
+      operationId: v2_getHeadContractInvoicesWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Head Contract Invoices (Workspace Level)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/cost/head-contract-payment-schedules:
     get:
       operationId: v2_getHeadContractPaymentSchedulesWorkspace
@@ -32653,6 +32669,264 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-invoices:
+    get:
+      operationId: v2_getHeadContractInvoices
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Head Contract Invoices
+      tags:
+      - Cost
+    post:
+      operationId: v2_postHeadContractInvoice
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Create Head Contract Invoice
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-invoices/{invoiceId}:
+    delete:
+      operationId: v2_deleteHeadContractInvoiceById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Head Contract Invoice By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getHeadContractInvoiceById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Head Contract Invoice By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchHeadContractInvoiceById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Edit Head Contract Invoice By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-invoices/{invoiceId}/sovs:
+    get:
+      operationId: v2_getInvoiceSovs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Invoice SOVs
+      tags:
+      - Cost
+    post:
+      operationId: v2_postInvoiceSov
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Create Invoice SOV
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-invoices/{invoiceId}/sovs/{sovId}:
+    delete:
+      operationId: v2_deleteInvoiceSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Invoice SOV By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getInvoiceSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Invoice SOV By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchInvoiceSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Edit Invoice SOV By Id
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-payment-schedules:
     get:
       operationId: v2_getHeadContractPaymentSchedules
