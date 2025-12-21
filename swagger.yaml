@@ -32788,6 +32788,35 @@ paths:
       summary: Edit Head Contract Invoice By Id
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-invoices/{invoiceId}/change-status:
+    patch:
+      operationId: v2_patchHeadContractInvoiceStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Status updated
+      security:
+      - JWT_v2: []
+      summary: Change Head Contract Invoice Status
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-invoices/{invoiceId}/sovs:
     get:
       operationId: v2_getInvoiceSovs
