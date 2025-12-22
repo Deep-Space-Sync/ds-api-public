@@ -31999,6 +31999,65 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/change-status:
+    patch:
+      operationId: v2_patchContractStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            status:
+              description: New contract status
+              enum:
+              - Draft
+              - Active
+              - Completed
+              - Cancelled
+              type: string
+          required:
+          - status
+          type: object
+      responses:
+        200:
+          description: Contract status updated successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid status value
+        401:
+          description: Unauthorized
+        403:
+          description: Access denied
+        404:
+          description: Contract not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Change Contract Status
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/sovs:
     get:
       operationId: v2_getContractSovs
