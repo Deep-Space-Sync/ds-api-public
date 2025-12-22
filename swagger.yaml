@@ -27553,6 +27553,566 @@ paths:
       summary: Ingest an email
       tags:
       - Correspondence
+  /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/notices:
+    get:
+      description: Get notices for a project with optional filters.
+      operationId: v2_listNotices
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Filter by status
+        enum:
+        - draft
+        - issued
+        - acknowledged
+        - actioned
+        - closed
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by type
+        enum:
+        - EOT
+        - VO
+        - RFI
+        - SI
+        - GC
+        - NOD
+        - CC
+        - CI
+        - CAN
+        - NOC
+        - NTS
+        in: query
+        name: type
+        required: false
+        type: string
+      - default: 50
+        description: Number of items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - description: Doc ID - get older items
+        in: query
+        name: after
+        required: false
+        type: string
+      - description: Doc ID - get newer items
+        in: query
+        name: before
+        required: false
+        type: string
+      responses:
+        200:
+          description: List of notices
+          schema:
+            properties:
+              next_cursor:
+                description: Cursor for next page (null if no more results)
+                type: string
+              page_size:
+                type: integer
+              prev_cursor:
+                description: Cursor for previous page (null if at start)
+                type: string
+              results:
+                items:
+                  properties:
+                    created_at:
+                      format: date-time
+                      type: string
+                    created_by:
+                      type: string
+                    due_date:
+                      format: date-time
+                      type: string
+                    id:
+                      description: Firestore document ID
+                      type: string
+                    is_deleted:
+                      type: boolean
+                    linked_friendly_id:
+                      type: string
+                    linked_id:
+                      type: string
+                    list_index:
+                      type: string
+                    project_id:
+                      type: integer
+                    response_required:
+                      type: boolean
+                    status:
+                      enum:
+                      - draft
+                      - issued
+                      - acknowledged
+                      - actioned
+                      - closed
+                      type: string
+                    summary:
+                      type: string
+                    thread_id:
+                      type: string
+                    type:
+                      enum:
+                      - EOT
+                      - VO
+                      - RFI
+                      - SI
+                      - GC
+                      - NOD
+                      - CC
+                      - CI
+                      - CAN
+                      - NOC
+                      - NTS
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                    updated_by:
+                      type: string
+                    workspace_id:
+                      type: string
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List notices
+      tags:
+      - Correspondence
+    post:
+      description: Create a new notice linking a thread to a business record.
+      operationId: v2_createNotice
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            due_date:
+              description: Mandatory if response_required is True
+              format: date-time
+              type: string
+            linked_friendly_id:
+              description: eg. RFI-001
+              type: string
+            linked_id:
+              description: Database ID of Variation Order, RFI, etc. Can be int for
+                DS Site
+              type: string
+            list_index:
+              description: Kanban sort key. Lexographic ordering enables reordering
+                with only a single update. Auto-generated if not provided.
+              type: string
+            response_required:
+              default: false
+              type: boolean
+            status:
+              default: draft
+              description: Draft, Issued, etc
+              enum:
+              - draft
+              - issued
+              - acknowledged
+              - actioned
+              - closed
+              type: string
+            summary:
+              description: eg, Ceiling grid specification clarification
+              type: string
+            thread_id:
+              description: Firestore ID of the linked correspondence thread
+              type: string
+            type:
+              description: Variation Order, Request For Information, etc
+              enum:
+              - EOT
+              - VO
+              - RFI
+              - SI
+              - GC
+              - NOD
+              - CC
+              - CI
+              - CAN
+              - NOC
+              - NTS
+              type: string
+          required:
+          - thread_id
+          - summary
+          - type
+          - linked_id
+          - linked_friendly_id
+          type: object
+      responses:
+        201:
+          description: Notice created successfully
+          schema:
+            properties:
+              created_at:
+                format: date-time
+                type: string
+              created_by:
+                type: string
+              due_date:
+                format: date-time
+                type: string
+              id:
+                description: Firestore document ID
+                type: string
+              is_deleted:
+                type: boolean
+              linked_friendly_id:
+                type: string
+              linked_id:
+                type: string
+              list_index:
+                type: string
+              project_id:
+                type: integer
+              response_required:
+                type: boolean
+              status:
+                enum:
+                - draft
+                - issued
+                - acknowledged
+                - actioned
+                - closed
+                type: string
+              summary:
+                type: string
+              thread_id:
+                type: string
+              type:
+                enum:
+                - EOT
+                - VO
+                - RFI
+                - SI
+                - GC
+                - NOD
+                - CC
+                - CI
+                - CAN
+                - NOC
+                - NTS
+                type: string
+              updated_at:
+                format: date-time
+                type: string
+              updated_by:
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a notice
+      tags:
+      - Correspondence
+  /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/notices/{noticeId}:
+    delete:
+      description: Soft delete a notice.
+      operationId: v2_deleteNotice
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Notice document ID
+        in: path
+        name: noticeId
+        required: true
+        type: string
+      responses:
+        204:
+          description: Notice deleted successfully
+        401:
+          description: Unauthorized
+        404:
+          description: Notice not found
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a notice
+      tags:
+      - Correspondence
+    get:
+      description: Get a single notice by its ID.
+      operationId: v2_getNotice
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Notice document ID
+        in: path
+        name: noticeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Notice details
+          schema:
+            properties:
+              created_at:
+                format: date-time
+                type: string
+              created_by:
+                type: string
+              due_date:
+                format: date-time
+                type: string
+              id:
+                description: Firestore document ID
+                type: string
+              is_deleted:
+                type: boolean
+              linked_friendly_id:
+                type: string
+              linked_id:
+                type: string
+              list_index:
+                type: string
+              project_id:
+                type: integer
+              response_required:
+                type: boolean
+              status:
+                enum:
+                - draft
+                - issued
+                - acknowledged
+                - actioned
+                - closed
+                type: string
+              summary:
+                type: string
+              thread_id:
+                type: string
+              type:
+                enum:
+                - EOT
+                - VO
+                - RFI
+                - SI
+                - GC
+                - NOD
+                - CC
+                - CI
+                - CAN
+                - NOC
+                - NTS
+                type: string
+              updated_at:
+                format: date-time
+                type: string
+              updated_by:
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Notice not found
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a notice
+      tags:
+      - Correspondence
+    patch:
+      description: Partially update a notice. Only provided fields will be updated.
+      operationId: v2_updateNotice
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Notice document ID
+        in: path
+        name: noticeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            due_date:
+              format: date-time
+              type: string
+            linked_friendly_id:
+              type: string
+            linked_id:
+              type: string
+            list_index:
+              type: string
+            response_required:
+              type: boolean
+            status:
+              enum:
+              - draft
+              - issued
+              - acknowledged
+              - actioned
+              - closed
+              type: string
+            summary:
+              type: string
+            type:
+              enum:
+              - EOT
+              - VO
+              - RFI
+              - SI
+              - GC
+              - NOD
+              - CC
+              - CI
+              - CAN
+              - NOC
+              - NTS
+              type: string
+          type: object
+      responses:
+        200:
+          description: Notice updated successfully
+          schema:
+            properties:
+              created_at:
+                format: date-time
+                type: string
+              created_by:
+                type: string
+              due_date:
+                format: date-time
+                type: string
+              id:
+                description: Firestore document ID
+                type: string
+              is_deleted:
+                type: boolean
+              linked_friendly_id:
+                type: string
+              linked_id:
+                type: string
+              list_index:
+                type: string
+              project_id:
+                type: integer
+              response_required:
+                type: boolean
+              status:
+                enum:
+                - draft
+                - issued
+                - acknowledged
+                - actioned
+                - closed
+                type: string
+              summary:
+                type: string
+              thread_id:
+                type: string
+              type:
+                enum:
+                - EOT
+                - VO
+                - RFI
+                - SI
+                - GC
+                - NOD
+                - CC
+                - CI
+                - CAN
+                - NOC
+                - NTS
+                type: string
+              updated_at:
+                format: date-time
+                type: string
+              updated_by:
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Notice not found
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a notice
+      tags:
+      - Correspondence
   /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/threads:
     get:
       description: Get email threads for a project with cursor-based pagination.
