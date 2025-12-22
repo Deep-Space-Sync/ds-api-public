@@ -27597,10 +27597,10 @@ paths:
         required: false
         type: string
       - default: 50
-        description: Number of items per page
+        description: Items per page. 0 = no limit (returns all)
         in: query
         maximum: 100
-        minimum: 1
+        minimum: 0
         name: limit
         required: false
         type: integer
@@ -28129,10 +28129,10 @@ paths:
         required: true
         type: integer
       - default: 50
-        description: Number of items per page
+        description: Items per page. 0 = no limit (returns all)
         in: query
         maximum: 100
-        minimum: 1
+        minimum: 0
         name: limit
         required: false
         type: integer
