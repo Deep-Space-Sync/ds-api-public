@@ -9903,6 +9903,22 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/head-contract-retentions:
+    get:
+      operationId: v2_getHeadContractRetentionsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Head Contract Retentions (Workspace Level)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/cost/head-contract-variations:
     get:
       operationId: v2_getHeadContractVariationsWorkspace
@@ -33382,6 +33398,264 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-retentions:
+    get:
+      operationId: v2_getHeadContractRetentions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Head Contract Retentions
+      tags:
+      - Cost
+    post:
+      operationId: v2_postHeadContractRetention
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Create Head Contract Retention
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-retentions/{retentionId}:
+    delete:
+      operationId: v2_deleteHeadContractRetentionById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Head Contract Retention By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getHeadContractRetentionById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Head Contract Retention By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchHeadContractRetentionById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Edit Head Contract Retention By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-retentions/{retentionId}/records:
+    get:
+      operationId: v2_getRetentionRecords
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Retention Records
+      tags:
+      - Cost
+    post:
+      operationId: v2_postRetentionRecord
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Add Retention Record
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-retentions/{retentionId}/records/{recordId}:
+    delete:
+      operationId: v2_deleteRetentionRecordById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      - in: path
+        name: recordId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Retention Record By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getRetentionRecordById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      - in: path
+        name: recordId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Retention Record By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchRetentionRecordById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      - in: path
+        name: recordId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Update Retention Record By Id
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations:
     get:
       operationId: v2_getHeadContractVariations
