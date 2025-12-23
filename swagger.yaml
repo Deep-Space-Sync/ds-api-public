@@ -38395,7 +38395,7 @@ paths:
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/po-register:
     get:
-      description: Consolidated endpoint replacing 8 API calls. Performance ~74% faster.
+      description: Consolidated endpoint replacing multiple API calls.
       operationId: v2_getPoRegisterData
       parameters:
       - in: path
