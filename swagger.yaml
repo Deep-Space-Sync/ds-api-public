@@ -27669,12 +27669,6 @@ paths:
                       type: string
                     linked_id:
                       type: string
-                    linked_thread_ids:
-                      description: Firestore document IDs of threads linked to this
-                        notice
-                      items:
-                        type: string
-                      type: array
                     list_index:
                       type: string
                     project_id:
@@ -27691,6 +27685,12 @@ paths:
                       type: string
                     summary:
                       type: string
+                    thread_ids:
+                      description: Firestore document IDs of threads linked to this
+                        notice
+                      items:
+                        type: string
+                      type: array
                     type:
                       enum:
                       - EOT
@@ -27975,6 +27975,11 @@ paths:
                 type: string
               summary:
                 type: string
+              thread_ids:
+                description: Firestore document IDs of threads linked to this notice
+                items:
+                  type: string
+                type: array
               type:
                 enum:
                 - EOT
