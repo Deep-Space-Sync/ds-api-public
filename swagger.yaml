@@ -27614,6 +27614,25 @@ paths:
         name: before
         required: false
         type: string
+      - default: created_at
+        description: Field to sort by
+        enum:
+        - created_at
+        - updated_at
+        - due_date
+        in: query
+        name: sort_by
+        required: false
+        type: string
+      - default: desc
+        description: Sort order (asc or desc)
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort_order
+        required: false
+        type: string
       responses:
         200:
           description: List of notices
@@ -27630,6 +27649,9 @@ paths:
               results:
                 items:
                   properties:
+                    assignee:
+                      description: User ID of the person assigned to this notice
+                      type: string
                     created_at:
                       format: date-time
                       type: string
@@ -27647,6 +27669,12 @@ paths:
                       type: string
                     linked_id:
                       type: string
+                    linked_thread_ids:
+                      description: Firestore document IDs of threads linked to this
+                        notice
+                      items:
+                        type: string
+                      type: array
                     list_index:
                       type: string
                     project_id:
@@ -27662,8 +27690,6 @@ paths:
                       - closed
                       type: string
                     summary:
-                      type: string
-                    thread_id:
                       type: string
                     type:
                       enum:
@@ -27719,6 +27745,9 @@ paths:
         required: true
         schema:
           properties:
+            assignee:
+              description: User ID of the person assigned to this notice
+              type: string
             due_date:
               description: Mandatory if response_required is True
               format: date-time
@@ -27750,9 +27779,11 @@ paths:
             summary:
               description: eg, Ceiling grid specification clarification
               type: string
-            thread_id:
-              description: Firestore ID of the linked correspondence thread
-              type: string
+            thread_ids:
+              description: Thread IDs to link on creation
+              items:
+                type: string
+              type: array
             type:
               description: Variation Order, Request For Information, etc
               enum:
@@ -27769,7 +27800,6 @@ paths:
               - NTS
               type: string
           required:
-          - thread_id
           - summary
           - type
           - linked_id
@@ -27780,6 +27810,9 @@ paths:
           description: Notice created successfully
           schema:
             properties:
+              assignee:
+                description: User ID of the person assigned to this notice
+                type: string
               created_at:
                 format: date-time
                 type: string
@@ -27812,8 +27845,6 @@ paths:
                 - closed
                 type: string
               summary:
-                type: string
-              thread_id:
                 type: string
               type:
                 enum:
@@ -27908,6 +27939,9 @@ paths:
           description: Notice details
           schema:
             properties:
+              assignee:
+                description: User ID of the person assigned to this notice
+                type: string
               created_at:
                 format: date-time
                 type: string
@@ -27940,8 +27974,6 @@ paths:
                 - closed
                 type: string
               summary:
-                type: string
-              thread_id:
                 type: string
               type:
                 enum:
@@ -28002,6 +28034,9 @@ paths:
         required: true
         schema:
           properties:
+            assignee:
+              description: User ID of the person assigned to this notice
+              type: string
             due_date:
               format: date-time
               type: string
@@ -28023,6 +28058,12 @@ paths:
               type: string
             summary:
               type: string
+            thread_ids:
+              description: Replace all linked threads (pass empty array to unlink
+                all)
+              items:
+                type: string
+              type: array
             type:
               enum:
               - EOT
@@ -28043,6 +28084,9 @@ paths:
           description: Notice updated successfully
           schema:
             properties:
+              assignee:
+                description: User ID of the person assigned to this notice
+                type: string
               created_at:
                 format: date-time
                 type: string
@@ -28075,8 +28119,6 @@ paths:
                 - closed
                 type: string
               summary:
-                type: string
-              thread_id:
                 type: string
               type:
                 enum:
@@ -28146,6 +28188,15 @@ paths:
         name: before
         required: false
         type: string
+      - default: desc
+        description: Sort order (asc or desc)
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort_order
+        required: false
+        type: string
       responses:
         200:
           description: List of email threads
@@ -28176,10 +28227,30 @@ paths:
                       description: Timestamp of the most recent message
                       format: date-time
                       type: string
-                    participant_addresses:
-                      description: Unique email addresses of all participants
+                    linked_notice:
+                      description: Summary of the notice this thread is linked to
+                        (if any)
+                      properties:
+                        id:
+                          description: Firestore document ID of the notice
+                          type: string
+                        linked_friendly_id:
+                          description: Human-readable ID (e.g., RFI-001)
+                          type: string
+                        type:
+                          description: Notice type (e.g., RFI, VO, EOT)
+                          type: string
+                      type: object
+                    participants:
+                      description: Unique participants with email addresses and display
+                        names
                       items:
-                        type: string
+                        properties:
+                          address:
+                            type: string
+                          display_name:
+                            type: string
+                        type: object
                       type: array
                     project_id:
                       type: integer
@@ -28247,6 +28318,19 @@ paths:
                 description: Timestamp of the most recent message
                 format: date-time
                 type: string
+              linked_notice:
+                description: Summary of the notice this thread is linked to (if any)
+                properties:
+                  id:
+                    description: Firestore document ID of the notice
+                    type: string
+                  linked_friendly_id:
+                    description: Human-readable ID (e.g., RFI-001)
+                    type: string
+                  type:
+                    description: Notice type (e.g., RFI, VO, EOT)
+                    type: string
+                type: object
               messages:
                 description: Messages in the thread, ordered by date
                 items:
@@ -28326,10 +28410,16 @@ paths:
                   type: object
                 minItems: 1
                 type: array
-              participant_addresses:
-                description: Unique email addresses of all participants
+              participants:
+                description: Unique participants with email addresses and display
+                  names
                 items:
-                  type: string
+                  properties:
+                    address:
+                      type: string
+                    display_name:
+                      type: string
+                  type: object
                 type: array
               project_id:
                 type: integer
