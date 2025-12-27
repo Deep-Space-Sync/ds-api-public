@@ -45197,6 +45197,160 @@ paths:
       summary: Create new file set
       tags:
       - Milestones
+  /v2/workspaces/{workspaceId}/projects/{projectId}/milestone/file-sets/{setId}:
+    get:
+      description: Returns details of a specific file set including the list of member
+        files scoped to the project.
+      operationId: v2_getFileSetDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: The file set ID
+        in: path
+        name: setId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: File set details with member files
+          schema:
+            properties:
+              files:
+                items:
+                  properties:
+                    id:
+                      description: Source file ID
+                      type: integer
+                    name:
+                      description: Source file name
+                      type: string
+                  type: object
+                type: array
+              id:
+                description: File set ID
+                type: integer
+              name:
+                description: File set name
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: File set not found or has no files in this project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get file set details with member files
+      tags:
+      - Milestones
+  /v2/workspaces/{workspaceId}/projects/{projectId}/milestone/file-sets/{setId}/files:
+    post:
+      description: Adds one or more files to an existing file set. Files must belong
+        to the specified project.
+      operationId: v2_addFilesToFileSet
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: The file set ID
+        in: path
+        name: setId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            file_ids:
+              description: List of source file IDs to add to the set
+              items:
+                type: integer
+              type: array
+          required:
+          - file_ids
+          type: object
+      responses:
+        200:
+          description: Files added successfully
+          schema:
+            properties:
+              added_count:
+                description: Number of files actually added (excludes duplicates)
+                type: integer
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid file IDs or files don't belong to project
+        401:
+          description: Unauthorized
+        404:
+          description: File set not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add files to a file set
+      tags:
+      - Milestones
+  /v2/workspaces/{workspaceId}/projects/{projectId}/milestone/file-sets/{setId}/files/{fileId}:
+    delete:
+      description: Removes a single file from a file set. File must belong to the
+        specified project.
+      operationId: v2_removeFileFromFileSet
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: The file set ID
+        in: path
+        name: setId
+        required: true
+        type: integer
+      - description: The source file ID to remove
+        in: path
+        name: fileId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: File removed from set
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        400:
+          description: File not found or doesn't belong to project
+        401:
+          description: Unauthorized
+        404:
+          description: File was not in this set
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove a file from a file set
+      tags:
+      - Milestones
   /v2/workspaces/{workspaceId}/projects/{projectId}/navis/{collectorKey}:
     post:
       consumes:
