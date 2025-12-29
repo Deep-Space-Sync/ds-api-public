@@ -3899,6 +3899,83 @@ paths:
       summary: Run a report template
       tags:
       - Reports
+  /v2/roles/sync:
+    post:
+      description: Updates all roles in specified workspaces with the latest menu-based
+        features while preserving existing permissions
+      operationId: v2_syncRoles
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            workspaces:
+              description: Array of workspace IDs to sync, or ["_ALL_"] to sync all
+                workspaces
+              items:
+                type: string
+              type: array
+          required:
+          - workspaces
+          type: object
+      responses:
+        200:
+          description: Sync completed
+          schema:
+            properties:
+              data:
+                properties:
+                  details:
+                    description: Per-workspace sync results
+                    items:
+                      properties:
+                        errors:
+                          items:
+                            type: object
+                          type: array
+                        updated:
+                          type: integer
+                        workspace_id:
+                          type: string
+                      type: object
+                    type: array
+                  errors:
+                    description: All errors encountered during sync
+                    items:
+                      type: object
+                    type: array
+                  updated:
+                    description: Total number of roles updated
+                    type: integer
+                  workspaces_processed:
+                    description: List of workspace IDs that were processed
+                    items:
+                      type: string
+                    type: array
+                type: object
+              ok:
+                type: boolean
+            type: object
+        400:
+          description: Invalid request
+          schema:
+            properties:
+              error:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Sync roles features with latest menu structure
+      tags:
+      - Roles
   /v2/secret/{secretName}:
     get:
       operationId: v2_getSecret
