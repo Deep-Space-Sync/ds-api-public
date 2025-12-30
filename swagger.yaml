@@ -15625,6 +15625,14 @@ paths:
       - in: query
         name: limit
         type: integer
+      - description: Filter by template category (e.g., delivery, preconstruction)
+        in: query
+        name: category
+        type: string
+      - description: Filter by template type (e.g., site_instruction_notice)
+        in: query
+        name: type
+        type: string
       responses:
         200:
           description: Templates retrieved successfully
