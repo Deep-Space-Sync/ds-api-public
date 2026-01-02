@@ -50591,7 +50591,10 @@ paths:
         in: query
         name: project
         type: string
-      - description: Filter by status (e.g., "signed_in", "signed_out")
+      - description: Filter by status
+        enum:
+        - signed_in
+        - signed_out
         in: query
         name: status
         type: string
@@ -50621,6 +50624,14 @@ paths:
                     created_at:
                       format: date-time
                       type: string
+                    deleted_at:
+                      description: When the record was soft-deleted
+                      format: date-time
+                      type: string
+                    ended_at:
+                      description: When the worker signed out
+                      format: date-time
+                      type: string
                     first_name:
                       type: string
                     id:
@@ -50646,14 +50657,20 @@ paths:
                       description: DS Site account ID
                       type: string
                     source_form_id:
-                      description: DS Site form ID
+                      description: DS Site sign-in form ID
+                      type: string
+                    source_signout_form_id:
+                      description: DS Site sign-out form ID
                       type: string
                     started_at:
                       description: When the worker signed in
                       format: date-time
                       type: string
                     status:
-                      description: Current status (signed_in, signed_out)
+                      description: Current status
+                      enum:
+                      - signed_in
+                      - signed_out
                       type: string
                     updated_at:
                       format: date-time
@@ -50698,6 +50715,9 @@ paths:
 
         - status: Update status (e.g., "signed_out")
 
+        - ended_at: Sign-out timestamp (auto-filled when status changes to "signed_out"
+        if not provided)
+
         '
       operationId: v2_v2_updateSigninRecord
       parameters:
@@ -50716,6 +50736,11 @@ paths:
         required: true
         schema:
           properties:
+            ended_at:
+              description: Sign-out timestamp (auto-filled when status changes to
+                "signed_out" if not provided)
+              format: date-time
+              type: string
             is_deleted:
               description: Set to true to soft delete the record
               type: boolean
@@ -50723,7 +50748,10 @@ paths:
               description: Notes to add to the record
               type: string
             status:
-              description: New status (e.g., "signed_out")
+              description: New status
+              enum:
+              - signed_in
+              - signed_out
               type: string
           type: object
       responses:
@@ -50736,6 +50764,14 @@ paths:
                   created_at:
                     format: date-time
                     type: string
+                  deleted_at:
+                    description: When the record was soft-deleted
+                    format: date-time
+                    type: string
+                  ended_at:
+                    description: When the worker signed out
+                    format: date-time
+                    type: string
                   first_name:
                     type: string
                   id:
@@ -50745,15 +50781,27 @@ paths:
                   last_name:
                     type: string
                   mobile:
+                    description: Normalized mobile number
+                    type: string
+                  mobile_raw:
+                    description: Original mobile number as entered
                     type: string
                   notes:
                     type: string
                   project:
+                    description: Project name from DS Site form
+                    type: string
+                  source_signout_form_id:
+                    description: DS Site sign-out form ID
                     type: string
                   started_at:
                     format: date-time
                     type: string
                   status:
+                    description: Current status
+                    enum:
+                    - signed_in
+                    - signed_out
                     type: string
                   updated_at:
                     format: date-time
