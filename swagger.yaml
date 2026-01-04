@@ -43372,6 +43372,237 @@ paths:
       summary: Upload MS Project XML file
       tags:
       - MS Project Upload
+  /v2/workspaces/{workspaceId}/projects/{projectId}/hz-weather/day:
+    get:
+      description: 'Returns observed weather data for a project on the specified date.
+
+        Reads from Firestore: project_weather/{projectId}/weatherDays/{date}
+
+        '
+      operationId: v2_v2_getHzWeatherDay
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Numeric project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Date in YYYY-MM-DD format
+        in: query
+        name: date
+        required: true
+        type: string
+      responses:
+        200:
+          description: Weather data retrieved successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  capturedAt:
+                    description: ISO timestamp of when data was captured
+                    type: string
+                  date:
+                    description: Date in YYYY-MM-DD format
+                    type: string
+                  id:
+                    description: Document ID (date)
+                    type: string
+                  lat:
+                    type: number
+                  lng:
+                    type: number
+                  observed:
+                    properties:
+                      conditions:
+                        type: string
+                      humidityAvg:
+                        type: number
+                      rainMm:
+                        type: number
+                      tempMax:
+                        type: number
+                      tempMin:
+                        type: number
+                      windAvgKph:
+                        type: number
+                      windMaxKph:
+                        type: number
+                    type: object
+                  provider:
+                    description: Weather data provider
+                    type: string
+                  timezone:
+                    description: Timezone (fixed to Australia/Sydney)
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - missing or invalid date
+        401:
+          description: Unauthorized
+        404:
+          description: Weather data not found for date
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get observed weather for a specific date
+      tags:
+      - HzWeather
+  /v2/workspaces/{workspaceId}/projects/{projectId}/hz-weather/forecast:
+    get:
+      description: 'Returns current weather forecast for a project (next 5-7 days).
+
+        Reads from Firestore: project_weather/{projectId}/weatherForecast/current
+
+        '
+      operationId: v2_v2_getHzWeatherForecast
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Numeric project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Forecast data retrieved successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  capturedAt:
+                    description: ISO timestamp of when data was captured
+                    type: string
+                  days:
+                    items:
+                      properties:
+                        conditions:
+                          type: string
+                        date:
+                          type: string
+                        humidityAvg:
+                          type: number
+                        icon:
+                          type: string
+                        precipProb:
+                          type: number
+                        rainMm:
+                          type: number
+                        tempMax:
+                          type: number
+                        tempMin:
+                          type: number
+                        windAvgKph:
+                          type: number
+                        windMaxKph:
+                          type: number
+                      type: object
+                    type: array
+                  id:
+                    description: Document ID (always "current")
+                    type: string
+                  lat:
+                    type: number
+                  lng:
+                    type: number
+                  provider:
+                    description: Weather data provider
+                    type: string
+                  timezone:
+                    description: Timezone (fixed to Australia/Sydney)
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Forecast data not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get weather forecast
+      tags:
+      - HzWeather
+  /v2/workspaces/{workspaceId}/projects/{projectId}/hz-weather/refresh:
+    post:
+      description: 'Triggers weather data capture from VisualCrossing API for the
+        specified date
+
+        (or today in Australia/Sydney if omitted) and updates Firestore.
+
+
+        Project lat/lng is automatically fetched from MySQL projects_def table.
+
+
+        Upserts to:
+
+        - project_weather/{projectId}/weatherDays/{date}
+
+        - project_weather/{projectId}/weatherForecast/current
+
+        '
+      operationId: v2_v2_refreshHzWeather
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Numeric project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Date in YYYY-MM-DD format (defaults to today in Australia/Sydney)
+        in: query
+        name: date
+        required: false
+        type: string
+      responses:
+        200:
+          description: Weather data refreshed successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  day:
+                    description: Observed weather for the specified date
+                    type: object
+                  forecast:
+                    description: Forecast data (next 5-7 days)
+                    type: object
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - invalid date format or project lat/lng not configured
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+        502:
+          description: Weather provider error
+      security:
+      - JWT_v2: []
+      summary: Refresh weather data
+      tags:
+      - HzWeather
   /v2/workspaces/{workspaceId}/projects/{projectId}/hz-workflows:
     get:
       description: 'List workflow templates for a workspace with optional filtering.
