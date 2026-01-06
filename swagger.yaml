@@ -22881,6 +22881,81 @@ paths:
       summary: Get menu structure for a workspace
       tags:
       - Info
+  /v2/workspaces/{workspaceId}/menu-overrides:
+    delete:
+      description: Remove all menu customisation overrides for a workspace. Requires
+        admin permission. Only available for whitelisted workspaces.
+      operationId: v2_deleteMenuOverrides
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Menu overrides deleted successfully
+        401:
+          description: Unauthorized
+        403:
+          description: Admin permission required or menu customisation not enabled
+        404:
+          description: No overrides found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete menu overrides for a workspace
+      tags:
+      - Menu
+    get:
+      description: Returns the menu customisation overrides (disabled sections and
+        apps) for a workspace. Only available for whitelisted workspaces.
+      operationId: v2_getMenuOverrides
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Menu overrides for the workspace
+        401:
+          description: Unauthorized
+        403:
+          description: Menu customisation not enabled for this workspace
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get menu overrides for a workspace
+      tags:
+      - Menu
+    put:
+      description: Create or update menu customisation overrides (disabled sections
+        and apps) for a workspace. Requires admin permission. Only available for whitelisted
+        workspaces.
+      operationId: v2_updateMenuOverrides
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Menu overrides updated successfully
+        400:
+          description: Invalid request body
+        401:
+          description: Unauthorized
+        403:
+          description: Admin permission required or menu customisation not enabled
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update menu overrides for a workspace
+      tags:
+      - Menu
   /v2/workspaces/{workspaceId}/notifications:
     get:
       operationId: v2_getWorkspaceNotifications
