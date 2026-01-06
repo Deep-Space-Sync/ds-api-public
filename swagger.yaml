@@ -10018,6 +10018,102 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/subcontract-claims:
+    get:
+      operationId: v2_getSubcontractClaimsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Claims (Workspace Level)
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/cost/subcontract-invoices:
+    get:
+      operationId: v2_getSubcontractInvoicesWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Invoices (Workspace Level)
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/cost/subcontract-payment-schedules:
+    get:
+      operationId: v2_getSubcontractPaymentSchedulesWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Payment Schedules (Workspace Level)
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/cost/subcontract-retentions:
+    get:
+      operationId: v2_getSubcontractRetentionsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Retentions (Workspace Level)
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/cost/subcontract-variations:
+    get:
+      operationId: v2_getSubcontractVariationsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Variations (Workspace Level)
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/cost/subcontracts:
+    get:
+      operationId: v2_getSubcontractsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontracts (Workspace Level)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/cost/tender-packages:
     get:
       operationId: v2_getTenderPackages
@@ -41239,6 +41335,1699 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-claims:
+    get:
+      operationId: v2_getSubcontractClaims
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Claims
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontractClaim
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Create Subcontract Claim
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-claims/{claimId}:
+    delete:
+      operationId: v2_deleteSubcontractClaimById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract Claim By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractClaimById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Claim By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractClaimById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Edit Subcontract Claim By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-claims/{claimId}/change-status:
+    patch:
+      operationId: v2_patchSubcontractClaimStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Status updated
+      security:
+      - JWT_v2: []
+      summary: Change Subcontract Claim Status
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-claims/{claimId}/sovs:
+    get:
+      operationId: v2_getSubcontractClaimSovs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Claim SOVs
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontractClaimSov
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Add Subcontract Claim SOV
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-claims/{claimId}/sovs/{sovId}:
+    delete:
+      operationId: v2_deleteSubcontractClaimSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract Claim SOV By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractClaimSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Claim SOV By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractClaimSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Update Subcontract Claim SOV By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-invoices:
+    get:
+      operationId: v2_getSubcontractInvoices
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Invoices
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontractInvoice
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Create Subcontract Invoice
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-invoices/{invoiceId}:
+    delete:
+      operationId: v2_deleteSubcontractInvoiceById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract Invoice By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractInvoiceById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Invoice By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractInvoiceById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Edit Subcontract Invoice By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-invoices/{invoiceId}/change-status:
+    patch:
+      operationId: v2_patchSubcontractInvoiceStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Status updated
+      security:
+      - JWT_v2: []
+      summary: Change Subcontract Invoice Status
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-invoices/{invoiceId}/sovs:
+    get:
+      operationId: v2_getSubcontractInvoiceSovs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Invoice SOVs
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontractInvoiceSov
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Add Subcontract Invoice SOV
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-invoices/{invoiceId}/sovs/{sovId}:
+    delete:
+      operationId: v2_deleteSubcontractInvoiceSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract Invoice SOV By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractInvoiceSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Invoice SOV By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractInvoiceSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Update Subcontract Invoice SOV By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules:
+    get:
+      operationId: v2_getSubcontractPaymentSchedules
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Payment Schedules
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontractPaymentSchedule
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Create Subcontract Payment Schedule
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}:
+    delete:
+      operationId: v2_deleteSubcontractPaymentScheduleById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract Payment Schedule By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractPaymentScheduleById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Payment Schedule By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractPaymentScheduleById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Edit Subcontract Payment Schedule By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/change-status:
+    patch:
+      operationId: v2_patchSubcontractPaymentScheduleStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Status updated
+      security:
+      - JWT_v2: []
+      summary: Change Subcontract Payment Schedule Status
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/sovs:
+    get:
+      operationId: v2_getSubcontractPaymentScheduleSovs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Payment Schedule SOVs
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontractPaymentScheduleSov
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Add Subcontract Payment Schedule SOV
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/sovs/{sovId}:
+    delete:
+      operationId: v2_deleteSubcontractPaymentScheduleSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract Payment Schedule SOV By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractPaymentScheduleSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Payment Schedule SOV By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractPaymentScheduleSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Update Subcontract Payment Schedule SOV By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-retentions:
+    get:
+      operationId: v2_getSubcontractRetentions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Retentions
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontractRetention
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Create Subcontract Retention
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-retentions/{retentionId}:
+    delete:
+      operationId: v2_deleteSubcontractRetentionById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract Retention By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractRetentionById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Retention By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractRetentionById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Edit Subcontract Retention By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-retentions/{retentionId}/records:
+    get:
+      operationId: v2_getSubcontractRetentionRecords
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Retention Records
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontractRetentionRecord
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Add Subcontract Retention Record
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-retentions/{retentionId}/records/{recordId}:
+    delete:
+      operationId: v2_deleteSubcontractRetentionRecordById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      - in: path
+        name: recordId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract Retention Record By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractRetentionRecordById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      - in: path
+        name: recordId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Retention Record By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractRetentionRecordById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: retentionId
+        required: true
+        type: string
+      - in: path
+        name: recordId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Update Subcontract Retention Record By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations:
+    get:
+      operationId: v2_getSubcontractVariations
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Variations
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontractVariation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Create Subcontract Variation
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}:
+    delete:
+      operationId: v2_deleteSubcontractVariationById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract Variation By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractVariationById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Variation By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractVariationById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Edit Subcontract Variation By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/scopes:
+    get:
+      operationId: v2_getSubcontractVariationScopes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Variation Scopes
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontractVariationScope
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Add Subcontract Variation Scope
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/scopes/{scopeId}:
+    delete:
+      operationId: v2_deleteSubcontractVariationScopeById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: path
+        name: scopeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract Variation Scope By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractVariationScopeById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: path
+        name: scopeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Variation Scope By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractVariationScopeById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: path
+        name: scopeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Update Subcontract Variation Scope By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/update-status:
+    patch:
+      operationId: v2_patchSubcontractVariationStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Status updated
+      security:
+      - JWT_v2: []
+      summary: Update Subcontract Variation Status
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts:
+    get:
+      operationId: v2_getSubcontracts
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontracts
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontract
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Create Subcontract
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}:
+    delete:
+      operationId: v2_deleteSubcontractById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Edit Subcontract By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/change-status:
+    patch:
+      operationId: v2_patchSubcontractStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Status updated
+      security:
+      - JWT_v2: []
+      summary: Change Subcontract Status
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/sovs:
+    get:
+      operationId: v2_getSubcontractSovs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract SOVs
+      tags:
+      - Cost
+    post:
+      operationId: v2_postSubcontractSov
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Created
+      security:
+      - JWT_v2: []
+      summary: Add Subcontract SOV
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/sovs/{sovId}:
+    delete:
+      operationId: v2_deleteSubcontractSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Subcontract SOV By Id
+      tags:
+      - Cost
+    get:
+      operationId: v2_getSubcontractSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract SOV By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchSubcontractSovById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Update Subcontract SOV By Id
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tenders:
     get:
       operationId: v2_getTenders
