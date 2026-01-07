@@ -50325,6 +50325,274 @@ paths:
       tags:
       - Info
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/settings:
+    get:
+      operationId: v2_getProjectSettings
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response with project settings data
+          schema:
+            properties:
+              data:
+                description: Project settings data
+                properties:
+                  actual_start_date:
+                    description: Actual start date (Firestore only)
+                    format: date
+                    type: string
+                  current_stage:
+                    description: Current project stage
+                    type: string
+                  delivery_method:
+                    description: Project delivery method (Firestore only)
+                    type: string
+                  forecast_finish_date:
+                    description: Forecast finish date (Firestore only)
+                    format: date
+                    type: string
+                  key_project_manager_user_id:
+                    description: User ID of key project manager
+                    type: string
+                  owner_type:
+                    description: Type of owner (Firestore only)
+                    type: string
+                  parent_project_id:
+                    description: Parent project ID (Firestore only)
+                    type: integer
+                  planned_completion_date:
+                    description: Planned completion date (Firestore only)
+                    format: date
+                    type: string
+                  planned_start_date:
+                    description: Planned start date (Firestore only)
+                    format: date
+                    type: string
+                  procurement_strategy:
+                    description: Procurement strategy
+                    type: string
+                  project_addr_country:
+                    description: Project country
+                    type: string
+                  project_addr_postcode:
+                    description: Project postcode
+                    type: integer
+                  project_address:
+                    description: Project address
+                    type: string
+                  project_client:
+                    description: Client name
+                    type: string
+                  project_description:
+                    description: Project description
+                    type: string
+                  project_estimated_finish_date:
+                    description: Estimated project finish date
+                    format: date
+                    type: string
+                  project_estimated_start_date:
+                    description: Estimated project start date
+                    format: date
+                    type: string
+                  project_group:
+                    description: Project group (Firestore only)
+                    type: string
+                  project_id:
+                    description: Project ID
+                    type: integer
+                  project_identifier:
+                    description: Project identifier code
+                    type: string
+                  project_latlong:
+                    description: Project latitude/longitude coordinates
+                    type: string
+                  project_name:
+                    description: Name of the project
+                    type: string
+                  project_sector:
+                    description: Project sector/industry
+                    type: string
+                  project_type:
+                    description: Type of project (Firestore only)
+                    type: string
+                  tags:
+                    description: Project tags (Firestore only)
+                    items:
+                      type: string
+                    type: array
+                  tender_type:
+                    description: Type of tender (Firestore only)
+                    type: string
+                  total_contract_value_aud:
+                    description: Total contract value in AUD
+                    type: number
+                  warranty_end_date:
+                    description: Warranty end date (Firestore only)
+                    format: date
+                    type: string
+                  warranty_start_date:
+                    description: Warranty start date (Firestore only)
+                    format: date
+                    type: string
+                type: object
+              message:
+                description: Response message
+                type: string
+              source:
+                description: Data source (firestore or mysql)
+                enum:
+                - firestore
+                - mysql
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Project not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Project Settings
+      tags:
+      - Projects
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
+    patch:
+      description: 'Update project settings fields stored in Firestore only.
+
+        These fields are NOT synced back to MySQL.
+
+        Editable fields: project_name, project_address, project_description, project_latlong,
+        project_addr_country, project_addr_postcode, current_stage, delivery_method,
+        project_type, tender_type, owner_type, project_group, parent_project_id, tags,
+        planned_start_date, actual_start_date, planned_completion_date, forecast_finish_date,
+        warranty_start_date, warranty_end_date
+
+        '
+      operationId: v2_patchProjectSettings
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actual_start_date:
+              description: Actual start date (ISO format YYYY-MM-DD)
+              format: date
+              type: string
+            current_stage:
+              description: Current project stage
+              type: string
+            delivery_method:
+              description: Project delivery method
+              type: string
+            forecast_finish_date:
+              description: Forecast finish date (ISO format YYYY-MM-DD)
+              format: date
+              type: string
+            owner_type:
+              description: Type of owner
+              type: string
+            parent_project_id:
+              description: Parent project ID
+              type: integer
+            planned_completion_date:
+              description: Planned completion date (ISO format YYYY-MM-DD)
+              format: date
+              type: string
+            planned_start_date:
+              description: Planned start date (ISO format YYYY-MM-DD)
+              format: date
+              type: string
+            project_addr_country:
+              description: Project country
+              type: string
+            project_addr_postcode:
+              description: Project postcode
+              type: integer
+            project_address:
+              description: Project address
+              type: string
+            project_description:
+              description: Project description
+              type: string
+            project_group:
+              description: Project group
+              type: string
+            project_latlong:
+              description: Project latitude/longitude coordinates
+              type: string
+            project_name:
+              description: Project name
+              type: string
+            project_type:
+              description: Type of project
+              type: string
+            tags:
+              description: Project tags (list of strings)
+              items:
+                type: string
+              type: array
+            tender_type:
+              description: Type of tender
+              type: string
+            warranty_end_date:
+              description: Warranty end date (ISO format YYYY-MM-DD)
+              format: date
+              type: string
+            warranty_start_date:
+              description: Warranty start date (ISO format YYYY-MM-DD)
+              format: date
+              type: string
+          type: object
+      responses:
+        200:
+          description: Project settings updated successfully
+          schema:
+            properties:
+              data:
+                description: Updated project settings data
+                type: object
+              message:
+                description: Response message
+                type: string
+            type: object
+        400:
+          description: Bad request - invalid fields or validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Project not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Project Settings (Firestore only)
+      tags:
+      - Projects
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/projects/{projectId}/sourcefiles:
     get:
       description: Returns all sourcefiles details for a project
