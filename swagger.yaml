@@ -27729,6 +27729,176 @@ paths:
       summary: Log a correspondence in Deep Space
       tags:
       - Correspondence Logging
+  /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/email-provider-synchronizations:
+    post:
+      description: Start synchronizing emails from a connected email provider.
+      operationId: v2_startEmailSync
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            provider:
+              default: microsoft
+              description: Email provider to sync from
+              enum:
+              - microsoft
+              type: string
+          type: object
+      responses:
+        202:
+          description: Sync job started
+          schema:
+            properties:
+              created_at:
+                format: date-time
+                type: string
+              id:
+                description: Sync job ID
+                format: uuid
+                type: string
+              status:
+                enum:
+                - pending
+                - processing
+                - completed
+                - failed
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Start email sync
+      tags:
+      - Correspondence
+  /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/email-provider-synchronizations/{jobId}:
+    get:
+      description: Get the current status of a sync job.
+      operationId: v2_getEmailSyncStatus
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Sync job ID
+        in: path
+        name: jobId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Sync job status
+          schema:
+            properties:
+              completed_at:
+                format: date-time
+                type: string
+              created_at:
+                format: date-time
+                type: string
+              emails_synced:
+                description: Number of emails synced
+                type: integer
+              error:
+                description: Error code if failed
+                enum:
+                - INSUFFICIENT_PERMISSIONS
+                - SYNC_ERROR
+                type: string
+              error_message:
+                description: Error message if failed
+                type: string
+              id:
+                format: uuid
+                type: string
+              started_at:
+                format: date-time
+                type: string
+              status:
+                enum:
+                - pending
+                - processing
+                - completed
+                - failed
+                type: string
+              threads_created:
+                description: Number of new threads created
+                type: integer
+              threads_updated:
+                description: Number of existing threads updated
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Sync job not found
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get sync job status
+      tags:
+      - Correspondence
+  /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/email-provider-synchronizations/{jobId}/events:
+    get:
+      description: Server-Sent Events stream for real-time sync progress updates.
+      operationId: v2_streamEmailSyncProgress
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Sync job ID
+        in: path
+        name: jobId
+        required: true
+        type: string
+      produces:
+      - text/event-stream
+      responses:
+        200:
+          description: SSE stream of sync progress events
+        401:
+          description: Unauthorized
+        404:
+          description: Sync job not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Stream sync progress
+      tags:
+      - Correspondence
   /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/emails:
     post:
       description: Ingest a new email into the system. Threading is computed automatically.
