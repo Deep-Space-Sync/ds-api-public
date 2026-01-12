@@ -50672,12 +50672,20 @@ paths:
                     description: Actual start date (Firestore only)
                     format: date
                     type: string
+                  country:
+                    description: Project country (Firestore only)
+                    type: string
                   current_stage:
                     description: Current project stage
                     type: string
                   delivery_method:
                     description: Project delivery method (Firestore only)
                     type: string
+                  external_stakeholders:
+                    description: External stakeholders (Firestore only)
+                    items:
+                      type: object
+                    type: array
                   forecast_finish_date:
                     description: Forecast finish date (Firestore only)
                     format: date
@@ -50699,6 +50707,9 @@ paths:
                     description: Planned start date (Firestore only)
                     format: date
                     type: string
+                  postcode:
+                    description: Postcode (Firestore only)
+                    type: string
                   procurement_strategy:
                     description: Procurement strategy
                     type: string
@@ -50713,6 +50724,10 @@ paths:
                     type: string
                   project_client:
                     description: Client name
+                    type: string
+                  project_completion_date:
+                    description: Project completion date (Firestore only)
+                    format: date
                     type: string
                   project_description:
                     description: Project description
@@ -50743,14 +50758,30 @@ paths:
                   project_sector:
                     description: Project sector/industry
                     type: string
+                  project_start_date:
+                    description: Project start date (Firestore only)
+                    format: date
+                    type: string
                   project_type:
                     description: Type of project (Firestore only)
+                    type: string
+                  region:
+                    description: Region/LGA (Firestore only)
+                    type: string
+                  state:
+                    description: State/Territory (Firestore only)
+                    type: string
+                  street_address:
+                    description: Street address (Firestore only)
                     type: string
                   tags:
                     description: Project tags (Firestore only)
                     items:
                       type: string
                     type: array
+                  teams:
+                    description: Internal project roles (Firestore only)
+                    type: object
                   tender_type:
                     description: Type of tender (Firestore only)
                     type: string
@@ -50794,11 +50825,20 @@ paths:
 
         These fields are NOT synced back to MySQL.
 
-        Editable fields: project_name, project_address, project_description, project_latlong,
-        project_addr_country, project_addr_postcode, current_stage, delivery_method,
-        project_type, tender_type, owner_type, project_group, parent_project_id, tags,
-        planned_start_date, actual_start_date, planned_completion_date, forecast_finish_date,
-        warranty_start_date, warranty_end_date
+
+        General: project_name, project_identifier, project_description, current_stage,
+        delivery_method, project_type, project_sector, tender_type, owner_type, project_group,
+        parent_project_id, tags
+
+
+        Location: country, state, region, street_address, postcode, project_latlong
+
+
+        Dates: project_start_date, project_completion_date, planned_start_date, actual_start_date,
+        planned_completion_date, forecast_finish_date, warranty_start_date, warranty_end_date
+
+
+        Teams: teams (merge behavior), external_stakeholders (replace behavior)
 
         '
       operationId: v2_patchProjectSettings
@@ -50822,12 +50862,47 @@ paths:
               description: Actual start date (ISO format YYYY-MM-DD)
               format: date
               type: string
+            country:
+              description: Project country
+              type: string
             current_stage:
               description: Current project stage
               type: string
             delivery_method:
               description: Project delivery method
               type: string
+            external_stakeholders:
+              description: 'External stakeholders array. Entire array is sent and
+                replaces existing data.
+
+                Valid stakeholder_types: Subcontractor, Consultant, Client, Supplier
+
+                '
+              items:
+                properties:
+                  company_name:
+                    type: string
+                  contact_email:
+                    type: string
+                  contact_name:
+                    type: string
+                  contact_phone:
+                    type: string
+                  id:
+                    type: string
+                  membership_role:
+                    type: string
+                  portal_status:
+                    enum:
+                    - active
+                    - inactive
+                    type: string
+                  stakeholder_type:
+                    type: string
+                  trade_discipline:
+                    type: string
+                type: object
+              type: array
             forecast_finish_date:
               description: Forecast finish date (ISO format YYYY-MM-DD)
               format: date
@@ -50846,6 +50921,9 @@ paths:
               description: Planned start date (ISO format YYYY-MM-DD)
               format: date
               type: string
+            postcode:
+              description: Postcode
+              type: string
             project_addr_country:
               description: Project country
               type: string
@@ -50854,6 +50932,10 @@ paths:
               type: integer
             project_address:
               description: Project address
+              type: string
+            project_completion_date:
+              description: Project completion date (ISO format YYYY-MM-DD)
+              format: date
               type: string
             project_description:
               description: Project description
@@ -50867,14 +50949,37 @@ paths:
             project_name:
               description: Project name
               type: string
+            project_start_date:
+              description: Project start date (ISO format YYYY-MM-DD)
+              format: date
+              type: string
             project_type:
               description: Type of project
+              type: string
+            region:
+              description: Region/LGA
+              type: string
+            state:
+              description: State/Territory
+              type: string
+            street_address:
+              description: Street address
               type: string
             tags:
               description: Project tags (list of strings)
               items:
                 type: string
               type: array
+            teams:
+              description: 'Internal project roles. Only changed roles are sent.
+
+                Set role to null to remove assignment.
+
+                Valid roles: project_manager, site_manager, contracts_manager, commercial_lead,
+                hseq_lead
+
+                '
+              type: object
             tender_type:
               description: Type of tender
               type: string
