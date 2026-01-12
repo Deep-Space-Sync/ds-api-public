@@ -12255,6 +12255,44 @@ paths:
       - in: body
         name: body
         schema:
+          properties:
+            category:
+              description: 'Optional custom category for the link. If omitted, the
+                backend auto-generates a category from object types (e.g., ''form_user'').
+                When a custom category is provided that differs from the auto-generated
+                one, the link_id will include the category to allow multiple links
+                between the same objects with different categories (e.g., form_assignee
+                vs form_follower).
+
+                '
+              type: string
+            created_at:
+              description: Optional timestamp for when the link was created.
+              format: date-time
+              type: string
+            is_deleted:
+              default: false
+              description: Soft delete flag.
+              type: boolean
+            objects:
+              description: Array of objects to link. Each object must have type, id,
+                and project_id.
+              items:
+                properties:
+                  id:
+                    type: string
+                  project_id:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - type
+                - id
+                - project_id
+                type: object
+              type: array
+          required:
+          - objects
           type: object
       responses:
         200:
