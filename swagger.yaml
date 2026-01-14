@@ -408,10 +408,11 @@ paths:
       operationId: v2_v2_postGeneralFileUpload
       parameters:
       - description: The file to upload (single file only)
+        format: binary
         in: formData
         name: file
         required: true
-        type: file
+        type: string
       - description: File category (documents, images, videos, audio, archives, spreadsheets,
           presentations, cad, other)
         in: formData
