@@ -50861,8 +50861,14 @@ paths:
                   project_identifier:
                     description: Project identifier code
                     type: string
+                  project_image_url:
+                    description: URL to project cover/header image (Firestore only)
+                    type: string
                   project_latlong:
                     description: Project latitude/longitude coordinates
+                    type: string
+                  project_logo_url:
+                    description: URL to project logo image (Firestore only)
                     type: string
                   project_name:
                     description: Name of the project
@@ -50940,7 +50946,7 @@ paths:
 
         General: project_name, project_identifier, project_description, current_stage,
         delivery_method, project_type, project_sector, tender_type, owner_type, project_group,
-        parent_project_id, tags
+        parent_project_id, tags, project_logo_url, project_image_url
 
 
         Location: country, state, region, street_address, postcode, project_latlong
@@ -51055,8 +51061,14 @@ paths:
             project_group:
               description: Project group
               type: string
+            project_image_url:
+              description: URL to project cover/header image
+              type: string
             project_latlong:
               description: Project latitude/longitude coordinates
+              type: string
+            project_logo_url:
+              description: URL to project logo image
               type: string
             project_name:
               description: Project name
