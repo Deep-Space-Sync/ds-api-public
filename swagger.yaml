@@ -384,6 +384,117 @@ paths:
       summary: Create global file metadata or get signed URLs
       tags:
       - Upload Data
+  /v2/files/general_file_upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 'Upload a single file directly to Google Cloud Storage and receive
+        a permanent public URL.
+
+        This endpoint accepts multipart/form-data with a single file.
+
+
+        The file will be made publicly accessible and a permanent URL will be returned.
+
+        If the bucket has uniform access control enabled, a signed URL (valid for
+        7 days)
+
+        will also be provided as a fallback.
+
+
+        Use the ''file'' form field for the file upload.
+
+        '
+      operationId: v2_v2_postGeneralFileUpload
+      parameters:
+      - description: The file to upload (single file only)
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: File category (documents, images, videos, audio, archives, spreadsheets,
+          presentations, cad, other)
+        in: formData
+        name: category
+        required: false
+        type: string
+      - description: Description of the file
+        in: formData
+        name: description
+        required: false
+        type: string
+      - description: Comma-separated list of tags
+        in: formData
+        name: tags
+        required: false
+        type: string
+      responses:
+        200:
+          description: File uploaded successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  blob_path:
+                    description: Full path to the file in the bucket
+                    type: string
+                  bucket:
+                    description: GCS bucket name where file is stored
+                    type: string
+                  category:
+                    description: Auto-detected or provided file category
+                    type: string
+                  content_type:
+                    description: MIME type of the file
+                    type: string
+                  file_id:
+                    description: Unique file identifier in the system
+                    type: string
+                  file_size_bytes:
+                    description: Size of the file in bytes
+                    type: integer
+                  file_type:
+                    description: File extension
+                    type: string
+                  is_public:
+                    example: true
+                    type: boolean
+                  original_filename:
+                    description: Original name of the uploaded file
+                    type: string
+                  public_url:
+                    description: Permanent public URL to access the file
+                    example: https://storage.googleapis.com/bucket-name/path/to/file.pdf
+                    type: string
+                  signed_url:
+                    description: Signed URL (valid for 7 days) as fallback if public
+                      access is restricted
+                    type: string
+                  signed_url_expires_in:
+                    example: 7 days
+                    type: string
+                  stored_filename:
+                    description: Stored filename with timestamp prefix
+                    type: string
+                  success:
+                    example: true
+                    type: boolean
+                type: object
+              message:
+                example: File uploaded successfully
+                type: string
+            type: object
+        400:
+          description: Bad request - no file provided or invalid file
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upload a single file directly and get permanent public URL
+      tags:
+      - Upload Data
   /v2/files/{fileId}:
     delete:
       operationId: v2_v2_deleteGlobalFile
