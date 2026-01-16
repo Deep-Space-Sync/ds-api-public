@@ -32076,6 +32076,21 @@ paths:
         name: projectId
         required: true
         type: integer
+      - description: Filter claims by related cost order UUID
+        in: query
+        name: related_cost_order_num
+        required: false
+        type: string
+      - description: Maximum number of results to return (default 50)
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: Page number for pagination (default 1)
+        in: query
+        name: page
+        required: false
+        type: integer
       responses:
         200:
           description: Successful response
@@ -38710,6 +38725,16 @@ paths:
       - in: path
         name: projectId
         required: true
+        type: integer
+      - description: Filter payment schedules by related cost claim UUID
+        in: query
+        name: related_cost_claim_num
+        required: false
+        type: string
+      - description: Maximum number of results to return (default 1000)
+        in: query
+        name: limit
+        required: false
         type: integer
       responses:
         200:
