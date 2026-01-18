@@ -2508,9 +2508,8 @@ paths:
                       type: string
                     id:
                       type: string
-                    section:
-                      description: Section name (e.g., Tender Documents, Progress
-                        Claims)
+                    type:
+                      description: Type name (e.g., Tender Documents, Progress Claims)
                       type: string
                     updated_at:
                       format: date-time
@@ -2538,12 +2537,12 @@ paths:
             category:
               description: Category name
               type: string
-            section:
-              description: Section name
+            type:
+              description: Type name
               type: string
           required:
           - category
-          - section
+          - type
           type: object
       responses:
         201:
@@ -2559,7 +2558,7 @@ paths:
                     type: string
                   id:
                     type: string
-                  section:
+                  type:
                     type: string
                   updated_at:
                     format: date-time
@@ -2625,7 +2624,7 @@ paths:
                     type: string
                   id:
                     type: string
-                  section:
+                  type:
                     type: string
                   updated_at:
                     format: date-time
@@ -2659,8 +2658,8 @@ paths:
             category:
               description: Category name
               type: string
-            section:
-              description: Section name
+            type:
+              description: Type name
               type: string
           type: object
       responses:
@@ -2674,7 +2673,7 @@ paths:
                     type: string
                   id:
                     type: string
-                  section:
+                  type:
                     type: string
                   updated_at:
                     format: date-time
