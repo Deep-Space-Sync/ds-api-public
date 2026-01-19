@@ -25649,6 +25649,11 @@ paths:
                   cost_code:
                     description: Cost code
                     type: string
+                  duration_days:
+                    description: Task duration in days; if omitted, backend may derive
+                      from start/end dates
+                    format: float
+                    type: number
                   end_date:
                     description: Planned end date (triggers propagation)
                     format: date
