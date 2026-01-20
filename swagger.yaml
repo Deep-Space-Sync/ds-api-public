@@ -29093,6 +29093,107 @@ paths:
       summary: Update a notice
       tags:
       - Correspondence
+  /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/notices/{noticeId}/issue:
+    post:
+      description: Issue a draft notice, sending email notification to recipients.
+      operationId: v2_issueNotice
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Notice document ID
+        in: path
+        name: noticeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Notice issued successfully
+          schema:
+            properties:
+              assignee:
+                description: User ID of the person assigned to this notice
+                type: string
+              created_at:
+                format: date-time
+                type: string
+              created_by:
+                type: string
+              due_date:
+                format: date-time
+                type: string
+              id:
+                description: Firestore document ID
+                type: string
+              is_deleted:
+                type: boolean
+              issued_at:
+                format: date-time
+                type: string
+              issued_by:
+                type: string
+              linked_friendly_id:
+                type: string
+              linked_id:
+                type: string
+              list_index:
+                type: string
+              project_id:
+                type: integer
+              response_required:
+                type: boolean
+              status:
+                enum:
+                - draft
+                - issued
+                - acknowledged
+                - actioned
+                - closed
+                type: string
+              summary:
+                type: string
+              type:
+                enum:
+                - EOT
+                - VO
+                - RFI
+                - SI
+                - GC
+                - NOD
+                - CC
+                - CI
+                - CAN
+                - NOC
+                - NTS
+                type: string
+              updated_at:
+                format: date-time
+                type: string
+              updated_by:
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Notice not found
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Issue a notice
+      tags:
+      - Correspondence
   /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/threads:
     get:
       description: Get email threads for a project with cursor-based pagination.
