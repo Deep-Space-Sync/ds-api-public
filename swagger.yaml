@@ -12798,6 +12798,20 @@ paths:
       - in: query
         name: limit
         type: string
+      - collectionFormat: multi
+        description: Filter by user IDs in objects array (requires category=form_user)
+        in: query
+        items:
+          type: string
+        name: memberIds[]
+        type: array
+      - collectionFormat: multi
+        description: Filter by form IDs in objects array (requires category=form_user)
+        in: query
+        items:
+          type: string
+        name: formIds[]
+        type: array
       responses:
         200:
           description: Successfully retrieved data point links
