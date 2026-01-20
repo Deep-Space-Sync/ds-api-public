@@ -36,6 +36,268 @@ paths:
       summary: Get Addins
       tags:
       - Addins
+  /v2/api/v2/hz-notification-sender/process:
+    post:
+      description: 'Processes an email queue item. Triggered by Cloud Tasks. No authentication
+        required - Cloud Tasks is a trusted service. Routes to appropriate handler
+        based on type: - email: Regular template-based email - email_document: Email
+        with PDF attachment from document template - tender_document: Tender-specific
+        document processing
+
+        '
+      operationId: v2_processHzNotificationEmail
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            queue_id:
+              description: The email queue item ID to process
+              type: string
+            type:
+              default: email
+              description: 'Type of email processing: ''email'' for regular emails,
+                ''email_document'' for emails with PDF attachments, ''tender_document''
+                for tender-specific document processing
+
+                '
+              enum:
+              - email
+              - email_document
+              - tender_document
+              type: string
+          required:
+          - queue_id
+          type: object
+      responses:
+        200:
+          description: Email processed successfully
+          schema:
+            properties:
+              data:
+                additionalProperties: true
+                description: Processing result data
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - invalid queue_id or type
+        500:
+          description: Internal server error - processing failed
+      summary: Process Email Queue Item
+      tags:
+      - HzNotificationSenderV2
+  /v2/api/v2/hz-notification-variables:
+    get:
+      description: 'Returns the complete variable catalog with all available template
+        variables. This is a static catalog defined in code for type safety and API
+        stability. No authentication required - returns static catalog.
+
+        '
+      operationId: v2_getHzNotificationVariableCatalog
+      responses:
+        200:
+          description: Variable catalog retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    category:
+                      description: Category for grouping
+                      enum:
+                      - system
+                      - claim
+                      - contract
+                      - project
+                      - recipient
+                      type: string
+                    description:
+                      description: Description of what this group contains
+                      type: string
+                    id:
+                      description: Group ID
+                      type: string
+                    name:
+                      description: Display name for the group
+                      type: string
+                    variables:
+                      items:
+                        properties:
+                          category:
+                            enum:
+                            - system
+                            - claim
+                            - contract
+                            - project
+                            - recipient
+                            type: string
+                          data_type:
+                            enum:
+                            - string
+                            - number
+                            - date
+                            - datetime
+                            - boolean
+                            - currency
+                            type: string
+                          description:
+                            description: What this variable contains
+                            type: string
+                          example_value:
+                            description: Example value for preview
+                            type: string
+                          format_hint:
+                            description: Format hint for display
+                            type: string
+                          id:
+                            description: Variable ID (e.g., 'claim_id')
+                            type: string
+                          name:
+                            description: Display name (e.g., 'Claim ID')
+                            type: string
+                          source_field:
+                            description: Source entity field path
+                            type: string
+                        type: object
+                      type: array
+                  type: object
+                type: array
+              message:
+                type: string
+              version:
+                description: Catalog version for client caching
+                type: string
+            type: object
+        500:
+          description: Internal server error
+      summary: Get Variable Catalog
+      tags:
+      - HzNotificationSenderV2
+  /v2/api/v2/hz-notification-variables/{entity_type}:
+    get:
+      description: Returns variable groups relevant to a specific entity type.
+      operationId: v2_getHzNotificationVariablesForEntityType
+      parameters:
+      - description: Type of entity (e.g., 'head_contract_claim')
+        in: path
+        name: entity_type
+        required: true
+        type: string
+      responses:
+        200:
+          description: Variables for entity type retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    category:
+                      enum:
+                      - system
+                      - claim
+                      - contract
+                      - project
+                      - recipient
+                      type: string
+                    description:
+                      description: Description of what this group contains
+                      type: string
+                    id:
+                      description: Group ID
+                      type: string
+                    name:
+                      description: Display name for the group
+                      type: string
+                    variables:
+                      items:
+                        properties:
+                          category:
+                            type: string
+                          data_type:
+                            type: string
+                          description:
+                            type: string
+                          example_value:
+                            type: string
+                          format_hint:
+                            type: string
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          source_field:
+                            type: string
+                        type: object
+                      type: array
+                  type: object
+                type: array
+              message:
+                type: string
+              version:
+                description: Catalog version for client caching
+                type: string
+            type: object
+        500:
+          description: Internal server error
+      summary: Get Variables for Entity Type
+      tags:
+      - HzNotificationSenderV2
+  /v2/api/v2/workspaces/{workspace_id}/case-variables/{entity_type}/{entity_id}:
+    get:
+      description: 'Resolves and returns variable values for a specific entity. Fetches
+        the entity from Firestore and resolves all template variable values. Requires
+        workspace authentication.
+
+        '
+      operationId: v2_getHzNotificationCaseVariables
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Type of entity (e.g., 'head_contract_claim')
+        in: path
+        name: entity_type
+        required: true
+        type: string
+      - description: ID of the entity
+        in: path
+        name: entity_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Variables resolved successfully
+          schema:
+            properties:
+              data:
+                additionalProperties: true
+                description: Resolved variable values as key-value pairs
+                type: object
+              entity_id:
+                description: ID of the entity
+                type: string
+              entity_type:
+                description: Type of entity (e.g., head_contract_claim)
+                type: string
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - invalid entity type or ID
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get Resolved Case Variables
+      tags:
+      - HzNotificationSenderV2
   /v2/business-entities:
     get:
       description: Returns MySQL link ids and Firestore metadata blocks for the requested
