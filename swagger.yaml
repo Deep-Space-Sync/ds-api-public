@@ -178,7 +178,16 @@ paths:
       - HzNotificationSenderV2
   /v2/api/v2/hz-notification-variables/{entity_type}:
     get:
-      description: Returns variable groups relevant to a specific entity type.
+      description: 'Returns variable groups relevant to a specific entity type.
+
+        **Integration with Document Templates:** Document sections and templates have
+        a `case_entity_types` field that specifies which entity types are applicable.
+        When a user selects a template with `case_entity_types: ["head_contract_claim"]`,
+        the frontend should call this endpoint to get the available variables for
+        that entity type, enabling the user to insert variables into the template
+        content.
+
+        '
       operationId: v2_getHzNotificationVariablesForEntityType
       parameters:
       - description: Type of entity (e.g., 'head_contract_claim')
@@ -250,6 +259,12 @@ paths:
       description: 'Resolves and returns variable values for a specific entity. Fetches
         the entity from Firestore and resolves all template variable values. Requires
         workspace authentication.
+
+        **Integration with Document Templates:** Document sections and templates have
+        a `case_entity_types` field that specifies which entity types are applicable.
+        The backend uses this field to automatically resolve case variables when sending
+        document templates via email, without requiring explicit `{"entity_type":
+        "entity_id"}` mappings from the frontend.
 
         '
       operationId: v2_getHzNotificationCaseVariables
@@ -2762,6 +2777,12 @@ paths:
               data:
                 items:
                   properties:
+                    case_entity_types:
+                      description: Entity types that can provide variables for this
+                        section (e.g., ['head_contract_claim'])
+                      items:
+                        type: string
+                      type: array
                     category:
                       description: Category name (e.g., Preconstruction, Commercial)
                       type: string
@@ -2796,6 +2817,11 @@ paths:
         required: true
         schema:
           properties:
+            case_entity_types:
+              description: Entity types that can provide variables for this section
+              items:
+                type: string
+              type: array
             category:
               description: Category name
               type: string
@@ -2813,6 +2839,10 @@ paths:
             properties:
               data:
                 properties:
+                  case_entity_types:
+                    items:
+                      type: string
+                    type: array
                   category:
                     type: string
                   created_at:
@@ -2879,6 +2909,10 @@ paths:
             properties:
               data:
                 properties:
+                  case_entity_types:
+                    items:
+                      type: string
+                    type: array
                   category:
                     type: string
                   created_at:
@@ -2917,6 +2951,11 @@ paths:
         required: true
         schema:
           properties:
+            case_entity_types:
+              description: Entity types that can provide variables
+              items:
+                type: string
+              type: array
             category:
               description: Category name
               type: string
@@ -2931,6 +2970,10 @@ paths:
             properties:
               data:
                 properties:
+                  case_entity_types:
+                    items:
+                      type: string
+                    type: array
                   category:
                     type: string
                   id:
@@ -56426,6 +56469,12 @@ paths:
               data:
                 items:
                   properties:
+                    case_entity_types:
+                      description: Entity types that can provide variables for this
+                        template
+                      items:
+                        type: string
+                      type: array
                     category:
                       type: string
                     content:
@@ -56438,6 +56487,10 @@ paths:
                       type: string
                     id:
                       type: string
+                    required_fields:
+                      items:
+                        type: string
+                      type: array
                     status:
                       enum:
                       - Draft
@@ -56496,6 +56549,11 @@ paths:
         required: true
         schema:
           properties:
+            case_entity_types:
+              description: Entity types that can provide variables for this template
+              items:
+                type: string
+              type: array
             category:
               description: Category name
               type: string
@@ -56537,6 +56595,10 @@ paths:
             properties:
               data:
                 properties:
+                  case_entity_types:
+                    items:
+                      type: string
+                    type: array
                   category:
                     type: string
                   content:
@@ -56548,6 +56610,10 @@ paths:
                     type: string
                   id:
                     type: string
+                  required_fields:
+                    items:
+                      type: string
+                    type: array
                   status:
                     type: string
                   tags:
@@ -56631,6 +56697,10 @@ paths:
             properties:
               data:
                 properties:
+                  case_entity_types:
+                    items:
+                      type: string
+                    type: array
                   category:
                     type: string
                   content:
@@ -56642,6 +56712,10 @@ paths:
                     type: string
                   id:
                     type: string
+                  required_fields:
+                    items:
+                      type: string
+                    type: array
                   status:
                     type: string
                   tags:
@@ -56692,6 +56766,11 @@ paths:
         required: true
         schema:
           properties:
+            case_entity_types:
+              description: Entity types that can provide variables
+              items:
+                type: string
+              type: array
             category:
               description: Category name
               type: string
@@ -56726,12 +56805,20 @@ paths:
             properties:
               data:
                 properties:
+                  case_entity_types:
+                    items:
+                      type: string
+                    type: array
                   category:
                     type: string
                   content:
                     type: string
                   id:
                     type: string
+                  required_fields:
+                    items:
+                      type: string
+                    type: array
                   status:
                     type: string
                   tags:
