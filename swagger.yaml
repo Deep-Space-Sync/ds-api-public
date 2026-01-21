@@ -23881,6 +23881,20 @@ paths:
         name: project_type
         required: false
         type: string
+      - description: Filter by priority (High, Medium, Low)
+        enum:
+        - High
+        - Medium
+        - Low
+        in: query
+        name: priority
+        required: false
+        type: string
+      - description: Filter by opportunity source
+        in: query
+        name: opportunity_source
+        required: false
+        type: string
       - description: Minimum probability (inclusive)
         in: query
         maximum: 100
@@ -23957,35 +23971,106 @@ paths:
         schema:
           properties:
             assigned_estimator:
+              description: Estimator assigned to this opportunity (optional)
               type: string
             client_id:
+              description: Client identifier (optional)
               type: string
+            comments:
+              description: Array of comment objects (optional)
+              items:
+                properties:
+                  comment_text:
+                    type: string
+                  created_at:
+                    format: date-time
+                    type: string
+                  created_by:
+                    type: string
+                  created_by_name:
+                    type: string
+                  id:
+                    type: string
+                type: object
+              type: array
+            competitors:
+              description: Array of competitor objects (optional)
+              items:
+                properties:
+                  company_name:
+                    type: string
+                  id:
+                    type: string
+                type: object
+              type: array
+            contacts:
+              description: Array of contact objects (optional)
+              items:
+                properties:
+                  email:
+                    type: string
+                  id:
+                    type: string
+                  is_primary:
+                    type: boolean
+                  name:
+                    type: string
+                  role:
+                    type: string
+                type: object
+              type: array
             estimated_value_millions:
               default: 0
+              description: Estimated contract value in millions
               format: float
               type: number
+            expected_award_date:
+              description: Expected award/decision date in ISO 8601 format (optional)
+              format: date
+              type: string
+            opportunity_notes:
+              description: Long text notes about the opportunity (optional)
+              type: string
+            opportunity_source:
+              description: Source of the opportunity (optional)
+              type: string
+            priority:
+              description: Opportunity priority level (optional)
+              enum:
+              - High
+              - Medium
+              - Low
+              type: string
             probability:
               default: 50
+              description: Win probability percentage
               maximum: 100
               minimum: 0
               type: integer
             project_name:
+              description: Project name (REQUIRED)
               type: string
             project_type:
+              description: Type of project (optional)
               type: string
             status:
               default: Will Bid
               description: Opportunity status
+              enum:
+              - Identified
+              - Qualifying
+              - Will Bid
+              - Preparing
+              - Submitted
+              - Awarded
+              - Lost
               type: string
             submission_date:
-              description: Submission date (ISO 8601)
+              description: Submission date in ISO 8601 format (optional)
+              format: date
               type: string
           required:
           - project_name
-          - client_id
-          - project_type
-          - submission_date
-          - assigned_estimator
           type: object
       responses:
         201:
@@ -24097,6 +24182,67 @@ paths:
       security:
       - JWT_v2: []
       summary: Update opportunity
+      tags:
+      - Opportunities
+  /v2/workspaces/{workspaceId}/opportunities/{opportunityId}/comments:
+    post:
+      description: Add a comment to an existing opportunity (convenience endpoint)
+      operationId: v2_addOpportunityComment
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Opportunity unique identifier
+        in: path
+        name: opportunityId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            comment_text:
+              description: The comment text to add
+              type: string
+          required:
+          - comment_text
+          type: object
+      responses:
+        201:
+          description: Comment added successfully
+          schema:
+            properties:
+              comment_text:
+                description: Comment text
+                type: string
+              created_at:
+                description: Comment creation timestamp
+                format: date-time
+                type: string
+              created_by:
+                description: User ID who created the comment
+                type: string
+              created_by_name:
+                description: Name/email of comment creator
+                type: string
+              id:
+                description: Comment ID
+                type: string
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Opportunity not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Add comment to opportunity
       tags:
       - Opportunities
   /v2/workspaces/{workspaceId}/powerbi:
