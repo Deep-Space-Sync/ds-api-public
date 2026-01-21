@@ -24019,6 +24019,9 @@ paths:
                     type: string
                 type: object
               type: array
+            description:
+              description: Project description (synced with project_settings.project_description)
+              type: string
             estimated_value_millions:
               default: 0
               description: Estimated contract value in millions
@@ -51583,7 +51586,8 @@ paths:
                     format: date
                     type: string
                   project_description:
-                    description: Project description
+                    description: Project description (automatically synced with opportunity.description
+                      when linked by project_id)
                     type: string
                   project_estimated_finish_date:
                     description: Estimated project finish date
@@ -51683,6 +51687,10 @@ paths:
       description: 'Update project settings fields stored in Firestore only.
 
         These fields are NOT synced back to MySQL.
+
+
+        Note: project_description is automatically synced with opportunity.description
+        (when linked by project_id).
 
 
         General: project_name, project_identifier, project_description, current_stage,
@@ -51797,7 +51805,8 @@ paths:
               format: date
               type: string
             project_description:
-              description: Project description
+              description: Project description (automatically synced with opportunity.description
+                when linked by project_id)
               type: string
             project_group:
               description: Project group
