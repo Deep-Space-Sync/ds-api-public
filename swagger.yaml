@@ -36,6 +36,101 @@ paths:
       summary: Get Addins
       tags:
       - Addins
+  /v2/api/v1/portal/me/company:
+    get:
+      description: Get the global company associated with the authenticated user.
+      operationId: v2_portalApiMeCompany
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Company not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get current user's company
+      tags:
+      - PortalApi
+  /v2/api/v1/portal/me/employees:
+    get:
+      description: Get employees belonging to the authenticated user's global company.
+      operationId: v2_portalApiMeEmployees
+      parameters:
+      - default: 200
+        description: Maximum number of employees to return
+        in: query
+        maximum: 500
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - default: 0
+        description: Number of employees to skip
+        in: query
+        minimum: 0
+        name: offset
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Company not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get company employees
+      tags:
+      - PortalApi
+  /v2/api/v1/portal/workspaces/{workspaceId}/projects/{projectId}/rfis:
+    get:
+      description: Get paginated list of RFIs for a project, filtered to company-relevant
+        items.
+      operationId: v2_portalApiGetRfis
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get RFIs for a project
+      tags:
+      - PortalApi
   /v2/business-entities:
     get:
       description: Returns MySQL link ids and Firestore metadata blocks for the requested
@@ -2489,6 +2584,16 @@ paths:
       summary: Request vendor sharing
       tags:
       - Global Company Directory
+  /v2/health:
+    get:
+      description: Check if the Portal API service is healthy.
+      operationId: v2_portalApiHealth
+      responses:
+        200:
+          description: OK
+      summary: Health check
+      tags:
+      - PortalApi
   /v2/hz-document-sections:
     get:
       operationId: v2_listHzDocumentSections
