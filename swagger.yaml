@@ -275,6 +275,42 @@ paths:
       summary: Get badges for users in a global company
       tags:
       - Badges
+  /v2/coldstart-investigation:
+    get:
+      operationId: v2_coldstartRoot
+      responses:
+        200:
+          description: Health check response
+      summary: Health check
+      tags:
+      - Cold Start Investigation
+  /v2/coldstart-investigation/imports:
+    get:
+      operationId: v2_coldstartImports
+      responses:
+        200:
+          description: Plain text import analysis report
+      summary: Get all import times as plain text
+      tags:
+      - Cold Start Investigation
+  /v2/coldstart-investigation/imports/json:
+    get:
+      operationId: v2_coldstartImportsJson
+      responses:
+        200:
+          description: Full JSON with all tracked imports
+      summary: Get all import times as JSON
+      tags:
+      - Cold Start Investigation
+  /v2/coldstart-investigation/test:
+    get:
+      operationId: v2_coldstartTest
+      responses:
+        200:
+          description: Timing summary with slowest imports
+      summary: Test logging and get timing summary
+      tags:
+      - Cold Start Investigation
   /v2/data-sync/system-table/{reportName}:
     get:
       operationId: v2_syncSystemTableToGithub
