@@ -302,6 +302,24 @@ paths:
       summary: Get google.cloud.client import profile as JSON
       tags:
       - Cold Start Investigation
+  /v2/coldstart-investigation/correspondence-v2:
+    get:
+      operationId: v2_coldstartCorrV2Profile
+      responses:
+        200:
+          description: Import timing for correspondence_v2-like dependencies
+      summary: Simulate correspondence_v2 imports and show timing
+      tags:
+      - Cold Start Investigation
+  /v2/coldstart-investigation/correspondence-v2/json:
+    get:
+      operationId: v2_coldstartCorrV2ProfileJson
+      responses:
+        200:
+          description: Import timing as JSON
+      summary: Simulate correspondence_v2 imports as JSON
+      tags:
+      - Cold Start Investigation
   /v2/coldstart-investigation/imports:
     get:
       operationId: v2_coldstartImports
