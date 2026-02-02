@@ -11707,8 +11707,8 @@ paths:
         type: string
       - enum:
         - in_progress
-        - review
-        - new
+        - submitted
+        - cancelled
         in: query
         name: tender_status
         required: false
@@ -11892,8 +11892,8 @@ paths:
             tender_status:
               enum:
               - in_progress
-              - review
-              - new
+              - submitted
+              - cancelled
               type: string
             type:
               enum:
@@ -12154,8 +12154,8 @@ paths:
             tender_status:
               enum:
               - in_progress
-              - review
-              - new
+              - submitted
+              - cancelled
               type: string
             type:
               enum:
@@ -44486,8 +44486,8 @@ paths:
         type: string
       - enum:
         - in_progress
-        - review
-        - new
+        - submitted
+        - cancelled
         in: query
         name: tender_status
         required: false
@@ -44659,8 +44659,8 @@ paths:
             tender_status:
               enum:
               - in_progress
-              - review
-              - new
+              - submitted
+              - cancelled
               type: string
             type:
               enum:
@@ -44933,8 +44933,8 @@ paths:
             tender_status:
               enum:
               - in_progress
-              - review
-              - new
+              - submitted
+              - cancelled
               type: string
             type:
               enum:
