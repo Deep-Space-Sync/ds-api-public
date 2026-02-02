@@ -284,6 +284,24 @@ paths:
       summary: Health check
       tags:
       - Cold Start Investigation
+  /v2/coldstart-investigation/client-profile:
+    get:
+      operationId: v2_coldstartClientProfile
+      responses:
+        200:
+          description: Detailed import timing from inside google.cloud.client
+      summary: Get google.cloud.client import profile as plain text
+      tags:
+      - Cold Start Investigation
+  /v2/coldstart-investigation/client-profile/json:
+    get:
+      operationId: v2_coldstartClientProfileJson
+      responses:
+        200:
+          description: Detailed import timing as JSON
+      summary: Get google.cloud.client import profile as JSON
+      tags:
+      - Cold Start Investigation
   /v2/coldstart-investigation/imports:
     get:
       operationId: v2_coldstartImports
