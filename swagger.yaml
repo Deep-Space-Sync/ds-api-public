@@ -338,6 +338,24 @@ paths:
       summary: Get all import times as JSON
       tags:
       - Cold Start Investigation
+  /v2/coldstart-investigation/init-clients:
+    get:
+      operationId: v2_coldstartInitClients
+      responses:
+        200:
+          description: Client initialization timing
+      summary: Initialize clients and measure connection costs
+      tags:
+      - Cold Start Investigation
+  /v2/coldstart-investigation/init-clients/json:
+    get:
+      operationId: v2_coldstartInitClientsJson
+      responses:
+        200:
+          description: Client initialization timing as JSON
+      summary: Initialize clients as JSON
+      tags:
+      - Cold Start Investigation
   /v2/coldstart-investigation/test:
     get:
       operationId: v2_coldstartTest
