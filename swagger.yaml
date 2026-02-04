@@ -4461,6 +4461,43 @@ paths:
       summary: Get RFIs for a project
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/rfis/{rfiId}:
+    get:
+      description: Get full RFI submission details with metadata, filtered by company
+        access.
+      operationId: v2_portalApiGetRfiDetail
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: RFI submission identifier
+        in: path
+        name: rfiId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user's company has no access to this RFI
+        404:
+          description: RFI not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get RFI detail
+      tags:
+      - PortalApi
   /v2/portals/subcontractor-progress-claims:
     get:
       description: 'Return progress claims for a subcontractor within the authenticated
