@@ -9580,6 +9580,261 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/cost-types:
+    get:
+      operationId: v2_getCostTypes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Get specific cost type by ID
+        in: query
+        name: costTypeId
+        type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Search query for name field
+        in: query
+        name: q
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Cost type not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Cost Types
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchCostType
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: ID of cost type to update
+        in: query
+        name: costTypeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            included_in:
+              description: Array of cost code IDs
+              items:
+                type: string
+              type: array
+            name:
+              description: Name of cost type
+              type: string
+          type: object
+      responses:
+        200:
+          description: Cost type updated successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Cost type not found
+        409:
+          description: Duplicate name
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Cost Type
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postCostType
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            included_in:
+              description: Array of cost code IDs
+              items:
+                type: string
+              type: array
+            name:
+              description: Name of cost type
+              type: string
+          required:
+          - name
+          type: object
+      responses:
+        201:
+          description: Cost type created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        409:
+          description: Duplicate name
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Cost Type
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/cost-types/{costTypeId}/cost-codes:
+    delete:
+      operationId: v2_deleteCostTypeCostCodes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: costTypeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_code_nums:
+              description: Array of cost code IDs to remove
+              items:
+                type: string
+              type: array
+          required:
+          - cost_code_nums
+          type: object
+      responses:
+        200:
+          description: Cost codes removed successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+              not_found:
+                items:
+                  type: string
+                type: array
+              removed:
+                items:
+                  type: string
+                type: array
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Cost type not found or no codes removed
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove Cost Codes from Cost Type
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postCostTypeCostCode
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: costTypeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_code_num:
+              description: Cost code ID to add
+              type: string
+          required:
+          - cost_code_num
+          type: object
+      responses:
+        200:
+          description: Cost code added successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Cost type or cost code not found
+        409:
+          description: Cost code already in array
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add Cost Code to Cost Type
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/delay-notices:
     get:
       operationId: v2_getDelayNotices
