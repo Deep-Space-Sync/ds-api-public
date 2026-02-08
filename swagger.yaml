@@ -4418,6 +4418,512 @@ paths:
       summary: Get company employees
       tags:
       - PortalApi
+  /v2/portal/public/esign/signing-sessions/{token}/submissions:
+    post:
+      description: Submit signature and generate signed PDF for a public signing token.
+      operationId: v2_portalApiPublicEsignSubmitSignature
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        403:
+          description: Forbidden
+        500:
+          description: Internal Server Error
+      summary: Submit e-sign signature publicly
+      tags:
+      - PortalApi
+  /v2/portal/public/esign/signing-sessions/{token}/view:
+    get:
+      description: Validate signing token and return public signing context.
+      operationId: v2_portalApiPublicEsignSigningView
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      - in: query
+        name: password
+        required: false
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        403:
+          description: Forbidden
+        500:
+          description: Internal Server Error
+      summary: Get public e-sign signing view
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/documents:
+    post:
+      description: Create e-sign source document metadata record in Firestore.
+      operationId: v2_portalApiCreateEsignDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create e-sign document metadata
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/documents/upload-sessions:
+    post:
+      description: Create direct-upload signed URL for source document upload.
+      operationId: v2_portalApiCreateEsignUploadSession
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create e-sign upload session
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/documents/{documentId}:
+    get:
+      description: Get e-sign source document metadata by ID.
+      operationId: v2_portalApiGetEsignDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: documentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Document not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get e-sign document
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/documents/{documentId}/preview-url:
+    get:
+      description: Get short-lived signed URL for e-sign source document preview.
+      operationId: v2_portalApiGetEsignDocumentPreviewUrl
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: documentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Document not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get e-sign document preview URL
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/documents/{documentId}/reconcile:
+    post:
+      description: Reconcile source object existence and refresh document status.
+      operationId: v2_portalApiReconcileEsignDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: documentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Document not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Reconcile e-sign document status
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/documents/{documentId}/retry:
+    post:
+      description: Retry document source validation after upload or processing failure.
+      operationId: v2_portalApiRetryEsignDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: documentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Document not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Retry e-sign document validation
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/documents/{documentId}/upload-complete:
+    post:
+      description: Confirm source object exists and mark document status ready.
+      operationId: v2_portalApiCompleteEsignUpload
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: documentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Document not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Mark e-sign upload completed
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/signing-requests:
+    get:
+      description: List signing requests by workspace with optional status filter.
+      operationId: v2_portalApiListEsignSigningRequests
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: status
+        required: false
+        type: string
+      - default: 20
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List e-sign signing requests
+      tags:
+      - PortalApi
+    post:
+      description: Create signing request with sign field templates.
+      operationId: v2_portalApiCreateEsignSigningRequest
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create e-sign signing request
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/signing-requests/{requestId}:
+    get:
+      description: Get signing request details by request ID.
+      operationId: v2_portalApiGetEsignSigningRequest
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: requestId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Signing request not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get e-sign signing request
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/signing-requests/{requestId}/audit-events:
+    get:
+      description: List e-sign audit events for internal timeline.
+      operationId: v2_portalApiListEsignAuditEvents
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: requestId
+        required: true
+        type: string
+      - default: 100
+        in: query
+        maximum: 200
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Signing request not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List e-sign audit events
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/signing-requests/{requestId}/finalize:
+    post:
+      description: Finalize signing request and ensure result status completed.
+      operationId: v2_portalApiFinalizeEsignSigningRequest
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: requestId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Finalize e-sign signing request
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/signing-requests/{requestId}/result:
+    get:
+      description: Get signing result metadata by signing request ID.
+      operationId: v2_portalApiGetEsignSigningResult
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: requestId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Signing result not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get e-sign signing result metadata
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/signing-requests/{requestId}/result/download-url:
+    get:
+      description: Get short-lived signed URL for signed PDF download.
+      operationId: v2_portalApiGetEsignResultDownloadUrl
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: requestId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Signing result not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get e-sign signed PDF download URL
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/signing-requests/{requestId}/sessions:
+    post:
+      description: Create signing session and return one-time signing token.
+      operationId: v2_portalApiCreateEsignSigningSession
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: requestId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create e-sign signing session
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/signing-sessions/{sessionId}/mark-used:
+    post:
+      description: Mark an active signing session as used.
+      operationId: v2_portalApiMarkEsignSigningSessionUsed
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: sessionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Signing session not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Mark e-sign signing session used
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/signing-sessions/{sessionId}/revoke:
+    post:
+      description: Revoke an active signing session.
+      operationId: v2_portalApiRevokeEsignSigningSession
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: sessionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Signing session not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Revoke e-sign signing session
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/rfis:
     get:
       description: Get paginated list of RFIs for a project, filtered to company-relevant
