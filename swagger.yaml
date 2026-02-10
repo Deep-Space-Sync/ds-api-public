@@ -59069,6 +59069,203 @@ paths:
       summary: Update an existing sub-form link
       tags:
       - HzSubFormLinks
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-accounts:
+    get:
+      operationId: v2_listInvoiceEmailAccounts
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Provider statuses retrieved
+          schema:
+            properties:
+              google:
+                type: object
+              microsoft:
+                type: object
+            type: object
+        403:
+          description: Unauthorized - workspace access required
+      security:
+      - JWT_v2: []
+      summary: List all email provider connection statuses
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-accounts/auth-url:
+    get:
+      operationId: v2_getInvoiceEmailAuthUrl
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - enum:
+        - google
+        - microsoft
+        in: query
+        name: provider
+        required: true
+        type: string
+      - in: query
+        name: redirect_uri
+        required: true
+        type: string
+      responses:
+        200:
+          description: Authorization URL generated
+          schema:
+            properties:
+              auth_url:
+                type: string
+              provider:
+                type: string
+              state:
+                type: string
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Unauthorized - workspace access required
+      security:
+      - JWT_v2: []
+      summary: Get OAuth authorization URL for email provider
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-accounts/callback:
+    post:
+      operationId: v2_invoiceEmailCallback
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              type: string
+            provider:
+              enum:
+              - google
+              - microsoft
+              type: string
+            redirect_uri:
+              type: string
+            state:
+              type: string
+            user_id:
+              type: string
+          required:
+          - provider
+          - code
+          - redirect_uri
+          - user_id
+          type: object
+      responses:
+        200:
+          description: Email account connected
+        400:
+          description: Bad request
+        403:
+          description: Unauthorized - workspace access required
+      security:
+      - JWT_v2: []
+      summary: OAuth callback handler
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-accounts/{provider}:
+    delete:
+      operationId: v2_disconnectInvoiceEmailProvider
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - enum:
+        - google
+        - microsoft
+        in: path
+        name: provider
+        required: true
+        type: string
+      - in: body
+        name: body
+        schema:
+          properties:
+            user_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Provider disconnected
+        403:
+          description: Unauthorized - workspace access required
+      security:
+      - JWT_v2: []
+      summary: Disconnect email provider
+      tags:
+      - InvoiceReconciliation
+    get:
+      operationId: v2_getInvoiceEmailProvider
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - enum:
+        - google
+        - microsoft
+        in: path
+        name: provider
+        required: true
+        type: string
+      responses:
+        200:
+          description: Provider status retrieved
+        403:
+          description: Unauthorized - workspace access required
+      security:
+      - JWT_v2: []
+      summary: Get specific provider status
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-accounts/{provider}/primary:
+    patch:
+      operationId: v2_setInvoiceEmailPrimary
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - enum:
+        - google
+        - microsoft
+        in: path
+        name: provider
+        required: true
+        type: string
+      - in: body
+        name: body
+        schema:
+          properties:
+            user_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Provider set as primary
+        403:
+          description: Unauthorized - workspace access required
+      security:
+      - JWT_v2: []
+      summary: Set email provider as primary
+      tags:
+      - InvoiceReconciliation
 schemes:
 - https
 securityDefinitions:
