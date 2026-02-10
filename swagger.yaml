@@ -9798,6 +9798,19 @@ paths:
         in: query
         name: treeStructure
         type: string
+      - description: Include archived cost codes in results (default false)
+        in: query
+        name: includeArchived
+        type: boolean
+      - description: Filter by lifecycle status. Use "all" to include all statuses.
+        enum:
+        - active
+        - archived
+        - locked
+        - all
+        in: query
+        name: lifecycleStatus
+        type: string
       responses:
         200:
           description: Successful response
@@ -9814,6 +9827,23 @@ paths:
                       description: Name of cost code
                     cost_code_num:
                       description: Internal identifier for cost code
+                    lifecycle_changed_at:
+                      description: Timestamp of last lifecycle change
+                      format: date-time
+                      type: string
+                    lifecycle_changed_by:
+                      description: User ID who made the last lifecycle change
+                      type: string
+                    lifecycle_reason:
+                      description: Reason for the last lifecycle change
+                      type: string
+                    lifecycle_status:
+                      description: Lifecycle state of the cost code
+                      enum:
+                      - active
+                      - archived
+                      - locked
+                      type: string
                     parent_cost_code_num:
                       description: ID of parent cost code
                     project_id:
@@ -10195,6 +10225,326 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/cost-codes/{costCodeId}/archive:
+    post:
+      description: 'Archive a cost code to retire it from active use while preserving
+        history.
+
+        Archived cost codes cannot be selected for new budgets, POs, claims, or invoices,
+
+        but remain visible in historical data and reports.
+
+        '
+      operationId: v2_archiveCostCode
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: costCodeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              description: Optional email of person archiving (for audit trail)
+              type: string
+            name:
+              description: Optional name of person archiving (for audit trail)
+              type: string
+            reason:
+              description: Reason for archiving (required for audit trail)
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Cost code archived successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - missing reason or invalid state
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - cost code is locked
+        404:
+          description: Cost code not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Archive Cost Code
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isAdmin
+  /v2/workspaces/{workspaceId}/cost/cost-codes/{costCodeId}/history:
+    get:
+      description: 'Get the complete lifecycle change history for a cost code.
+
+        Returns all archive, restore, lock, and unlock actions in reverse chronological
+        order.
+
+
+        IMPORTANT: This is an IMMUTABLE audit trail.
+
+        - Records can only be added, never modified or deleted
+
+        - No DELETE or PATCH endpoints exist for this resource
+
+        - Ensures finance-grade audit integrity
+
+        '
+      operationId: v2_getCostCodeLifecycleHistory
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: costCodeId
+        required: true
+        type: string
+      - description: Maximum number of history entries to return (default 10000)
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Lifecycle history fetched successfully
+          schema:
+            properties:
+              count:
+                type: integer
+              data:
+                items:
+                  properties:
+                    action:
+                      description: Type of lifecycle action
+                      enum:
+                      - archive
+                      - restore
+                      - lock
+                      - unlock
+                      type: string
+                    changed_by_email:
+                      type: string
+                    changed_by_name:
+                      type: string
+                    changed_by_user_id:
+                      type: string
+                    id:
+                      description: History entry ID
+                      type: string
+                    new_status:
+                      description: Status after the change
+                      type: string
+                    previous_status:
+                      description: Status before the change
+                      type: string
+                    reason:
+                      type: string
+                    timestamp:
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - missing cost code ID
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Cost Code Lifecycle History
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/cost-codes/{costCodeId}/lock:
+    post:
+      description: 'Lock a cost code to protect GL integrity (e.g., for month-end
+        close).
+
+        Locked cost codes cannot be edited. Requires Finance role.
+
+        '
+      operationId: v2_lockCostCode
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: costCodeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              description: Optional email of person locking (for audit trail)
+              type: string
+            name:
+              description: Optional name of person locking (for audit trail)
+              type: string
+            reason:
+              description: Reason for locking (required for audit trail)
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Cost code locked successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - missing reason or invalid state
+        401:
+          description: Unauthorized
+        404:
+          description: Cost code not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Lock Cost Code
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isFinance
+  /v2/workspaces/{workspaceId}/cost/cost-codes/{costCodeId}/restore:
+    post:
+      description: Restore an archived cost code back to active status.
+      operationId: v2_restoreCostCode
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: costCodeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            email:
+              description: Optional email of person restoring (for audit trail)
+              type: string
+            name:
+              description: Optional name of person restoring (for audit trail)
+              type: string
+          type: object
+      responses:
+        200:
+          description: Cost code restored successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - cost code is not archived
+        401:
+          description: Unauthorized
+        404:
+          description: Cost code not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Restore Archived Cost Code
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isAdmin
+  /v2/workspaces/{workspaceId}/cost/cost-codes/{costCodeId}/unlock:
+    post:
+      description: 'Unlock a locked cost code. Requires Finance role and reason capture
+        for audit.
+
+        '
+      operationId: v2_unlockCostCode
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: costCodeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              description: Optional email of person unlocking (for audit trail)
+              type: string
+            name:
+              description: Optional name of person unlocking (for audit trail)
+              type: string
+            reason:
+              description: Reason for unlocking (required for audit trail)
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Cost code unlocked successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request - missing reason or cost code is not locked
+        401:
+          description: Unauthorized
+        404:
+          description: Cost code not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Unlock Cost Code
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isFinance
   /v2/workspaces/{workspaceId}/cost/cost-types:
     get:
       operationId: v2_getCostTypes
