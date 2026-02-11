@@ -7597,6 +7597,66 @@ paths:
       summary: Get workspace-level CDE documents by series IDs
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/cde/v2/rename-by-series-id:
+    post:
+      description: 'Rename all versions of a document at workspace level.
+
+        Updates display_file_name for all versions in the series.
+
+        '
+      operationId: v2_renameBySeriesIdWorkspaceLevel
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_series_id:
+              description: UUID of the document series to rename
+              type: string
+            new_display_name:
+              description: New display name for the document
+              type: string
+          required:
+          - document_series_id
+          - new_display_name
+          type: object
+      responses:
+        200:
+          description: Successfully renamed documents
+          schema:
+            properties:
+              document_series_id:
+                description: UUID of the renamed document series
+                type: string
+              new_name:
+                description: New display name
+                type: string
+              old_name:
+                description: Previous display name
+                type: string
+              renamed_count:
+                description: Number of document versions renamed
+                type: integer
+              success:
+                type: boolean
+            type: object
+        400:
+          description: Bad request - empty display name
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Rename document by series ID (workspace-level)
+      tags:
+      - CDE Documents
   /v2/workspaces/{workspaceId}/cde/{cdeId}:
     delete:
       description: Invalidates a CDE entry for failed uploads
@@ -29471,6 +29531,71 @@ paths:
       security:
       - JWT_v2: []
       summary: Get registered CDE documents with folder paths
+      tags:
+      - CDE Documents
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/rename-by-series-id:
+    post:
+      description: 'Rename all versions of a document by its document_series_id.
+
+        Updates display_file_name for all versions in the series.
+
+        '
+      operationId: v2_renameBySeriesId
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_series_id:
+              description: UUID of the document series to rename
+              type: string
+            new_display_name:
+              description: New display name for the document
+              type: string
+          required:
+          - document_series_id
+          - new_display_name
+          type: object
+      responses:
+        200:
+          description: Successfully renamed documents
+          schema:
+            properties:
+              document_series_id:
+                description: UUID of the renamed document series
+                type: string
+              new_name:
+                description: New display name
+                type: string
+              old_name:
+                description: Previous display name
+                type: string
+              renamed_count:
+                description: Number of document versions renamed
+                type: integer
+              success:
+                type: boolean
+            type: object
+        400:
+          description: Bad request - empty display name
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Rename document by series ID
       tags:
       - CDE Documents
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/{cdeId}:
