@@ -7440,6 +7440,54 @@ paths:
       summary: Get signed URLs for workspace-level CDE upload
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/cde/v2/archive-by-series-id:
+    post:
+      description: 'Archive all versions of a document at workspace level.
+
+        Sets cde_status to ''archived'' for all versions in the series.
+
+        '
+      operationId: v2_archiveBySeriesIdWorkspaceLevel
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_series_id:
+              description: UUID of the document series to archive
+              type: string
+          required:
+          - document_series_id
+          type: object
+      responses:
+        200:
+          description: Successfully archived documents
+          schema:
+            properties:
+              archived_count:
+                description: Number of document versions archived
+                type: integer
+              document_series_id:
+                description: UUID of the archived document series
+                type: string
+              success:
+                type: boolean
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Archive document by series ID (workspace-level)
+      tags:
+      - CDE Documents
   /v2/workspaces/{workspaceId}/cde/v2/by-series:
     get:
       description: 'Fetches CDE documents by a list of document_series_ids at workspace
@@ -29105,6 +29153,59 @@ paths:
       security:
       - JWT_v2: []
       summary: Get signed URLs for CDE upload
+      tags:
+      - CDE Documents
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/archive-by-series-id:
+    post:
+      description: 'Archive all versions of a document by its document_series_id.
+
+        Sets cde_status to ''archived'' for all versions in the series.
+
+        '
+      operationId: v2_archiveBySeriesId
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_series_id:
+              description: UUID of the document series to archive
+              type: string
+          required:
+          - document_series_id
+          type: object
+      responses:
+        200:
+          description: Successfully archived documents
+          schema:
+            properties:
+              archived_count:
+                description: Number of document versions archived
+                type: integer
+              document_series_id:
+                description: UUID of the archived document series
+                type: string
+              success:
+                type: boolean
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Archive document by series ID
       tags:
       - CDE Documents
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/by-series:
