@@ -40479,9 +40479,11 @@ paths:
             status:
               description: Status of the cost order
             work_end_date:
-              description: End date of the work
+              description: End date of the work (Unix timestamp in seconds)
+              type: integer
             work_start_date:
-              description: Start date of the work
+              description: Start date of the work (Unix timestamp in seconds)
+              type: integer
           required:
           - cost_order_name
           - amount
@@ -40527,9 +40529,11 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work
+                description: End date of the work (Unix timestamp in seconds)
+                type: integer
               work_start_date:
-                description: Start date of the work
+                description: Start date of the work (Unix timestamp in seconds)
+                type: integer
             type: object
         401:
           description: Unauthorized
@@ -40597,9 +40601,11 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work
+                description: End date of the work (Unix timestamp in seconds)
+                type: integer
               work_start_date:
-                description: Start date of the work
+                description: Start date of the work (Unix timestamp in seconds)
+                type: integer
             type: object
         401:
           description: Unauthorized
@@ -40651,9 +40657,11 @@ paths:
             status:
               description: Status of the cost order
             work_end_date:
-              description: End date of the work
+              description: End date of the work (Unix timestamp in seconds)
+              type: integer
             work_start_date:
-              description: Start date of the work
+              description: Start date of the work (Unix timestamp in seconds)
+              type: integer
           type: object
       responses:
         201:
@@ -40696,9 +40704,11 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work
+                description: End date of the work (Unix timestamp in seconds)
+                type: integer
               work_start_date:
-                description: Start date of the work
+                description: Start date of the work (Unix timestamp in seconds)
+                type: integer
             type: object
         401:
           description: Unauthorized
@@ -40808,9 +40818,11 @@ paths:
             status:
               description: Status of the cost order
             work_end_date:
-              description: End date of the work
+              description: End date of the work (Unix timestamp in seconds)
+              type: integer
             work_start_date:
-              description: Start date of the work
+              description: Start date of the work (Unix timestamp in seconds)
+              type: integer
           required:
           - cost_order_name
           - amount
@@ -40856,9 +40868,11 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work
+                description: End date of the work (Unix timestamp in seconds)
+                type: integer
               work_start_date:
-                description: Start date of the work
+                description: Start date of the work (Unix timestamp in seconds)
+                type: integer
             type: object
         401:
           description: Unauthorized
@@ -40926,9 +40940,11 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work
+                description: End date of the work (Unix timestamp in seconds)
+                type: integer
               work_start_date:
-                description: Start date of the work
+                description: Start date of the work (Unix timestamp in seconds)
+                type: integer
             type: object
         401:
           description: Unauthorized
@@ -40980,9 +40996,11 @@ paths:
             status:
               description: Status of the cost order
             work_end_date:
-              description: End date of the work
+              description: End date of the work (Unix timestamp in seconds)
+              type: integer
             work_start_date:
-              description: Start date of the work
+              description: Start date of the work (Unix timestamp in seconds)
+              type: integer
           type: object
       responses:
         201:
@@ -41025,9 +41043,11 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work
+                description: End date of the work (Unix timestamp in seconds)
+                type: integer
               work_start_date:
-                description: Start date of the work
+                description: Start date of the work (Unix timestamp in seconds)
+                type: integer
             type: object
         401:
           description: Unauthorized
@@ -42485,8 +42505,9 @@ paths:
                         cost_order_num:
                           type: integer
                         created_at:
-                          format: date-time
-                          type: string
+                          description: Record creation timestamp (Unix timestamp in
+                            seconds)
+                          type: integer
                         created_by_user_email:
                           type: string
                         currency:
@@ -42513,6 +42534,12 @@ paths:
                           type: string
                         status:
                           type: string
+                        work_end_date:
+                          description: End date of the work (Unix timestamp in seconds)
+                          type: integer
+                        work_start_date:
+                          description: Start date of the work (Unix timestamp in seconds)
+                          type: integer
                       type: object
                     type: array
                   statistics:
@@ -47649,7 +47676,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/download/{ds_data_type}:
     get:
-      operationId: v2_getProjectDownload
+      operationId: v2_downloadProjectData
       parameters:
       - in: path
         name: workspaceId
@@ -47665,16 +47692,18 @@ paths:
         type: string
       responses:
         200:
-          description: Successful response
+          description: File downloaded successfully
         401:
           description: Unauthorized
+        404:
+          description: Data not found
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Download a file from the project
+      summary: Download project data
       tags:
-      - Download
+      - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/files:
     get:
       operationId: v2_v2_getFiles
