@@ -54670,6 +54670,447 @@ paths:
       summary: Track document download
       tags:
       - Transmittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals/{transmittal_doc_id}:
+    delete:
+      description: Soft delete a draft transmittal. Rejects if transmittal is issued.
+      operationId: v2_deleteTransmittal
+      parameters:
+      - in: path
+        name: transmittal_doc_id
+        required: true
+        type: string
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        204:
+          description: Successful Response
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a draft transmittal
+      tags:
+      - transmittals
+    get:
+      description: Get a single transmittal by its ID.
+      operationId: v2_getTransmittal
+      parameters:
+      - in: path
+        name: transmittal_doc_id
+        required: true
+        type: string
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            description: Transmittal for API responses.
+            properties:
+              cover_message:
+                description: Optional cover letter / notes included in the transmittal
+                type: string
+              created_at:
+                description: Timestamp when record was created
+                format: date-time
+                type: string
+              created_by:
+                description: Kinde ID of user who created the record
+                type: string
+              deleted_at:
+                description: Timestamp when record was soft-deleted
+                format: date-time
+                type: string
+              deleted_by:
+                description: Kinde ID of user who deleted the record
+                type: string
+              documents:
+                description: Registered documents included in this transmittal
+                items:
+                  description: 'Denormalized reference to a registered document included
+                    in a transmittal.
+
+
+                    Document version metadata is immutable (a cde_id always maps to
+                    the same
+
+                    version/revision), so denormalization here carries no staleness
+                    risk.'
+                  properties:
+                    cde_id:
+                      description: Specific version ID transmitted
+                      type: integer
+                    discipline:
+                      description: Discipline from register metadata
+                      type: string
+                    doc_number:
+                      description: Document number from register metadata
+                      type: string
+                    document_series_id:
+                      description: Document series (groups all versions)
+                      type: string
+                    revision:
+                      description: Revision string (e.g. 'A', 'B', 'C1')
+                      type: string
+                    title:
+                      description: Document title from register metadata
+                      type: string
+                    version:
+                      description: Version number at time of transmittal
+                      type: integer
+                  required:
+                  - document_series_id
+                  - cde_id
+                  - version
+                  - revision
+                  - doc_number
+                  - title
+                  type: object
+                type: array
+              id:
+                description: Firestore document ID
+                type: string
+              is_deleted:
+                default: false
+                description: Soft delete flag
+                type: boolean
+              issued_at:
+                description: Timestamp when transmittal was issued
+                format: date-time
+                type: string
+              issued_by:
+                description: Kinde ID of user who issued the transmittal
+                type: string
+              project_id:
+                description: Document Register is project-scoped
+                type: integer
+              recipients:
+                description: Companies receiving download access and their notification
+                  users
+                items:
+                  description: 'A company receiving document access, with optional
+                    users for email notification.
+
+
+                    Access is granted at company level. Notify users only determines
+                    who gets
+
+                    the email - all users in the company can download.'
+                  properties:
+                    company_id:
+                      description: Company receiving download entitlement (global
+                        company id)
+                      type: integer
+                    notify_user_ids:
+                      description: Kinde IDs of users to email-notify (subset of company
+                        members)
+                      items:
+                        type: string
+                      type: array
+                  required:
+                  - company_id
+                  type: object
+                type: array
+              status:
+                enum:
+                - draft
+                - issued
+                type: string
+              transmittal_id:
+                description: Project-scoped human-readable identifier (e.g. 'TR-2026-001').
+                  Auto-generated by backend on creation.
+                type: string
+              updated_at:
+                description: Timestamp when record was last updated
+                format: date-time
+                type: string
+              updated_by:
+                description: Kinde ID of user who last updated the record
+                type: string
+              workspace_id:
+                type: string
+            required:
+            - created_at
+            - created_by
+            - updated_at
+            - updated_by
+            - transmittal_id
+            - workspace_id
+            - project_id
+            - id
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a transmittal
+      tags:
+      - transmittals
+    patch:
+      description: Partially update a draft transmittal. Only provided fields will
+        be updated.
+      operationId: v2_updateTransmittal
+      parameters:
+      - in: path
+        name: transmittal_doc_id
+        required: true
+        type: string
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: 'Input for updating a draft transmittal. All fields optional.
+
+
+            Only valid while status is ''draft''. Raises error if transmittal is issued.'
+          properties:
+            cover_message:
+              type: string
+            documents:
+              items:
+                description: 'Denormalized reference to a registered document included
+                  in a transmittal.
+
+
+                  Document version metadata is immutable (a cde_id always maps to
+                  the same
+
+                  version/revision), so denormalization here carries no staleness
+                  risk.'
+                properties:
+                  cde_id:
+                    description: Specific version ID transmitted
+                    type: integer
+                  discipline:
+                    description: Discipline from register metadata
+                    type: string
+                  doc_number:
+                    description: Document number from register metadata
+                    type: string
+                  document_series_id:
+                    description: Document series (groups all versions)
+                    type: string
+                  revision:
+                    description: Revision string (e.g. 'A', 'B', 'C1')
+                    type: string
+                  title:
+                    description: Document title from register metadata
+                    type: string
+                  version:
+                    description: Version number at time of transmittal
+                    type: integer
+                required:
+                - document_series_id
+                - cde_id
+                - version
+                - revision
+                - doc_number
+                - title
+                type: object
+              type: array
+            recipients:
+              items:
+                description: 'A company receiving document access, with optional users
+                  for email notification.
+
+
+                  Access is granted at company level. Notify users only determines
+                  who gets
+
+                  the email - all users in the company can download.'
+                properties:
+                  company_id:
+                    description: Company receiving download entitlement (global company
+                      id)
+                    type: integer
+                  notify_user_ids:
+                    description: Kinde IDs of users to email-notify (subset of company
+                      members)
+                    items:
+                      type: string
+                    type: array
+                required:
+                - company_id
+                type: object
+              type: array
+          type: object
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            description: Transmittal for API responses.
+            properties:
+              cover_message:
+                description: Optional cover letter / notes included in the transmittal
+                type: string
+              created_at:
+                description: Timestamp when record was created
+                format: date-time
+                type: string
+              created_by:
+                description: Kinde ID of user who created the record
+                type: string
+              deleted_at:
+                description: Timestamp when record was soft-deleted
+                format: date-time
+                type: string
+              deleted_by:
+                description: Kinde ID of user who deleted the record
+                type: string
+              documents:
+                description: Registered documents included in this transmittal
+                items:
+                  description: 'Denormalized reference to a registered document included
+                    in a transmittal.
+
+
+                    Document version metadata is immutable (a cde_id always maps to
+                    the same
+
+                    version/revision), so denormalization here carries no staleness
+                    risk.'
+                  properties:
+                    cde_id:
+                      description: Specific version ID transmitted
+                      type: integer
+                    discipline:
+                      description: Discipline from register metadata
+                      type: string
+                    doc_number:
+                      description: Document number from register metadata
+                      type: string
+                    document_series_id:
+                      description: Document series (groups all versions)
+                      type: string
+                    revision:
+                      description: Revision string (e.g. 'A', 'B', 'C1')
+                      type: string
+                    title:
+                      description: Document title from register metadata
+                      type: string
+                    version:
+                      description: Version number at time of transmittal
+                      type: integer
+                  required:
+                  - document_series_id
+                  - cde_id
+                  - version
+                  - revision
+                  - doc_number
+                  - title
+                  type: object
+                type: array
+              id:
+                description: Firestore document ID
+                type: string
+              is_deleted:
+                default: false
+                description: Soft delete flag
+                type: boolean
+              issued_at:
+                description: Timestamp when transmittal was issued
+                format: date-time
+                type: string
+              issued_by:
+                description: Kinde ID of user who issued the transmittal
+                type: string
+              project_id:
+                description: Document Register is project-scoped
+                type: integer
+              recipients:
+                description: Companies receiving download access and their notification
+                  users
+                items:
+                  description: 'A company receiving document access, with optional
+                    users for email notification.
+
+
+                    Access is granted at company level. Notify users only determines
+                    who gets
+
+                    the email - all users in the company can download.'
+                  properties:
+                    company_id:
+                      description: Company receiving download entitlement (global
+                        company id)
+                      type: integer
+                    notify_user_ids:
+                      description: Kinde IDs of users to email-notify (subset of company
+                        members)
+                      items:
+                        type: string
+                      type: array
+                  required:
+                  - company_id
+                  type: object
+                type: array
+              status:
+                enum:
+                - draft
+                - issued
+                type: string
+              transmittal_id:
+                description: Project-scoped human-readable identifier (e.g. 'TR-2026-001').
+                  Auto-generated by backend on creation.
+                type: string
+              updated_at:
+                description: Timestamp when record was last updated
+                format: date-time
+                type: string
+              updated_by:
+                description: Kinde ID of user who last updated the record
+                type: string
+              workspace_id:
+                type: string
+            required:
+            - created_at
+            - created_by
+            - updated_at
+            - updated_by
+            - transmittal_id
+            - workspace_id
+            - project_id
+            - id
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a draft transmittal
+      tags:
+      - transmittals
   /v2/workspaces/{workspaceId}/projects/{projectId}/users:
     get:
       description: Returns all users and user details for a project
