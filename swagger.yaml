@@ -386,6 +386,162 @@ paths:
       tags:
       - Power BI
       x-min-permissions: admin
+  /v2/email-inbox/sync-worker:
+    post:
+      description: Background worker that performs actual email syncing from Gmail/Outlook
+      operationId: v2_invoiceEmailSyncWorker
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            sync_type:
+              enum:
+              - incremental
+              - full
+              type: string
+            workspace_id:
+              type: string
+          required:
+          - workspace_id
+          type: object
+      responses:
+        200:
+          description: Sync completed
+          schema:
+            properties:
+              results:
+                type: object
+              status:
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        500:
+          description: Sync failed
+      security:
+      - OIDC: []
+      summary: Email sync worker (Cloud Tasks)
+      tags:
+      - InvoiceReconciliation
+  /v2/email-inbox/trigger-batch-ai-process-all:
+    post:
+      description: Process unprocessed emails across ALL workspaces with AI. Called
+        by Cloud Scheduler for system-level batch processing. Hard limit of 200 emails
+        per run to control costs.
+      operationId: v2_triggerInvoiceBatchAiProcessAll
+      parameters:
+      - default: 50
+        description: Maximum emails to process (hard cap at 200)
+        in: query
+        maximum: 200
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - default: 8
+        description: Number of concurrent workers for batch AI processing
+        in: query
+        maximum: 20
+        minimum: 1
+        name: max_workers
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Batch AI processing completed
+          schema:
+            properties:
+              by_workspace:
+                additionalProperties:
+                  properties:
+                    emails:
+                      items:
+                        description: Email IDs
+                        type: string
+                      type: array
+                    failed:
+                      type: integer
+                    successful:
+                      type: integer
+                  type: object
+                description: Per-workspace breakdown of results
+                type: object
+              message:
+                example: Processed 50 emails across 5 workspaces
+                type: string
+              parameters:
+                properties:
+                  limit:
+                    type: integer
+                  max_workers:
+                    type: integer
+                type: object
+              status:
+                example: success
+                type: string
+              totals:
+                properties:
+                  failed:
+                    description: Failed emails
+                    type: integer
+                  successful:
+                    description: Successfully processed emails
+                    type: integer
+                  total_emails:
+                    description: Total emails processed
+                    type: integer
+                  workspaces_affected:
+                    description: Number of workspaces with processed emails
+                    type: integer
+                type: object
+            type: object
+        500:
+          description: Internal server error
+          schema:
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+      security:
+      - OIDC: []
+      summary: Trigger global batch AI processing for all workspaces (Cloud Scheduler)
+      tags:
+      - InvoiceReconciliation
+  /v2/email-inbox/trigger-sync-all:
+    post:
+      description: Called by Cloud Scheduler every 15 minutes to sync all workspaces
+        with connected email accounts
+      operationId: v2_triggerInvoiceEmailSyncAll
+      responses:
+        200:
+          description: Sync tasks dispatched
+          schema:
+            properties:
+              dispatched_count:
+                type: integer
+              dispatched_tasks:
+                items:
+                  type: object
+                type: array
+              skipped_count:
+                type: integer
+              status:
+                example: success
+                type: string
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - OIDC: []
+      summary: Trigger sync for all workspaces (Cloud Scheduler)
+      tags:
+      - InvoiceReconciliation
   /v2/files:
     get:
       operationId: v2_v2_getGlobalFiles
@@ -60264,6 +60420,533 @@ paths:
       security:
       - JWT_v2: []
       summary: Set email provider as primary
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox:
+    get:
+      description: Returns paginated list of synced invoice emails with filtering
+      operationId: v2_listInvoiceEmails
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        name: page
+        required: false
+        type: integer
+      - default: 50
+        description: Items per page
+        in: query
+        maximum: 100
+        name: limit
+        required: false
+        type: integer
+      - description: Filter by sender email address
+        in: query
+        name: from_address
+        required: false
+        type: string
+      - description: Filter by subject (contains)
+        in: query
+        name: subject
+        required: false
+        type: string
+      - description: Filter emails received on or after this date (ISO-8601)
+        format: date-time
+        in: query
+        name: start_date
+        required: false
+        type: string
+      - description: Filter emails received on or before this date (ISO-8601)
+        format: date-time
+        in: query
+        name: end_date
+        required: false
+        type: string
+      - default: true
+        description: Include full attachment details (filename, size, signed URLs)
+          instead of just attachment IDs
+        in: query
+        name: include_attachments
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: Email list retrieved
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    attachment_count:
+                      type: integer
+                    attachment_ids:
+                      items:
+                        type: string
+                      type: array
+                    attachments:
+                      description: Full attachment details (only present if include_attachments=true)
+                      items:
+                        properties:
+                          content_type:
+                            type: string
+                          file_extension:
+                            type: string
+                          file_size:
+                            type: integer
+                          filename:
+                            type: string
+                          id:
+                            type: string
+                          is_inline:
+                            type: boolean
+                          signed_url:
+                            type: string
+                          signed_url_expires_at:
+                            format: date-time
+                            type: string
+                          upload_status:
+                            type: string
+                        type: object
+                      type: array
+                    email_id:
+                      type: string
+                    from_address:
+                      type: string
+                    from_name:
+                      type: string
+                    has_attachments:
+                      type: boolean
+                    id:
+                      type: string
+                    provider:
+                      enum:
+                      - google
+                      - microsoft
+                      type: string
+                    received_datetime:
+                      format: date-time
+                      type: string
+                    subject:
+                      type: string
+                  type: object
+                type: array
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                  total_pages:
+                    type: integer
+                type: object
+              status:
+                example: success
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Invalid parameters
+        403:
+          description: Unauthorized - workspace access required
+        500:
+          description: Failed to list emails
+      security:
+      - JWT_v2: []
+      summary: List synced emails for workspace
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/batch-ai-process:
+    post:
+      description: Process all unprocessed emails in the workspace with AI to extract
+        invoice data. Uses Vertex AI for parallel processing.
+      operationId: v2_batchAiProcessInvoiceEmails
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - default: 8
+        description: Number of concurrent workers for batch AI processing
+        in: query
+        maximum: 20
+        minimum: 1
+        name: max_workers
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Batch processing completed
+          schema:
+            properties:
+              failed:
+                description: Failed emails
+                type: integer
+              message:
+                example: Processed 25 unprocessed emails
+                type: string
+              status:
+                example: success
+                type: string
+              successful:
+                description: Successfully processed emails
+                type: integer
+              total:
+                description: Total emails processed
+                type: integer
+            type: object
+        403:
+          description: Unauthorized - workspace access required
+        500:
+          description: Batch processing failed
+      security:
+      - JWT_v2: []
+      summary: Batch AI process all unprocessed emails in workspace
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/debug:
+    get:
+      description: Returns raw Firestore query results for debugging purposes
+      operationId: v2_debugInvoiceEmailFirestore
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Debug information retrieved
+          schema:
+            properties:
+              debug_info:
+                type: object
+              email_account:
+                type: object
+              status:
+                type: string
+              sync_state:
+                type: object
+              workspace_id:
+                type: string
+            type: object
+        403:
+          description: Unauthorized - workspace access required
+        500:
+          description: Debug operation failed
+      security:
+      - JWT_v2: []
+      summary: Debug endpoint - Check Firestore data (development only)
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/fetch-direct:
+    get:
+      description: Synchronously fetches emails from Gmail/Outlook, stores to Firestore,
+        and returns data immediately. Ideal for local testing, user-initiated refreshes,
+        and debugging without Cloud Tasks infrastructure.
+      operationId: v2_fetchInvoiceEmailsDirect
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - default: all
+        description: Which provider(s) to fetch from
+        enum:
+        - google
+        - microsoft
+        - all
+        in: query
+        name: provider
+        required: false
+        type: string
+      - default: incremental
+        description: Incremental uses cursors, full re-fetches all emails since connection
+        enum:
+        - incremental
+        - full
+        in: query
+        name: sync_type
+        required: false
+        type: string
+      - default: 50
+        description: Max emails to fetch per provider
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Emails fetched and stored successfully
+          schema:
+            properties:
+              execution_time_ms:
+                description: Total execution time in milliseconds
+                type: integer
+              results:
+                description: Per-provider results
+                properties:
+                  google:
+                    properties:
+                      attachments_count:
+                        type: integer
+                      emails:
+                        description: Array of fetched emails with metadata
+                        items:
+                          type: object
+                        type: array
+                      new_emails_count:
+                        type: integer
+                      provider:
+                        type: string
+                      skipped_duplicates:
+                        type: integer
+                      status:
+                        type: string
+                      stored_count:
+                        type: integer
+                      total_fetched:
+                        type: integer
+                    type: object
+                  microsoft:
+                    type: object
+                type: object
+              status:
+                description: Overall operation status
+                enum:
+                - success
+                - partial_success
+                - error
+                type: string
+              summary:
+                properties:
+                  providers_failed:
+                    type: integer
+                  providers_succeeded:
+                    type: integer
+                  total_attachments:
+                    type: integer
+                  total_fetched:
+                    type: integer
+                  total_stored:
+                    type: integer
+                type: object
+              sync_batch_id:
+                description: UUID for this sync batch
+                type: string
+              sync_type:
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Invalid parameters or no accounts connected
+          schema:
+            properties:
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+        403:
+          description: Unauthorized - workspace access required
+        500:
+          description: Fetch failed
+          schema:
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Fetch emails synchronously without Cloud Tasks
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/sync:
+    get:
+      description: Dispatches a Cloud Task to sync emails from connected Gmail/Outlook
+        accounts
+      operationId: v2_triggerInvoiceEmailSync
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - default: incremental
+        description: Type of sync (incremental uses delta/history, full re-syncs all)
+        enum:
+        - incremental
+        - full
+        in: query
+        name: sync_type
+        required: false
+        type: string
+      responses:
+        200:
+          description: Sync task queued successfully
+          schema:
+            properties:
+              message:
+                example: Email sync initiated
+                type: string
+              status:
+                example: queued
+                type: string
+              sync_type:
+                type: string
+              task_id:
+                description: Cloud Tasks task ID
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        400:
+          description: Invalid sync_type parameter
+        403:
+          description: Unauthorized - workspace access required
+        500:
+          description: Failed to initiate sync
+      security:
+      - JWT_v2: []
+      summary: Trigger manual email sync for workspace
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/sync-status:
+    get:
+      description: Returns sync state including last sync time, status, and email
+        counts
+      operationId: v2_getInvoiceEmailSyncStatus
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Sync status retrieved
+          schema:
+            properties:
+              has_synced:
+                type: boolean
+              providers:
+                properties:
+                  google:
+                    properties:
+                      emails_synced_total:
+                        type: integer
+                      has_synced:
+                        type: boolean
+                      is_enabled:
+                        type: boolean
+                      last_sync_at:
+                        format: date-time
+                        type: string
+                      last_sync_status:
+                        type: string
+                    type: object
+                  microsoft:
+                    type: object
+                type: object
+              status:
+                example: success
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        403:
+          description: Unauthorized - workspace access required
+        500:
+          description: Failed to get sync status
+      security:
+      - JWT_v2: []
+      summary: Get email sync status for workspace
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/ai-process:
+    post:
+      description: Process a single email with AI (Vertex AI) to extract invoice information
+        including invoice number, date, vendor, amounts, and line items.
+      operationId: v2_aiProcessInvoiceEmail
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Email document ID
+        in: path
+        name: email_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: AI processing completed
+          schema:
+            properties:
+              data:
+                description: Extracted invoice data
+                properties:
+                  amount:
+                    type: number
+                  confidence_score:
+                    maximum: 1
+                    minimum: 0
+                    type: number
+                  currency:
+                    type: string
+                  due_date:
+                    format: date
+                    type: string
+                  invoice_date:
+                    format: date
+                    type: string
+                  invoice_number:
+                    type: string
+                  line_items:
+                    items:
+                      type: object
+                    type: array
+                  payment_terms:
+                    type: string
+                  processing_notes:
+                    type: string
+                  tax_amount:
+                    type: number
+                  vendor_abn:
+                    type: string
+                  vendor_name:
+                    type: string
+                type: object
+              status:
+                example: success
+                type: string
+            type: object
+        403:
+          description: Unauthorized - workspace access required
+        404:
+          description: Email not found
+        500:
+          description: AI processing failed
+      security:
+      - JWT_v2: []
+      summary: AI process single email to extract invoice data
       tags:
       - InvoiceReconciliation
 schemes:
