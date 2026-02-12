@@ -9172,6 +9172,24 @@ paths:
                     forecast_line_item_id:
                       description: Associated forecast line item ID
                       type: integer
+                    lifecycle_changed_at:
+                      description: When the lifecycle status was last changed
+                      format: date-time
+                      type: string
+                    lifecycle_changed_by:
+                      description: User ID who last changed the lifecycle status
+                      type: string
+                    lifecycle_reason:
+                      description: Reason for the last lifecycle change
+                      type: string
+                    lifecycle_status:
+                      description: Lifecycle status of the budget category (defaults
+                        to 'active')
+                      enum:
+                      - active
+                      - archived
+                      - locked
+                      type: string
                     parent_cost_budget_category_id:
                       description: Parent category ID for hierarchical structure
                       type: integer
@@ -9284,6 +9302,13 @@ paths:
                   forecast_line_item_id:
                     description: Associated forecast line item ID
                     type: integer
+                  lifecycle_status:
+                    description: Lifecycle status (defaults to 'active' for new records)
+                    enum:
+                    - active
+                    - archived
+                    - locked
+                    type: string
                   parent_cost_budget_category_id:
                     description: Parent category ID for hierarchical structure
                     type: integer
@@ -9374,6 +9399,23 @@ paths:
                   forecast_line_item_id:
                     description: Associated forecast line item ID
                     type: integer
+                  lifecycle_changed_at:
+                    description: When the lifecycle status was last changed
+                    format: date-time
+                    type: string
+                  lifecycle_changed_by:
+                    description: User ID who last changed the lifecycle status
+                    type: string
+                  lifecycle_reason:
+                    description: Reason for the last lifecycle change
+                    type: string
+                  lifecycle_status:
+                    description: Lifecycle status of the budget category
+                    enum:
+                    - active
+                    - archived
+                    - locked
+                    type: string
                   parent_cost_budget_category_id:
                     description: Parent category ID for hierarchical structure
                     type: integer
@@ -9487,6 +9529,13 @@ paths:
                   forecast_line_item_id:
                     description: Associated forecast line item ID
                     type: integer
+                  lifecycle_status:
+                    description: Lifecycle status of the budget category
+                    enum:
+                    - active
+                    - archived
+                    - locked
+                    type: string
                   parent_cost_budget_category_id:
                     description: Parent category ID for hierarchical structure
                     type: integer
@@ -9530,6 +9579,14 @@ paths:
             type: object
         401:
           description: Unauthorized
+        403:
+          description: Forbidden - Cannot edit locked or archived budget category
+          schema:
+            properties:
+              message:
+                description: Error message explaining why the edit was blocked
+                type: string
+            type: object
         404:
           description: Budget category not found
         500:
@@ -9541,6 +9598,432 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/budget-categories/{budgetCategoryId}/archive:
+    post:
+      description: 'Archive a budget category to retire it from active use while preserving
+        history.
+
+        Archived budget categories:
+
+        - Cannot be selected for new cost codes or budgets
+
+        - Remain visible in historical data and reports
+
+        - Become read-only (cannot be edited)
+
+        Requires Admin or Finance permissions.
+
+        '
+      operationId: v2_archiveBudgetCategory
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Budget category ID (UUID format)
+        in: path
+        name: budgetCategoryId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              description: Email of user performing action (optional, overrides JWT)
+              type: string
+            name:
+              description: Name of user performing action (optional, overrides JWT)
+              type: string
+            reason:
+              description: Reason for archiving (required for audit trail)
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Budget category archived successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  cost_budget_category_id:
+                    description: Budget category ID
+                    type: string
+                  lifecycle_changed_at:
+                    description: When the status changed
+                    format: date-time
+                    type: string
+                  lifecycle_changed_by:
+                    description: User ID who changed the status
+                    type: string
+                  lifecycle_reason:
+                    description: Reason for the change
+                    type: string
+                  lifecycle_status:
+                    description: New lifecycle status
+                    enum:
+                    - archived
+                    type: string
+                type: object
+              message:
+                description: Success message
+                type: string
+            type: object
+        400:
+          description: Bad Request - Already archived, missing reason, or locked
+        401:
+          description: Unauthorized
+        404:
+          description: Budget category not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Archive Budget Category
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isAdmin
+  /v2/workspaces/{workspaceId}/cost/budget-categories/{budgetCategoryId}/history:
+    get:
+      description: 'Get the immutable audit trail of lifecycle changes for a budget
+        category.
+
+        Returns all archive, restore, lock, and unlock events in reverse chronological
+        order.
+
+        This is a READ-ONLY endpoint - history records cannot be modified or deleted.
+
+        '
+      operationId: v2_getBudgetCategoryLifecycleHistory
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Budget category ID (UUID format)
+        in: path
+        name: budgetCategoryId
+        required: true
+        type: string
+      - default: 10000
+        description: Maximum number of history records to return
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Lifecycle history fetched successfully
+          schema:
+            properties:
+              count:
+                description: Number of history records returned
+                type: integer
+              data:
+                items:
+                  properties:
+                    action:
+                      description: Lifecycle action performed
+                      enum:
+                      - archive
+                      - restore
+                      - lock
+                      - unlock
+                      type: string
+                    budget_category_id:
+                      description: Budget category ID
+                      type: string
+                    changed_by_email:
+                      description: Email of user who performed the action
+                      type: string
+                    changed_by_name:
+                      description: Name of user who performed the action
+                      type: string
+                    changed_by_user_id:
+                      description: User ID who performed the action
+                      type: string
+                    id:
+                      description: History record ID
+                      type: string
+                    new_status:
+                      description: Status after the action
+                      enum:
+                      - active
+                      - archived
+                      - locked
+                      type: string
+                    previous_status:
+                      description: Status before the action
+                      enum:
+                      - active
+                      - archived
+                      - locked
+                      type: string
+                    reason:
+                      description: Reason provided for the action
+                      type: string
+                    timestamp:
+                      description: When the action was performed
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              message:
+                description: Success message
+                type: string
+            type: object
+        400:
+          description: Bad Request - Missing budget category ID
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Budget Category Lifecycle History
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/budget-categories/{budgetCategoryId}/lock:
+    post:
+      description: 'Lock a budget category to protect GL integrity.
+
+        Locked budget categories:
+
+        - Cannot be edited (name, identifier, GL mapping)
+
+        - Used for month-end close protection
+
+        - Requires Finance role to unlock
+
+        Requires Finance permissions.
+
+        '
+      operationId: v2_lockBudgetCategory
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Budget category ID (UUID format)
+        in: path
+        name: budgetCategoryId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              description: Email of user performing action (optional)
+              type: string
+            name:
+              description: Name of user performing action (optional)
+              type: string
+            reason:
+              description: Reason for locking (required for audit trail)
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Budget category locked successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  cost_budget_category_id:
+                    description: Budget category ID
+                    type: string
+                  lifecycle_changed_at:
+                    description: When the status changed
+                    format: date-time
+                    type: string
+                  lifecycle_reason:
+                    description: Reason for locking
+                    type: string
+                  lifecycle_status:
+                    description: New lifecycle status
+                    enum:
+                    - locked
+                    type: string
+                type: object
+              message:
+                description: Success message
+                type: string
+            type: object
+        400:
+          description: Bad Request - Already locked, missing reason, or archived
+        401:
+          description: Unauthorized
+        404:
+          description: Budget category not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Lock Budget Category
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isFinance
+  /v2/workspaces/{workspaceId}/cost/budget-categories/{budgetCategoryId}/restore:
+    post:
+      description: 'Restore an archived budget category back to active status.
+
+        Only archived budget categories can be restored.
+
+        Requires Admin or Finance permissions.
+
+        '
+      operationId: v2_restoreBudgetCategory
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Budget category ID (UUID format)
+        in: path
+        name: budgetCategoryId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            email:
+              description: Email of user performing action (optional)
+              type: string
+            name:
+              description: Name of user performing action (optional)
+              type: string
+          type: object
+      responses:
+        200:
+          description: Budget category restored successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  cost_budget_category_id:
+                    description: Budget category ID
+                    type: string
+                  lifecycle_changed_at:
+                    description: When the status changed
+                    format: date-time
+                    type: string
+                  lifecycle_status:
+                    description: New lifecycle status
+                    enum:
+                    - active
+                    type: string
+                type: object
+              message:
+                description: Success message
+                type: string
+            type: object
+        400:
+          description: Bad Request - Not archived (cannot restore)
+        401:
+          description: Unauthorized
+        404:
+          description: Budget category not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Restore Budget Category
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isAdmin
+  /v2/workspaces/{workspaceId}/cost/budget-categories/{budgetCategoryId}/unlock:
+    post:
+      description: 'Unlock a locked budget category to allow editing again.
+
+        Only locked budget categories can be unlocked.
+
+        Requires Finance permissions.
+
+        '
+      operationId: v2_unlockBudgetCategory
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Budget category ID (UUID format)
+        in: path
+        name: budgetCategoryId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              description: Email of user performing action (optional)
+              type: string
+            name:
+              description: Name of user performing action (optional)
+              type: string
+            reason:
+              description: Reason for unlocking (required for audit trail)
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Budget category unlocked successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  cost_budget_category_id:
+                    description: Budget category ID
+                    type: string
+                  lifecycle_changed_at:
+                    description: When the status changed
+                    format: date-time
+                    type: string
+                  lifecycle_reason:
+                    description: Reason for unlocking
+                    type: string
+                  lifecycle_status:
+                    description: New lifecycle status
+                    enum:
+                    - active
+                    type: string
+                type: object
+              message:
+                description: Success message
+                type: string
+            type: object
+        400:
+          description: Bad Request - Not locked (cannot unlock) or missing reason
+        401:
+          description: Unauthorized
+        404:
+          description: Budget category not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Unlock Budget Category
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isFinance
   /v2/workspaces/{workspaceId}/cost/clarifications:
     get:
       operationId: v2_getClarifications
