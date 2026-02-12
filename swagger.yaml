@@ -54829,7 +54829,7 @@ paths:
   /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals/{transmittal_doc_id}:
     delete:
       description: Soft delete a draft transmittal. Rejects if transmittal is issued.
-      operationId: v2_deleteTransmittal
+      operationId: v2_deleteTransmittalV2
       parameters:
       - in: path
         name: transmittal_doc_id
@@ -54859,7 +54859,7 @@ paths:
       - transmittals
     get:
       description: Get a single transmittal by its ID.
-      operationId: v2_getTransmittal
+      operationId: v2_getTransmittalV2
       parameters:
       - in: path
         name: transmittal_doc_id
@@ -55025,7 +55025,7 @@ paths:
     patch:
       description: Partially update a draft transmittal. Only provided fields will
         be updated.
-      operationId: v2_updateTransmittal
+      operationId: v2_updateTransmittalV2
       parameters:
       - in: path
         name: transmittal_doc_id
