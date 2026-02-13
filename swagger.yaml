@@ -41404,6 +41404,11 @@ paths:
               description: Name of the cost order
             currency:
               description: Currency of the cost order
+            order_date:
+              description: Purchase order date (YYYY-MM-DD). If not provided, created_at
+                will be used.
+              format: date
+              type: string
             receiving_company_id:
               description: Internal identifier for the receiving company
             remaining_amount:
@@ -41415,11 +41420,13 @@ paths:
             status:
               description: Status of the cost order
             work_end_date:
-              description: End date of the work (Unix timestamp in seconds)
-              type: integer
+              description: Delivery/End date of the work (YYYY-MM-DD)
+              format: date
+              type: string
             work_start_date:
-              description: Start date of the work (Unix timestamp in seconds)
-              type: integer
+              description: Start date of the work (YYYY-MM-DD)
+              format: date
+              type: string
           required:
           - cost_order_name
           - amount
@@ -41447,6 +41454,11 @@ paths:
                 description: Date the cost order was created
               issuing_company_id:
                 description: Internal identifier for the issuing company
+              order_date:
+                description: Purchase order date (YYYY-MM-DD). If not provided, created_at
+                  will be used.
+                format: date
+                type: string
               order_identifier:
                 description: Auto-generated order identifier (e.g., ORD-0001)
               purchase_order_number:
@@ -41465,11 +41477,13 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Delivery/End date of the work (YYYY-MM-DD)
+                format: date
+                type: string
               work_start_date:
-                description: Start date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Start date of the work (YYYY-MM-DD)
+                format: date
+                type: string
             type: object
         401:
           description: Unauthorized
@@ -41519,6 +41533,11 @@ paths:
                 description: Date the cost order was created
               issuing_company_id:
                 description: Internal identifier for the issuing company
+              order_date:
+                description: Purchase order date (YYYY-MM-DD). If not provided, created_at
+                  will be used.
+                format: date
+                type: string
               order_identifier:
                 description: Auto-generated order identifier (e.g., ORD-0001)
               purchase_order_number:
@@ -41537,11 +41556,13 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Delivery/End date of the work (YYYY-MM-DD)
+                format: date
+                type: string
               work_start_date:
-                description: Start date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Start date of the work (YYYY-MM-DD)
+                format: date
+                type: string
             type: object
         401:
           description: Unauthorized
@@ -41582,6 +41603,11 @@ paths:
               description: Name of the cost order
             currency:
               description: Currency of the cost order
+            order_date:
+              description: Purchase order date (YYYY-MM-DD). If not provided, created_at
+                will be used.
+              format: date
+              type: string
             receiving_company_id:
               description: Internal identifier for the receiving company
             remaining_amount:
@@ -41593,11 +41619,13 @@ paths:
             status:
               description: Status of the cost order
             work_end_date:
-              description: End date of the work (Unix timestamp in seconds)
-              type: integer
+              description: Delivery/End date of the work (YYYY-MM-DD)
+              format: date
+              type: string
             work_start_date:
-              description: Start date of the work (Unix timestamp in seconds)
-              type: integer
+              description: Start date of the work (YYYY-MM-DD)
+              format: date
+              type: string
           type: object
       responses:
         201:
@@ -41622,6 +41650,11 @@ paths:
                 description: Date the cost order was created
               issuing_company_id:
                 description: Internal identifier for the issuing company
+              order_date:
+                description: Purchase order date (YYYY-MM-DD). If not provided, created_at
+                  will be used.
+                format: date
+                type: string
               order_identifier:
                 description: Auto-generated order identifier (e.g., ORD-0001)
               purchase_order_number:
@@ -41640,11 +41673,13 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Delivery/End date of the work (YYYY-MM-DD)
+                format: date
+                type: string
               work_start_date:
-                description: Start date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Start date of the work (YYYY-MM-DD)
+                format: date
+                type: string
             type: object
         401:
           description: Unauthorized
@@ -41743,6 +41778,11 @@ paths:
               description: Name of the cost order
             currency:
               description: Currency of the cost order
+            order_date:
+              description: Purchase order date (YYYY-MM-DD). If not provided, created_at
+                will be used.
+              format: date
+              type: string
             receiving_company_id:
               description: Internal identifier for the receiving company
             remaining_amount:
@@ -41754,11 +41794,13 @@ paths:
             status:
               description: Status of the cost order
             work_end_date:
-              description: End date of the work (Unix timestamp in seconds)
-              type: integer
+              description: Delivery/End date of the work (YYYY-MM-DD)
+              format: date
+              type: string
             work_start_date:
-              description: Start date of the work (Unix timestamp in seconds)
-              type: integer
+              description: Start date of the work (YYYY-MM-DD)
+              format: date
+              type: string
           required:
           - cost_order_name
           - amount
@@ -41786,6 +41828,11 @@ paths:
                 description: Date the cost order was created
               issuing_company_id:
                 description: Internal identifier for the issuing company
+              order_date:
+                description: Purchase order date (YYYY-MM-DD). If not provided, created_at
+                  will be used.
+                format: date
+                type: string
               order_identifier:
                 description: Auto-generated order identifier (e.g., ORD-0001)
               purchase_order_number:
@@ -41804,11 +41851,13 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Delivery/End date of the work (YYYY-MM-DD)
+                format: date
+                type: string
               work_start_date:
-                description: Start date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Start date of the work (YYYY-MM-DD)
+                format: date
+                type: string
             type: object
         401:
           description: Unauthorized
@@ -41858,6 +41907,11 @@ paths:
                 description: Date the cost order was created
               issuing_company_id:
                 description: Internal identifier for the issuing company
+              order_date:
+                description: Purchase order date (YYYY-MM-DD). If not provided, created_at
+                  will be used.
+                format: date
+                type: string
               order_identifier:
                 description: Auto-generated order identifier (e.g., ORD-0001)
               purchase_order_number:
@@ -41876,11 +41930,13 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Delivery/End date of the work (YYYY-MM-DD)
+                format: date
+                type: string
               work_start_date:
-                description: Start date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Start date of the work (YYYY-MM-DD)
+                format: date
+                type: string
             type: object
         401:
           description: Unauthorized
@@ -41921,6 +41977,11 @@ paths:
               description: Name of the cost order
             currency:
               description: Currency of the cost order
+            order_date:
+              description: Purchase order date (YYYY-MM-DD). If not provided, created_at
+                will be used.
+              format: date
+              type: string
             receiving_company_id:
               description: Internal identifier for the receiving company
             remaining_amount:
@@ -41932,11 +41993,13 @@ paths:
             status:
               description: Status of the cost order
             work_end_date:
-              description: End date of the work (Unix timestamp in seconds)
-              type: integer
+              description: Delivery/End date of the work (YYYY-MM-DD)
+              format: date
+              type: string
             work_start_date:
-              description: Start date of the work (Unix timestamp in seconds)
-              type: integer
+              description: Start date of the work (YYYY-MM-DD)
+              format: date
+              type: string
           type: object
       responses:
         201:
@@ -41961,6 +42024,11 @@ paths:
                 description: Date the cost order was created
               issuing_company_id:
                 description: Internal identifier for the issuing company
+              order_date:
+                description: Purchase order date (YYYY-MM-DD). If not provided, created_at
+                  will be used.
+                format: date
+                type: string
               order_identifier:
                 description: Auto-generated order identifier (e.g., ORD-0001)
               purchase_order_number:
@@ -41979,11 +42047,13 @@ paths:
               status:
                 description: Status of the cost order
               work_end_date:
-                description: End date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Delivery/End date of the work (YYYY-MM-DD)
+                format: date
+                type: string
               work_start_date:
-                description: Start date of the work (Unix timestamp in seconds)
-                type: integer
+                description: Start date of the work (YYYY-MM-DD)
+                format: date
+                type: string
             type: object
         401:
           description: Unauthorized
