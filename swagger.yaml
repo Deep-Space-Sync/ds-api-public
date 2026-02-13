@@ -5080,6 +5080,269 @@ paths:
       summary: Revoke e-sign signing session
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/action-items:
+    get:
+      description: Get paginated list of action items for a project.
+      operationId: v2_portalApiGetActionItems
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 50
+        description: Items per page
+        in: query
+        maximum: 200
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      - description: Filter by action item status
+        in: query
+        name: status
+        required: false
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List action items for a project
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/action-items/{itemId}:
+    get:
+      description: Get full action item details by ID.
+      operationId: v2_portalApiGetActionItemDetail
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Action item identifier
+        in: path
+        name: itemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Action item not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get action item detail
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/action-items/{itemId}/status:
+    patch:
+      description: Update the status of an action item.
+      operationId: v2_portalApiUpdateActionItemStatus
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Action item identifier
+        in: path
+        name: itemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Action item not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update action item status
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/photos:
+    get:
+      description: Get paginated list of photos for a project.
+      operationId: v2_portalApiGetPhotos
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get photos for a project
+      tags:
+      - PortalApi
+    post:
+      description: Accepts multipart/form-data with a photo file and optional metadata.
+      operationId: v2_portalApiUploadPhoto
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upload a photo
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/photos/{photoId}:
+    delete:
+      description: Delete a photo by ID.
+      operationId: v2_portalApiDeletePhoto
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Photo identifier
+        in: path
+        name: photoId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user does not have permission to delete this photo
+        404:
+          description: Photo not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a photo
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/planning/schedule:
+    get:
+      description: Get paginated project schedule entries.
+      operationId: v2_portalApiGetSchedule
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 50
+        description: Items per page
+        in: query
+        maximum: 200
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get project schedule
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/rfis:
     get:
       description: Get paginated list of RFIs for a project, filtered to company-relevant
@@ -5158,6 +5421,515 @@ paths:
       security:
       - JWT_v2: []
       summary: Get RFI detail
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/site-instructions:
+    get:
+      description: Get paginated list of Site Instructions for a project.
+      operationId: v2_portalApiGetSiteInstructions
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Site Instructions for a project
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/site-instructions/{instructionId}:
+    get:
+      description: Get full Site Instruction details by ID.
+      operationId: v2_portalApiGetSiteInstructionDetail
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Site Instruction identifier
+        in: path
+        name: instructionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user's company has no access to this Site Instruction
+        404:
+          description: Site Instruction not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Site Instruction detail
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/site-instructions/{instructionId}/acknowledge:
+    post:
+      description: Acknowledge a Site Instruction on behalf of the authenticated user.
+      operationId: v2_portalApiAcknowledgeSiteInstruction
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Site Instruction identifier
+        in: path
+        name: instructionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user's company has no access to this Site Instruction
+        404:
+          description: Site Instruction not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Acknowledge a Site Instruction
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/submittals:
+    get:
+      description: Get paginated list of Submittals for a project.
+      operationId: v2_portalApiGetSubmittals
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Submittals for a project
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittalId}:
+    get:
+      description: Get full Submittal details by ID.
+      operationId: v2_portalApiGetSubmittalDetail
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Submittal identifier
+        in: path
+        name: submittalId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user's company has no access to this Submittal
+        404:
+          description: Submittal not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Submittal detail
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/tenders:
+    get:
+      description: Get paginated list of tender packages for a project.
+      operationId: v2_portalApiGetTenders
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      - default: open
+        description: Filter by workflow status
+        in: query
+        name: workflowStatus
+        required: false
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get tender packages for a project
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/tenders/{tenderId}:
+    get:
+      description: Get full tender package details by ID.
+      operationId: v2_portalApiGetTenderDetail
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Tender package identifier
+        in: path
+        name: tenderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user's company has no access to this tender
+        404:
+          description: Tender not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get tender package detail
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/tenders/{tenderId}/respond:
+    post:
+      description: Submit a response to a tender package.
+      operationId: v2_portalApiRespondToTender
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Tender package identifier
+        in: path
+        name: tenderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user's company has no access to this tender
+        404:
+          description: Tender not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Submit a response to a tender
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/workforce-plant/dockets:
+    get:
+      description: Get paginated list of daily dockets for a project.
+      operationId: v2_portalApiGetDailyDockets
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Daily Dockets
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/workforce-plant/equipment:
+    get:
+      description: Get paginated list of equipment plant logs for a project.
+      operationId: v2_portalApiGetEquipmentLogs
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Equipment Plant Logs
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/workforce-plant/{formType}/{entryId}:
+    get:
+      description: Get a specific workforce and plant form entry by type and ID.
+      operationId: v2_portalApiGetWorkforcePlantDetail
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Form type (e.g., equipment, dockets)
+        in: path
+        name: formType
+        required: true
+        type: string
+      - description: Form entry identifier
+        in: path
+        name: entryId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user's company has no access to this entry
+        404:
+          description: Entry not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Workforce & Plant form entry detail
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/team/access:
+    get:
+      description: Get project access settings for team members. Admin-only.
+      operationId: v2_portalApiGetTeamAccess
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 50
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - admin access required
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get team access settings
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/team/access/{memberId}:
+    patch:
+      description: Update a team member's project access. Admin-only.
+      operationId: v2_portalApiUpdateMemberAccess
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Team member identifier
+        in: path
+        name: memberId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - admin access required
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update member project access
       tags:
       - PortalApi
   /v2/portals/subcontractor-progress-claims:
