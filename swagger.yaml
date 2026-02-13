@@ -40579,12 +40579,8 @@ paths:
                 issuing_company_id:
                   description: Internal identifier for the issuing company
                 order_identifier:
-                  description: Auto-generated order identifier (e.g., ORD-0001)
-                purchase_order_number:
-                  description: Custom purchase order number provided by user. Null
-                    if not provided.
-                  type: string
-                  x-nullable: true
+                  description: Order identifier - returns custom PO number (cost_order_client_id)
+                    if provided, otherwise auto-generated value (e.g., PO-0001)
                 receiving_company_id:
                   description: Internal identifier for the receiving company
                 remaining_amount:
@@ -42683,7 +42679,9 @@ paths:
                         issuing_company_id:
                           type: integer
                         order_identifier:
-                          description: Auto-generated order identifier (e.g., ORD-0001)
+                          description: Order identifier - returns custom PO number
+                            (cost_order_client_id) if provided, otherwise auto-generated
+                            value (e.g., PO-0001)
                           type: string
                         order_type:
                           enum:
@@ -42691,11 +42689,6 @@ paths:
                           type: string
                         project_id:
                           type: integer
-                        purchase_order_number:
-                          description: Custom purchase order number provided by user
-                            (from cost_order_client_id). Null if not provided.
-                          type: string
-                          x-nullable: true
                         receiving_company_id:
                           type: integer
                         scope_of_work:
