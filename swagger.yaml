@@ -7813,6 +7813,174 @@ paths:
       summary: Rename document by series ID (workspace-level)
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/cde/v2/text-search:
+    post:
+      description: 'Search for text in a PDF document and return match locations with
+        precise geometry.
+
+
+        Features:
+
+        - High-accuracy text extraction using PyMuPDF (native PDF engine)
+
+        - OCR fallback for CAD drawings with outlined text
+
+        - Returns quad bounding boxes for accurate highlight positioning
+
+        - Supports case-sensitive and case-insensitive search
+
+        - Can search all pages or a specific page
+
+
+        The response includes:
+
+        - Total number of matches
+
+        - List of pages containing matches
+
+        - Detailed match information with bounding quads in PDF coordinates
+
+        - Page dimensions for coordinate conversion
+
+
+        Coordinate system:
+
+        - PDF coordinates have origin at bottom-left
+
+        - Y-axis increases upward
+
+        - Units are PDF points (72 points = 1 inch)
+
+        '
+      operationId: v2_postPdfTextSearch
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            case_sensitive:
+              default: false
+              description: Whether search should be case-sensitive
+              type: boolean
+            cde_id:
+              description: CDE document ID to search
+              type: integer
+            page_number:
+              description: 'Specific page to search (1-indexed).
+
+                If null or omitted, searches all pages.
+
+                '
+              minimum: 1
+              type: integer
+            query:
+              description: Text to search for
+              minLength: 1
+              type: string
+          required:
+          - cde_id
+          - query
+          type: object
+      responses:
+        200:
+          description: Successfully returns search results with match locations
+          schema:
+            properties:
+              matches:
+                items:
+                  properties:
+                    confidence:
+                      description: Confidence score (1.0 for native, 0.0-1.0 for OCR)
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    match_index:
+                      description: Index of this match within the page
+                      type: integer
+                    page:
+                      description: 1-indexed page number
+                      type: integer
+                    quads:
+                      description: Bounding quads (can span multiple lines)
+                      items:
+                        properties:
+                          x0:
+                            description: Bottom-left X coordinate
+                            type: number
+                          x1:
+                            description: Bottom-right X coordinate
+                            type: number
+                          x2:
+                            description: Top-right X coordinate
+                            type: number
+                          x3:
+                            description: Top-left X coordinate
+                            type: number
+                          y0:
+                            description: Bottom-left Y coordinate
+                            type: number
+                          y1:
+                            description: Bottom-right Y coordinate
+                            type: number
+                          y2:
+                            description: Top-right Y coordinate
+                            type: number
+                          y3:
+                            description: Top-left Y coordinate
+                            type: number
+                        type: object
+                      type: array
+                    source:
+                      description: Whether match came from native text or OCR
+                      enum:
+                      - native
+                      - ocr
+                      type: string
+                    text:
+                      description: The matched text
+                      type: string
+                  type: object
+                type: array
+              page_dimensions:
+                additionalProperties:
+                  properties:
+                    height:
+                      description: Page height in PDF points
+                      type: number
+                    width:
+                      description: Page width in PDF points
+                      type: number
+                  type: object
+                description: Page dimensions keyed by page number (as string)
+                type: object
+              pages_with_matches:
+                description: 1-indexed page numbers that contain matches
+                items:
+                  type: integer
+                type: array
+              total_matches:
+                description: Total number of matches found
+                type: integer
+            type: object
+        400:
+          description: Bad request - invalid parameters or document not a PDF
+        401:
+          description: Unauthorized
+        404:
+          description: Document not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Search for text in a PDF document
+      tags:
+      - PDF Text Search
   /v2/workspaces/{workspaceId}/cde/{cdeId}:
     delete:
       description: Invalidates a CDE entry for failed uploads
