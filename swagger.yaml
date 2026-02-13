@@ -43450,6 +43450,11 @@ paths:
                           type: string
                         issuing_company_id:
                           type: integer
+                        order_date:
+                          description: Purchase order date (YYYY-MM-DD). Returns custom
+                            date if provided, otherwise created_at formatted as date.
+                          format: date
+                          type: string
                         order_identifier:
                           description: Order identifier - returns custom PO number
                             (cost_order_client_id) if provided, otherwise auto-generated
@@ -43468,11 +43473,13 @@ paths:
                         status:
                           type: string
                         work_end_date:
-                          description: End date of the work (Unix timestamp in seconds)
-                          type: integer
+                          description: Delivery/End date of the work (YYYY-MM-DD)
+                          format: date
+                          type: string
                         work_start_date:
-                          description: Start date of the work (Unix timestamp in seconds)
-                          type: integer
+                          description: Start date of the work (YYYY-MM-DD)
+                          format: date
+                          type: string
                       type: object
                     type: array
                   statistics:
