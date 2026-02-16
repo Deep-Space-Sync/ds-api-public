@@ -3382,6 +3382,60 @@ paths:
       summary: Get all available tender document sections
       tags:
       - HzTenderDocuments
+  /v2/internal/transmittals_v2/{transmittal_doc_id}/send-emails:
+    post:
+      description: Internal endpoint called by Cloud Tasks to send notification emails.
+      operationId: v2_sendDistributionEmailsInternalV2
+      parameters:
+      - in: path
+        name: transmittal_doc_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: Request body for the Cloud Tasks email dispatch callback.
+          properties:
+            project_id:
+              type: integer
+            token:
+              type: string
+            token_pairs:
+              items:
+                description: A (user_id, hex_token) pair for email dispatch.
+                properties:
+                  hex_token:
+                    type: string
+                  user_id:
+                    type: string
+                required:
+                - user_id
+                - hex_token
+                type: object
+              type: array
+            userinfo:
+              type: string
+            workspace_id:
+              type: string
+          required:
+          - token_pairs
+          - workspace_id
+          - project_id
+          type: object
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            additionalProperties: true
+            type: object
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      summary: Send distribution emails (Cloud Tasks callback)
+      tags:
+      - internal
   /v2/jobs/{job_guid}/status:
     get:
       operationId: v2_getJobStatusGlobal
@@ -6268,6 +6322,136 @@ paths:
       tags:
       - Admin
       x-min-permissions: admin
+  /v2/transmittals_v2/access/{raw_token}:
+    get:
+      description: Unauthenticated endpoint for recipients to view a transmittal via
+        tokenized URL.
+      operationId: v2_portalViewTransmittalV2
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            description: 'Public-facing subset of transmittal data for the unauthenticated
+              portal.
+
+
+              Excludes recipients, audit fields, and workspace/project internals.'
+            properties:
+              cover_message:
+                type: string
+              documents:
+                items:
+                  description: 'Denormalized reference to a registered document included
+                    in a transmittal.
+
+
+                    Document version metadata is immutable (a cde_id always maps to
+                    the same
+
+                    version/revision), so denormalization here carries no staleness
+                    risk.'
+                  properties:
+                    cde_id:
+                      description: Specific version ID transmitted
+                      type: integer
+                    discipline:
+                      description: Discipline from register metadata
+                      type: string
+                    doc_number:
+                      description: Document number from register metadata
+                      type: string
+                    document_series_id:
+                      description: Document series (groups all versions)
+                      type: string
+                    revision:
+                      description: Revision string (e.g. 'A', 'B', 'C1')
+                      type: string
+                    title:
+                      description: Document title from register metadata
+                      type: string
+                    version:
+                      description: Version number at time of transmittal
+                      type: integer
+                  required:
+                  - document_series_id
+                  - cde_id
+                  - version
+                  - revision
+                  - doc_number
+                  - title
+                  type: object
+                type: array
+              issued_at:
+                format: date-time
+                type: string
+              issued_by:
+                description: "Kinde ID \u2014 frontend resolves display name"
+                type: string
+              status:
+                enum:
+                - draft
+                - issued
+                type: string
+              transmittal_id:
+                type: string
+            required:
+            - transmittal_id
+            - cover_message
+            - documents
+            - issued_at
+            - status
+            type: object
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      summary: View transmittal via public token
+      tags:
+      - public-access
+  /v2/transmittals_v2/access/{raw_token}/documents/{cde_id}/download:
+    get:
+      description: Unauthenticated endpoint for recipients to get a signed download
+        URL.
+      operationId: v2_portalDownloadDocumentV2
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      - in: path
+        name: cde_id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            description: Response containing a signed GCS URL for document download.
+            properties:
+              expires_in_secs:
+                default: 900
+                type: integer
+              file_name:
+                description: Display file name for Content-Disposition hint
+                type: string
+              signed_url:
+                type: string
+            required:
+            - signed_url
+            - file_name
+            type: object
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      summary: Download a document via public token
+      tags:
+      - public-access
   /v2/users:
     post:
       description: Creates a user if not already exists in Outseta only
@@ -57019,6 +57203,312 @@ paths:
       summary: Create a draft transmittal
       tags:
       - transmittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals_v2/documents/distributions:
+    get:
+      description: Batch fetch distribution records for multiple document series.
+        Returns empty list if none found.
+      operationId: v2_getDocumentDistributionsBatchV2
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Comma-separated document_series_id values
+        in: query
+        name: document_series_ids
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            items:
+              description: Document distribution for API responses.
+              properties:
+                document_series_id:
+                  description: Document series this record is about
+                  type: string
+                entitlements:
+                  description: All company access entitlements for this document
+                  items:
+                    description: A company's access entitlement for a document, with
+                      history.
+                    properties:
+                      cde_id:
+                        description: Version ID that was transmitted
+                        type: integer
+                      company_id:
+                        description: Company that has access (global company id)
+                        type: integer
+                      notify_user_ids:
+                        description: Kinde IDs of users to notify on revision updates.
+                          Copied from TransmittalRecipient at issue time.
+                        items:
+                          type: string
+                        type: array
+                      revision:
+                        description: Revision string that was transmitted
+                        type: string
+                      transmittal_doc_id:
+                        description: Firestore doc ID of the transmittal that granted
+                          access
+                        type: string
+                      transmittal_id:
+                        description: Human-readable transmittal ID (e.g. 'TR-2026-001')
+                        type: string
+                      transmitted_at:
+                        description: When access was granted
+                        format: date-time
+                        type: string
+                      version:
+                        description: Version number that was transmitted
+                        type: integer
+                    required:
+                    - company_id
+                    - transmittal_doc_id
+                    - transmittal_id
+                    - transmitted_at
+                    - cde_id
+                    - version
+                    - revision
+                    type: object
+                  type: array
+                id:
+                  description: Firestore document ID
+                  type: string
+                project_id:
+                  description: Document Register is project-scoped
+                  type: integer
+                transmittals:
+                  description: All transmittals that included this document
+                  items:
+                    description: Summary of a transmittal's involvement with this
+                      document.
+                    properties:
+                      cde_id:
+                        description: Version ID that was transmitted
+                        type: integer
+                      company_count:
+                        description: Number of recipient companies in this transmittal
+                        type: integer
+                      issued_at:
+                        description: When the transmittal was issued
+                        format: date-time
+                        type: string
+                      issued_by:
+                        description: Kinde ID of user who issued
+                        type: string
+                      recipient_count:
+                        description: Total notified users across all companies
+                        type: integer
+                      revision:
+                        description: Revision string that was transmitted
+                        type: string
+                      status:
+                        enum:
+                        - draft
+                        - issued
+                        type: string
+                      transmittal_doc_id:
+                        description: Firestore doc ID of the transmittal
+                        type: string
+                      transmittal_id:
+                        description: Human-readable transmittal ID (e.g. 'TR-2026-001')
+                        type: string
+                    required:
+                    - transmittal_doc_id
+                    - transmittal_id
+                    - status
+                    - cde_id
+                    - revision
+                    - company_count
+                    - recipient_count
+                    type: object
+                  type: array
+                updated_at:
+                  description: When distribution data was last modified
+                  format: date-time
+                  type: string
+                updated_by:
+                  description: Kinde ID of user who last modified (issued a transmittal)
+                  type: string
+                workspace_id:
+                  type: string
+              required:
+              - document_series_id
+              - workspace_id
+              - project_id
+              - updated_at
+              - updated_by
+              - id
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get distributions for multiple documents
+      tags:
+      - distributions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals_v2/documents/{document_series_id}/distribution:
+    get:
+      description: Get the full distribution record for a document series, including
+        all company entitlements and transmittal history.
+      operationId: v2_getDocumentDistributionV2
+      parameters:
+      - in: path
+        name: document_series_id
+        required: true
+        type: string
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            description: Document distribution for API responses.
+            properties:
+              document_series_id:
+                description: Document series this record is about
+                type: string
+              entitlements:
+                description: All company access entitlements for this document
+                items:
+                  description: A company's access entitlement for a document, with
+                    history.
+                  properties:
+                    cde_id:
+                      description: Version ID that was transmitted
+                      type: integer
+                    company_id:
+                      description: Company that has access (global company id)
+                      type: integer
+                    notify_user_ids:
+                      description: Kinde IDs of users to notify on revision updates.
+                        Copied from TransmittalRecipient at issue time.
+                      items:
+                        type: string
+                      type: array
+                    revision:
+                      description: Revision string that was transmitted
+                      type: string
+                    transmittal_doc_id:
+                      description: Firestore doc ID of the transmittal that granted
+                        access
+                      type: string
+                    transmittal_id:
+                      description: Human-readable transmittal ID (e.g. 'TR-2026-001')
+                      type: string
+                    transmitted_at:
+                      description: When access was granted
+                      format: date-time
+                      type: string
+                    version:
+                      description: Version number that was transmitted
+                      type: integer
+                  required:
+                  - company_id
+                  - transmittal_doc_id
+                  - transmittal_id
+                  - transmitted_at
+                  - cde_id
+                  - version
+                  - revision
+                  type: object
+                type: array
+              id:
+                description: Firestore document ID
+                type: string
+              project_id:
+                description: Document Register is project-scoped
+                type: integer
+              transmittals:
+                description: All transmittals that included this document
+                items:
+                  description: Summary of a transmittal's involvement with this document.
+                  properties:
+                    cde_id:
+                      description: Version ID that was transmitted
+                      type: integer
+                    company_count:
+                      description: Number of recipient companies in this transmittal
+                      type: integer
+                    issued_at:
+                      description: When the transmittal was issued
+                      format: date-time
+                      type: string
+                    issued_by:
+                      description: Kinde ID of user who issued
+                      type: string
+                    recipient_count:
+                      description: Total notified users across all companies
+                      type: integer
+                    revision:
+                      description: Revision string that was transmitted
+                      type: string
+                    status:
+                      enum:
+                      - draft
+                      - issued
+                      type: string
+                    transmittal_doc_id:
+                      description: Firestore doc ID of the transmittal
+                      type: string
+                    transmittal_id:
+                      description: Human-readable transmittal ID (e.g. 'TR-2026-001')
+                      type: string
+                  required:
+                  - transmittal_doc_id
+                  - transmittal_id
+                  - status
+                  - cde_id
+                  - revision
+                  - company_count
+                  - recipient_count
+                  type: object
+                type: array
+              updated_at:
+                description: When distribution data was last modified
+                format: date-time
+                type: string
+              updated_by:
+                description: Kinde ID of user who last modified (issued a transmittal)
+                type: string
+              workspace_id:
+                type: string
+            required:
+            - document_series_id
+            - workspace_id
+            - project_id
+            - updated_at
+            - updated_by
+            - id
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get distribution for a document
+      tags:
+      - distributions
   /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals_v2/{transmittal_doc_id}:
     delete:
       description: Soft delete a draft transmittal. Rejects if transmittal is issued.
@@ -57458,6 +57948,257 @@ paths:
       security:
       - JWT_v2: []
       summary: Update a draft transmittal
+      tags:
+      - transmittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals_v2/{transmittal_doc_id}/access-events:
+    get:
+      description: List all access events (views, downloads, email delivery) for a
+        transmittal.
+      operationId: v2_getAccessEventsV2
+      parameters:
+      - in: path
+        name: transmittal_doc_id
+        required: true
+        type: string
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            items:
+              description: Access event for API responses.
+              properties:
+                event:
+                  discriminator:
+                    mapping:
+                      downloaded: '#/components/schemas/DownloadedEvent'
+                      email_failed: '#/components/schemas/EmailFailedEvent'
+                      email_sent: '#/components/schemas/EmailSentEvent'
+                      resent: '#/components/schemas/ResentEvent'
+                      viewed: '#/components/schemas/ViewedEvent'
+                    propertyName: type
+                  properties:
+                    recipient_email:
+                      description: Email address that was sent to
+                      type: string
+                    timestamp:
+                      description: When the event occurred
+                      format: date-time
+                      type: string
+                    type:
+                      default: email_sent
+                      enum:
+                      - email_sent
+                      type: string
+                    user_id:
+                      description: Kinde ID of user who performed the action
+                      type: string
+                  required:
+                  - timestamp
+                  - user_id
+                  - recipient_email
+                  type: object
+                id:
+                  description: Firestore document ID
+                  type: string
+                project_id:
+                  type: integer
+                transmittal_doc_id:
+                  description: Parent transmittal Firestore doc ID
+                  type: string
+                workspace_id:
+                  type: string
+              required:
+              - event
+              - transmittal_doc_id
+              - workspace_id
+              - project_id
+              - id
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get access events for a transmittal
+      tags:
+      - access-events
+  /v2/workspaces/{workspaceId}/projects/{projectId}/transmittals_v2/{transmittal_doc_id}/issue:
+    post:
+      description: Transition a draft transmittal to issued. Creates document distribution
+        records and access tokens atomically. Irreversible.
+      operationId: v2_issueTransmittalEndpointV2
+      parameters:
+      - in: path
+        name: transmittal_doc_id
+        required: true
+        type: string
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            description: Transmittal for API responses.
+            properties:
+              cover_message:
+                description: Optional cover letter / notes included in the transmittal
+                type: string
+              created_at:
+                description: Timestamp when record was created
+                format: date-time
+                type: string
+              created_by:
+                description: Kinde ID of user who created the record
+                type: string
+              deleted_at:
+                description: Timestamp when record was soft-deleted
+                format: date-time
+                type: string
+              deleted_by:
+                description: Kinde ID of user who deleted the record
+                type: string
+              documents:
+                description: Registered documents included in this transmittal
+                items:
+                  description: 'Denormalized reference to a registered document included
+                    in a transmittal.
+
+
+                    Document version metadata is immutable (a cde_id always maps to
+                    the same
+
+                    version/revision), so denormalization here carries no staleness
+                    risk.'
+                  properties:
+                    cde_id:
+                      description: Specific version ID transmitted
+                      type: integer
+                    discipline:
+                      description: Discipline from register metadata
+                      type: string
+                    doc_number:
+                      description: Document number from register metadata
+                      type: string
+                    document_series_id:
+                      description: Document series (groups all versions)
+                      type: string
+                    revision:
+                      description: Revision string (e.g. 'A', 'B', 'C1')
+                      type: string
+                    title:
+                      description: Document title from register metadata
+                      type: string
+                    version:
+                      description: Version number at time of transmittal
+                      type: integer
+                  required:
+                  - document_series_id
+                  - cde_id
+                  - version
+                  - revision
+                  - doc_number
+                  - title
+                  type: object
+                type: array
+              id:
+                description: Firestore document ID
+                type: string
+              is_deleted:
+                default: false
+                description: Soft delete flag
+                type: boolean
+              issued_at:
+                description: Timestamp when transmittal was issued
+                format: date-time
+                type: string
+              issued_by:
+                description: Kinde ID of user who issued the transmittal
+                type: string
+              project_id:
+                description: Document Register is project-scoped
+                type: integer
+              recipients:
+                description: Companies receiving download access and their notification
+                  users
+                items:
+                  description: 'A company receiving document access, with optional
+                    users for email notification.
+
+
+                    Access is granted at company level. Notify users only determines
+                    who gets
+
+                    the email - all users in the company can download.'
+                  properties:
+                    company_id:
+                      description: Company receiving download entitlement (global
+                        company id)
+                      type: integer
+                    notify_user_ids:
+                      description: Kinde IDs of users to email-notify (subset of company
+                        members)
+                      items:
+                        type: string
+                      type: array
+                  required:
+                  - company_id
+                  type: object
+                type: array
+              status:
+                enum:
+                - draft
+                - issued
+                type: string
+              transmittal_id:
+                description: Project-scoped human-readable identifier (e.g. 'TR-2026-001').
+                  Auto-generated by backend on creation.
+                type: string
+              updated_at:
+                description: Timestamp when record was last updated
+                format: date-time
+                type: string
+              updated_by:
+                description: Kinde ID of user who last updated the record
+                type: string
+              workspace_id:
+                type: string
+            required:
+            - created_at
+            - created_by
+            - updated_at
+            - updated_by
+            - transmittal_id
+            - workspace_id
+            - project_id
+            - id
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Issue a draft transmittal
       tags:
       - transmittals
   /v2/workspaces/{workspaceId}/projects/{projectId}/users:
