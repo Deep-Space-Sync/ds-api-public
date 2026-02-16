@@ -58623,6 +58623,33 @@ paths:
       summary: Update role
       tags:
       - Roles
+  /v2/signin-records/auto-signout:
+    post:
+      description: Called by Cloud Scheduler to auto sign-out workers at configured
+        times per project. Queries all projects with auto_signout_enabled and signs
+        out open sessions when the current time matches the configured time.
+      operationId: v2_triggerAutoSignout
+      responses:
+        200:
+          description: Auto sign-out completed
+          schema:
+            properties:
+              message:
+                type: string
+              projects_processed:
+                items:
+                  type: object
+                type: array
+              total_signed_out:
+                type: integer
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - OIDC: []
+      summary: Trigger auto sign-out for all configured projects (Cloud Scheduler)
+      tags:
+      - SigninRecords
   /v2/workspaces/{workspaceId}/signin-records:
     get:
       description: 'List signin records for a workspace with optional filtering.
