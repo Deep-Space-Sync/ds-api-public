@@ -5195,6 +5195,49 @@ paths:
       summary: Update action item status
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/claims:
+    get:
+      description: Get paginated list of progress claims for a project, filtered to
+        the user's company.
+      operationId: v2_portalApiGetClaims
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 50
+        description: Items per page
+        in: query
+        maximum: 200
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List progress claims for a project
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/photos:
     get:
       description: Get paginated list of photos for a project.
