@@ -58041,14 +58041,6 @@ paths:
               description: Access event for API responses.
               properties:
                 event:
-                  discriminator:
-                    mapping:
-                      downloaded: '#/components/schemas/DownloadedEvent'
-                      email_failed: '#/components/schemas/EmailFailedEvent'
-                      email_sent: '#/components/schemas/EmailSentEvent'
-                      resent: '#/components/schemas/ResentEvent'
-                      viewed: '#/components/schemas/ViewedEvent'
-                    propertyName: type
                   properties:
                     recipient_email:
                       description: Email address that was sent to
