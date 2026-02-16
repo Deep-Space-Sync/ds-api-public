@@ -11734,6 +11734,131 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/cost-codes/batch-delete:
+    delete:
+      description: 'Soft delete ALL cost codes in a workspace. This is a workspace-level
+        administrative
+
+        operation that marks all cost code documents with `is_deleted: true` while
+        preserving
+
+        their data for audit and historical purposes.
+
+
+        Safety Features:
+
+        - Requires explicit confirmation (`confirm: true` in request body)
+
+        - Skips locked cost codes (preserves GL integrity)
+
+        - Logs all deletions to lifecycle history
+
+        - Returns detailed response with counts and any failures
+
+
+        IMPORTANT: This operation affects ALL cost codes in the workspace.
+
+        Locked cost codes will be skipped and returned in the skipped list.
+
+        '
+      operationId: v2_batchDeleteAllCostCodes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            confirm:
+              description: Must be set to true to confirm deletion of all cost codes
+              example: true
+              type: boolean
+            reason:
+              description: Optional reason for batch deletion (for audit trail)
+              example: Workspace reset for new project structure
+              type: string
+          required:
+          - confirm
+          type: object
+      responses:
+        200:
+          description: Batch delete completed
+          schema:
+            properties:
+              deleted_count:
+                description: Number of cost codes successfully deleted
+                example: 45
+                type: integer
+              deleted_ids:
+                description: List of IDs of deleted cost codes
+                items:
+                  type: string
+                type: array
+              failed_count:
+                description: Number of cost codes that failed to delete
+                example: 0
+                type: integer
+              failures:
+                description: List of failed deletions with error messages
+                items:
+                  properties:
+                    cost_code_id:
+                      type: string
+                    cost_code_name:
+                      type: string
+                    error:
+                      type: string
+                  type: object
+                type: array
+              message:
+                example: 'Batch delete completed: 45 deleted, 2 skipped'
+                type: string
+              skipped:
+                description: List of skipped cost codes with reasons
+                items:
+                  properties:
+                    cost_code_id:
+                      type: string
+                    cost_code_name:
+                      type: string
+                    lifecycle_status:
+                      example: locked
+                      type: string
+                    reason:
+                      example: Cannot delete locked cost code
+                      type: string
+                  type: object
+                type: array
+              skipped_count:
+                description: Number of cost codes skipped (e.g., locked)
+                example: 2
+                type: integer
+            type: object
+        400:
+          description: Bad Request - confirmation not provided
+          schema:
+            properties:
+              message:
+                example: 'Confirmation required. Set ''confirm'': true in request
+                  body to delete all cost codes in this workspace'
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - insufficient permissions
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Batch Soft Delete All Cost Codes
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
   /v2/workspaces/{workspaceId}/cost/cost-codes/import:
     post:
       operationId: v2_postCostCodesImport
