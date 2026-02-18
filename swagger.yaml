@@ -5292,6 +5292,34 @@ paths:
       summary: List progress claims for a project
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/members:
+    get:
+      description: Get all verified members assigned to a project, grouped by company.
+        Portal-accessible alternative to allworkers.
+      operationId: v2_portalApiGetProjectMembers
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List project members
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/photos:
     get:
       description: Get paginated list of photos for a project.
