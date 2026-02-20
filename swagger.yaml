@@ -5249,6 +5249,329 @@ paths:
       summary: Update action item status
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cis:
+    get:
+      description: Get paginated list of CI records for a project. Use view=portal
+        for client-safe fields, view=internal for full fields.
+      operationId: v2_portalApiListCIs
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      - default: internal
+        description: Response view mode (portal or internal)
+        in: query
+        name: view
+        required: false
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Client Instructions for a project
+      tags:
+      - PortalApi
+    post:
+      description: Create a new CI record. Allocates a project-scoped CI number and
+        creates the record with status Issued.
+      operationId: v2_portalApiCreateCI
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        201:
+          description: Created
+        401:
+          description: Unauthorized
+        409:
+          description: Conflict - CI number allocation failed
+        422:
+          description: Unprocessable Entity
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a Client Instruction
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cis/{ciId}:
+    get:
+      description: Get a single CI record by ID. Use view=portal for client-safe fields,
+        view=internal for full fields including comments and audit summary.
+      operationId: v2_portalApiGetCIDetail
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Client Instruction identifier
+        in: path
+        name: ciId
+        required: true
+        type: string
+      - default: internal
+        description: Response view mode (portal or internal)
+        in: query
+        name: view
+        required: false
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: CI not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Client Instruction detail
+      tags:
+      - PortalApi
+    patch:
+      description: Update allowed non-status fields on a CI. Status and issued_by
+        cannot be modified through this endpoint.
+      operationId: v2_portalApiUpdateCI
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Client Instruction identifier
+        in: path
+        name: ciId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: CI not found
+        409:
+          description: Conflict - forbidden field or validation error
+        422:
+          description: Unprocessable Entity
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Client Instruction fields
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cis/{ciId}/comments:
+    post:
+      description: Add a comment to a CI record. Comment author is derived from the
+        authenticated user. Comment write and CI audit event are committed atomically.
+      operationId: v2_portalApiAddCIComment
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Client Instruction identifier
+        in: path
+        name: ciId
+        required: true
+        type: string
+      responses:
+        201:
+          description: Created
+        401:
+          description: Unauthorized
+        404:
+          description: CI not found
+        409:
+          description: Conflict - comment validation error
+        422:
+          description: Unprocessable Entity
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add a comment to a Client Instruction
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cis/{ciId}/followers:
+    post:
+      description: Batch-add followers to a CI. Duplicate IDs already following are
+        ignored. Returns the full updated CI record.
+      operationId: v2_portalApiAddCIFollowers
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Client Instruction identifier
+        in: path
+        name: ciId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: CI not found
+        422:
+          description: Unprocessable Entity
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add followers to a Client Instruction
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cis/{ciId}/followers/{userId}:
+    delete:
+      description: Remove a single follower from a CI. Idempotent - removing a user
+        who is not a follower returns 200 with the unmodified CI record.
+      operationId: v2_portalApiRemoveCIFollower
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Client Instruction identifier
+        in: path
+        name: ciId
+        required: true
+        type: string
+      - description: User identifier to remove as follower
+        in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: CI not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove a follower from a Client Instruction
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cis/{ciId}/transitions/{action}:
+    post:
+      description: Transition a CI through its lifecycle. Supported actions - acknowledge,
+        start_progress, respond, close, withdraw.
+      operationId: v2_portalApiTransitionCI
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Client Instruction identifier
+        in: path
+        name: ciId
+        required: true
+        type: string
+      - description: Lifecycle action (acknowledge, start_progress, respond, close,
+          withdraw)
+        in: path
+        name: action
+        required: true
+        type: string
+      - description: Caller role (client or builder)
+        in: query
+        name: role
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: CI not found
+        409:
+          description: Conflict - invalid transition or permission denied
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Transition a Client Instruction
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/claims:
     get:
       description: Get paginated list of progress claims for a project, filtered to
@@ -25102,546 +25425,6 @@ paths:
       summary: Create New Implementation Check
       tags:
       - implementation
-  /v2/workspaces/{workspaceId}/implementations:
-    get:
-      description: List implementation plans for a workspace with pagination
-      operationId: v2_listImplementations
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - default: 1
-        description: Page number (1-based)
-        in: query
-        name: page
-        type: integer
-      - default: 50
-        description: Items per page
-        in: query
-        maximum: 100
-        name: limit
-        type: integer
-      responses:
-        200:
-          description: Implementations retrieved successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: List implementations
-      tags:
-      - HzImplementation
-    post:
-      description: Create a new implementation plan from the default template
-      operationId: v2_createImplementation
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        schema:
-          properties:
-            title:
-              description: Optional title for the implementation
-              type: string
-          type: object
-      responses:
-        201:
-          description: Implementation created successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Create implementation
-      tags:
-      - HzImplementation
-  /v2/workspaces/{workspaceId}/implementations/{implementationId}:
-    get:
-      description: Get a single implementation with nested phases and tasks
-      operationId: v2_getImplementation
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Implementation ID
-        in: path
-        name: implementationId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Implementation retrieved successfully
-        401:
-          description: Unauthorized
-        404:
-          description: Implementation not found
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Get implementation
-      tags:
-      - HzImplementation
-    patch:
-      description: Update implementation status or details
-      operationId: v2_updateImplementation
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Implementation ID
-        in: path
-        name: implementationId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            status:
-              description: Implementation status
-              enum:
-              - NOT_STARTED
-              - IN_PROGRESS
-              - BLOCKED
-              - LIVE
-              - COMPLETED
-              type: string
-            title:
-              description: Implementation title
-              type: string
-          type: object
-      responses:
-        200:
-          description: Implementation updated successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized
-        404:
-          description: Implementation not found
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Update implementation
-      tags:
-      - HzImplementation
-  /v2/workspaces/{workspaceId}/implementations/{implementationId}/audit:
-    get:
-      description: Get audit log for an implementation
-      operationId: v2_listImplementationAudit
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Implementation ID
-        in: path
-        name: implementationId
-        required: true
-        type: string
-      - default: 1
-        description: Page number (1-based)
-        in: query
-        name: page
-        type: integer
-      - default: 50
-        description: Items per page
-        in: query
-        maximum: 100
-        name: limit
-        type: integer
-      responses:
-        200:
-          description: Audit events retrieved successfully
-        401:
-          description: Unauthorized
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: List audit events
-      tags:
-      - HzImplementation
-  /v2/workspaces/{workspaceId}/implementations/{implementationId}/phases:
-    post:
-      description: Create a new phase in an implementation
-      operationId: v2_createImplementationPhase
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Implementation ID
-        in: path
-        name: implementationId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            name:
-              description: Phase name
-              type: string
-          required:
-          - name
-          type: object
-      responses:
-        201:
-          description: Phase created successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Create phase
-      tags:
-      - HzImplementation
-  /v2/workspaces/{workspaceId}/implementations/{implementationId}/phases/reorder:
-    put:
-      description: Reorder phases within an implementation
-      operationId: v2_reorderImplementationPhases
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Implementation ID
-        in: path
-        name: implementationId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            phase_ids:
-              description: Ordered list of phase IDs
-              items:
-                type: string
-              type: array
-          required:
-          - phase_ids
-          type: object
-      responses:
-        200:
-          description: Phases reordered successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Reorder phases
-      tags:
-      - HzImplementation
-  /v2/workspaces/{workspaceId}/implementations/{implementationId}/phases/{phaseId}:
-    delete:
-      description: Soft-delete a phase and its tasks
-      operationId: v2_deleteImplementationPhase
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Implementation ID
-        in: path
-        name: implementationId
-        required: true
-        type: string
-      - description: Phase ID
-        in: path
-        name: phaseId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Phase deleted successfully
-        401:
-          description: Unauthorized
-        404:
-          description: Phase not found
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Delete phase
-      tags:
-      - HzImplementation
-    patch:
-      description: Update a phase (rename)
-      operationId: v2_updateImplementationPhase
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Implementation ID
-        in: path
-        name: implementationId
-        required: true
-        type: string
-      - description: Phase ID
-        in: path
-        name: phaseId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            name:
-              description: New phase name
-              type: string
-          type: object
-      responses:
-        200:
-          description: Phase updated successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized
-        404:
-          description: Phase not found
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Update phase
-      tags:
-      - HzImplementation
-  /v2/workspaces/{workspaceId}/implementations/{implementationId}/phases/{phaseId}/tasks:
-    post:
-      description: Create a new task within a phase
-      operationId: v2_createImplementationTask
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Implementation ID
-        in: path
-        name: implementationId
-        required: true
-        type: string
-      - description: Phase ID
-        in: path
-        name: phaseId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            owner_type:
-              description: Task owner type
-              enum:
-              - CUSTOMER
-              - DEEP_SPACE
-              type: string
-            task_type:
-              description: Task type
-              enum:
-              - MANUAL
-              - FILE_UPLOAD
-              - MEETING_LINK
-              type: string
-            title:
-              description: Task title
-              type: string
-          required:
-          - title
-          - owner_type
-          - task_type
-          type: object
-      responses:
-        201:
-          description: Task created successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Create task
-      tags:
-      - HzImplementation
-  /v2/workspaces/{workspaceId}/implementations/{implementationId}/tasks/reorder:
-    put:
-      description: Reorder tasks within a phase
-      operationId: v2_reorderImplementationTasks
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Implementation ID
-        in: path
-        name: implementationId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            task_ids:
-              description: Ordered list of task IDs
-              items:
-                type: string
-              type: array
-          required:
-          - task_ids
-          type: object
-      responses:
-        200:
-          description: Tasks reordered successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Reorder tasks
-      tags:
-      - HzImplementation
-  /v2/workspaces/{workspaceId}/implementations/{implementationId}/tasks/{taskId}:
-    delete:
-      description: Soft-delete a task
-      operationId: v2_deleteImplementationTask
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Implementation ID
-        in: path
-        name: implementationId
-        required: true
-        type: string
-      - description: Task ID
-        in: path
-        name: taskId
-        required: true
-        type: string
-      responses:
-        200:
-          description: Task deleted successfully
-        401:
-          description: Unauthorized
-        404:
-          description: Task not found
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Delete task
-      tags:
-      - HzImplementation
-    patch:
-      description: Update a task (status, title, owner_type, task_type)
-      operationId: v2_updateImplementationTask
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Implementation ID
-        in: path
-        name: implementationId
-        required: true
-        type: string
-      - description: Task ID
-        in: path
-        name: taskId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            owner_type:
-              description: Task owner type
-              enum:
-              - CUSTOMER
-              - DEEP_SPACE
-              type: string
-            status:
-              description: Task status
-              enum:
-              - TODO
-              - DONE
-              type: string
-            task_type:
-              description: Task type
-              enum:
-              - MANUAL
-              - FILE_UPLOAD
-              - MEETING_LINK
-              type: string
-            title:
-              description: Task title
-              type: string
-          type: object
-      responses:
-        200:
-          description: Task updated successfully
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized
-        404:
-          description: Task not found
-        500:
-          description: Internal server error
-      security:
-      - JWT_v2: []
-      summary: Update task
-      tags:
-      - HzImplementation
   /v2/workspaces/{workspaceId}/integrations:
     get:
       operationId: v2_getWorkspaceIntegrations
@@ -49671,7 +49454,7 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/download/{ds_data_type}:
     get:
-      operationId: v2_downloadProjectData
+      operationId: v2_getProjectDownload
       parameters:
       - in: path
         name: workspaceId
@@ -49687,18 +49470,16 @@ paths:
         type: string
       responses:
         200:
-          description: File downloaded successfully
+          description: Successful response
         401:
           description: Unauthorized
-        404:
-          description: Data not found
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Download project data
+      summary: Download a file from the project
       tags:
-      - Upload Data
+      - Download
   /v2/workspaces/{workspaceId}/projects/{projectId}/files:
     get:
       operationId: v2_v2_getFiles
