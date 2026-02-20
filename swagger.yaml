@@ -25425,6 +25425,546 @@ paths:
       summary: Create New Implementation Check
       tags:
       - implementation
+  /v2/workspaces/{workspaceId}/implementations:
+    get:
+      description: List implementation plans for a workspace with pagination
+      operationId: v2_listImplementations
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - default: 1
+        description: Page number (1-based)
+        in: query
+        name: page
+        type: integer
+      - default: 50
+        description: Items per page
+        in: query
+        maximum: 100
+        name: limit
+        type: integer
+      responses:
+        200:
+          description: Implementations retrieved successfully
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List implementations
+      tags:
+      - HzImplementation
+    post:
+      description: Create a new implementation plan from the default template
+      operationId: v2_createImplementation
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        schema:
+          properties:
+            title:
+              description: Optional title for the implementation
+              type: string
+          type: object
+      responses:
+        201:
+          description: Implementation created successfully
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create implementation
+      tags:
+      - HzImplementation
+  /v2/workspaces/{workspaceId}/implementations/{implementationId}:
+    get:
+      description: Get a single implementation with nested phases and tasks
+      operationId: v2_getImplementation
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Implementation ID
+        in: path
+        name: implementationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Implementation retrieved successfully
+        401:
+          description: Unauthorized
+        404:
+          description: Implementation not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get implementation
+      tags:
+      - HzImplementation
+    patch:
+      description: Update implementation status or details
+      operationId: v2_updateImplementation
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Implementation ID
+        in: path
+        name: implementationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            status:
+              description: Implementation status
+              enum:
+              - NOT_STARTED
+              - IN_PROGRESS
+              - BLOCKED
+              - LIVE
+              - COMPLETED
+              type: string
+            title:
+              description: Implementation title
+              type: string
+          type: object
+      responses:
+        200:
+          description: Implementation updated successfully
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        404:
+          description: Implementation not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update implementation
+      tags:
+      - HzImplementation
+  /v2/workspaces/{workspaceId}/implementations/{implementationId}/audit:
+    get:
+      description: Get audit log for an implementation
+      operationId: v2_listImplementationAudit
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Implementation ID
+        in: path
+        name: implementationId
+        required: true
+        type: string
+      - default: 1
+        description: Page number (1-based)
+        in: query
+        name: page
+        type: integer
+      - default: 50
+        description: Items per page
+        in: query
+        maximum: 100
+        name: limit
+        type: integer
+      responses:
+        200:
+          description: Audit events retrieved successfully
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List audit events
+      tags:
+      - HzImplementation
+  /v2/workspaces/{workspaceId}/implementations/{implementationId}/phases:
+    post:
+      description: Create a new phase in an implementation
+      operationId: v2_createImplementationPhase
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Implementation ID
+        in: path
+        name: implementationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              description: Phase name
+              type: string
+          required:
+          - name
+          type: object
+      responses:
+        201:
+          description: Phase created successfully
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create phase
+      tags:
+      - HzImplementation
+  /v2/workspaces/{workspaceId}/implementations/{implementationId}/phases/reorder:
+    put:
+      description: Reorder phases within an implementation
+      operationId: v2_reorderImplementationPhases
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Implementation ID
+        in: path
+        name: implementationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            phase_ids:
+              description: Ordered list of phase IDs
+              items:
+                type: string
+              type: array
+          required:
+          - phase_ids
+          type: object
+      responses:
+        200:
+          description: Phases reordered successfully
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Reorder phases
+      tags:
+      - HzImplementation
+  /v2/workspaces/{workspaceId}/implementations/{implementationId}/phases/{phaseId}:
+    delete:
+      description: Soft-delete a phase and its tasks
+      operationId: v2_deleteImplementationPhase
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Implementation ID
+        in: path
+        name: implementationId
+        required: true
+        type: string
+      - description: Phase ID
+        in: path
+        name: phaseId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Phase deleted successfully
+        401:
+          description: Unauthorized
+        404:
+          description: Phase not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete phase
+      tags:
+      - HzImplementation
+    patch:
+      description: Update a phase (rename)
+      operationId: v2_updateImplementationPhase
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Implementation ID
+        in: path
+        name: implementationId
+        required: true
+        type: string
+      - description: Phase ID
+        in: path
+        name: phaseId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              description: New phase name
+              type: string
+          type: object
+      responses:
+        200:
+          description: Phase updated successfully
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        404:
+          description: Phase not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update phase
+      tags:
+      - HzImplementation
+  /v2/workspaces/{workspaceId}/implementations/{implementationId}/phases/{phaseId}/tasks:
+    post:
+      description: Create a new task within a phase
+      operationId: v2_createImplementationTask
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Implementation ID
+        in: path
+        name: implementationId
+        required: true
+        type: string
+      - description: Phase ID
+        in: path
+        name: phaseId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            owner_type:
+              description: Task owner type
+              enum:
+              - CUSTOMER
+              - DEEP_SPACE
+              type: string
+            task_type:
+              description: Task type
+              enum:
+              - MANUAL
+              - FILE_UPLOAD
+              - MEETING_LINK
+              type: string
+            title:
+              description: Task title
+              type: string
+          required:
+          - title
+          - owner_type
+          - task_type
+          type: object
+      responses:
+        201:
+          description: Task created successfully
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create task
+      tags:
+      - HzImplementation
+  /v2/workspaces/{workspaceId}/implementations/{implementationId}/tasks/reorder:
+    put:
+      description: Reorder tasks within a phase
+      operationId: v2_reorderImplementationTasks
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Implementation ID
+        in: path
+        name: implementationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            task_ids:
+              description: Ordered list of task IDs
+              items:
+                type: string
+              type: array
+          required:
+          - task_ids
+          type: object
+      responses:
+        200:
+          description: Tasks reordered successfully
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Reorder tasks
+      tags:
+      - HzImplementation
+  /v2/workspaces/{workspaceId}/implementations/{implementationId}/tasks/{taskId}:
+    delete:
+      description: Soft-delete a task
+      operationId: v2_deleteImplementationTask
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Implementation ID
+        in: path
+        name: implementationId
+        required: true
+        type: string
+      - description: Task ID
+        in: path
+        name: taskId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Task deleted successfully
+        401:
+          description: Unauthorized
+        404:
+          description: Task not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete task
+      tags:
+      - HzImplementation
+    patch:
+      description: Update a task (status, title, owner_type, task_type)
+      operationId: v2_updateImplementationTask
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Implementation ID
+        in: path
+        name: implementationId
+        required: true
+        type: string
+      - description: Task ID
+        in: path
+        name: taskId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            owner_type:
+              description: Task owner type
+              enum:
+              - CUSTOMER
+              - DEEP_SPACE
+              type: string
+            status:
+              description: Task status
+              enum:
+              - TODO
+              - DONE
+              type: string
+            task_type:
+              description: Task type
+              enum:
+              - MANUAL
+              - FILE_UPLOAD
+              - MEETING_LINK
+              type: string
+            title:
+              description: Task title
+              type: string
+          type: object
+      responses:
+        200:
+          description: Task updated successfully
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        404:
+          description: Task not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update task
+      tags:
+      - HzImplementation
   /v2/workspaces/{workspaceId}/integrations:
     get:
       operationId: v2_getWorkspaceIntegrations
