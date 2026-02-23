@@ -10312,7 +10312,7 @@ paths:
         type: string
       responses:
         200:
-          description: Company settings for the workspace
+          description: Retrieve Company settings for the workspace
           schema:
             properties:
               bank:
