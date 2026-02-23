@@ -5447,6 +5447,49 @@ paths:
       summary: Add a comment to a Client Instruction
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cis/{ciId}/comments/{commentId}/reactions:
+    post:
+      description: Toggle an emoji reaction on a CI comment. If the authenticated
+        user has already reacted with the given emoji, the reaction is removed; otherwise
+        it is added.
+      operationId: v2_portalApiToggleCICommentReaction
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Client Instruction identifier
+        in: path
+        name: ciId
+        required: true
+        type: string
+      - description: Comment identifier
+        in: path
+        name: commentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK - updated comment with reactions
+        401:
+          description: Unauthorized
+        404:
+          description: CI or comment not found
+        422:
+          description: Unprocessable Entity
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Toggle a reaction on a CI comment
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cis/{ciId}/followers:
     post:
       description: Batch-add followers to a CI. Duplicate IDs already following are
