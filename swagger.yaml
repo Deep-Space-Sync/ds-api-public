@@ -56483,12 +56483,37 @@ paths:
                     description: Actual start date (Firestore only)
                     format: date
                     type: string
+                  award_date:
+                    description: Contract award date (Firestore only, ISO format)
+                    format: date-time
+                    type: string
+                  contract_number:
+                    description: Contract number/reference (Firestore only)
+                    type: string
+                  contract_type:
+                    description: Contract type (Firestore only)
+                    enum:
+                    - lump_sum
+                    - cost_plus
+                    - gmp
+                    - unit_rate
+                    - other
+                    type: string
+                  contract_value:
+                    description: Contract value in AUD (Firestore only)
+                    type: number
                   country:
                     description: Project country (Firestore only)
                     type: string
                   current_stage:
                     description: Current project stage
                     type: string
+                  custom_fields:
+                    description: Custom key-value fields (Firestore only)
+                    type: object
+                  defects_liability_period_days:
+                    description: Defects liability period in days (Firestore only)
+                    type: integer
                   delivery_method:
                     description: Project delivery method (Firestore only)
                     type: string
@@ -56501,8 +56526,20 @@ paths:
                     description: Forecast finish date (Firestore only)
                     format: date
                     type: string
+                  insurance_expiry_date:
+                    description: Insurance expiry date (Firestore only, ISO format)
+                    format: date-time
+                    type: string
                   key_project_manager_user_id:
                     description: User ID of key project manager
+                    type: string
+                  linked_project_ids:
+                    description: IDs of related/linked projects (Firestore only)
+                    items:
+                      type: integer
+                    type: array
+                  notes:
+                    description: General project notes (Firestore only)
                     type: string
                   owner_type:
                     description: Type of owner (Firestore only)
@@ -56520,6 +56557,10 @@ paths:
                     type: string
                   postcode:
                     description: Postcode (Firestore only)
+                    type: string
+                  practical_completion_date:
+                    description: Practical completion date (Firestore only, ISO format)
+                    format: date-time
                     type: string
                   procurement_strategy:
                     description: Procurement strategy
@@ -56586,6 +56627,17 @@ paths:
                   region:
                     description: Region/LGA (Firestore only)
                     type: string
+                  risk_notes:
+                    description: Risk notes (Firestore only)
+                    type: string
+                  risk_profile:
+                    description: Risk profile (Firestore only)
+                    enum:
+                    - low
+                    - medium
+                    - high
+                    - critical
+                    type: string
                   state:
                     description: State/Territory (Firestore only)
                     type: string
@@ -56600,6 +56652,10 @@ paths:
                   teams:
                     description: Internal project roles (Firestore only)
                     type: object
+                  tender_due_date:
+                    description: Tender due date (Firestore only, ISO format)
+                    format: date-time
+                    type: string
                   tender_type:
                     description: Type of tender (Firestore only)
                     type: string
@@ -56660,6 +56716,13 @@ paths:
         planned_completion_date, forecast_finish_date, warranty_start_date, warranty_end_date
 
 
+        Contract: contract_type, contract_number, contract_value, tender_due_date,
+        award_date, practical_completion_date, defects_liability_period_days, insurance_expiry_date
+
+
+        Risk & Notes: risk_profile, risk_notes, notes, linked_project_ids, custom_fields
+
+
         Teams: teams (merge behavior), external_stakeholders (replace behavior)
 
         '
@@ -56684,12 +56747,37 @@ paths:
               description: Actual start date (ISO format YYYY-MM-DD)
               format: date
               type: string
+            award_date:
+              description: Contract award date (ISO format)
+              format: date-time
+              type: string
+            contract_number:
+              description: Contract number/reference
+              type: string
+            contract_type:
+              description: Contract type
+              enum:
+              - lump_sum
+              - cost_plus
+              - gmp
+              - unit_rate
+              - other
+              type: string
+            contract_value:
+              description: Contract value in AUD
+              type: number
             country:
               description: Project country
               type: string
             current_stage:
               description: Current project stage
               type: string
+            custom_fields:
+              description: Custom key-value fields
+              type: object
+            defects_liability_period_days:
+              description: Defects liability period in days
+              type: integer
             delivery_method:
               description: Project delivery method
               type: string
@@ -56729,6 +56817,18 @@ paths:
               description: Forecast finish date (ISO format YYYY-MM-DD)
               format: date
               type: string
+            insurance_expiry_date:
+              description: Insurance expiry date (ISO format)
+              format: date-time
+              type: string
+            linked_project_ids:
+              description: IDs of related/linked projects
+              items:
+                type: integer
+              type: array
+            notes:
+              description: General project notes
+              type: string
             owner_type:
               description: Type of owner
               type: string
@@ -56745,6 +56845,10 @@ paths:
               type: string
             postcode:
               description: Postcode
+              type: string
+            practical_completion_date:
+              description: Practical completion date (ISO format)
+              format: date-time
               type: string
             project_addr_country:
               description: Project country
@@ -56788,6 +56892,17 @@ paths:
             region:
               description: Region/LGA
               type: string
+            risk_notes:
+              description: Risk notes
+              type: string
+            risk_profile:
+              description: Risk profile
+              enum:
+              - low
+              - medium
+              - high
+              - critical
+              type: string
             state:
               description: State/Territory
               type: string
@@ -56809,6 +56924,10 @@ paths:
 
                 '
               type: object
+            tender_due_date:
+              description: Tender due date (ISO format)
+              format: date-time
+              type: string
             tender_type:
               description: Type of tender
               type: string
