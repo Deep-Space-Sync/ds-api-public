@@ -36357,7 +36357,50 @@ paths:
         name: body
         required: true
         schema:
-          type: object
+          items:
+            properties:
+              assigned_user:
+                type: string
+              breakdown:
+                items:
+                  type: object
+                type: array
+              budget_category:
+                description: Budget category to group items into
+                type: string
+              code:
+                type: string
+              cost_code_id:
+                type: string
+              cost_type_id:
+                description: Cost type identifier
+                type: string
+              location:
+                type: string
+              notes:
+                type: string
+              qto_item_name:
+                type: string
+              quantity:
+                type: number
+              source:
+                type: string
+              specifications:
+                items:
+                  type: object
+                type: array
+              total:
+                type: number
+              unit:
+                type: string
+              unit_rate:
+                type: number
+              volume:
+                type: number
+            required:
+            - budget_category
+            type: object
+          type: array
       responses:
         201:
           description: Items created successfully
@@ -41764,6 +41807,9 @@ paths:
                   cost_claim_num:
                     description: Related claim number
                     type: integer
+                  cost_type_id:
+                    description: Cost type identifier
+                    type: string
                   qty:
                     description: Quantity
                     type: number
@@ -42041,6 +42087,9 @@ paths:
                   cost_invoice_num:
                     description: Related invoice number
                     type: integer
+                  cost_type_id:
+                    description: Cost type identifier
+                    type: string
                   qty:
                     description: Quantity
                     type: number
@@ -42581,6 +42630,9 @@ paths:
             items:
               items:
                 properties:
+                  cost_type_id:
+                    description: Cost type identifier
+                    type: string
                   cost_variation_line_client_id:
                     description: Client-defined identifier for variation line item
                     type: string
@@ -45622,6 +45674,9 @@ paths:
               type: string
             cost_code_id:
               type: string
+            cost_type_id:
+              description: Cost type identifier
+              type: string
             location:
               type: string
             notes:
@@ -45785,6 +45840,9 @@ paths:
             code:
               type: string
             cost_code_id:
+              type: string
+            cost_type_id:
+              description: Cost type identifier
               type: string
             location:
               type: string
@@ -49816,6 +49874,8 @@ paths:
           properties:
             amount:
               description: Amount of the variation request
+            cost_type_id:
+              description: Cost type identifier
             cost_variation_req_client_id:
               description: User-friendly identifier for variation request
             currency:
