@@ -3382,6 +3382,147 @@ paths:
       summary: Get all available tender document sections
       tags:
       - HzTenderDocuments
+  /v2/hz/workspaces/{workspaceId}/projects/{projectId}/rfis:
+    get:
+      description: Get paginated list of RFI records for a project from Horizon rfi_records.
+      operationId: v2_hzListRFIs
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List RFIs for a project
+      tags:
+      - PortalApi
+    post:
+      description: Create a Horizon-native RFI with project-scoped number allocation.
+      operationId: v2_hzCreateRFI
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      responses:
+        201:
+          description: Created
+        401:
+          description: Unauthorized
+        409:
+          description: Validation error
+        422:
+          description: Invalid input
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a new RFI
+      tags:
+      - PortalApi
+  /v2/hz/workspaces/{workspaceId}/projects/{projectId}/rfis/{rfiId}:
+    get:
+      description: Get a single RFI record by ID including comments.
+      operationId: v2_hzGetRFIDetail
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: RFI identifier
+        in: path
+        name: rfiId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: RFI not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get RFI detail
+      tags:
+      - PortalApi
+    patch:
+      description: Update assignee, followers, actions, or location on an RFI.
+      operationId: v2_hzUpdateRFI
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: RFI identifier
+        in: path
+        name: rfiId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: RFI not found
+        409:
+          description: Validation error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update RFI operational fields
+      tags:
+      - PortalApi
   /v2/internal/transmittals_v2/{transmittal_doc_id}/send-emails:
     post:
       description: Internal endpoint called by Cloud Tasks to send notification emails.
