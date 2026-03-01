@@ -7096,7 +7096,12 @@ paths:
         name: X-Region
         required: false
         type: string
-      - description: Bearer token for webhook authentication.
+      - description: Preferred webhook token header. Supports raw token value.
+        in: header
+        name: X-Webhook-Token
+        required: false
+        type: string
+      - description: Webhook token header fallback. Supports Bearer token format.
         in: header
         name: Authorization
         required: false
