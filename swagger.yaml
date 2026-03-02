@@ -32817,6 +32817,69 @@ paths:
       summary: Rename document by series ID
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/signed-urls:
+    get:
+      description: 'Fetches signed download URLs for multiple CDE documents in a single
+        request.
+
+        Returns a signed URL per cde_id (or null if not found).
+
+        Maximum 100 cde_ids per request.
+
+        '
+      operationId: v2_getBatchSignedUrls
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - collectionFormat: multi
+        description: 'CDE document IDs to generate signed URLs for.
+
+          Pass multiple times (e.g., ?cde_id=101&cde_id=102).
+
+          Maximum 100 IDs per request.
+
+          '
+        in: query
+        items:
+          type: integer
+        name: cde_id
+        required: true
+        type: array
+      responses:
+        200:
+          description: Successfully returns signed download URLs
+          schema:
+            items:
+              properties:
+                cde_id:
+                  type: integer
+                expires_in_secs:
+                  description: URL expiry in seconds (900 = 15 min), 0 if not found
+                  type: integer
+                signed_url:
+                  description: Signed download URL, or null if cde_id not found
+                  type: string
+              type: object
+            type: array
+        400:
+          description: Bad request - missing cde_id or too many cde_ids (max 100)
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get batch signed download URLs
+      tags:
+      - CDE Documents
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/{cdeId}:
     delete:
       description: Invalidates a CDE entry for failed uploads
