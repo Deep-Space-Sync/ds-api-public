@@ -2668,6 +2668,52 @@ paths:
       summary: Approve vendor sharing
       tags:
       - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/vendors/relationship-type:
+    patch:
+      operationId: v2_updateVendorRelationshipType
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            updates:
+              items:
+                properties:
+                  relationship_type:
+                    enum:
+                    - SUBCONTRACTOR
+                    - SUPPLIER
+                    - CLIENT
+                    type: string
+                  sharing_from_global_company_id:
+                    type: number
+                required:
+                - sharing_from_global_company_id
+                - relationship_type
+                type: object
+              type: array
+          required:
+          - updates
+          type: object
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update vendor relationship type
+      tags:
+      - Global Company Directory
   /v2/global-companies/{globalCompanyId}/vendors/request:
     delete:
       operationId: v2_removeVendorSharingRequest
