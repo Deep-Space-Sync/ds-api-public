@@ -3569,6 +3569,82 @@ paths:
       summary: Update RFI operational fields
       tags:
       - PortalApi
+  /v2/hz/workspaces/{workspaceId}/projects/{projectId}/rfis/{rfiId}/comments:
+    post:
+      description: Add a comment to an RFI record. Comment author is derived from
+        the authenticated user.
+      operationId: v2_hzAddRFIComment
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: RFI identifier
+        in: path
+        name: rfiId
+        required: true
+        type: string
+      responses:
+        201:
+          description: Created
+        401:
+          description: Unauthorized
+        404:
+          description: RFI not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add a comment to an RFI
+      tags:
+      - PortalApi
+  /v2/hz/workspaces/{workspaceId}/projects/{projectId}/rfis/{rfiId}/comments/{commentId}/reactions:
+    post:
+      description: Toggle an emoji reaction on an RFI comment. If the authenticated
+        user has already reacted with the given emoji, the reaction is removed; otherwise
+        it is added.
+      operationId: v2_hzToggleRFICommentReaction
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: RFI identifier
+        in: path
+        name: rfiId
+        required: true
+        type: string
+      - description: Comment identifier
+        in: path
+        name: commentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK - updated comment with reactions
+        401:
+          description: Unauthorized
+        404:
+          description: RFI or comment not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Toggle a reaction on an RFI comment
+      tags:
+      - PortalApi
   /v2/internal/transmittals_v2/{transmittal_doc_id}/send-emails:
     post:
       description: Internal endpoint called by Cloud Tasks to send notification emails.
