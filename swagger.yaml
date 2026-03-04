@@ -9490,6 +9490,166 @@ paths:
       summary: Get workspace-level CDE documents by series IDs
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/cde/v2/global-search:
+    post:
+      description: 'Search for text content across all indexed CDE documents in a
+        workspace.
+
+
+        Returns matching documents with text snippets highlighting where
+
+        the query was found, along with page numbers for navigation.
+
+
+        Results are filtered to latest versions only by default.
+
+        '
+      operationId: v2_postCdeGlobalSearch
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            file_types:
+              description: Filter by MIME types (e.g. ["application/pdf"])
+              items:
+                type: string
+              type: array
+            folder_id:
+              description: Filter results to a specific folder
+              type: string
+            page:
+              default: 1
+              description: Page number for pagination (1-indexed)
+              minimum: 1
+              type: integer
+            page_size:
+              default: 20
+              description: Number of results per page
+              maximum: 100
+              minimum: 1
+              type: integer
+            project_id:
+              description: Filter results to a specific project
+              type: integer
+            query:
+              description: Text to search for across all documents
+              minLength: 1
+              type: string
+          required:
+          - query
+          type: object
+      responses:
+        200:
+          description: Search results with matching documents and text highlights
+          schema:
+            properties:
+              page:
+                description: Current page number
+                type: integer
+              results:
+                items:
+                  properties:
+                    cde_id:
+                      type: integer
+                    display_file_name:
+                      type: string
+                    document_series_id:
+                      type: string
+                    file_type:
+                      type: string
+                    folder_id:
+                      type: string
+                    folder_path:
+                      type: string
+                    highlights:
+                      items:
+                        properties:
+                          page_number:
+                            type: integer
+                          snippets:
+                            items:
+                              type: string
+                            type: array
+                        type: object
+                      type: array
+                    relevance_score:
+                      type: number
+                    total_page_matches:
+                      type: integer
+                    version:
+                      type: integer
+                  type: object
+                type: array
+              total_results:
+                description: Total number of matching documents
+                type: integer
+            type: object
+        400:
+          description: Bad request - missing or invalid query
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Search for text across all indexed CDE documents
+      tags:
+      - PDF Text Search
+  /v2/workspaces/{workspaceId}/cde/v2/reindex-all:
+    post:
+      description: 'Triggers a full re-index of all PDF documents in the workspace.
+
+
+        Use this to backfill search indexing for documents uploaded before
+
+        the indexing feature was enabled. Only indexes documents not already
+
+        present in the search index.
+
+        '
+      operationId: v2_postCdeReindexAll
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Reindex job completed
+          schema:
+            properties:
+              errors:
+                description: Error details for failed documents
+                items:
+                  type: string
+                type: array
+              failed:
+                description: Number of documents that failed to index
+                type: integer
+              indexed:
+                description: Number of documents successfully indexed
+                type: integer
+              skipped:
+                description: Number of documents already indexed (skipped)
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Re-index all CDE documents in a workspace (backfill)
+      tags:
+      - PDF Text Search
   /v2/workspaces/{workspaceId}/cde/v2/rename-by-series-id:
     post:
       description: 'Rename all versions of a document at workspace level.
