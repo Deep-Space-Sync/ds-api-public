@@ -6023,8 +6023,8 @@ paths:
       - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/rfis:
     get:
-      description: Get paginated list of RFIs for a project, filtered to company-relevant
-        items.
+      description: Get paginated list of Horizon-native RFIs for a project, filtered
+        by company involvement (creator, assignee, or follower).
       operationId: v2_portalApiGetRfis
       parameters:
       - description: Workspace identifier (e.g., ds_xxx)
@@ -6057,17 +6057,48 @@ paths:
           description: OK
         401:
           description: Unauthorized
+        403:
+          description: Forbidden - user has no company assignment
         500:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get RFIs for a project
+      summary: List portal RFIs (v2)
+      tags:
+      - PortalApi
+    post:
+      description: Create a Horizon-native RFI from the portal with a simplified payload.
+        Creator is auto-added as a follower.
+      operationId: v2_portalApiCreateRfi
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      responses:
+        201:
+          description: Created
+        401:
+          description: Unauthorized
+        422:
+          description: Invalid input
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create portal RFI (v2)
       tags:
       - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/rfis/{rfiId}:
     get:
-      description: Get full RFI submission details with metadata, filtered by company
-        access.
+      description: Get full Horizon-native RFI detail with comments, authorized by
+        company involvement.
       operationId: v2_portalApiGetRfiDetail
       parameters:
       - description: Workspace identifier (e.g., ds_xxx)
@@ -6098,7 +6129,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Get RFI detail
+      summary: Get portal RFI detail (v2)
       tags:
       - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/site-instructions:
