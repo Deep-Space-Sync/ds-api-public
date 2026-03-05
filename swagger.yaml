@@ -40014,6 +40014,503 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-periods:
+    delete:
+      operationId: v2_deleteCostForecastPeriod
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: periodId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Period deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Period not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Forecast Period (soft delete)
+      tags:
+      - Cost - Forecast Periods
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getCostForecastPeriods
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Forecast ID to list periods for
+        in: query
+        name: forecastId
+        required: true
+        type: string
+      - description: Filter by cost code
+        in: query
+        name: cost_code
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    amount:
+                      type: number
+                    cost_code:
+                      type: string
+                    cost_code_name:
+                      type: string
+                    forecast_id:
+                      type: string
+                    id:
+                      type: string
+                    period_month:
+                      description: YYYY-MM format
+                      type: string
+                  type: object
+                type: array
+            type: object
+        400:
+          description: Missing forecastId
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Forecast Periods
+      tags:
+      - Cost - Forecast Periods
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchCostForecastPeriod
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: periodId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              type: number
+            cost_code_name:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Period updated
+        401:
+          description: Unauthorized
+        404:
+          description: Period not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Forecast Period
+      tags:
+      - Cost - Forecast Periods
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postCostForecastPeriod
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              type: number
+            cost_code:
+              type: string
+            cost_code_name:
+              type: string
+            forecast_id:
+              type: string
+            period_month:
+              pattern: ^\d{4}-\d{2}$
+              type: string
+          required:
+          - forecast_id
+          - cost_code
+          - period_month
+          - amount
+          type: object
+      responses:
+        201:
+          description: Period created
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create single Forecast Period
+      tags:
+      - Cost - Forecast Periods
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecasts:
+    delete:
+      operationId: v2_deleteCostForecast
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: forecastId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Forecast deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Forecast not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Forecast (soft delete, cascades to periods)
+      tags:
+      - Cost - Forecasts
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getCostForecasts
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Get a single forecast by ID
+        in: query
+        name: forecastId
+        required: false
+        type: string
+      - description: Filter by forecast status
+        enum:
+        - draft
+        - active
+        - archived
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Search forecast name, version, description
+        in: query
+        name: q
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    cost_code_count:
+                      type: integer
+                    forecast_name:
+                      description: Human-readable forecast name
+                      type: string
+                    forecast_version:
+                      description: Version tag (e.g. B1, B2)
+                      type: string
+                    id:
+                      description: Forecast document ID
+                      type: string
+                    period_count:
+                      type: integer
+                    period_end:
+                      description: Latest period month (YYYY-MM)
+                      type: string
+                    period_start:
+                      description: Earliest period month (YYYY-MM)
+                      type: string
+                    source:
+                      enum:
+                      - csv_upload
+                      - manual
+                      - api
+                      type: string
+                    status:
+                      enum:
+                      - draft
+                      - active
+                      - archived
+                      type: string
+                    total_forecast_amount:
+                      description: Sum of all period amounts
+                      type: number
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Forecasts
+      tags:
+      - Cost - Forecasts
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchCostForecast
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: forecastId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            currency:
+              type: string
+            description:
+              type: string
+            forecast_name:
+              type: string
+            status:
+              enum:
+              - draft
+              - active
+              - archived
+              type: string
+          type: object
+      responses:
+        200:
+          description: Forecast updated
+        401:
+          description: Unauthorized
+        404:
+          description: Forecast not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Forecast
+      tags:
+      - Cost - Forecasts
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postCostForecast
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            currency:
+              type: string
+            description:
+              type: string
+            forecast_name:
+              type: string
+            forecast_version:
+              type: string
+            status:
+              enum:
+              - draft
+              - active
+              - archived
+              type: string
+          required:
+          - forecast_name
+          - forecast_version
+          type: object
+      responses:
+        201:
+          description: Forecast created
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Forecast
+      tags:
+      - Cost - Forecasts
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecasts/loadfromcsv:
+    post:
+      operationId: v2_postCostForecastLoadFromCsv
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            currency:
+              type: string
+            description:
+              type: string
+            forecast_name:
+              description: Human-readable forecast name
+              type: string
+            forecast_version:
+              description: Version tag (e.g. B1, B2)
+              type: string
+            periods:
+              description: Parsed CSV rows - monthly amounts per cost code
+              items:
+                properties:
+                  amount:
+                    description: Forecast spend for this cost code in this month
+                    type: number
+                  cost_code:
+                    description: Cost code identifier (maps to workspace cost codes)
+                    type: string
+                  cost_code_name:
+                    description: Human-readable cost code name
+                    type: string
+                  period_month:
+                    description: Month in YYYY-MM format
+                    pattern: ^\d{4}-\d{2}$
+                    type: string
+                required:
+                - cost_code
+                - period_month
+                - amount
+                type: object
+              type: array
+            source_filename:
+              description: Original CSV filename for audit
+              type: string
+            status:
+              default: active
+              enum:
+              - draft
+              - active
+              - archived
+              type: string
+          required:
+          - forecast_name
+          - forecast_version
+          - periods
+          type: object
+      responses:
+        201:
+          description: Forecast loaded successfully
+          schema:
+            properties:
+              cost_codes:
+                type: integer
+              forecast_id:
+                type: string
+              forecast_name:
+                type: string
+              forecast_version:
+                type: string
+              message:
+                type: string
+              period_range:
+                type: string
+              periods_created:
+                type: integer
+              total_amount:
+                type: number
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create forecast and bulk-load periods from parsed CSV data
+      tags:
+      - Cost - Forecasts
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims:
     get:
       operationId: v2_getHeadContractClaims
