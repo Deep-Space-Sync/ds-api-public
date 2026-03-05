@@ -43863,6 +43863,47 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+    delete:
+      operationId: v2_deleteCostPurchaseOrderById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costOrderId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Purchase order successfully deleted
+          schema:
+            properties:
+              message:
+                description: Success message
+                type: string
+            type: object
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        403:
+          description: Access denied
+        404:
+          description: Purchase order not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Purchase Order By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/variation:
     get:
       operationId: v2_getCostVariationOrders
