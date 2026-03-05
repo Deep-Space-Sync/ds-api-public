@@ -9678,6 +9678,58 @@ paths:
       summary: Search for text across all indexed CDE documents
       tags:
       - PDF Text Search
+  /v2/workspaces/{workspaceId}/cde/v2/index-documents:
+    post:
+      description: 'Index specific documents into Elasticsearch for full-text search.
+
+        Called from the frontend UI when users manually trigger indexing.
+
+        '
+      operationId: v2_postCdeIndexDocuments
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_ids:
+              description: List of CDE document IDs to index
+              items:
+                type: integer
+              type: array
+          required:
+          - cde_ids
+          type: object
+      responses:
+        200:
+          description: Indexing results summary
+          schema:
+            properties:
+              errors:
+                items:
+                  type: string
+                type: array
+              failed:
+                type: integer
+              indexed:
+                type: integer
+              skipped:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Manually index selected CDE documents
+      tags:
+      - PDF Text Search
   /v2/workspaces/{workspaceId}/cde/v2/reindex-all:
     post:
       description: 'Triggers a full re-index of all PDF documents in the workspace.
@@ -43859,47 +43911,6 @@ paths:
       security:
       - JWT_v2: []
       summary: Edit Purchase Order By Id
-      tags:
-      - Cost
-      x-ds-test-enabled: true
-      x-min-permissions: isCostUser
-    delete:
-      operationId: v2_deleteCostPurchaseOrderById
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: costOrderId
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Purchase order successfully deleted
-          schema:
-            properties:
-              message:
-                description: Success message
-                type: string
-            type: object
-        400:
-          description: Bad request
-        401:
-          description: Unauthorized
-        403:
-          description: Access denied
-        404:
-          description: Purchase order not found
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Delete Purchase Order By Id
       tags:
       - Cost
       x-ds-test-enabled: true
