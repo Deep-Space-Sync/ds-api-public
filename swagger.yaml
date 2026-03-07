@@ -365,6 +365,26 @@ paths:
       summary: Test logging and get timing summary
       tags:
       - Cold Start Investigation
+  /v2/correspondence_v2/inbound-email-webhook:
+    post:
+      description: Webhook endpoint for inbound email services (SendGrid, Mailgun,
+        etc.). No authentication required.
+      operationId: v2_inboundEmailWebhook
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Email processed (or discarded)
+        500:
+          description: Ingestion failed (retry)
+      security: []
+      summary: Receive inbound emails from email service
+      tags:
+      - Correspondence
   /v2/data-sync/system-table/{reportName}:
     get:
       operationId: v2_syncSystemTableToGithub
@@ -35351,6 +35371,64 @@ paths:
       security:
       - JWT_v2: []
       summary: Get a thread with all messages
+      tags:
+      - Correspondence
+  /v2/workspaces/{workspaceId}/projects/{projectId}/correspondence_v2/threads/{threadDocId}/system-reply:
+    post:
+      description: Send a reply in a thread using the system email relay (no OAuth
+        required).
+      operationId: v2_systemReply
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Thread document ID
+        in: path
+        name: threadDocId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            body_html:
+              description: HTML body of the reply
+              type: string
+            body_text:
+              description: Plain text body of the reply
+              type: string
+          required:
+          - body_text
+          - body_html
+          type: object
+      responses:
+        201:
+          description: Reply sent and ingested
+          schema:
+            properties:
+              id:
+                description: Email document ID
+                type: string
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: System relay not enabled
+        404:
+          description: Thread not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Send a reply via system relay
       tags:
       - Correspondence
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/aggregate:
