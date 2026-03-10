@@ -11202,6 +11202,8 @@ paths:
               type: string
             estimated_cost_notes:
               type: string
+            lead_time_days:
+              type: integer
             linked_order_ids:
               items:
                 type: string
@@ -11215,6 +11217,25 @@ paths:
               type: string
             project_id:
               type: integer
+            quote_suppliers:
+              items:
+                properties:
+                  company_name:
+                    type: string
+                  id_global_company_directory:
+                    type: integer
+                  status:
+                    enum:
+                    - invited
+                    - quoted
+                    - declined
+                    - awarded
+                    type: string
+                required:
+                - id_global_company_directory
+                - company_name
+                type: object
+              type: array
             risk_factors:
               items:
                 type: string
@@ -11237,6 +11258,12 @@ paths:
               items:
                 type: string
               type: array
+            wbs_id:
+              description: WBS item UUID from Construction Program
+              type: string
+            wbs_name:
+              description: WBS item name for display
+              type: string
           required:
           - cost_activity_title
           - project_id
@@ -11381,6 +11408,8 @@ paths:
               type: string
             estimated_cost_notes:
               type: string
+            lead_time_days:
+              type: integer
             linked_order_ids:
               items:
                 type: string
@@ -11394,6 +11423,25 @@ paths:
               type: string
             project_id:
               type: integer
+            quote_suppliers:
+              items:
+                properties:
+                  company_name:
+                    type: string
+                  id_global_company_directory:
+                    type: integer
+                  status:
+                    enum:
+                    - invited
+                    - quoted
+                    - declined
+                    - awarded
+                    type: string
+                required:
+                - id_global_company_directory
+                - company_name
+                type: object
+              type: array
             risk_factors:
               items:
                 type: string
@@ -11416,6 +11464,12 @@ paths:
               items:
                 type: string
               type: array
+            wbs_id:
+              description: WBS item UUID from Construction Program
+              type: string
+            wbs_name:
+              description: WBS item name for display
+              type: string
           type: object
       responses:
         200:
