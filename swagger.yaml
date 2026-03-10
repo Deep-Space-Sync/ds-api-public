@@ -64215,6 +64215,28 @@ paths:
       summary: Resend invite email to user in workspace
       tags:
       - Users
+  /v2/workspaces/{workspaceId}/users/with-company:
+    get:
+      description: Returns all users and user details for a workspace, including global
+        company assignment (global_company_id and global_company_name)
+      operationId: v2_getWorkspaceUsersWithCompany
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get users in a workspace with company info
+      tags:
+      - Users
   /v2/workspaces/{workspaceId}/users/{userId}:
     patch:
       description: Edit workspace-level attributes of a user
