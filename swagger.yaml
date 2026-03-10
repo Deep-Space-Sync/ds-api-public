@@ -66679,6 +66679,65 @@ paths:
       summary: Get email sync status for workspace
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}:
+    patch:
+      description: Manually update or correct the AI-extracted invoice data and PO
+        matching results for an email.
+      operationId: v2_updateInvoiceEmailAiAnalysis
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              type: number
+            due_date:
+              type: string
+            invoice_date:
+              type: string
+            invoice_number:
+              type: string
+            line_items:
+              items:
+                type: object
+              type: array
+            matched_cost_order_num:
+              type: string
+            vendor_name:
+              type: string
+          type: object
+      responses:
+        200:
+          description: AI analysis updated
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+        400:
+          description: Invalid request body or email not AI processed
+        403:
+          description: Unauthorized
+        404:
+          description: Email not found
+      security:
+      - JWT_v2: []
+      summary: Update AI analysis for an email
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/ai-process:
     post:
       description: Process a single email with AI (Vertex AI) to extract invoice information
