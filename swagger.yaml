@@ -11272,6 +11272,39 @@ paths:
               items:
                 type: string
               type: array
+            linked_scheduling_tasks:
+              description: Scheduling tasks linked to this procurement package (bidirectional
+                link with Construction Program)
+              items:
+                properties:
+                  action_id:
+                    description: Scheduling task action ID
+                    type: string
+                  project_id:
+                    description: Project ID of the scheduling task
+                    type: string
+                  start_date:
+                    description: Scheduling task start date (for Gantt overlay context)
+                    type: string
+                  task_name:
+                    description: Scheduling task name (denormalized for display)
+                    type: string
+                required:
+                - action_id
+                - task_name
+                type: object
+              type: array
+            origin_scheduling_task:
+              description: The scheduling task that triggered creation of this procurement
+                package (for re-linking)
+              properties:
+                action_id:
+                  type: string
+                project_id:
+                  type: string
+                task_name:
+                  type: string
+              type: object
             priority:
               enum:
               - low
@@ -11478,6 +11511,34 @@ paths:
               items:
                 type: string
               type: array
+            linked_scheduling_tasks:
+              description: Scheduling tasks linked to this procurement package
+              items:
+                properties:
+                  action_id:
+                    type: string
+                  project_id:
+                    type: string
+                  start_date:
+                    type: string
+                  task_name:
+                    type: string
+                required:
+                - action_id
+                - task_name
+                type: object
+              type: array
+            origin_scheduling_task:
+              description: The scheduling task that triggered creation of this procurement
+                package
+              properties:
+                action_id:
+                  type: string
+                project_id:
+                  type: string
+                task_name:
+                  type: string
+              type: object
             priority:
               enum:
               - low
