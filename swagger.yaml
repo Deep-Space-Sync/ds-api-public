@@ -66641,6 +66641,71 @@ paths:
       summary: Fetch emails synchronously without Cloud Tasks
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/selected-ai-process:
+    post:
+      description: Process specific emails by ID with AI to extract invoice data and
+        match to purchase orders. Allows re-processing of already-processed emails.
+      operationId: v2_selectedAiProcessInvoiceEmails
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - default: 8
+        description: Number of concurrent workers
+        in: query
+        maximum: 20
+        minimum: 1
+        name: max_workers
+        required: false
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email_ids:
+              description: List of email document IDs to process
+              items:
+                type: string
+              type: array
+          required:
+          - email_ids
+          type: object
+      responses:
+        200:
+          description: Processing completed
+          schema:
+            properties:
+              failed:
+                type: integer
+              message:
+                type: string
+              not_found:
+                items:
+                  type: string
+                type: array
+              status:
+                type: string
+              successful:
+                type: integer
+              total:
+                type: integer
+            type: object
+        400:
+          description: Invalid request - email_ids required
+        403:
+          description: Unauthorized
+        404:
+          description: No valid emails found
+        500:
+          description: Processing failed
+      security:
+      - JWT_v2: []
+      summary: AI process selected emails in workspace
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/sync:
     get:
       description: Dispatches a Cloud Task to sync emails from connected Gmail/Outlook
