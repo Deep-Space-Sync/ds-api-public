@@ -66883,11 +66883,11 @@ paths:
         name: workspace_id
         required: true
         type: string
-      - description: One or more PDF files (max 10MB each)
-        in: formData
-        name: files
+      - in: body
+        name: body
         required: true
-        type: file
+        schema:
+          type: string
       responses:
         200:
           description: Upload completed
