@@ -66808,6 +66808,75 @@ paths:
       summary: AI process single email to extract invoice data
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/change-status:
+    post:
+      description: "Change the approval workflow status of an AI-processed invoice\
+        \ email. Supports transitions Draft \u2192 Submitted/Review \u2192 Approved/Rejected."
+      operationId: v2_changeInvoiceStatus
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              description: Required when status is Rejected
+              type: string
+            status:
+              description: Target approval status
+              enum:
+              - Draft
+              - Submitted
+              - Review
+              - Approved
+              - Rejected
+              type: string
+          required:
+          - status
+          type: object
+      responses:
+        200:
+          description: Status changed successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  previous_status:
+                    type: string
+                  rejection_reason:
+                    type: string
+                  status:
+                    type: string
+                  status_changed_at:
+                    format: date-time
+                    type: string
+                  status_changed_by:
+                    type: string
+                type: object
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+        400:
+          description: Invalid status, invalid transition, or missing reason for rejection
+        403:
+          description: Unauthorized
+        404:
+          description: Email not found
+      security:
+      - JWT_v2: []
+      summary: Change invoice approval status
+      tags:
+      - InvoiceReconciliation
 schemes:
 - https
 securityDefinitions:
