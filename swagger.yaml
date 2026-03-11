@@ -66869,6 +66869,62 @@ paths:
       summary: Get email sync status for workspace
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload one or more PDF invoices directly. Each PDF creates a Firestore
+        email inbox document (provider=manual) and an attachment document, mirroring
+        the email sync flow.
+      operationId: v2_uploadInvoicePdf
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: One or more PDF files (max 10MB each)
+        in: formData
+        name: files
+        required: true
+        type: file
+      responses:
+        200:
+          description: Upload completed
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    attachment_id:
+                      description: Firestore attachment document ID
+                      type: string
+                    email_id:
+                      description: Firestore email inbox document ID
+                      type: string
+                    filename:
+                      description: Original filename
+                      type: string
+                  type: object
+                type: array
+              message:
+                example: Uploaded 2 invoice(s)
+                type: string
+              status:
+                example: success
+                type: string
+            type: object
+        400:
+          description: No files provided or validation failed
+        403:
+          description: Unauthorized - workspace access required
+        500:
+          description: Upload failed
+      security:
+      - JWT_v2: []
+      summary: Upload invoice PDF(s) manually
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}:
     patch:
       description: Manually update or correct the AI-extracted invoice data and PO
