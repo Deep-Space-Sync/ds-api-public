@@ -2801,6 +2801,70 @@ paths:
       summary: Request vendor sharing
       tags:
       - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/workspace-link:
+    patch:
+      operationId: v2_updateGlobalCompanyWorkspaceLink
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            ds_workspace_name:
+              description: Workspace ID to link, or null to unlink
+              type: string
+          required:
+          - ds_workspace_name
+          type: object
+      responses:
+        200:
+          description: Successfully linked or unlinked
+          schema:
+            properties:
+              ds_workspace_name:
+                type: string
+              global_company_id:
+                type: number
+              message:
+                type: string
+              previous_workspace:
+                type: string
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        404:
+          description: Global company or workspace not found
+        409:
+          description: Conflict - workspace already linked to another global company
+          schema:
+            properties:
+              conflicts:
+                items:
+                  properties:
+                    id:
+                      type: number
+                    name:
+                      type: string
+                  type: object
+                type: array
+              current_workspace:
+                type: string
+              message:
+                type: string
+            type: object
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Link or unlink a global company to/from a DS workspace
+      tags:
+      - Global Company Directory
   /v2/hz-document-sections:
     get:
       operationId: v2_listHzDocumentSections
