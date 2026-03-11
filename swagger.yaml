@@ -29532,7 +29532,7 @@ paths:
               description: Estimator assigned to this opportunity (optional)
               type: string
             client_id:
-              description: Client identifier (optional)
+              description: Client Directory reference ID (REQUIRED)
               type: string
             comments:
               description: Array of comment objects (optional)
@@ -29589,6 +29589,26 @@ paths:
               description: Expected award/decision date in ISO 8601 format (optional)
               format: date
               type: string
+            lost_at_stage:
+              description: Stage at which opportunity was lost (required when status=Lost)
+              enum:
+              - ROI
+              - Tender
+              - Negotiation
+              type: string
+            lost_notes:
+              description: Optional notes about the loss
+              type: string
+            lost_reason:
+              description: Reason for loss (required when status=Lost)
+              enum:
+              - Price
+              - Scope
+              - Relationship
+              - Timing
+              - Client Cancelled
+              - Other
+              type: string
             opportunity_notes:
               description: Long text notes about the opportunity (optional)
               type: string
@@ -29603,7 +29623,7 @@ paths:
               - Low
               type: string
             probability:
-              default: 50
+              default: 10
               description: Win probability percentage
               maximum: 100
               minimum: 0
@@ -29615,23 +29635,30 @@ paths:
               description: Type of project (optional)
               type: string
             status:
-              default: Will Bid
-              description: Opportunity status
+              default: Identified
+              description: Opportunity stage
               enum:
               - Identified
               - Qualifying
-              - Will Bid
-              - Preparing
-              - Submitted
+              - ROI
+              - Tender
+              - Negotiation
               - Awarded
               - Lost
+              - Did Not Proceed
               type: string
             submission_date:
               description: Submission date in ISO 8601 format (optional)
               format: date
               type: string
+            tags:
+              description: Tags from Project Settings Tag Registry
+              items:
+                type: string
+              type: array
           required:
           - project_name
+          - client_id
           type: object
       responses:
         201:
@@ -29804,6 +29831,78 @@ paths:
       security:
       - JWT_v2: []
       summary: Add comment to opportunity
+      tags:
+      - Opportunities
+  /v2/workspaces/{workspaceId}/opportunity-tags:
+    get:
+      description: Retrieve the workspace-level tag registry for opportunities
+      operationId: v2_getOpportunityTags
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tag registry
+          schema:
+            properties:
+              tags:
+                items:
+                  type: string
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get workspace opportunity tags
+      tags:
+      - Opportunities
+    put:
+      description: Replace the workspace-level tag registry
+      operationId: v2_updateOpportunityTags
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            tags:
+              description: Full list of tags for the workspace
+              items:
+                type: string
+              type: array
+          required:
+          - tags
+          type: object
+      responses:
+        200:
+          description: Updated tag registry
+          schema:
+            properties:
+              tags:
+                items:
+                  type: string
+                type: array
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update workspace opportunity tags
       tags:
       - Opportunities
   /v2/workspaces/{workspaceId}/powerbi:
