@@ -984,6 +984,10 @@ paths:
               type: number
             company_type:
               type: string
+            disable_workspace_creation:
+              description: When true, do not trigger async workspace creation or workspace
+                auto-mapping after the company is created
+              type: boolean
             industry:
               type: string
             name:
