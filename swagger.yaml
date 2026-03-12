@@ -7434,6 +7434,36 @@ paths:
       summary: Update user profile data
       tags:
       - User Profiles
+  /v2/users/{user_id}/profile/avatar:
+    post:
+      consumes:
+      - multipart/form-data
+      operationId: v2_uploadUserAvatar
+      parameters:
+      - in: query
+        name: userId
+        required: true
+        type: string
+      - in: formData
+        name: avatar
+        required: true
+        type: file
+      responses:
+        200:
+          description: Successful response
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upload user avatar image
+      tags:
+      - User Profiles
   /v2/webhooks/rfi/dssite:
     post:
       description: Accept DS-site RFI submission webhook, verify token, fetch form
