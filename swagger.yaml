@@ -11251,6 +11251,9 @@ paths:
             contract_value:
               format: float
               type: number
+            cost_activity_client_id:
+              description: Human-readable package number shown in the UI
+              type: string
             cost_activity_title:
               type: string
             cost_code:
@@ -11490,6 +11493,9 @@ paths:
             contract_value:
               format: float
               type: number
+            cost_activity_client_id:
+              description: Human-readable package number shown in the UI
+              type: string
             cost_activity_title:
               type: string
             cost_code:
