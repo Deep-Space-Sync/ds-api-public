@@ -4991,6 +4991,40 @@ paths:
       summary: Create portal RFI (v2)
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/rfis/ai/draft:
+    post:
+      description: "Accepts a natural language prompt and returns a structured RFI\
+        \ draft aligned with the create RFI schema. Does not create any records \u2014\
+        \ the returned draft should be reviewed and submitted via the standard POST\
+        \ /rfis endpoint."
+      operationId: v2_portalV2GenerateRfiAiDraft
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK - draft generated
+        401:
+          description: Unauthorized
+        422:
+          description: Invalid input (empty prompt or extra fields)
+        500:
+          description: Internal Server Error
+        502:
+          description: AI model unavailable
+      security:
+      - JWT_v2: []
+      summary: Generate AI RFI draft
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/rfis/{rfiId}:
     get:
       description: Get full Horizon-native RFI detail with comments, authorized by
