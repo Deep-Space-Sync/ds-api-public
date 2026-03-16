@@ -4,6 +4,359 @@ info:
   title: Deep Space API
   version: 2.0.0
 paths:
+  /v1/login:
+    post:
+      description: Validates Deep Space username and password and returns JWT token
+        for API
+      operationId: v1_login
+      parameters:
+      - in: header
+        name: username
+        required: false
+        type: string
+      - in: header
+        name: password
+        required: false
+        type: string
+      - in: header
+        name: region
+        required: false
+        type: string
+      - in: header
+        name: token
+        required: false
+        type: string
+      responses:
+        200:
+          description: JWT
+          schema:
+            type: string
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      summary: Login to get JWT token
+      tags:
+      - Authentication
+  /v1/regions:
+    get:
+      description: Returns list of api-supported regions
+      operationId: v1_getRegions
+      parameters:
+      - description: Comma-separated list of fields to include in the response
+        in: query
+        name: fields
+        required: false
+        type: string
+      responses:
+        200:
+          description: list of supported regions
+      summary: Get supported regions
+      tags:
+      - Info
+  /v1/workspaces:
+    get:
+      description: Returns all workspaces and projects a user has access to with optional
+        parameters for extra info
+      operationId: v1_getWorkspaces
+      parameters:
+      - description: Includes additional details in response
+        in: query
+        name: includeDetails
+        required: false
+        type: boolean
+      - description: Includes permissions in response
+        in: query
+        name: includePermissions
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: Successful response with a list of workspaces and projects
+          schema:
+            items:
+              properties:
+                projects:
+                  items:
+                    properties:
+                      project_name:
+                        example: My Project Name
+                        type: string
+                    type: object
+                  type: array
+                workspace:
+                  description: ds_workspace_name corresponding to dataset name
+                  example: ds_12345678_9123_4567_8912_123456789123
+                  type: string
+                workspace_name:
+                  example: My Workspace Name
+                  type: string
+              type: object
+            type: array
+        204:
+          description: No content to return
+        400:
+          description: Bad Request due to invalid parameters
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get list of workspaces and associated projects
+      tags:
+      - Info
+  /v1/workspaces/{workspaceId}/projects/{projectId}/cloudstoragebucket:
+    get:
+      description: Creates a new cloud storage bucket
+      operationId: v1_getCloudStorageBucket
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Created Cloud Storage Bucket Name
+          schema:
+            type: string
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create a cloud storage bucket for single-use and return its name
+      tags:
+      - Navis Integration
+    post:
+      consumes:
+      - application/json
+      description: Creates a new cloud storage bucket for a project and initialises
+        files expected to arrive in bucket.
+      operationId: v1_postCloudStorageBucket
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            collectorKeys:
+              description: A list of collector keys (strings)
+            fileIds:
+              description: A list of file ids (integers)
+          required:
+          - collectorKeys
+          - fileIds
+          type: object
+      responses:
+        200:
+          description: Created Cloud Storage Bucket Name
+          schema:
+            type: string
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create a cloud storage bucket for expected files and return its name
+      tags:
+      - Navis Integration
+  /v1/workspaces/{workspaceId}/projects/{projectId}/files/{fileId}/navis/{collectorKey}:
+    post:
+      consumes:
+      - application/json
+      operationId: v1_navisfileupload
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: The file id
+        in: path
+        name: fileId
+        required: true
+        type: string
+      - description: The collector key
+        in: path
+        name: collectorKey
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            bucket_name:
+              description: The name of the cloud storage bucket
+            crawlKey:
+              description: The crawl key
+            end_time:
+              description: 'Datetime value of end of navis extraction - expected format:
+                %d/%m/%Y %I:%M:%S %p'
+            start_time:
+              description: 'Datetime value of start of navis extraction - expected
+                format: %d/%m/%Y %I:%M:%S %p'
+          required:
+          - start_time
+          - end_time
+          - bucket_name
+          - crawlKey
+          type: object
+      responses:
+        200:
+          description: Successfully uploaded navis data
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Upload navis data to Deep Space at the file level
+      tags:
+      - Navis Integration
+  /v1/workspaces/{workspaceId}/projects/{projectId}/navis/{collectorKey}:
+    post:
+      consumes:
+      - application/json
+      operationId: v1_navisprojectupload
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: The collector key
+        in: path
+        name: collectorKey
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            bucket_name:
+              description: The name of the cloud storage bucket
+            crawlKey:
+              description: The crawl key
+            end_time:
+              description: 'Datetime value of end of navis extraction - expected format:
+                %d/%m/%Y %I:%M:%S %p'
+            start_time:
+              description: 'Datetime value of start of navis extraction - expected
+                format: %d/%m/%Y %I:%M:%S %p'
+          required:
+          - start_time
+          - end_time
+          - bucket_name
+          - crawlKey
+          type: object
+      responses:
+        200:
+          description: Successfully uploaded navis data
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Upload navis data to Deep Space at the project level
+      tags:
+      - Navis Integration
+  /v1/workspaces/{workspaceId}/projects/{projectId}/sourcefiles:
+    get:
+      description: Returns all sourcefiles details for a project
+      operationId: v1_getSourceFiles
+      parameters:
+      - description: The workspace name or identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: The project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A list of sourcefiles
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Get sourcefiles by project ID
+      tags:
+      - Files
+    post:
+      consumes:
+      - application/json
+      description: Creates a new sourcefile in a project with the provided filename
+        and discipline
+      operationId: v1_postSourceFiles
+      parameters:
+      - description: The workspace name or identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: The project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            discipline:
+              description: The discipline of the sourcefile (e.g., "Architecture")
+              type: string
+            filename:
+              description: The name of the sourcefile (e.g., "MyFile.rvt")
+              type: string
+          required:
+          - filename
+          - discipline
+          type: object
+      responses:
+        201:
+          description: Sourcefile successfully created
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v1: []
+      summary: Create a sourcefile in a project
+      tags:
+      - Files
   /v2/actions/associations:
     get:
       operationId: v2_getAssociations
@@ -67623,6 +67976,10 @@ paths:
 schemes:
 - https
 securityDefinitions:
+  JWT_v1:
+    authorizationUrl: ''
+    flow: implicit
+    type: oauth2
   JWT_v2:
     authorizationUrl: ''
     flow: implicit
