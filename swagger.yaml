@@ -31224,6 +31224,57 @@ paths:
       summary: Get specific operation from registry
       tags:
       - Automated Config Registry
+  /v2/workspaces/{workspaceId}/projects/settings:
+    get:
+      description: 'Returns a map of project_id -> project_image_url for a list of
+        projects.
+
+        Used by the frontend to efficiently fetch cover images for multiple projects
+
+        in a single request, without requiring per-project settings calls.
+
+        '
+      operationId: v2_getBatchProjectSettingsImages
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Comma-separated list of project IDs (e.g. "1,2,3")
+        in: query
+        name: project_ids
+        required: true
+        type: string
+      responses:
+        200:
+          description: Map of project_id to project_image_url
+          schema:
+            properties:
+              data:
+                additionalProperties:
+                  type: string
+                description: 'Keys are project IDs (as integers), values are project_image_url
+                  strings.
+
+                  Only projects that have a project_image_url set are included.
+
+                  '
+                type: object
+            type: object
+        400:
+          description: Bad request - missing or invalid project_ids
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Batch Get Project Image URLs
+      tags:
+      - Projects
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceMember
   /v2/workspaces/{workspaceId}/projects/{projectId}:
     delete:
       consumes:
