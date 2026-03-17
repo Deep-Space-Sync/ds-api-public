@@ -8187,6 +8187,52 @@ paths:
       summary: Receive DS-site RFI webhook
       tags:
       - PortalApi
+  /v2/webhooks/si/dssite:
+    post:
+      description: Accept DS-site Site Instruction submission webhook, verify token,
+        fetch form payload from CALLBACK_URL, and create or update a Horizon SI record.
+      operationId: v2_webhookReceiveDsSiteSI
+      parameters:
+      - description: Target workspace identifier.
+        in: header
+        name: X-Workspace-Id
+        required: true
+        type: string
+      - default: australia-southeast1
+        description: GCP region for DS-site and service calls.
+        in: header
+        name: X-Region
+        required: false
+        type: string
+      - description: Preferred webhook token header. Supports raw token value.
+        in: header
+        name: X-Webhook-Token
+        required: false
+        type: string
+      - description: Webhook token header fallback. Supports Bearer token format.
+        in: header
+        name: Authorization
+        required: false
+        type: string
+      - description: Forwarded bearer token used as fallback for webhook authentication.
+        in: header
+        name: X-Forwarded-Authorization
+        required: false
+        type: string
+      responses:
+        202:
+          description: Accepted
+        400:
+          description: Invalid request body or missing CALLBACK_URL
+        401:
+          description: Invalid webhook token
+        500:
+          description: Internal Server Error
+        502:
+          description: DS-site callback fetch/parsing error
+      summary: Receive DS-site Site Instruction webhook
+      tags:
+      - PortalApi
   /v2/worker-extra-details:
     delete:
       description: Soft delete worker extra details by kinde_id
