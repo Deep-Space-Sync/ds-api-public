@@ -68070,6 +68070,182 @@ paths:
       summary: Change invoice approval status
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/convert/subcontract-claim:
+    post:
+      description: Creates a subcontract_claims document with embedded sovs from the
+        AI-extracted data. Marks the email as converted.
+      operationId: v2_convertEmailToSubcontractClaim
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            claim_date:
+              type: string
+            claim_due_date:
+              type: string
+            created_by_company_id:
+              description: Creating company ID
+              type: integer
+            notes:
+              type: string
+            project_id:
+              description: Target project ID
+              type: string
+            sovs:
+              description: Full sovs override array
+              items:
+                properties:
+                  claim_value:
+                    type: number
+                  description:
+                    type: string
+                  is_variation:
+                    type: boolean
+                  linked_cost_code:
+                    items:
+                      type: string
+                    type: array
+                  sov_id:
+                    type: string
+                type: object
+              type: array
+            status:
+              type: string
+            subcontract_id:
+              description: Override matched subcontract ID
+              type: string
+            subcontractor_id:
+              description: Subcontractor company ID
+              type: integer
+          required:
+          - project_id
+          type: object
+      responses:
+        201:
+          description: Subcontract claim created
+          schema:
+            properties:
+              data:
+                properties:
+                  claim:
+                    type: object
+                  sovs_count:
+                    type: integer
+                type: object
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+        400:
+          description: Validation error (missing fields, not AI processed, already
+            converted)
+        403:
+          description: Unauthorized
+        404:
+          description: Email not found
+      security:
+      - JWT_v2: []
+      summary: Convert AI-processed email to subcontract claim
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/convert/supplier-invoice:
+    post:
+      description: Creates a cost_invoices document and cost_invoice_line_items documents
+        from the AI-extracted invoice data. Marks the email as converted.
+      operationId: v2_convertEmailToSupplierInvoice
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              type: number
+            currency:
+              type: string
+            description:
+              type: string
+            invoice_date:
+              type: string
+            invoice_due_date:
+              type: string
+            invoice_name:
+              type: string
+            invoice_to_company_id:
+              description: Company ID the invoice is addressed to
+              type: string
+            invoicer_company_id:
+              description: Optional invoicing company override
+              type: string
+            line_items:
+              description: Optional per-item overrides (positional, matching AI line
+                items)
+              items:
+                type: object
+              type: array
+            project_id:
+              description: Target project ID
+              type: string
+            related_cost_order_num:
+              type: string
+          required:
+          - project_id
+          - invoice_to_company_id
+          type: object
+      responses:
+        201:
+          description: Supplier invoice created
+          schema:
+            properties:
+              data:
+                properties:
+                  invoice:
+                    type: object
+                  line_items:
+                    items:
+                      type: object
+                    type: array
+                  line_items_created:
+                    type: integer
+                  line_items_expected:
+                    type: integer
+                type: object
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+        400:
+          description: Validation error (missing fields, not AI processed, already
+            converted)
+        403:
+          description: Unauthorized
+        404:
+          description: Email not found
+      security:
+      - JWT_v2: []
+      summary: Convert AI-processed email to supplier invoice
+      tags:
+      - InvoiceReconciliation
 schemes:
 - https
 securityDefinitions:
