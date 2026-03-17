@@ -45330,6 +45330,11 @@ paths:
         name: projectId
         required: true
         type: integer
+      - description: When true, includes associated line items in the response
+        in: query
+        name: includeLineItems
+        required: false
+        type: boolean
       responses:
         200:
           description: Successful response
@@ -45354,6 +45359,9 @@ paths:
                   description: Date the cost order was created
                 issuing_company_id:
                   description: Internal identifier for the issuing company
+                line_items:
+                  description: Associated line items (only included when includeLineItems=true)
+                  type: array
                 order_identifier:
                   description: User-friendly identifier for cost order
                 receiving_company_id:
@@ -45395,6 +45403,11 @@ paths:
         name: projectId
         required: true
         type: integer
+      - description: When true, includes associated line items in the response
+        in: query
+        name: includeLineItems
+        required: false
+        type: boolean
       responses:
         200:
           description: Successful response
@@ -45417,6 +45430,9 @@ paths:
                   description: Date the cost order was created
                 issuing_company_id:
                   description: Internal identifier for the issuing company
+                line_items:
+                  description: Associated line items (only included when includeLineItems=true)
+                  type: array
                 order_identifier:
                   description: Order identifier - returns custom PO number (cost_order_client_id)
                     if provided, otherwise auto-generated value (e.g., PO-0001)
@@ -45610,6 +45626,11 @@ paths:
         name: costOrderId
         required: true
         type: integer
+      - description: When true, includes associated line items in the response
+        in: query
+        name: includeLineItems
+        required: false
+        type: boolean
       responses:
         200:
           description: Successful response
@@ -45631,6 +45652,9 @@ paths:
                 description: Date the cost order was created
               issuing_company_id:
                 description: Internal identifier for the issuing company
+              line_items:
+                description: Associated line items (only included when includeLineItems=true)
+                type: array
               order_date:
                 description: Purchase order date (YYYY-MM-DD). If not provided, created_at
                   will be used.
@@ -45802,6 +45826,11 @@ paths:
         name: projectId
         required: true
         type: integer
+      - description: When true, includes associated line items in the response
+        in: query
+        name: includeLineItems
+        required: false
+        type: boolean
       responses:
         200:
           description: Successful response
@@ -45824,6 +45853,9 @@ paths:
                   description: Date the cost order was created
                 issuing_company_id:
                   description: Internal identifier for the issuing company
+                line_items:
+                  description: Associated line items (only included when includeLineItems=true)
+                  type: array
                 order_identifier:
                   description: User-friendly identifier for cost order
                 receiving_company_id:
@@ -45984,6 +46016,11 @@ paths:
         name: costOrderId
         required: true
         type: integer
+      - description: When true, includes associated line items in the response
+        in: query
+        name: includeLineItems
+        required: false
+        type: boolean
       responses:
         200:
           description: Successful response
@@ -46005,6 +46042,9 @@ paths:
                 description: Date the cost order was created
               issuing_company_id:
                 description: Internal identifier for the issuing company
+              line_items:
+                description: Associated line items (only included when includeLineItems=true)
+                type: array
               order_date:
                 description: Purchase order date (YYYY-MM-DD). If not provided, created_at
                   will be used.
