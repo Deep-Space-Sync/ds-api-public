@@ -12030,10 +12030,12 @@ paths:
               type: string
             category:
               enum:
-              - materials
-              - equipment
-              - finishes
-              - site works
+              - trade_package
+              - material_supply
+              - equipment_plant
+              - specialist
+              - consultant_designer
+              - long_lead_item
               type: string
             contract_value:
               format: float
@@ -12048,6 +12050,7 @@ paths:
             description:
               type: string
             due_date:
+              description: Legacy field - use required_date instead
               format: date-time
               type: string
             end_date:
@@ -12088,6 +12091,11 @@ paths:
                 - task_name
                 type: object
               type: array
+            linked_subcontract_ids:
+              description: Linked subcontract record IDs from Subcontract Register
+              items:
+                type: string
+              type: array
             origin_scheduling_task:
               description: The scheduling task that triggered creation of this procurement
                 package (for re-linking)
@@ -12101,10 +12109,9 @@ paths:
               type: object
             priority:
               enum:
-              - low
-              - medium
-              - high
               - critical
+              - long_lead
+              - standard
               type: string
             project_id:
               type: integer
@@ -12127,6 +12134,10 @@ paths:
                 - company_name
                 type: object
               type: array
+            required_date:
+              description: Required on-site date / delivery requirement
+              format: date-time
+              type: string
             risk_factors:
               items:
                 type: string
@@ -12136,12 +12147,13 @@ paths:
               type: string
             status:
               enum:
-              - not started
-              - planned
-              - in progress
-              - at risk
-              - completed
-              - delayed
+              - planning
+              - rfq_issued
+              - under_review
+              - awarded
+              - ordered
+              - delivered
+              - complete
               type: string
             supplier:
               type: string
@@ -12272,10 +12284,12 @@ paths:
               type: string
             category:
               enum:
-              - materials
-              - equipment
-              - finishes
-              - site works
+              - trade_package
+              - material_supply
+              - equipment_plant
+              - specialist
+              - consultant_designer
+              - long_lead_item
               type: string
             contract_value:
               format: float
@@ -12290,6 +12304,7 @@ paths:
             description:
               type: string
             due_date:
+              description: Legacy field - use required_date instead
               format: date-time
               type: string
             end_date:
@@ -12325,6 +12340,11 @@ paths:
                 - task_name
                 type: object
               type: array
+            linked_subcontract_ids:
+              description: Linked subcontract record IDs from Subcontract Register
+              items:
+                type: string
+              type: array
             origin_scheduling_task:
               description: The scheduling task that triggered creation of this procurement
                 package
@@ -12338,10 +12358,9 @@ paths:
               type: object
             priority:
               enum:
-              - low
-              - medium
-              - high
               - critical
+              - long_lead
+              - standard
               type: string
             project_id:
               type: integer
@@ -12364,6 +12383,10 @@ paths:
                 - company_name
                 type: object
               type: array
+            required_date:
+              description: Required on-site date / delivery requirement
+              format: date-time
+              type: string
             risk_factors:
               items:
                 type: string
@@ -12373,12 +12396,13 @@ paths:
               type: string
             status:
               enum:
-              - not started
-              - planned
-              - in progress
-              - at risk
-              - completed
-              - delayed
+              - planning
+              - rfq_issued
+              - under_review
+              - awarded
+              - ordered
+              - delivered
+              - complete
               type: string
             supplier:
               type: string
