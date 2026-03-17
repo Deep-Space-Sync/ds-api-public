@@ -5595,6 +5595,43 @@ paths:
       summary: Generate AI RFI draft
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/rfis/ai/draft/messages:
+    post:
+      description: Send a follow-up message to an existing AI draft session. Returns
+        an updated draft and any remaining follow-up questions. Use the session_id
+        from the initial POST /ai/draft response.
+      operationId: v2_portalV2SendRfiAiMessage
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK - updated draft returned
+        401:
+          description: Unauthorized
+        403:
+          description: Session access denied
+        404:
+          description: Session not found
+        422:
+          description: Invalid input (empty message or extra fields)
+        500:
+          description: Internal Server Error
+        502:
+          description: AI model unavailable
+      security:
+      - JWT_v2: []
+      summary: Continue AI RFI draft conversation
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/rfis/{rfiId}:
     get:
       description: Get full Horizon-native RFI detail with comments, authorized by
