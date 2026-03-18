@@ -7818,6 +7818,85 @@ paths:
       tags:
       - Power BI
       x-min-permissions: admin
+  /v2/proposals/public/{token}:
+    get:
+      description: Retrieve proposal data using a public access token (no authentication
+        required)
+      operationId: v2_getPublicProposal
+      parameters:
+      - description: Public access token
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        200:
+          description: Public proposal data
+          schema:
+            type: object
+        404:
+          description: Proposal not found or token expired
+        500:
+          description: Internal server error
+      security: []
+      summary: Get public proposal by token
+      tags:
+      - Proposals
+  /v2/proposals/public/{token}/sign:
+    post:
+      description: Client digitally signs and accepts the proposal
+      operationId: v2_signProposal
+      parameters:
+      - description: Public access token
+        in: path
+        name: token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            signature_data:
+              type: string
+            signer_name:
+              type: string
+          required:
+          - signature_data
+          - signer_name
+          type: object
+      responses:
+        200:
+          description: Proposal signed successfully
+        404:
+          description: Proposal not found
+        500:
+          description: Internal server error
+      security: []
+      summary: Sign proposal
+      tags:
+      - Proposals
+  /v2/proposals/public/{token}/viewed:
+    post:
+      description: Record that the client has viewed the proposal
+      operationId: v2_markProposalViewed
+      parameters:
+      - description: Public access token
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        200:
+          description: View recorded
+        404:
+          description: Proposal not found
+        500:
+          description: Internal server error
+      security: []
+      summary: Mark proposal as viewed
+      tags:
+      - Proposals
   /v2/regions:
     get:
       description: Returns list of api-supported regions
@@ -25396,6 +25475,295 @@ paths:
       summary: Update vendor
       tags:
       - Procurement
+  /v2/workspaces/{workspaceId}/hz-proposal-templates:
+    get:
+      description: Retrieve available proposal templates for a workspace
+      operationId: v2_listProposalTemplates
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of proposal templates
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List proposal templates
+      tags:
+      - Proposals
+  /v2/workspaces/{workspaceId}/hz-proposals:
+    get:
+      description: Retrieve all proposals for a workspace with optional filters
+      operationId: v2_listProposals
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by proposal status (Draft, Sent, Viewed, Accepted, Rejected,
+          Expired)
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by project identifier
+        in: query
+        name: project_id
+        required: false
+        type: string
+      - description: Free text search across proposal titles and client names
+        in: query
+        name: q
+        required: false
+        type: string
+      responses:
+        200:
+          description: List of proposals
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List proposals
+      tags:
+      - Proposals
+    post:
+      description: Create a new proposal
+      operationId: v2_createProposal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            client_email:
+              type: string
+            client_name:
+              type: string
+            project_id:
+              type: integer
+            proposal_reference:
+              type: string
+            title:
+              type: string
+          required:
+          - title
+          type: object
+      responses:
+        201:
+          description: Proposal created successfully
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create proposal
+      tags:
+      - Proposals
+  /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}:
+    delete:
+      description: Soft-delete a proposal
+      operationId: v2_deleteProposal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Proposal unique identifier
+        in: path
+        name: proposalId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Proposal deleted successfully
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Proposal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete proposal
+      tags:
+      - Proposals
+    get:
+      description: Retrieve a specific proposal by its unique identifier
+      operationId: v2_getProposalById
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Proposal unique identifier
+        in: path
+        name: proposalId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Proposal details
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Proposal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get proposal by ID
+      tags:
+      - Proposals
+    put:
+      description: Update an existing proposal
+      operationId: v2_updateProposal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Proposal unique identifier
+        in: path
+        name: proposalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated proposal
+          schema:
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Proposal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update proposal
+      tags:
+      - Proposals
+  /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/generate-pdf:
+    post:
+      description: Generate a PDF version of the proposal and store in GCS
+      operationId: v2_generateProposalPdf
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Proposal unique identifier
+        in: path
+        name: proposalId
+        required: true
+        type: string
+      responses:
+        200:
+          description: PDF generated successfully
+          schema:
+            properties:
+              pdf_url:
+                type: string
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Proposal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Generate proposal PDF
+      tags:
+      - Proposals
+  /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/send:
+    post:
+      description: Send proposal via email and generate a public access token
+      operationId: v2_sendProposal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Proposal unique identifier
+        in: path
+        name: proposalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            message:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Proposal sent successfully
+          schema:
+            properties:
+              public_url:
+                type: string
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Proposal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Send proposal to client
+      tags:
+      - Proposals
   /v2/workspaces/{workspaceId}/hz-scheduling-constraints:
     get:
       description: Retrieve project constraints with optional filters and pagination
