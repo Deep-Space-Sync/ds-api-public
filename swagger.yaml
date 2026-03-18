@@ -12087,10 +12087,12 @@ paths:
             description:
               type: string
             due_date:
-              description: Legacy field - use required_date instead
+              description: Legacy field - kept in sync with required_on_site_date
               format: date-time
               type: string
             end_date:
+              description: Auto-derived from latest activity step date, or falls back
+                to required_on_site_date.
               format: date-time
               type: string
             estimated_cost:
@@ -12102,6 +12104,13 @@ paths:
               type: string
             lead_time_days:
               type: integer
+            lifecycle_state:
+              description: 'Record lifecycle. ''draft'' = incomplete/relaxed validation.
+                ''live'' = operational/fully validated. Default: draft'
+              enum:
+              - draft
+              - live
+              type: string
             linked_order_ids:
               items:
                 type: string
@@ -12172,7 +12181,12 @@ paths:
                 type: object
               type: array
             required_date:
-              description: Required on-site date / delivery requirement
+              description: Legacy field - kept in sync with required_on_site_date
+              format: date-time
+              type: string
+            required_on_site_date:
+              description: Date materials must be delivered to site. Primary date
+                anchor for procurement planning.
               format: date-time
               type: string
             risk_factors:
@@ -12180,9 +12194,16 @@ paths:
                 type: string
               type: array
             start_date:
+              description: Procurement Start Date. Auto-derived as required_on_site_date
+                minus lead_time_days. Can be overridden.
               format: date-time
               type: string
+            start_date_override:
+              description: True if user manually overrode the auto-calculated Procurement
+                Start Date
+              type: boolean
             status:
+              description: Procurement workflow status. Separate from lifecycle_state.
               enum:
               - planning
               - rfq_issued
@@ -12207,8 +12228,6 @@ paths:
           required:
           - cost_activity_title
           - project_id
-          - start_date
-          - end_date
           type: object
       responses:
         201:
@@ -12341,10 +12360,12 @@ paths:
             description:
               type: string
             due_date:
-              description: Legacy field - use required_date instead
+              description: Legacy field - kept in sync with required_on_site_date
               format: date-time
               type: string
             end_date:
+              description: Auto-derived from latest activity step date, or falls back
+                to required_on_site_date.
               format: date-time
               type: string
             estimated_cost:
@@ -12356,6 +12377,13 @@ paths:
               type: string
             lead_time_days:
               type: integer
+            lifecycle_state:
+              description: Record lifecycle. 'draft' = incomplete/relaxed validation.
+                'live' = operational/fully validated.
+              enum:
+              - draft
+              - live
+              type: string
             linked_order_ids:
               items:
                 type: string
@@ -12421,7 +12449,12 @@ paths:
                 type: object
               type: array
             required_date:
-              description: Required on-site date / delivery requirement
+              description: Legacy field - kept in sync with required_on_site_date
+              format: date-time
+              type: string
+            required_on_site_date:
+              description: Date materials must be delivered to site. Primary date
+                anchor for procurement planning.
               format: date-time
               type: string
             risk_factors:
@@ -12429,9 +12462,16 @@ paths:
                 type: string
               type: array
             start_date:
+              description: Procurement Start Date. Auto-derived as required_on_site_date
+                minus lead_time_days. Can be overridden.
               format: date-time
               type: string
+            start_date_override:
+              description: True if user manually overrode the auto-calculated Procurement
+                Start Date
+              type: boolean
             status:
+              description: Procurement workflow status. Separate from lifecycle_state.
               enum:
               - planning
               - rfq_issued
@@ -36713,7 +36753,8 @@ paths:
         name: projectId
         required: true
         type: integer
-      - description: Excel file (.xlsx or .xls) containing Activities sheet
+      - description: 'Excel file (.xlsx or .xls). Accepted sheet names: ''Activities'',
+          ''Procurement Schedule'', or falls back to first sheet.'
         in: formData
         name: file
         required: true
