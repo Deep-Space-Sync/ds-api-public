@@ -25722,6 +25722,68 @@ paths:
       summary: Generate proposal PDF
       tags:
       - Proposals
+  /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/mark-expired:
+    post:
+      description: Manually expire a Sent or Viewed proposal
+      operationId: v2_markProposalExpired
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Proposal unique identifier
+        in: path
+        name: proposalId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Proposal marked as expired
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Proposal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Mark proposal as expired
+      tags:
+      - Proposals
+  /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/revise:
+    post:
+      description: Reset a Rejected or Expired proposal back to Draft for revision
+      operationId: v2_reviseProposal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Proposal unique identifier
+        in: path
+        name: proposalId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Proposal reset to Draft
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Proposal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Revise proposal
+      tags:
+      - Proposals
   /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/send:
     post:
       description: Send proposal via email and generate a public access token
