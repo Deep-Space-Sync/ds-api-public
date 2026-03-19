@@ -70,6 +70,17 @@ paths:
         name: includePermissions
         required: false
         type: boolean
+      - description: When true (with dsProWorkspaceId), returns DS Pro project details
+          for a single workspace
+        in: query
+        name: dsProDetails
+        required: false
+        type: boolean
+      - description: Workspace ID to fetch DS Pro project details for (used with dsProDetails=true)
+        in: query
+        name: dsProWorkspaceId
+        required: false
+        type: string
       responses:
         200:
           description: Successful response with a list of workspaces and projects
@@ -8733,6 +8744,17 @@ paths:
         name: includePermissions
         required: false
         type: boolean
+      - description: When true (with dsProWorkspaceId), returns DS Pro project details
+          for a single workspace
+        in: query
+        name: dsProDetails
+        required: false
+        type: boolean
+      - description: Workspace ID to fetch DS Pro project details for (used with dsProDetails=true)
+        in: query
+        name: dsProWorkspaceId
+        required: false
+        type: string
       responses:
         200:
           description: Successful response with a list of workspaces and projects
