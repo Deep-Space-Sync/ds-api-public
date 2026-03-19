@@ -25688,6 +25688,48 @@ paths:
       summary: Update proposal
       tags:
       - Proposals
+  /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/contractor-sign:
+    post:
+      description: Save contractor signature before sending proposal to client
+      operationId: v2_contractorSignProposal
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: proposalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            signature_data:
+              type: string
+            signer_name:
+              type: string
+          required:
+          - signer_name
+          - signature_data
+          type: object
+      responses:
+        200:
+          description: Contractor signature saved
+          schema:
+            type: object
+        400:
+          description: Missing required fields
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Proposal not found
+      security:
+      - JWT_v2: []
+      summary: Contractor signs proposal
+      tags:
+      - Proposals
   /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/generate-pdf:
     post:
       description: Generate a PDF version of the proposal and store in GCS
