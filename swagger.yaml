@@ -6535,6 +6535,324 @@ paths:
       summary: Update action item status
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cans:
+    get:
+      description: Get paginated list of CAN records for a project. Use view=portal
+        for client-safe fields, view=internal for full fields.
+      operationId: v2_portalApiListCANs
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      - default: internal
+        description: Response view mode (portal or internal)
+        in: query
+        name: view
+        required: false
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Consultant Advice Notices for a project
+      tags:
+      - PortalApi
+    post:
+      description: Create a new CAN record. Allocates a project-scoped CAN number
+        and creates the record with status Draft.
+      operationId: v2_portalApiCreateCAN
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        201:
+          description: Created
+        401:
+          description: Unauthorized
+        409:
+          description: Conflict - CAN number allocation failed
+        422:
+          description: Unprocessable Entity
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a Consultant Advice Notice
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cans/{canId}:
+    get:
+      description: Get a single CAN record by ID. Use view=portal for client-safe
+        fields, view=internal for full fields including comments and audit summary.
+      operationId: v2_portalApiGetCANDetail
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Consultant Advice Notice identifier
+        in: path
+        name: canId
+        required: true
+        type: string
+      - default: internal
+        description: Response view mode (portal or internal)
+        in: query
+        name: view
+        required: false
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: CAN not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Consultant Advice Notice detail
+      tags:
+      - PortalApi
+    patch:
+      description: Update allowed non-status fields on a CAN. Status and issued_by
+        cannot be modified through this endpoint.
+      operationId: v2_portalApiUpdateCAN
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Consultant Advice Notice identifier
+        in: path
+        name: canId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: CAN not found
+        409:
+          description: Conflict - forbidden field or validation error
+        422:
+          description: Unprocessable Entity
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Consultant Advice Notice fields
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cans/{canId}/comments:
+    post:
+      description: Add a comment to a CAN record. Comment author is derived from the
+        authenticated user. Comment write and CAN audit event are committed atomically.
+      operationId: v2_portalApiAddCANComment
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Consultant Advice Notice identifier
+        in: path
+        name: canId
+        required: true
+        type: string
+      responses:
+        201:
+          description: Created
+        401:
+          description: Unauthorized
+        404:
+          description: CAN not found
+        409:
+          description: Conflict - comment validation error
+        422:
+          description: Unprocessable Entity
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add a comment to a Consultant Advice Notice
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cans/{canId}/comments/{commentId}/reactions:
+    post:
+      description: Toggle an emoji reaction on a CAN comment. If the authenticated
+        user has already reacted with the given emoji, the reaction is removed; otherwise
+        it is added.
+      operationId: v2_portalApiToggleCANCommentReaction
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Consultant Advice Notice identifier
+        in: path
+        name: canId
+        required: true
+        type: string
+      - description: Comment identifier
+        in: path
+        name: commentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK - updated comment with reactions
+        401:
+          description: Unauthorized
+        404:
+          description: CAN or comment not found
+        422:
+          description: Unprocessable Entity
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Toggle a reaction on a CAN comment
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cans/{canId}/followers:
+    post:
+      description: Batch-add followers to a CAN. Duplicate IDs already following are
+        ignored. Returns the full updated CAN record.
+      operationId: v2_portalApiAddCANFollowers
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Consultant Advice Notice identifier
+        in: path
+        name: canId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: CAN not found
+        422:
+          description: Unprocessable Entity
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add followers to a Consultant Advice Notice
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cans/{canId}/followers/{userId}:
+    delete:
+      description: Remove a single follower from a CAN. Idempotent - removing a user
+        who is not a follower returns 200 with the unmodified CAN record.
+      operationId: v2_portalApiRemoveCANFollower
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Consultant Advice Notice identifier
+        in: path
+        name: canId
+        required: true
+        type: string
+      - description: User identifier to remove as follower
+        in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: CAN not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove a follower from a Consultant Advice Notice
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cis:
     get:
       description: Get paginated list of CI records for a project. Use view=portal
