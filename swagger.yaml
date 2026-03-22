@@ -69176,7 +69176,7 @@ paths:
       - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/convert/supplier-invoice:
     post:
-      description: Creates a cost_invoices document and cost_invoice_line_items documents
+      description: Creates a cost_claims document and cost_claim_line_items documents
         from the AI-extracted invoice data. Marks the email as converted.
       operationId: v2_convertEmailToSupplierInvoice
       parameters:
@@ -69195,21 +69195,24 @@ paths:
           properties:
             amount:
               type: number
+            claim_date:
+              description: Override claim date (YYYY-MM-DD)
+              type: string
+            claim_name:
+              description: Override claim name (defaults to AI vendor_name)
+              type: string
+            claim_period_end:
+              description: Claim period end date (YYYY-MM-DD)
+              type: string
+            claim_period_start:
+              description: Claim period start date (YYYY-MM-DD)
+              type: string
             currency:
               type: string
             description:
               type: string
-            invoice_date:
-              type: string
-            invoice_due_date:
-              type: string
-            invoice_name:
-              type: string
             invoice_to_company_id:
-              description: Company ID the invoice is addressed to
-              type: string
-            invoicer_company_id:
-              description: Optional invoicing company override
+              description: Company ID the invoice is addressed to (claimant)
               type: string
             line_items:
               description: Optional per-item overrides (positional, matching AI line
@@ -69228,12 +69231,12 @@ paths:
           type: object
       responses:
         201:
-          description: Supplier invoice created
+          description: Supplier claim created
           schema:
             properties:
               data:
                 properties:
-                  invoice:
+                  claim:
                     type: object
                   line_items:
                     items:
@@ -69258,7 +69261,7 @@ paths:
           description: Email not found
       security:
       - JWT_v2: []
-      summary: Convert AI-processed email to supplier invoice
+      summary: Convert AI-processed email to supplier claim
       tags:
       - InvoiceReconciliation
 schemes:
