@@ -69264,6 +69264,59 @@ paths:
       summary: Convert AI-processed email to supplier claim
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/push-to-xero:
+    post:
+      description: Creates an ACCPAY (Bill) in Xero from a previously converted supplier
+        invoice. Requires the email to be converted and not yet synced to Xero.
+      operationId: v2_pushSupplierInvoiceToXero
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Bill created in Xero
+          schema:
+            properties:
+              data:
+                properties:
+                  currency:
+                    type: string
+                  invoice_number:
+                    type: string
+                  line_items_count:
+                    type: integer
+                  xero_id:
+                    type: string
+                type: object
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+        400:
+          description: Bad request (not converted, already synced, missing fields)
+        403:
+          description: Unauthorized
+        404:
+          description: Email or cost claim not found
+        422:
+          description: Unprocessable entity (no linked Xero contact, Xero rejected
+            the bill payload)
+        424:
+          description: Failed dependency (Xero integration not configured for workspace)
+        502:
+          description: Bad gateway (Xero API or token refresh communication failure)
+      security:
+      - JWT_v2: []
+      summary: Push converted supplier invoice to Xero as a Bill
+      tags:
+      - InvoiceReconciliation
 schemes:
 - https
 securityDefinitions:
