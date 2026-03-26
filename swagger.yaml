@@ -25905,6 +25905,17 @@ paths:
         name: q
         required: false
         type: string
+      - description: Set to 'true' to include all versions of proposals (not just
+          the latest)
+        in: query
+        name: include_all_versions
+        required: false
+        type: string
+      - description: Filter to return all versions of a specific proposal family
+        in: query
+        name: root_proposal_id
+        required: false
+        type: string
       responses:
         200:
           description: List of proposals
@@ -26061,6 +26072,39 @@ paths:
       security:
       - JWT_v2: []
       summary: Update proposal
+      tags:
+      - Proposals
+  /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/clone:
+    post:
+      description: Create a new proposal version by cloning all content from an existing
+        proposal. The new version starts as Draft with an auto-incremented version
+        number (e.g. PROP-2026-003-V2).
+      operationId: v2_cloneProposal
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Source proposal unique identifier to clone from
+        in: path
+        name: proposalId
+        required: true
+        type: string
+      responses:
+        201:
+          description: New proposal version created
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Source proposal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Clone proposal to new version
       tags:
       - Proposals
   /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/contractor-sign:
@@ -26241,6 +26285,43 @@ paths:
       security:
       - JWT_v2: []
       summary: Send proposal to client
+      tags:
+      - Proposals
+  /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/versions:
+    get:
+      description: Return all non-deleted versions of a proposal family ordered by
+        version number ascending.
+      operationId: v2_getProposalVersions
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Any proposal ID within the version family (root or child)
+        in: path
+        name: proposalId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of all versions
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Proposal not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get all versions of a proposal
       tags:
       - Proposals
   /v2/workspaces/{workspaceId}/hz-scheduling-constraints:
