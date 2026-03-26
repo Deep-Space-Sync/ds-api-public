@@ -12350,6 +12350,9 @@ paths:
                   swiftBic:
                     type: string
                 type: object
+              country:
+                description: Company country code (AU or NZ)
+                type: string
               defaultClaimDeclarationText:
                 type: string
               defaultPaymentScheduleNoticeText:
@@ -12429,6 +12432,9 @@ paths:
                 swiftBic:
                   type: string
               type: object
+            country:
+              description: Company country code (AU or NZ)
+              type: string
             defaultClaimDeclarationText:
               type: string
             defaultPaymentScheduleNoticeText:
