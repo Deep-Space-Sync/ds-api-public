@@ -17175,6 +17175,11 @@ paths:
         name: limit
         required: false
         type: integer
+      - description: Filter by linked tender ID
+        in: query
+        name: tender_id
+        required: false
+        type: string
       - description: Search query for name and description
         in: query
         name: q
@@ -17251,6 +17256,9 @@ paths:
                       type: string
                     project_id:
                       type: integer
+                    tender_id:
+                      description: Optional linked tender ID (opportunity tracker)
+                      type: string
                     tender_package_id:
                       type: string
                     tender_status:
@@ -17370,6 +17378,9 @@ paths:
               type: string
             project_id:
               type: integer
+            tender_id:
+              description: Optional linked tender ID (opportunity tracker)
+              type: string
             tender_status:
               enum:
               - will tender
@@ -17641,6 +17652,9 @@ paths:
                     type: string
                   project_id:
                     type: integer
+                  tender_id:
+                    description: Optional linked tender ID (opportunity tracker)
+                    type: string
                   tender_package_id:
                     type: string
                   tender_status:
@@ -17744,6 +17758,9 @@ paths:
               type: string
             project_id:
               type: integer
+            tender_id:
+              description: Optional linked tender ID (opportunity tracker)
+              type: string
             tender_status:
               enum:
               - will tender
@@ -17795,6 +17812,168 @@ paths:
       security:
       - JWT_v2: []
       summary: Update Tender Package By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/addenda:
+    get:
+      operationId: v2_getTenderAddenda
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              addenda:
+                items:
+                  properties:
+                    acknowledged_by:
+                      items:
+                        properties:
+                          acknowledged_at:
+                            format: date-time
+                            type: string
+                          tax_id:
+                            type: integer
+                        type: object
+                      type: array
+                    addendum_id:
+                      type: string
+                    created_at:
+                      format: date-time
+                      type: string
+                    created_by_user_id:
+                      type: string
+                    description:
+                      type: string
+                    revision:
+                      type: integer
+                    subject:
+                      type: string
+                    tender_set_id:
+                      type: string
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Addenda for a Tender Package
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createTenderAddendum
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              type: string
+            subject:
+              type: string
+            tender_set_id:
+              description: Optional link to a new tender set if documents changed
+              type: string
+          required:
+          - subject
+          - description
+          type: object
+      responses:
+        201:
+          description: Addendum created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Addendum for a Tender Package
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/addenda/{addendumId}/acknowledge:
+    patch:
+      operationId: v2_acknowledgeTenderAddendum
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: path
+        name: addendumId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            tax_id:
+              type: integer
+          required:
+          - tax_id
+          type: object
+      responses:
+        200:
+          description: Addendum acknowledged
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Addendum not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Acknowledge an Addendum
       tags:
       - Cost
       x-ds-test-enabled: true
@@ -17892,6 +18071,513 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/submissions:
+    get:
+      operationId: v2_getTenderSubmissions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              submissions:
+                items:
+                  properties:
+                    acknowledged_addendum_ids:
+                      items:
+                        type: string
+                      type: array
+                    attachments:
+                      items:
+                        properties:
+                          file_id:
+                            type: string
+                          file_name:
+                            type: string
+                          file_type:
+                            type: string
+                        type: object
+                      type: array
+                    company_name:
+                      type: string
+                    decline_reason:
+                      type: string
+                    exclusions:
+                      type: string
+                    global_company_id:
+                      type: integer
+                    headline_price:
+                      type: number
+                    notes:
+                      type: string
+                    submission_id:
+                      type: string
+                    submission_status:
+                      enum:
+                      - invited
+                      - accepted
+                      - declined
+                      - submitted
+                      - overdue
+                      type: string
+                    submitted_at:
+                      format: date-time
+                      type: string
+                    tax_id:
+                      type: integer
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Submissions for a Tender Package
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createTenderSubmission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            acknowledged_addendum_ids:
+              items:
+                type: string
+              type: array
+            attachments:
+              items:
+                properties:
+                  file_id:
+                    type: string
+                  file_name:
+                    type: string
+                  file_type:
+                    type: string
+                type: object
+              type: array
+            company_name:
+              type: string
+            exclusions:
+              type: string
+            global_company_id:
+              type: integer
+            headline_price:
+              type: number
+            notes:
+              type: string
+            tax_id:
+              type: integer
+          required:
+          - tax_id
+          - global_company_id
+          - company_name
+          - headline_price
+          - exclusions
+          type: object
+      responses:
+        201:
+          description: Submission created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request (deadline passed, unacknowledged addenda)
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a Submission (subcontractor submits bid)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/submissions/{submissionId}:
+    patch:
+      operationId: v2_updateTenderSubmission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            decline_reason:
+              type: string
+            exclusions:
+              type: string
+            headline_price:
+              type: number
+            notes:
+              type: string
+            submission_status:
+              enum:
+              - accepted
+              - declined
+              type: string
+          type: object
+      responses:
+        200:
+          description: Submission updated successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request (locked after submission)
+        401:
+          description: Unauthorized
+        404:
+          description: Submission not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a Submission before deadline
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/submissions/{submissionId}/award:
+    post:
+      operationId: v2_awardTenderSubmission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            award_value:
+              description: Awarded value (defaults to headline_price if not provided)
+              type: number
+          type: object
+      responses:
+        200:
+          description: Submission awarded successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request (another submission already awarded)
+        401:
+          description: Unauthorized
+        404:
+          description: Submission not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Award submission to a subcontractor
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/submissions/{submissionId}/convert:
+    post:
+      operationId: v2_convertTenderSubmission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            conversion_type:
+              enum:
+              - subcontract
+              - purchase_order
+              type: string
+            cost_code_num:
+              type: string
+            retention_rate:
+              type: number
+          required:
+          - conversion_type
+          type: object
+      responses:
+        201:
+          description: Conversion successful
+          schema:
+            properties:
+              data:
+                properties:
+                  conversion_type:
+                    type: string
+                  document_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request (submission not awarded)
+        401:
+          description: Unauthorized
+        404:
+          description: Submission not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Convert awarded submission to Subcontract or Purchase Order
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/submissions/{submissionId}/evaluate:
+    patch:
+      operationId: v2_evaluateTenderSubmission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            internal_adjustment:
+              type: number
+            internal_notes:
+              type: string
+            shortlist_status:
+              enum:
+              - submitted
+              - shortlisted
+              - preferred
+              - awarded
+              - unsuccessful
+              type: string
+          type: object
+      responses:
+        200:
+          description: Submission evaluated successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Submission not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Evaluate a submission (internal adjustments)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/tender-sets:
+    get:
+      operationId: v2_getTenderSets
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              tender_sets:
+                items:
+                  properties:
+                    created_at:
+                      format: date-time
+                      type: string
+                    created_by_user_id:
+                      type: string
+                    documents:
+                      items:
+                        properties:
+                          cde_id:
+                            type: string
+                          file_name:
+                            type: string
+                          file_type:
+                            type: string
+                          snapshot_at:
+                            format: date-time
+                            type: string
+                          version:
+                            type: integer
+                        type: object
+                      type: array
+                    revision:
+                      type: integer
+                    set_id:
+                      type: string
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Tender Sets for a Tender Package
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createTenderSet
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            documents:
+              items:
+                properties:
+                  cde_id:
+                    type: string
+                  file_name:
+                    type: string
+                  file_type:
+                    type: string
+                  version:
+                    type: integer
+                required:
+                - cde_id
+                - file_name
+                - version
+                - file_type
+                type: object
+              minItems: 1
+              type: array
+          required:
+          - documents
+          type: object
+      responses:
+        201:
+          description: Tender set created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Tender Set (snapshot CDE documents)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/cost/tenders:
     get:
       operationId: v2_getTendersWorkspaceLevel
