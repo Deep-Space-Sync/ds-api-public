@@ -6694,6 +6694,44 @@ paths:
       summary: Update Consultant Advice Notice fields
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cans/{canId}/ci-draft-preview:
+    post:
+      description: "Return a pre-filled CI draft derived from a CAN record. Read-only\
+        \ \u2014 no CI record is created, no CI number is allocated, and no audit\
+        \ event is written. Field mapping: subject and description from CAN; program_impact\
+        \ and cost_impact are null (user must choose); attachments passed through;\
+        \ linked_rfi_id excluded."
+      operationId: v2_portalApiGetCIFromCANDraftPreview
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Consultant Advice Notice identifier
+        in: path
+        name: canId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK - pre-filled CI draft fields
+        401:
+          description: Unauthorized
+        404:
+          description: CAN not found or out of scope
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get CI draft preview from a CAN
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/cans/{canId}/comments:
     post:
       description: Add a comment to a CAN record. Comment author is derived from the
@@ -6903,8 +6941,10 @@ paths:
       tags:
       - PortalApi
     post:
-      description: Create a new CI record. Allocates a project-scoped CI number and
-        creates the record with status Issued.
+      description: 'Create a new CI record. Allocates a project-scoped CI number and
+        creates the record. The request body action field controls the initial status:
+        action=issue (default) creates with status Issued and records issued_at; action=draft
+        creates with status Draft and issued_at null.'
       operationId: v2_portalApiCreateCI
       parameters:
       - description: Workspace identifier (e.g., ds_xxx)
