@@ -5559,6 +5559,47 @@ paths:
       summary: Create or replace global permissions registry
       tags:
       - Roles
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/cans/{canId}/ci-draft/ai:
+    post:
+      description: "Reads the CAN record and uses AI to produce a structured CI draft.\
+        \ Read-only \u2014 no CI or CAN records are created. The returned draft should\
+        \ be reviewed and submitted via the standard POST /cis endpoint. Only available\
+        \ in the CAN \u2192 CI draft flow."
+      operationId: v2_portalV2GenerateCiAiDraftFromCan
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: Consultant Advice Notice identifier
+        in: path
+        name: canId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK - AI-generated CI draft fields
+        401:
+          description: Unauthorized
+        404:
+          description: CAN not found
+        422:
+          description: Invalid input
+        500:
+          description: Internal Server Error
+        502:
+          description: AI model unavailable
+      security:
+      - JWT_v2: []
+      summary: Generate AI CI draft from a CAN (Beta)
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/rfis:
     get:
       description: Get paginated list of Horizon-native RFIs for a project, filtered
