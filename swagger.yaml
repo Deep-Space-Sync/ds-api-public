@@ -17387,6 +17387,10 @@ paths:
                 properties:
                   company_name:
                     type: string
+                  email:
+                    description: Email address for email-only invitations (required
+                      when global_company_id and tax_id are 0)
+                    type: string
                   global_company_id:
                     type: integer
                   response:
@@ -17456,8 +17460,6 @@ paths:
           - project_id
           - trade_category
           - issue_date
-          - due_date
-          - estimated_value
           - tender_type
           - bid_form_type
           - additional_options
@@ -17774,6 +17776,10 @@ paths:
               items:
                 properties:
                   company_name:
+                    type: string
+                  email:
+                    description: Email address for email-only invitations (required
+                      when global_company_id and tax_id are 0)
                     type: string
                   global_company_id:
                     type: integer
