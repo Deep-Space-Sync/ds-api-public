@@ -4233,6 +4233,39 @@ paths:
       tags:
       - PortalApi
   /v2/hz/workspaces/{workspaceId}/projects/{projectId}/site-instructions/{siId}:
+    delete:
+      description: Soft-delete a Site Instruction record by ID.
+      operationId: v2_hzDeleteSiteInstruction
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: Site Instruction identifier
+        in: path
+        name: siId
+        required: true
+        type: string
+      responses:
+        204:
+          description: No Content
+        401:
+          description: Unauthorized
+        404:
+          description: Site Instruction not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a Site Instruction
+      tags:
+      - PortalApi
     get:
       description: Get a single Site Instruction record by ID including comments.
       operationId: v2_hzGetSiteInstructionDetail
