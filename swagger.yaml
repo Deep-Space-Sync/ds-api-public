@@ -1375,133 +1375,6 @@ paths:
       summary: Create Global Company
       tags:
       - Global Company Directory
-  /v2/global-companies-directory:
-    get:
-      operationId: v2_getGlobalCompaniesV2
-      parameters:
-      - description: Pagination limit (default 50, max 500)
-        in: query
-        name: limit
-        required: false
-        type: number
-      - description: Pagination offset (default 0)
-        in: query
-        name: offset
-        required: false
-        type: number
-      - description: Search query (case insensitive) by company name or tax ID
-        in: query
-        name: search
-        required: false
-        type: string
-      - description: Filter to specific Global Company ID
-        in: query
-        name: globalCompanyId
-        required: false
-        type: number
-      responses:
-        200:
-          description: Successful response
-          schema:
-            properties:
-              data:
-                items:
-                  type: object
-                type: array
-              limit:
-                type: number
-              offset:
-                type: number
-              total:
-                type: number
-            type: object
-        401:
-          description: Unauthorized
-      security:
-      - JWT_v2: []
-      summary: List/Search Global Companies (V2)
-      tags:
-      - Global Company Directory V2
-    post:
-      operationId: v2_createGlobalCompanyV2
-      parameters:
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            abn:
-              description: Australian Business Number
-              type: string
-            company_type:
-              description: Company type (default Subcontractor)
-              type: string
-            industry:
-              description: Industry (default Construction)
-              type: string
-            name:
-              description: Optional company name override
-              type: string
-            nzbn:
-              description: New Zealand Business Number
-              type: string
-            primary_contact_email:
-              description: Primary contact email
-              type: string
-            primary_contact_phone:
-              description: Primary contact phone
-              type: string
-          type: object
-      responses:
-        200:
-          description: Company created in pending status
-          schema:
-            type: object
-        401:
-          description: Unauthorized
-        403:
-          description: Forbidden - requires cs-admin or ds-admin scope
-      security:
-      - JWT_v2: []
-      summary: Create Global Company (V2)
-      tags:
-      - Global Company Directory V2
-  /v2/global-companies-directory/{globalCompanyId}/approve:
-    post:
-      operationId: v2_approveGlobalCompanyV2
-      parameters:
-      - description: Global Company ID to approve
-        in: path
-        name: globalCompanyId
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Company approved successfully
-          schema:
-            properties:
-              approved_by:
-                type: string
-              company_name:
-                type: string
-              company_status:
-                type: string
-              global_company_id:
-                type: number
-            type: object
-        400:
-          description: Company is not in pending status
-        401:
-          description: Unauthorized
-        403:
-          description: Forbidden - user is not PrimaryCompanyAdmin of creating company
-        404:
-          description: Company not found
-      security:
-      - JWT_v2: []
-      summary: Approve Pending Global Company
-      tags:
-      - Global Company Directory V2
   /v2/global-companies/alldocuments:
     get:
       operationId: v2_getAllDocuments
@@ -21376,6 +21249,148 @@ paths:
       summary: Get workspace-level file version history
       tags:
       - Get Data
+  /v2/workspaces/{workspaceId}/global-companies-directory:
+    get:
+      operationId: v2_getGlobalCompaniesV2
+      parameters:
+      - description: Workspace ID (ds_workspace_name)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Pagination limit (default 50, max 500)
+        in: query
+        name: limit
+        required: false
+        type: number
+      - description: Pagination offset (default 0)
+        in: query
+        name: offset
+        required: false
+        type: number
+      - description: Search query (case insensitive) by company name or tax ID
+        in: query
+        name: search
+        required: false
+        type: string
+      - description: Filter to specific Global Company ID
+        in: query
+        name: globalCompanyId
+        required: false
+        type: number
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              limit:
+                type: number
+              offset:
+                type: number
+              total:
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: List/Search Global Companies (V2)
+      tags:
+      - Global Company Directory V2
+    post:
+      operationId: v2_createGlobalCompanyV2
+      parameters:
+      - description: Workspace ID (ds_workspace_name)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            abn:
+              description: Australian Business Number
+              type: string
+            company_type:
+              description: Company type (default Subcontractor)
+              type: string
+            industry:
+              description: Industry (default Construction)
+              type: string
+            name:
+              description: Optional company name override
+              type: string
+            nzbn:
+              description: New Zealand Business Number
+              type: string
+            primary_contact_email:
+              description: Primary contact email
+              type: string
+            primary_contact_phone:
+              description: Primary contact phone
+              type: string
+          type: object
+      responses:
+        200:
+          description: Company created in pending status
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - requires cs-admin or ds-admin scope
+      security:
+      - JWT_v2: []
+      summary: Create Global Company (V2)
+      tags:
+      - Global Company Directory V2
+  /v2/workspaces/{workspaceId}/global-companies-directory/{globalCompanyId}/approve:
+    post:
+      operationId: v2_approveGlobalCompanyV2
+      parameters:
+      - description: Workspace ID (ds_workspace_name)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Global Company ID to approve
+        in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Company approved successfully
+          schema:
+            properties:
+              approved_by:
+                type: string
+              company_name:
+                type: string
+              company_status:
+                type: string
+              global_company_id:
+                type: number
+            type: object
+        400:
+          description: Company is not in pending status
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user is not PrimaryCompanyAdmin of creating company
+        404:
+          description: Company not found
+      security:
+      - JWT_v2: []
+      summary: Approve Pending Global Company
+      tags:
+      - Global Company Directory V2
   /v2/workspaces/{workspaceId}/hz-commercial-budgets:
     get:
       description: Retrieve budget register entries with optional filters and pagination
