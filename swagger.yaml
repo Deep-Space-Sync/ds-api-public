@@ -8897,6 +8897,14 @@ paths:
         in: query
         name: kinde_id
         type: string
+      - collectionFormat: multi
+        description: Optional batch lookup of worker Kinde IDs. Supports repeated
+          query params and comma-separated values.
+        in: query
+        items:
+          type: string
+        name: kinde_ids
+        type: array
       - description: Filter by employment type (e.g., Full-time, Part-time, Contract)
         in: query
         name: employment_type
@@ -8934,10 +8942,25 @@ paths:
           description: Successfully retrieved worker extra details
           schema:
             properties:
+              found_kinde_ids:
+                description: Present for batch lookups only
+                items:
+                  type: string
+                type: array
               limit:
                 type: integer
+              missing_kinde_ids:
+                description: Requested IDs with no worker-extra-details document
+                items:
+                  type: string
+                type: array
               page:
                 type: integer
+              requested_kinde_ids:
+                description: Present for batch lookups only
+                items:
+                  type: string
+                type: array
               source:
                 type: string
               total_count:
