@@ -9298,6 +9298,91 @@ paths:
       summary: Update workspace Horizon setting
       tags:
       - Info
+  /v2/workspaces/public/cost/public/tender-tokens/{token}:
+    get:
+      operationId: v2_getPublicTenderPortal
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tender info with user uploads
+          schema:
+            type: object
+        403:
+          description: Invalid or expired token
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      summary: Get tender portal info via token
+      tags:
+      - Cost
+  /v2/workspaces/public/cost/public/tender-tokens/{token}/upload:
+    post:
+      operationId: v2_publicTenderUpload
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            files:
+              items:
+                properties:
+                  file_size_bytes:
+                    type: integer
+                  filename:
+                    type: string
+                  filetype:
+                    type: string
+                type: object
+              type: array
+          type: object
+      responses:
+        200:
+          description: Upload URLs generated
+          schema:
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Invalid or expired token
+        500:
+          description: Internal Server Error
+      summary: Upload files to tender via token
+      tags:
+      - Cost
+  /v2/workspaces/public/cost/public/tender-tokens/{token}/upload/{fileId}:
+    delete:
+      operationId: v2_publicTenderDeleteUpload
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      - in: path
+        name: fileId
+        required: true
+        type: string
+      responses:
+        200:
+          description: File deleted
+        403:
+          description: Invalid or expired token or not your file
+        404:
+          description: File not found
+        500:
+          description: Internal Server Error
+      summary: Delete uploaded file via token
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}:
     get:
       description: Returns the details of a workspace
