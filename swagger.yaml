@@ -43910,7 +43910,18 @@ paths:
         schema:
           properties:
             line_items:
-              description: Map of cost_code to ftc and notes
+              additionalProperties:
+                properties:
+                  ftc:
+                    description: Forecast to Complete amount for this cost code
+                    type: number
+                  notes:
+                    description: Optional note explaining the FTC value
+                    type: string
+                type: object
+              description: Map of cost_code to update data. Each key is a cost code
+                string, each value is an object with ftc (number) and optional notes
+                (string).
               type: object
           required:
           - line_items
@@ -43942,7 +43953,8 @@ paths:
         schema:
           properties:
             period:
-              description: Forecast period in YYYY-MM format
+              description: Forecast period in YYYY-MM format (e.g. 2026-04)
+              pattern: ^\d{4}-\d{2}$
               type: string
           required:
           - period
