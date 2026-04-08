@@ -43904,24 +43904,17 @@ paths:
         name: forecastId
         required: true
         type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                line_items:
-                  additionalProperties:
-                    properties:
-                      ftc:
-                        type: number
-                      notes:
-                        type: string
-                    type: object
-                  description: Map of cost_code -> { ftc, notes }
-                  type: object
-              required:
-              - line_items
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            line_items:
+              description: Map of cost_code to ftc and notes
               type: object
+          required:
+          - line_items
+          type: object
       responses:
         200:
           description: FTC values updated, audit trail created
@@ -43943,18 +43936,17 @@ paths:
         name: projectId
         required: true
         type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                period:
-                  description: Forecast period in YYYY-MM format
-                  pattern: ^\d{4}-\d{2}$
-                  type: string
-              required:
-              - period
-              type: object
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            period:
+              description: Forecast period in YYYY-MM format
+              type: string
+          required:
+          - period
+          type: object
       responses:
         201:
           description: Forecast draft created with budget register data pulled
