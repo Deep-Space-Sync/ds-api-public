@@ -43784,6 +43784,241 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-edits:
+    get:
+      operationId: v2_getCostForecastEdits
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Filter by forecast ID
+        in: query
+        name: forecastId
+        required: false
+        type: string
+      - description: Filter by cost code
+        in: query
+        name: costCode
+        required: false
+        type: string
+      - description: Filter by period (YYYY-MM)
+        in: query
+        name: period
+        required: false
+        type: string
+      responses:
+        200:
+          description: List of FTC edit history entries with user, timestamp, old/new
+            values
+      security:
+      - JWT_v2: []
+      summary: List Forecast Edit History
+      tags:
+      - Cost - Forecast Edits
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-monthly:
+    delete:
+      operationId: v2_deleteCostForecastMonthly
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: forecastId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Draft forecast deleted
+        400:
+          description: Cannot delete approved forecast
+      security:
+      - JWT_v2: []
+      summary: Delete Monthly Forecast Draft
+      tags:
+      - Cost - Forecast Monthly
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getCostForecastMonthly
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Get a single forecast by ID
+        in: query
+        name: forecastId
+        required: false
+        type: string
+      - description: Filter by period (YYYY-MM)
+        in: query
+        name: period
+        required: false
+        type: string
+      - description: Filter by status
+        enum:
+        - draft
+        - approved
+        in: query
+        name: status
+        required: false
+        type: string
+      responses:
+        200:
+          description: List of monthly forecasts or single forecast
+      security:
+      - JWT_v2: []
+      summary: List Monthly Forecasts
+      tags:
+      - Cost - Forecast Monthly
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateCostForecastMonthlyFTC
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: forecastId
+        required: true
+        type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                line_items:
+                  additionalProperties:
+                    properties:
+                      ftc:
+                        type: number
+                      notes:
+                        type: string
+                    type: object
+                  description: Map of cost_code -> { ftc, notes }
+                  type: object
+              required:
+              - line_items
+              type: object
+      responses:
+        200:
+          description: FTC values updated, audit trail created
+      security:
+      - JWT_v2: []
+      summary: Update FTC Values
+      tags:
+      - Cost - Forecast Monthly
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createCostForecastMonthly
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                period:
+                  description: Forecast period in YYYY-MM format
+                  pattern: ^\d{4}-\d{2}$
+                  type: string
+              required:
+              - period
+              type: object
+      responses:
+        201:
+          description: Forecast draft created with budget register data pulled
+        409:
+          description: Forecast already exists for this period
+      security:
+      - JWT_v2: []
+      summary: Create Monthly Forecast Draft
+      tags:
+      - Cost - Forecast Monthly
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-monthly/approve:
+    post:
+      operationId: v2_approveCostForecastMonthly
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: forecastId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Forecast approved, snapshot created, budget register updated
+      security:
+      - JWT_v2: []
+      summary: Approve Monthly Forecast
+      tags:
+      - Cost - Forecast Monthly
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-monthly/validate:
+    post:
+      operationId: v2_validateCostForecastMonthly
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: forecastId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Validation results with issue list
+      security:
+      - JWT_v2: []
+      summary: Validate Monthly Forecast
+      tags:
+      - Cost - Forecast Monthly
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-periods:
     delete:
       operationId: v2_deleteCostForecastPeriod
@@ -43962,6 +44197,38 @@ paths:
       summary: Create single Forecast Period
       tags:
       - Cost - Forecast Periods
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-snapshots:
+    get:
+      operationId: v2_getCostForecastSnapshots
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Get a single snapshot by ID
+        in: query
+        name: snapshotId
+        required: false
+        type: string
+      - description: Filter by period (YYYY-MM)
+        in: query
+        name: period
+        required: false
+        type: string
+      responses:
+        200:
+          description: List of forecast snapshots (immutable approved records)
+      security:
+      - JWT_v2: []
+      summary: List Forecast Snapshots
+      tags:
+      - Cost - Forecast Snapshots
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecasts:
