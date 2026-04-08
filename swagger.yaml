@@ -43987,6 +43987,22 @@ paths:
         name: forecastId
         required: true
         type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            assumptions:
+              description: Optional approval assumptions or notes
+              type: string
+            distribution_mode:
+              description: How to distribute FTC across months for S-curve. Defaults
+                to linear.
+              enum:
+              - linear
+              - preserve_manual
+              type: string
+          type: object
       responses:
         200:
           description: Forecast approved, snapshot created, budget register updated
@@ -44199,6 +44215,57 @@ paths:
       security:
       - JWT_v2: []
       summary: Create single Forecast Period
+      tags:
+      - Cost - Forecast Periods
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-periods/redistribute:
+    post:
+      operationId: v2_redistributeCostForecastPeriods
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_code:
+              description: Cost code to redistribute
+              type: string
+            forecast_id:
+              description: ID of the S-curve forecast header (source=monthly_forecast)
+              type: string
+            overrides:
+              additionalProperties:
+                type: number
+              description: Map of period_month (YYYY-MM) to override amount
+              type: object
+            redistribute_remaining:
+              description: If true, distribute remaining FTC equally across non-overridden
+                months
+              type: boolean
+            total_ftc:
+              description: Total FTC for this cost code (sum of all months must equal
+                this)
+              type: number
+          required:
+          - forecast_id
+          - cost_code
+          - total_ftc
+          type: object
+      responses:
+        200:
+          description: Periods redistributed successfully
+      security:
+      - JWT_v2: []
+      summary: Redistribute forecast period amounts for a cost code
       tags:
       - Cost - Forecast Periods
       x-ds-test-enabled: true
