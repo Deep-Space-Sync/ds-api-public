@@ -44248,8 +44248,10 @@ paths:
               description: Map of period_month (YYYY-MM) to override amount
               type: object
             redistribute_remaining:
-              description: If true, distribute remaining FTC equally across non-overridden
-                months
+              description: If true, remaining FTC (total minus overrides) is distributed
+                equally across non-overridden months so the total is met exactly.
+                If false, non-overridden months are left unchanged and the total FTC
+                may not be met.
               type: boolean
             total_ftc:
               description: Total FTC for this cost code (sum of all months must equal
