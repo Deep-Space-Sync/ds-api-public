@@ -11452,6 +11452,96 @@ paths:
       summary: Rename document by series ID (workspace-level)
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/cde/v2/smart-folders:
+    get:
+      operationId: v2_listSmartFoldersWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of smart folders
+      security:
+      - JWT_v2: []
+      summary: List smart folders (workspace-level)
+      tags:
+      - CDE Smart Folders
+    post:
+      operationId: v2_createSmartFolderWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Created smart folder
+      security:
+      - JWT_v2: []
+      summary: Create a smart folder (workspace-level)
+      tags:
+      - CDE Smart Folders
+  /v2/workspaces/{workspaceId}/cde/v2/smart-folders/{smartFolderId}:
+    delete:
+      operationId: v2_deleteSmartFolderWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: smartFolderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Smart folder deleted
+      security:
+      - JWT_v2: []
+      summary: Delete a smart folder (workspace-level)
+      tags:
+      - CDE Smart Folders
+    patch:
+      operationId: v2_updateSmartFolderWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: smartFolderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Updated smart folder
+      security:
+      - JWT_v2: []
+      summary: Update a smart folder (workspace-level)
+      tags:
+      - CDE Smart Folders
+  /v2/workspaces/{workspaceId}/cde/v2/smart-folders/{smartFolderId}/results:
+    get:
+      operationId: v2_getSmartFolderResultsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: smartFolderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of matching CDE documents
+      security:
+      - JWT_v2: []
+      summary: Execute smart folder query (workspace-level)
+      tags:
+      - CDE Smart Folders
   /v2/workspaces/{workspaceId}/cde/v2/text-search:
     post:
       description: 'Search for text in a PDF document and return match locations with
