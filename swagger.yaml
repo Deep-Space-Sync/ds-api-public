@@ -36849,212 +36849,6 @@ paths:
       tags:
       - CDE Documents
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/rename-by-series-id:
-    /workspaces/{workspaceId}/projects/{projectId}/cde/v2/smart-folders:
-      get:
-        operationId: listSmartFolders
-        parameters:
-        - in: path
-          name: workspaceId
-          required: true
-          type: string
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-        responses:
-          200:
-            description: List of smart folders
-        security:
-        - api_key: []
-          firebase_auth: []
-        summary: List smart folders
-        tags:
-        - CDE Smart Folders
-      options:
-        description: CORS preflight request
-        operationId: smartFoldersListOptions
-        parameters:
-        - in: path
-          name: workspaceId
-          required: true
-          type: string
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-        responses:
-          204:
-            description: CORS headers returned
-      post:
-        operationId: createSmartFolder
-        parameters:
-        - in: path
-          name: workspaceId
-          required: true
-          type: string
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-        - in: body
-          name: body
-          required: true
-          schema:
-            properties:
-              date_filter_days:
-                type: integer
-              date_filter_from:
-                type: string
-              date_filter_to:
-                type: string
-              date_filter_type:
-                enum:
-                - any
-                - last_x_days
-                - between
-                type: string
-              file_types:
-                items:
-                  type: string
-                type: array
-              filename_contains:
-                type: string
-              include_subfolders:
-                type: boolean
-              name:
-                type: string
-              scope_folder_ids:
-                items:
-                  type: string
-                type: array
-              uploaded_by_user_ids:
-                items:
-                  type: string
-                type: array
-            required:
-            - name
-            type: object
-        responses:
-          200:
-            description: Created smart folder
-        security:
-        - api_key: []
-          firebase_auth: []
-        summary: Create a smart folder
-        tags:
-        - CDE Smart Folders
-    /workspaces/{workspaceId}/projects/{projectId}/cde/v2/smart-folders/{smartFolderId}:
-      delete:
-        operationId: deleteSmartFolder
-        parameters:
-        - in: path
-          name: workspaceId
-          required: true
-          type: string
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-        - in: path
-          name: smartFolderId
-          required: true
-          type: string
-        responses:
-          200:
-            description: Smart folder deleted
-        security:
-        - api_key: []
-          firebase_auth: []
-        summary: Delete a smart folder
-        tags:
-        - CDE Smart Folders
-      options:
-        description: CORS preflight request
-        operationId: smartFolderByIdOptions
-        parameters:
-        - in: path
-          name: workspaceId
-          required: true
-          type: string
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-        - in: path
-          name: smartFolderId
-          required: true
-          type: string
-        responses:
-          204:
-            description: CORS headers returned
-      patch:
-        operationId: updateSmartFolder
-        parameters:
-        - in: path
-          name: workspaceId
-          required: true
-          type: string
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-        - in: path
-          name: smartFolderId
-          required: true
-          type: string
-        responses:
-          200:
-            description: Updated smart folder
-        security:
-        - api_key: []
-          firebase_auth: []
-        summary: Update a smart folder
-        tags:
-        - CDE Smart Folders
-    /workspaces/{workspaceId}/projects/{projectId}/cde/v2/smart-folders/{smartFolderId}/results:
-      get:
-        operationId: getSmartFolderResults
-        parameters:
-        - in: path
-          name: workspaceId
-          required: true
-          type: string
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-        - in: path
-          name: smartFolderId
-          required: true
-          type: string
-        responses:
-          200:
-            description: List of matching CDE documents
-        security:
-        - api_key: []
-          firebase_auth: []
-        summary: Execute smart folder query
-        tags:
-        - CDE Smart Folders
-      options:
-        description: CORS preflight request
-        operationId: smartFolderResultsOptions
-        parameters:
-        - in: path
-          name: workspaceId
-          required: true
-          type: string
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-        - in: path
-          name: smartFolderId
-          required: true
-          type: string
-        responses:
-          204:
-            description: CORS headers returned
     post:
       description: 'Rename all versions of a document by its document_series_id.
 
@@ -37182,6 +36976,159 @@ paths:
       summary: Get batch signed download URLs
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/smart-folders:
+    get:
+      operationId: v2_listSmartFolders
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: List of smart folders
+      security:
+      - api_key: []
+        firebase_auth: []
+      summary: List smart folders
+      tags:
+      - CDE Smart Folders
+    post:
+      operationId: v2_createSmartFolder
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            date_filter_days:
+              type: integer
+            date_filter_from:
+              type: string
+            date_filter_to:
+              type: string
+            date_filter_type:
+              enum:
+              - any
+              - last_x_days
+              - between
+              type: string
+            file_types:
+              items:
+                type: string
+              type: array
+            filename_contains:
+              type: string
+            include_subfolders:
+              type: boolean
+            name:
+              type: string
+            scope_folder_ids:
+              items:
+                type: string
+              type: array
+            uploaded_by_user_ids:
+              items:
+                type: string
+              type: array
+          required:
+          - name
+          type: object
+      responses:
+        200:
+          description: Created smart folder
+      security:
+      - api_key: []
+        firebase_auth: []
+      summary: Create a smart folder
+      tags:
+      - CDE Smart Folders
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/smart-folders/{smartFolderId}:
+    delete:
+      operationId: v2_deleteSmartFolder
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: smartFolderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Smart folder deleted
+      security:
+      - api_key: []
+        firebase_auth: []
+      summary: Delete a smart folder
+      tags:
+      - CDE Smart Folders
+    patch:
+      operationId: v2_updateSmartFolder
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: smartFolderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Updated smart folder
+      security:
+      - api_key: []
+        firebase_auth: []
+      summary: Update a smart folder
+      tags:
+      - CDE Smart Folders
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/smart-folders/{smartFolderId}/results:
+    get:
+      operationId: v2_getSmartFolderResults
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: smartFolderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of matching CDE documents
+      security:
+      - api_key: []
+        firebase_auth: []
+      summary: Execute smart folder query
+      tags:
+      - CDE Smart Folders
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/{cdeId}:
     delete:
       description: Invalidates a CDE entry for failed uploads
