@@ -44166,6 +44166,33 @@ paths:
       - Cost - Forecast Monthly
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-monthly/refresh:
+    post:
+      operationId: v2_refreshCostForecastMonthly
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: forecastId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Forecast data refreshed from Budget Register, preserving existing
+            FTC edits
+      security:
+      - JWT_v2: []
+      summary: Refresh Forecast from Budget Register
+      tags:
+      - Cost - Forecast Monthly
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-monthly/validate:
     post:
       operationId: v2_validateCostForecastMonthly
