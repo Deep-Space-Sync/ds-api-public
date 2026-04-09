@@ -36992,8 +36992,7 @@ paths:
         200:
           description: List of smart folders
       security:
-      - api_key: []
-        firebase_auth: []
+      - JWT_v2: []
       summary: List smart folders
       tags:
       - CDE Smart Folders
@@ -37050,8 +37049,7 @@ paths:
         200:
           description: Created smart folder
       security:
-      - api_key: []
-        firebase_auth: []
+      - JWT_v2: []
       summary: Create a smart folder
       tags:
       - CDE Smart Folders
@@ -37075,8 +37073,7 @@ paths:
         200:
           description: Smart folder deleted
       security:
-      - api_key: []
-        firebase_auth: []
+      - JWT_v2: []
       summary: Delete a smart folder
       tags:
       - CDE Smart Folders
@@ -37099,8 +37096,7 @@ paths:
         200:
           description: Updated smart folder
       security:
-      - api_key: []
-        firebase_auth: []
+      - JWT_v2: []
       summary: Update a smart folder
       tags:
       - CDE Smart Folders
@@ -37124,8 +37120,7 @@ paths:
         200:
           description: List of matching CDE documents
       security:
-      - api_key: []
-        firebase_auth: []
+      - JWT_v2: []
       summary: Execute smart folder query
       tags:
       - CDE Smart Folders
