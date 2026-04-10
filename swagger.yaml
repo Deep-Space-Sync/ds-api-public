@@ -10175,6 +10175,181 @@ paths:
       summary: Get signed urls for cde
       tags:
       - Upload Data
+  /v2/workspaces/{workspaceId}/cde-folder-templates:
+    get:
+      description: Returns all folder structure templates for the workspace.
+      operationId: v2_listCdeFolderTemplates
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Page number (default 1)
+        in: query
+        name: page
+        required: false
+        type: integer
+      - description: Items per page (default 50)
+        in: query
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: List of templates
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List folder templates
+      tags:
+      - CDE Folder Templates
+    post:
+      description: Creates a new folder structure template for the workspace.
+      operationId: v2_createCdeFolderTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              description: Optional description
+              type: string
+            folder_structure:
+              description: Nested folder tree structure
+              items:
+                properties:
+                  children:
+                    items:
+                      type: object
+                    type: array
+                  name:
+                    type: string
+                type: object
+              type: array
+            name:
+              description: Template name
+              type: string
+          required:
+          - name
+          - folder_structure
+          type: object
+      responses:
+        201:
+          description: Template created
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a folder template
+      tags:
+      - CDE Folder Templates
+  /v2/workspaces/{workspaceId}/cde-folder-templates/{templateId}:
+    delete:
+      description: Soft-deletes a folder template.
+      operationId: v2_deleteCdeFolderTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Template deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a folder template
+      tags:
+      - CDE Folder Templates
+    get:
+      description: Returns a single folder template by ID.
+      operationId: v2_getCdeFolderTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Template found
+        401:
+          description: Unauthorized
+        404:
+          description: Template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a folder template
+      tags:
+      - CDE Folder Templates
+    patch:
+      description: Updates a folder template's name, description, or folder structure.
+      operationId: v2_updateCdeFolderTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              type: string
+            folder_structure:
+              items:
+                type: object
+              type: array
+            name:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Template updated
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a folder template
+      tags:
+      - CDE Folder Templates
   /v2/workspaces/{workspaceId}/cde-folders:
     get:
       description: Returns child folders for a parent folder. Omit parentId to list
@@ -10238,8 +10413,8 @@ paths:
       - CDE Folders
   /v2/workspaces/{workspaceId}/cde-folders/party-types:
     get:
-      description: Returns the list of available party types (client, subcontractor)
-        and permission levels (read, write, admin).
+      description: Returns the list of available party types (client, subcontractor,
+        consultant) and permission levels (read, write, admin).
       operationId: v2_getCdeFolderPartyTypes
       parameters:
       - in: path
@@ -10276,7 +10451,7 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - description: Type of party (client, subcontractor)
+      - description: Type of party (client, subcontractor, consultant)
         in: query
         name: partyType
         required: true
@@ -10424,7 +10599,7 @@ paths:
               description: ID of the party
               type: string
             party_type:
-              description: Type of party (client, subcontractor)
+              description: Type of party (client, subcontractor, consultant)
               type: string
             permission_level:
               description: Permission level (read, write, admin). Defaults to read.
@@ -36077,12 +36252,12 @@ paths:
       - Upload Data
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde-folders/bulk-create-defaults:
     post:
-      description: 'Creates the default folder hierarchy for a project including static
-        folders
+      description: 'Creates the portal folder structure for a project including the
+        Portals
 
-        (Preconstruction, Procurement, Commercial, Forms, Delivery, HSEQ, Portals)
+        container and dynamic subfolders for clients, subcontractors, and
 
-        and dynamic folders for clients and subcontractors under Portals.
+        consultants. Only creates folders that don''t already exist.
 
         '
       operationId: v2_bulkCreateDefaultCdeFolders
@@ -36091,7 +36266,7 @@ paths:
         name: workspaceId
         required: true
         type: string
-      - description: Project to create folders for
+      - description: Project to sync portal folders for
         in: path
         name: projectId
         required: true
@@ -36102,14 +36277,14 @@ paths:
         schema:
           properties:
             global_company_id:
-              description: Global company ID for fetching subcontractors
+              description: Global company ID for fetching subcontractors and consultants
               type: integer
           required:
           - global_company_id
           type: object
       responses:
         201:
-          description: Default folders created successfully
+          description: Portal folders synced successfully
         400:
           description: Missing required parameters
         401:
@@ -36118,7 +36293,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Create default folder structure for project
+      summary: Sync portal folders for project
       tags:
       - CDE Folders
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde-folders/by-path:
@@ -36198,6 +36373,52 @@ paths:
       summary: Create folder hierarchy from path
       tags:
       - CDE Folders
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde-folders/install-template:
+    post:
+      description: 'Installs a folder structure template into a project, creating
+        all folders
+
+        defined in the template. Only creates folders that don''t already exist.
+
+        Does not delete any existing folders.
+
+        '
+      operationId: v2_installCdeFolderTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project to install template into
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            template_id:
+              description: ID of the folder template to install
+              type: string
+          required:
+          - template_id
+          type: object
+      responses:
+        201:
+          description: Template installed successfully
+        400:
+          description: Missing required parameters or template not found
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Install folder template into project
+      tags:
+      - CDE Folder Templates
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde-helper/finalize:
     post:
       description: 'Step 3 of direct upload workflow: After successfully uploading
