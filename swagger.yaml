@@ -33142,7 +33142,6 @@ paths:
               type: array
           required:
           - project_name
-          - client_id
           type: object
       responses:
         201:
