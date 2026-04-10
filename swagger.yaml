@@ -5926,6 +5926,224 @@ paths:
       summary: Get portal Site Instruction detail (v2)
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/subcontract-claims:
+    get:
+      description: Get paginated list of subcontract claims for a project, filtered
+        to the caller's company (claims created by their company).
+      operationId: v2_portalV2ListSubcontractClaims
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user has no company assignment
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List portal Subcontract Claims (v2)
+      tags:
+      - PortalApi
+    post:
+      description: Create a new subcontract claim with status fixed to Submitted.
+        SOV claim values are validated against the subcontract.
+      operationId: v2_portalV2CreateSubcontractClaim
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        201:
+          description: Created
+        400:
+          description: Bad Request - subcontract not found or SOV validation failed
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user's company is not the subcontractor
+        422:
+          description: Invalid input - missing required fields
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create portal Subcontract Claim (v2)
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/subcontract-claims/{claimId}:
+    delete:
+      description: Soft-delete a subcontract claim owned by the caller's company.
+      operationId: v2_portalV2DeleteSubcontractClaim
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Subcontract claim document identifier
+        in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        204:
+          description: No Content - successfully deleted
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Claim not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete portal Subcontract Claim (v2)
+      tags:
+      - PortalApi
+    get:
+      description: Get full subcontract claim detail including SOVs, authorized to
+        the owning company only.
+      operationId: v2_portalV2GetSubcontractClaimDetail
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Subcontract claim document identifier
+        in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user's company does not own this claim
+        404:
+          description: Claim not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get portal Subcontract Claim detail (v2)
+      tags:
+      - PortalApi
+    patch:
+      description: Edit an existing subcontract claim owned by the caller's company.
+        SOV claim values are re-validated if provided.
+      operationId: v2_portalV2UpdateSubcontractClaim
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Subcontract claim document identifier
+        in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request - SOV validation failed
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Claim not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update portal Subcontract Claim (v2)
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/subcontracts:
+    get:
+      description: List subcontracts where the caller's company is the subcontractor,
+        including SOV schedules.
+      operationId: v2_portalV2ListSubcontracts
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user has no company assignment
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List portal Subcontracts (v2)
+      tags:
+      - PortalApi
   /v2/portal/health:
     get:
       description: Check if the Portal API service is healthy.
@@ -7331,49 +7549,6 @@ paths:
       security:
       - JWT_v2: []
       summary: Transition a Client Instruction
-      tags:
-      - PortalApi
-  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/claims:
-    get:
-      description: Get paginated list of progress claims for a project, filtered to
-        the user's company.
-      operationId: v2_portalApiGetClaims
-      parameters:
-      - description: Workspace identifier (e.g., ds_xxx)
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Project identifier
-        in: path
-        name: projectId
-        required: true
-        type: integer
-      - default: 1
-        description: Page number (1-indexed)
-        in: query
-        minimum: 1
-        name: page
-        required: false
-        type: integer
-      - default: 50
-        description: Items per page
-        in: query
-        maximum: 200
-        minimum: 1
-        name: pageSize
-        required: false
-        type: integer
-      responses:
-        200:
-          description: OK
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: List progress claims for a project
       tags:
       - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/members:
