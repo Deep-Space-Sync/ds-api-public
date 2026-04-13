@@ -21803,6 +21803,11 @@ paths:
         name: globalCompanyId
         required: false
         type: number
+      - description: Filter by company_type (e.g. "Client", "Subcontractor", "Supplier")
+        in: query
+        name: companyType
+        required: false
+        type: string
       - description: Include vendor sharing relationships (requires globalCompanyId)
         in: query
         name: includeSharedCompanies
