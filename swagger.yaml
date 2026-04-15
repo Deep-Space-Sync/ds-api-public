@@ -69687,6 +69687,128 @@ paths:
       summary: Update a document template
       tags:
       - HzDocumentTemplates
+  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/archive:
+    patch:
+      operationId: v2_archiveHzDocumentTemplate
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Document template ID
+        in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Document template archived successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch
+        404:
+          description: Document template not found
+      security:
+      - JWT_v2: []
+      summary: Archive a published template
+      tags:
+      - HzDocumentTemplates
+  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/publish:
+    patch:
+      operationId: v2_publishHzDocumentTemplate
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Document template ID
+        in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Document template published successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch
+        404:
+          description: Document template not found
+      security:
+      - JWT_v2: []
+      summary: Publish a draft template
+      tags:
+      - HzDocumentTemplates
+  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/revise:
+    post:
+      operationId: v2_reviseHzDocumentTemplate
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Document template ID to revise
+        in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        201:
+          description: New draft version created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  id:
+                    type: string
+                  is_latest_version:
+                    type: boolean
+                  is_superseded:
+                    type: boolean
+                  parent_template_id:
+                    type: string
+                  root_template_id:
+                    type: string
+                  status:
+                    type: string
+                  title:
+                    type: string
+                  version_number:
+                    type: integer
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch
+        404:
+          description: Document template not found
+      security:
+      - JWT_v2: []
+      summary: Create a new draft version from a published template
+      tags:
+      - HzDocumentTemplates
   /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/send:
     post:
       description: 'Queue a document template to be sent as a PDF attachment via email.
@@ -69814,111 +69936,6 @@ paths:
       summary: Send a document template via email
       tags:
       - HzDocumentTemplates
-  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/revise:
-    post:
-      operationId: v2_reviseHzDocumentTemplate
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspace_id
-        required: true
-        type: string
-      - description: Document template ID
-        in: path
-        name: template_id
-        required: true
-        type: string
-      responses:
-        201:
-          description: New draft version created successfully
-          schema:
-            properties:
-              data:
-                type: object
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        403:
-          description: Forbidden - workspace mismatch
-        404:
-          description: Document template not found
-      security:
-      - JWT_v2: []
-      summary: Create a new draft version from a published template
-      tags:
-      - HzDocumentTemplates
-  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/publish:
-    patch:
-      operationId: v2_publishHzDocumentTemplate
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspace_id
-        required: true
-        type: string
-      - description: Document template ID
-        in: path
-        name: template_id
-        required: true
-        type: string
-      responses:
-        200:
-          description: Document template published successfully
-          schema:
-            properties:
-              data:
-                type: object
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        403:
-          description: Forbidden - workspace mismatch
-        404:
-          description: Document template not found
-      security:
-      - JWT_v2: []
-      summary: Publish a draft template
-      tags:
-      - HzDocumentTemplates
-  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/archive:
-    patch:
-      operationId: v2_archiveHzDocumentTemplate
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspace_id
-        required: true
-        type: string
-      - description: Document template ID
-        in: path
-        name: template_id
-        required: true
-        type: string
-      responses:
-        200:
-          description: Document template archived successfully
-          schema:
-            properties:
-              data:
-                type: object
-              message:
-                type: string
-            type: object
-        401:
-          description: Unauthorized
-        403:
-          description: Forbidden - workspace mismatch
-        404:
-          description: Document template not found
-      security:
-      - JWT_v2: []
-      summary: Archive a published template
-      tags:
-      - HzDocumentTemplates
   /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/versions:
     get:
       operationId: v2_listHzDocumentTemplateVersions
@@ -69928,7 +69945,7 @@ paths:
         name: workspace_id
         required: true
         type: string
-      - description: Document template ID
+      - description: Any template ID in the version family
         in: path
         name: template_id
         required: true
@@ -69940,6 +69957,17 @@ paths:
             properties:
               data:
                 items:
+                  properties:
+                    id:
+                      type: string
+                    is_latest_version:
+                      type: boolean
+                    is_superseded:
+                      type: boolean
+                    status:
+                      type: string
+                    version_number:
+                      type: integer
                   type: object
                 type: array
               message:
