@@ -21955,6 +21955,68 @@ paths:
       summary: List Managed Companies
       tags:
       - Global Company Directory V2
+  /v2/workspaces/{workspaceId}/global-companies-directory/vendors/relationship-type:
+    patch:
+      operationId: v2_updateVendorRelationshipTypeV2
+      parameters:
+      - description: Workspace ID (ds_workspace_name)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            updates:
+              items:
+                properties:
+                  relationship_type:
+                    description: 'New relationship type: SUBCONTRACTOR, SUPPLIER,
+                      or CLIENT'
+                    type: string
+                  sharing_from_global_company_id:
+                    description: The vendor company ID whose relationship type to
+                      update
+                    type: integer
+                required:
+                - sharing_from_global_company_id
+                - relationship_type
+                type: object
+              type: array
+          required:
+          - updates
+          type: object
+      responses:
+        200:
+          description: Relationship type updated successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  sharing_to_global_company_id:
+                    type: integer
+                  updates:
+                    items:
+                      type: object
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid request (empty updates, invalid relationship_type,
+            or workspace not linked)
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Vendor Relationship Type
+      tags:
+      - Global Company Directory V2
   /v2/workspaces/{workspaceId}/global-companies-directory/vendors/request:
     post:
       operationId: v2_requestVendorSharingV2
