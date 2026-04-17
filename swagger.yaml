@@ -9495,6 +9495,44 @@ paths:
       summary: Get tender portal info via token
       tags:
       - Cost
+  /v2/workspaces/public/cost/public/tender-tokens/{token}/submit:
+    post:
+      operationId: v2_publicTenderSubmit
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            acknowledged_addendum_ids:
+              items:
+                type: string
+              type: array
+            exclusions:
+              type: string
+            headline_price:
+              type: number
+            notes:
+              type: string
+          required:
+          - headline_price
+          type: object
+      responses:
+        201:
+          description: Bid submitted
+        400:
+          description: Bad request
+        403:
+          description: Invalid token
+        409:
+          description: Duplicate submission
+      summary: Submit a structured bid via token
+      tags:
+      - Cost
   /v2/workspaces/public/cost/public/tender-tokens/{token}/upload:
     post:
       operationId: v2_publicTenderUpload
