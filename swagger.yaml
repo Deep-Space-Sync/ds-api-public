@@ -37399,6 +37399,134 @@ paths:
       summary: Get CDE documents by series IDs
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/drawings/{drawingCdeId}/sketches:
+    get:
+      description: 'Returns all non-deleted sketches attached to a drawing (cde_documents_log
+        row).
+
+        Ordered by created_at ascending.
+
+        '
+      operationId: v2_listSketches
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: cde_id of the parent drawing in cde_documents_log
+        in: path
+        name: drawingCdeId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Array of sketch records
+          schema:
+            items:
+              properties:
+                created_at:
+                  type: string
+                created_by:
+                  type: string
+                created_by_user_id:
+                  type: string
+                description:
+                  type: string
+                drawing_cde_id:
+                  type: integer
+                file_cde_id:
+                  type: integer
+                project_id:
+                  type: integer
+                sketch_date:
+                  format: date
+                  type: string
+                sketch_id:
+                  type: integer
+                sketch_name:
+                  type: string
+                sketch_number:
+                  type: string
+                status:
+                  type: string
+                updated_at:
+                  type: string
+              type: object
+            type: array
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List sketches for a drawing
+      tags:
+      - CDE Sketches
+    post:
+      description: 'Creates a sketch row linked to a drawing. The sketch''s file must
+        already exist
+
+        in cde_documents_log (upload via POST /cde/v2 first, then pass file_cde_id
+        here).
+
+        '
+      operationId: v2_createSketch
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: drawingCdeId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              description: Rich-text HTML from the Description editor
+              type: string
+            file_cde_id:
+              description: cde_id of the sketch's own uploaded file in cde_documents_log
+              type: integer
+            sketch_date:
+              description: ISO date (YYYY-MM-DD)
+              format: date
+              type: string
+            sketch_name:
+              type: string
+            sketch_number:
+              type: string
+          required:
+          - sketch_number
+          - sketch_name
+          - sketch_date
+          - file_cde_id
+          type: object
+      responses:
+        200:
+          description: Created sketch record
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a sketch on a drawing
+      tags:
+      - CDE Sketches
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/migrate-legacy:
     post:
       description: 'Migrates legacy CDE documents (with null document_series_id) to
@@ -37679,6 +37807,95 @@ paths:
       summary: Get batch signed download URLs
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/sketches/{sketchId}:
+    delete:
+      description: Soft-delete by setting status='deleted'.
+      operationId: v2_deleteSketch
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sketchId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Sketch deleted
+          schema:
+            properties:
+              sketch_id:
+                type: integer
+              success:
+                type: boolean
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Sketch not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a sketch
+      tags:
+      - CDE Sketches
+    patch:
+      description: Partial update. Only provided fields are modified.
+      operationId: v2_updateSketch
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: sketchId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              type: string
+            file_cde_id:
+              type: integer
+            sketch_date:
+              format: date
+              type: string
+            sketch_name:
+              type: string
+            sketch_number:
+              type: string
+            status:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Updated sketch record
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Sketch not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a sketch
+      tags:
+      - CDE Sketches
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/smart-folders:
     get:
       operationId: v2_listSmartFolders
