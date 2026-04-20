@@ -37467,11 +37467,14 @@ paths:
       tags:
       - CDE Sketches
     post:
-      description: 'Creates a sketch row linked to a drawing. The sketch''s file must
-        already exist
+      description: 'Creates a sketch row plus a cde_documents_log entry for its PDF
+        in one call.
 
-        in cde_documents_log (upload via POST /cde/v2 first, then pass file_cde_id
-        here).
+        The response includes a signed URL the client must PUT the PDF to. Sketch
+
+        files are tagged `cde_type_id=''ds-drawing-sketch''` and are NOT placed into
+
+        any CDE folder (no placement, no auto-versioning).
 
         '
       operationId: v2_createSketch
@@ -37496,9 +37499,20 @@ paths:
             description:
               description: Rich-text HTML from the Description editor
               type: string
-            file_cde_id:
-              description: cde_id of the sketch's own uploaded file in cde_documents_log
-              type: integer
+            file:
+              properties:
+                file_size_bytes:
+                  type: integer
+                filename:
+                  description: Display filename (must end in .pdf)
+                  type: string
+                filetype:
+                  description: MIME type (must indicate PDF)
+                  type: string
+              required:
+              - filename
+              - filetype
+              type: object
             sketch_date:
               description: ISO date (YYYY-MM-DD)
               format: date
@@ -37511,11 +37525,26 @@ paths:
           - sketch_number
           - sketch_name
           - sketch_date
-          - file_cde_id
+          - file
           type: object
       responses:
         200:
-          description: Created sketch record
+          description: Created sketch record with upload URL
+          schema:
+            properties:
+              drawing_cde_id:
+                type: integer
+              file_cde_id:
+                type: integer
+              signed_url:
+                description: Client must PUT the PDF to this URL
+                type: string
+              sketch_id:
+                type: integer
+              upload_filename:
+                description: Timestamped GCS storage filename
+                type: string
+            type: object
         400:
           description: Validation error
         401:
@@ -37524,7 +37553,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Create a sketch on a drawing
+      summary: Create a sketch on a drawing (atomic - reserves PDF upload slot)
       tags:
       - CDE Sketches
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/migrate-legacy:
@@ -37868,8 +37897,26 @@ paths:
           properties:
             description:
               type: string
-            file_cde_id:
-              type: integer
+            file:
+              description: 'Optional. If present, a new cde_documents_log row is created
+                and the
+
+                sketch''s file_cde_id is re-pointed. The response includes a signed
+
+                URL the client must PUT the new PDF to.
+
+                '
+              properties:
+                file_size_bytes:
+                  type: integer
+                filename:
+                  type: string
+                filetype:
+                  type: string
+              required:
+              - filename
+              - filetype
+              type: object
             sketch_date:
               format: date
               type: string
@@ -37882,7 +37929,8 @@ paths:
           type: object
       responses:
         200:
-          description: Updated sketch record
+          description: Updated sketch record (includes `signed_url` when a new file
+            was supplied)
         400:
           description: Validation error
         401:
