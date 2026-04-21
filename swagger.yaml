@@ -8847,6 +8847,10 @@ paths:
                     document_series_id:
                       description: Document series (groups all versions)
                       type: string
+                    file_type:
+                      description: File MIME type enriched at portal-view time (absent
+                        on old transmittals)
+                      type: string
                     revision:
                       description: Revision string (e.g. 'A', 'B', 'C1')
                       type: string
@@ -8929,6 +8933,101 @@ paths:
         500:
           description: Internal Server Error
       summary: Download a document via public token
+      tags:
+      - public-access
+  /v2/transmittals_v2/access/{raw_token}/sketches:
+    get:
+      description: Returns a dict keyed by drawing_cde_id with the sketches attached
+        to each. Only cde_ids that are part of this transmittal are allowed. Used
+        by the bulk-download flow to include sketch PDFs in the ZIP. Drawings with
+        no sketches are absent from the response.
+      operationId: v2_portalSketchesV2
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      - collectionFormat: multi
+        description: One or more drawing cde_ids to fetch sketches for (must belong
+          to this transmittal)
+        in: query
+        items:
+          type: integer
+        name: drawing_cde_id
+        required: true
+        type: array
+      responses:
+        200:
+          description: "Successful Response \u2014 dict keyed by drawing_cde_id (as\
+            \ string in JSON)"
+          schema:
+            additionalProperties:
+              items:
+                properties:
+                  file_cde_id:
+                    description: CDE ID of the sketch PDF file
+                    type: integer
+                  sketch_name:
+                    description: Display name of the sketch
+                    type: string
+                required:
+                - file_cde_id
+                - sketch_name
+                type: object
+              type: array
+            type: object
+        400:
+          description: Missing or too many drawing_cde_id parameters
+        403:
+          description: Invalid or expired access token
+        404:
+          description: Transmittal not found
+        500:
+          description: Internal Server Error
+      summary: Batch list sketches for PDF drawings in a transmittal
+      tags:
+      - public-access
+  /v2/transmittals_v2/access/{raw_token}/sketches/{file_cde_id}/download:
+    get:
+      description: Returns a signed GCS URL for a sketch PDF. Validates that the file_cde_id
+        is a sketch of a drawing that belongs to this transmittal, preventing cross-transmittal
+        access.
+      operationId: v2_portalSketchDownloadV2
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      - description: CDE ID of the sketch file to download
+        in: path
+        name: file_cde_id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            description: Response containing a signed GCS URL for sketch PDF download.
+            properties:
+              expires_in_secs:
+                default: 900
+                type: integer
+              file_name:
+                description: Display file name for Content-Disposition hint
+                type: string
+              signed_url:
+                type: string
+            required:
+            - signed_url
+            - file_name
+            type: object
+        403:
+          description: Invalid or expired access token
+        404:
+          description: Sketch not found in this transmittal
+        500:
+          description: Internal Server Error
+      summary: Download a sketch file via public token
       tags:
       - public-access
   /v2/users:
