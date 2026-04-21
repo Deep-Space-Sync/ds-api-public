@@ -8631,7 +8631,7 @@ paths:
   /v2/record-publishing/public/{token}:
     get:
       description: Fetch a published record by its public token (no auth required)
-      operationId: v2_getPublishedRecord
+      operationId: v2_v2_getPublishedRecord
       parameters:
       - description: Public access token
         in: path
@@ -71397,7 +71397,7 @@ paths:
   /v2/workspaces/{workspace_id}/hz-record-publishing:
     post:
       description: Publish a record and generate a public shareable token
-      operationId: v2_publishRecord
+      operationId: v2_v2_publishRecord
       parameters:
       - description: Workspace ID
         in: path
@@ -71450,7 +71450,7 @@ paths:
   /v2/workspaces/{workspace_id}/hz-record-publishing/{doc_id}:
     delete:
       description: Soft-delete a published record
-      operationId: v2_unpublishRecord
+      operationId: v2_v2_unpublishRecord
       parameters:
       - description: Workspace ID
         in: path
