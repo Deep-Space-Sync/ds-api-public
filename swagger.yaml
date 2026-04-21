@@ -8628,6 +8628,45 @@ paths:
       summary: Mark proposal as viewed
       tags:
       - Proposals
+  /v2/record-publishing/public/{token}:
+    get:
+      description: Fetch a published record by its public token (no auth required)
+      operationId: v2_getPublishedRecord
+      parameters:
+      - description: Public access token
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        200:
+          description: Published record data
+          schema:
+            properties:
+              created_at:
+                format: date-time
+                type: string
+              form_object_id:
+                type: string
+              id:
+                type: string
+              project_id:
+                type: integer
+              record_type:
+                type: string
+              status:
+                type: string
+              token:
+                type: string
+              workspace_id:
+                type: string
+            type: object
+        404:
+          description: Not found
+      security: []
+      summary: Get published record by token
+      tags:
+      - Record Publishing
   /v2/regions:
     get:
       description: Returns list of api-supported regions
@@ -71355,6 +71394,88 @@ paths:
       summary: Update an existing form link
       tags:
       - HzFormLinks
+  /v2/workspaces/{workspace_id}/hz-record-publishing:
+    post:
+      description: Publish a record and generate a public shareable token
+      operationId: v2_publishRecord
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            form_object_id:
+              description: ID of the form object to publish
+              type: string
+            project_id:
+              description: Project ID
+              type: integer
+            record_type:
+              description: Type of record (e.g. Site Inspection, Site Diary, Meeting
+                Minutes)
+              type: string
+          required:
+          - form_object_id
+          - record_type
+          - project_id
+          type: object
+      responses:
+        201:
+          description: Published record created
+          schema:
+            properties:
+              id:
+                type: string
+              token:
+                type: string
+              url:
+                type: string
+            type: object
+        400:
+          description: Missing required fields
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+      security:
+      - JWT_v2: []
+      summary: Publish a record
+      tags:
+      - Record Publishing
+  /v2/workspaces/{workspace_id}/hz-record-publishing/{doc_id}:
+    delete:
+      description: Soft-delete a published record
+      operationId: v2_unpublishRecord
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Published record document ID
+        in: path
+        name: doc_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Unpublished successfully
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Unpublish a record
+      tags:
+      - Record Publishing
   /v2/workspaces/{workspace_id}/hz-sub-form-links:
     get:
       operationId: v2_listSubFormLinks
