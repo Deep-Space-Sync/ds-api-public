@@ -9084,6 +9084,23 @@ paths:
       tags:
       - User Profiles
     patch:
+      description: "Updates user profile fields.\n\n**Company reassignment guard (added\
+        \ in DEL-184 Phase 1):** Primary\nCompany Admins may invite/modify unverified\
+        \ users to their own company\nas before. Reassigning a **fully verified**\
+        \ user (both verification\nbits set) from one non-zero company to a **different**\
+        \ non-zero\ncompany is intended to be blocked for PCAs.\n\nTwo env-gated rollout\
+        \ switches govern the guard so the initial deploy\nis strictly non-breaking:\n\
+        \n  - `DS_CROSS_COMPANY_TAKEOVER_GUARD`\n      - `log_only` (default) \u2014\
+        \ emits `user.assignment_change_denied`\n        WARNING audit but proceeds\
+        \ with today's behaviour.\n      - `enforce` \u2014 returns 403 with guidance\
+        \ to contact Deep Space\n        support.\n  - `DS_REASSIGN_REASON_MODE`\n\
+        \      - `warn` (default) \u2014 missing `reason` on the support-bypass path\n\
+        \        is logged but not rejected.\n      - `required` \u2014 missing `reason`\
+        \ returns 400.\n\nDeep Space support tooling (`cs-admin` scope) bypasses the\
+        \ guard at\nall times and is expected to supply `reason`. All cross-company\n\
+        reassignments emit `event=user.assignment_changed`.\n\nRemove (`global-company-id:\
+        \ 0`), reject (`global-company-id: 0`), and\nuser-initiated approve/reject\
+        \ flows are unaffected.\n"
       operationId: v2_patchUserProfile
       parameters:
       - in: path
@@ -9109,12 +9126,27 @@ paths:
               type: boolean
             picture:
               type: string
+            reason:
+              description: 'Required when `cs-admin` scope is reassigning a fully
+
+                verified user cross-company and `DS_REASSIGN_REASON_MODE`
+
+                is `required`. Ignored otherwise.
+
+                '
+              type: string
           type: object
       responses:
         200:
           description: Successful response
+        400:
+          description: Bad request (e.g. missing 'reason' in required mode)
         401:
           description: Unauthorized
+        403:
+          description: "Forbidden. Common cases:\n  - Caller is not PCA of the target\
+            \ user's company.\n  - PCA attempted a cross-company takeover of a fully\
+            \ verified user.\n"
         500:
           description: Internal Server Error
       security:
@@ -69798,6 +69830,77 @@ paths:
       security:
       - JWT_v2: []
       summary: Resend invite email to user in workspace
+      tags:
+      - Users
+  /v2/workspaces/{workspaceId}/users/lookup-by-email:
+    get:
+      description: 'Returns whether a user exists in the global directory (by email)
+        and,
+
+        if so, their single global_user_assignment row. Used by the invite
+
+        modal to detect S3 (user already belongs to another company) before
+
+        submission.
+
+
+        Authorization: cs-admin scope bypasses workspace checks. Otherwise the
+
+        caller must be Primary Company Admin of the workspace''s home global
+
+        company.
+
+        '
+      operationId: v2_getUserLookupByEmail
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Email to look up (case-insensitive)
+        in: query
+        name: email
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lookup result
+          schema:
+            properties:
+              assignment:
+                description: The global_user_assignment row, or null if none
+                properties:
+                  company_name:
+                    type: string
+                  parent_global_company_id:
+                    type: integer
+                  verified_by_company:
+                    type: boolean
+                  verified_by_user:
+                    type: boolean
+                type: object
+              exists_in_kinde:
+                description: True if a global_user_profile row exists for this email
+                type: boolean
+              kinde_id:
+                description: Kinde user id if the profile exists, else null
+                type: string
+            required:
+            - exists_in_kinde
+            type: object
+        400:
+          description: Missing email or workspace context
+        401:
+          description: Unauthorized
+        403:
+          description: Caller is not PCA of the workspace (and not cs-admin)
+        404:
+          description: Workspace has no registered home company
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Phone-book lookup of a user by email
       tags:
       - Users
   /v2/workspaces/{workspaceId}/users/{userId}:
