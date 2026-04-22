@@ -7664,6 +7664,98 @@ paths:
       summary: Transition a Client Instruction
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/correspondence:
+    get:
+      description: List notices visible to the caller's company (company_ids array_contains
+        filter).
+      operationId: v2_portalApiListCorrespondence
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - default: 1
+        description: Page number (1-indexed)
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 25
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      - description: Filter by notice status (e.g. draft, issued, acknowledged, actioned,
+          closed)
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Filter by notice type (e.g. RFI, VO, SI)
+        in: query
+        name: type
+        required: false
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user has no company assignment
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List correspondence notices
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/correspondence/{noticeId}:
+    get:
+      description: Get a single notice with company-level authorization.
+      operationId: v2_portalApiGetCorrespondenceDetail
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: Notice Firestore document ID
+        in: path
+        name: noticeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - user's company has no access to this notice
+        404:
+          description: Notice not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get correspondence notice detail
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/members:
     get:
       description: Get all verified members assigned to a project, grouped by company.
