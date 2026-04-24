@@ -20775,12 +20775,14 @@ paths:
         name: syncId
         required: true
         type: string
-      - description: 'When true, re-syncs existing Firestore records from Xero instead
-          of skipping them. Use after correcting sync logic to backfill historical
-          records with corrected values. API-only, no frontend UI. Applies to purchase_orders
-          and invoices_to_client sync types only.
-
-          '
+      - description: "When true, re-syncs existing Firestore records from Xero instead\
+          \ of skipping them. Use after correcting sync logic to backfill historical\
+          \ records with corrected values. API-only, no frontend UI. Applies to purchase_orders,\
+          \ invoices_to_client and payments sync types. For payments: the default\
+          \ (false) short-circuits records whose Xero UpdatedDateUTC is not newer\
+          \ than the local copy \u2014 turning re-syncs that previously exceeded the\
+          \ 600s backend deadline into sub-second no-ops. Pass true to force the old\
+          \ per-record rewrite path.\n"
         in: query
         name: force_update
         required: false
