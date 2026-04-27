@@ -18232,6 +18232,107 @@ paths:
       - Scope Templates
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/scope-templates/{templateId}/clone:
+    post:
+      operationId: v2_cloneScopeTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      responses:
+        201:
+          description: New version created successfully
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Source scope template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Clone Scope Template (New Version)
+      tags:
+      - Scope Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/scope-templates/{templateId}/publish:
+    post:
+      operationId: v2_publishScopeTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Scope template published successfully
+          schema:
+            type: object
+        400:
+          description: Template is not in Draft status
+        401:
+          description: Unauthorized
+        404:
+          description: Scope template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Publish Scope Template
+      tags:
+      - Scope Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/scope-templates/{templateId}/versions:
+    get:
+      operationId: v2_listScopeTemplateVersions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of all versions
+          schema:
+            properties:
+              count:
+                type: integer
+              items:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Scope template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Scope Template Versions
+      tags:
+      - Scope Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/subcontract-claims:
     get:
       operationId: v2_getSubcontractClaimsWorkspace
