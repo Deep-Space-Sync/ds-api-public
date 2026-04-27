@@ -18047,6 +18047,191 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/scope-templates:
+    get:
+      operationId: v2_listScopeTemplates
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Search query for template_name or trade_name
+        in: query
+        name: q
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              count:
+                type: integer
+              items:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Scope Templates
+      tags:
+      - Scope Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postScopeTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            template_name:
+              description: Name of the scope template
+              type: string
+            trade_id:
+              description: Optional trade identifier
+              type: string
+            trade_name:
+              description: Trade this template belongs to
+              type: string
+          required:
+          - template_name
+          - trade_name
+          type: object
+      responses:
+        201:
+          description: Scope template created successfully
+          schema:
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Scope Template
+      tags:
+      - Scope Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/scope-templates/{templateId}:
+    get:
+      operationId: v2_getScopeTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Scope template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Scope Template
+      tags:
+      - Scope Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchScopeTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            sections:
+              description: Array of section objects
+              items:
+                properties:
+                  content:
+                    type: string
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  visible:
+                    type: boolean
+                type: object
+              type: array
+            sections_order:
+              description: Array of section IDs defining order
+              items:
+                type: string
+              type: array
+            status:
+              enum:
+              - Draft
+              - Published
+              type: string
+            template_name:
+              type: string
+            trade_id:
+              type: string
+            trade_name:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Scope template updated successfully
+          schema:
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Scope template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Scope Template
+      tags:
+      - Scope Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/subcontract-claims:
     get:
       operationId: v2_getSubcontractClaimsWorkspace
