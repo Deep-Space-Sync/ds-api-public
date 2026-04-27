@@ -72453,6 +72453,58 @@ paths:
       summary: Fetch emails synchronously without Cloud Tasks
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/route-to-register:
+    post:
+      description: Sets routed_to_register flag on one or more email inbox documents.
+      operationId: v2_routeEmailsToRegister
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email_ids:
+              items:
+                type: string
+              type: array
+          required:
+          - email_ids
+          type: object
+      responses:
+        200:
+          description: Emails routed to register
+          schema:
+            properties:
+              failed:
+                type: integer
+              message:
+                type: string
+              not_found:
+                items:
+                  type: string
+                type: array
+              status:
+                type: string
+              successful:
+                type: integer
+              total:
+                type: integer
+            type: object
+        400:
+          description: Invalid request
+        403:
+          description: Unauthorized
+        404:
+          description: No valid emails found
+      security:
+      - JWT_v2: []
+      summary: Batch-mark emails as routed to register
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/selected-ai-process:
     post:
       description: Process specific emails by ID with AI to extract invoice data and
