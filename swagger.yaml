@@ -46061,6 +46061,282 @@ paths:
       - Cost - Forecast Monthly
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-notes:
+    get:
+      operationId: v2_getCostForecastNotes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Forecast id to list notes for
+        in: query
+        name: forecastId
+        required: true
+        type: string
+      - description: "Optional filter \u2014 only return notes for one cost code"
+        in: query
+        name: costCode
+        required: false
+        type: string
+      responses:
+        200:
+          description: List of build-up notes scoped to the forecast (and cost code
+            if provided)
+        403:
+          description: Forecast does not belong to this workspace/project
+        404:
+          description: Forecast not found
+      security:
+      - JWT_v2: []
+      summary: List Forecast Build-Up Notes
+      tags:
+      - Cost - Forecast Notes
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createCostForecastNote
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              description: Used directly when qty/rate are blank; computed as qty*rate
+                when both present.
+              type: number
+            cost_code:
+              description: Cost code key (matches `line_items` map key, including
+                synthetic `__direct` suffix for Direct Allocation rows)
+              type: string
+            description:
+              type: string
+            forecast_id:
+              type: string
+            qty:
+              description: "Quantity. Optional \u2014 leave blank for direct Amount\
+                \ entry."
+              type: number
+            rate:
+              description: "Rate. Optional \u2014 leave blank for direct Amount entry."
+              type: number
+            type:
+              description: Defaults to "Forecast Cost"
+              enum:
+              - Forecast Cost
+              - Contingency
+              - Trade Reserve
+              - Variation Claim
+              type: string
+            unit:
+              enum:
+              - LS
+              - EA
+              - HR
+              - DAY
+              - WEEK
+              - MONTH
+              - M
+              - M2
+              - M3
+              - T
+              - KG
+              - L
+              type: string
+          required:
+          - forecast_id
+          - cost_code
+          type: object
+      responses:
+        201:
+          description: Note created. Response includes the new note plus the cost
+            code's recomputed `ftc` and `notes_count`.
+        400:
+          description: Validation error (missing fields, unknown type/unit, approved
+            forecast)
+        404:
+          description: Forecast or cost code not found
+      security:
+      - JWT_v2: []
+      summary: Create Forecast Build-Up Note
+      tags:
+      - Cost - Forecast Notes
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-notes/mode:
+    post:
+      description: "Switch a (forecast, cost_code) between `direct` (single FTC value\n\
+        with optional free-text note) and `build_up` (FTC computed from\ntyped notes).\
+        \ Existing notes are preserved across mode toggles \u2014\nswitching to `direct`\
+        \ hides them; switching back to `build_up`\nrestores and recomputes FTC from\
+        \ their amounts.\n"
+      operationId: v2_setCostForecastFtcMode
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_code:
+              type: string
+            direct_note:
+              description: Optional free-text note to attach in direct mode.
+              type: string
+            direct_value:
+              description: "Required when switching to direct \u2014 the FTC value\
+                \ to set on the line item."
+              type: number
+            forecast_id:
+              type: string
+            mode:
+              enum:
+              - direct
+              - build_up
+              type: string
+          required:
+          - forecast_id
+          - cost_code
+          - mode
+          type: object
+      responses:
+        200:
+          description: Mode switched. Response includes new `ftc_mode`, `ftc`, `notes_count`,
+            and `direct_note` (when applicable).
+        400:
+          description: Missing required fields, unknown mode, or approved forecast
+        404:
+          description: Forecast or cost code not found
+      security:
+      - JWT_v2: []
+      summary: Set FTC Mode for a Cost Code
+      tags:
+      - Cost - Forecast Notes
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-notes/{noteId}:
+    delete:
+      operationId: v2_deleteCostForecastNote
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: noteId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Note soft-deleted. Response includes the cost code's recomputed
+            `ftc` and `notes_count`.
+        400:
+          description: "Approved forecast \u2014 notes cannot be modified after approval"
+        404:
+          description: Note not found
+        410:
+          description: Note already deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Forecast Build-Up Note (soft-delete)
+      tags:
+      - Cost - Forecast Notes
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateCostForecastNote
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: noteId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              type: number
+            description:
+              type: string
+            qty:
+              type: number
+            rate:
+              type: number
+            sequence:
+              description: Reorder this note within its cost code
+              type: integer
+            type:
+              enum:
+              - Forecast Cost
+              - Contingency
+              - Trade Reserve
+              - Variation Claim
+              type: string
+            unit:
+              enum:
+              - LS
+              - EA
+              - HR
+              - DAY
+              - WEEK
+              - MONTH
+              - M
+              - M2
+              - M3
+              - T
+              - KG
+              - L
+              type: string
+          type: object
+      responses:
+        200:
+          description: Note updated. Response includes the merged note plus the cost
+            code's recomputed `ftc` and `notes_count`.
+        400:
+          description: Validation error or attempt to mutate notes on an approved
+            forecast
+        404:
+          description: Note not found
+      security:
+      - JWT_v2: []
+      summary: Update Forecast Build-Up Note
+      tags:
+      - Cost - Forecast Notes
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-periods:
     delete:
       operationId: v2_deleteCostForecastPeriod
