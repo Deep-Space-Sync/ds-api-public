@@ -73778,6 +73778,74 @@ paths:
       summary: Push converted supplier invoice to Xero as a Bill
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/save-draft-record:
+    post:
+      operationId: v2_saveInvoiceDraftRecord
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            claim_form:
+              type: object
+            invoice_form:
+              type: object
+            is_overriding:
+              type: boolean
+            line_item_amounts:
+              type: object
+            line_item_cost_codes:
+              type: object
+            line_item_matches:
+              type: object
+            record_type:
+              enum:
+              - supplier-invoice
+              - subcontract-claim
+              type: string
+            selected_line_items:
+              items:
+                type: integer
+              type: array
+            selected_order_num:
+              type: string
+            selected_project_id:
+              type: string
+            selected_subcontract_id:
+              type: string
+          required:
+          - record_type
+          type: object
+      responses:
+        200:
+          description: Draft saved
+          schema:
+            properties:
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+        400:
+          description: Invalid request
+        403:
+          description: Unauthorized
+        404:
+          description: Email not found
+      security:
+      - JWT_v2: []
+      summary: Save draft record data for an email
+      tags:
+      - InvoiceReconciliation
 schemes:
 - https
 securityDefinitions:
