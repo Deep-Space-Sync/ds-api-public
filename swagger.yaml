@@ -53967,7 +53967,16 @@ paths:
         type: string
       responses:
         200:
-          description: Entry soft-deleted
+          description: 'Entry soft-deleted. Response carries `{ id, deleted: true,
+            ro_summary }`
+
+            with the freshly-recomputed project summary so the FE can update
+
+            Summary cards without a follow-up list refetch (matches the
+
+            create/update/status response shape).
+
+            '
         404:
           description: Entry not found
         410:
