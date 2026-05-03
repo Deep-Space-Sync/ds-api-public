@@ -53816,6 +53816,377 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/risk-opportunity:
+    get:
+      operationId: v2_getCostRiskOpportunityEntries
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Filter by entry type
+        enum:
+        - risk
+        - opportunity
+        in: query
+        name: type
+        required: false
+        type: string
+      - description: Filter by category (Programme / Design / Commercial / Site /
+          Procurement / Client, or workspace-extended)
+        in: query
+        name: category
+        required: false
+        type: string
+      - description: Filter by status
+        enum:
+        - open
+        - in_progress
+        - closed
+        in: query
+        name: status
+        required: false
+        type: string
+      - description: Free-text search across ro_number, description, cause, treatment_plan,
+          owner_name
+        in: query
+        name: q
+        required: false
+        type: string
+      responses:
+        200:
+          description: List of register entries scoped to the project (soft-deleted
+            excluded). Newest first.
+      security:
+      - JWT_v2: []
+      summary: List Risk & Opportunity Register Entries
+      tags:
+      - Cost - Risk & Opportunity
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      description: 'Allocates a project-scoped `RO-{PROJECT_CODE}-NNNN` identifier
+        and
+
+        writes the entry plus a `create` activity-log event in one transaction.
+
+        The active draft forecast''s `ro_summary` is refreshed best-effort after
+
+        commit.
+
+        '
+      operationId: v2_createCostRiskOpportunityEntry
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            best_value:
+              type: number
+            category:
+              description: Defaults to "Programme" when omitted
+              type: string
+            cause:
+              type: string
+            description:
+              type: string
+            most_likely_value:
+              description: Drives the project Net ML rollup; closed entries excluded
+              type: number
+            owner_name:
+              description: "Denormalised display name \u2014 saves a per-row user\
+                \ fetch on the FE"
+              type: string
+            owner_user_id:
+              type: string
+            target_closure_date:
+              description: ISO date (YYYY-MM-DD)
+              type: string
+            treatment_plan:
+              type: string
+            type:
+              enum:
+              - risk
+              - opportunity
+              type: string
+            worst_value:
+              type: number
+          required:
+          - type
+          - description
+          type: object
+      responses:
+        201:
+          description: Entry created. Response is the full entry doc (including allocated
+            ro_number).
+        400:
+          description: Validation error (missing fields, unknown type)
+      security:
+      - JWT_v2: []
+      summary: Create Risk & Opportunity Entry
+      tags:
+      - Cost - Risk & Opportunity
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/risk-opportunity/{roId}:
+    delete:
+      description: 'Soft-deletes via `is_deleted=true`. Records a `delete` activity
+        event
+
+        and refreshes the active draft forecast''s `ro_summary`. CM/PM gate is
+
+        currently soft (matches existing weak-roles state of cost endpoints).
+
+        '
+      operationId: v2_deleteCostRiskOpportunityEntry
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: roId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Entry soft-deleted
+        404:
+          description: Entry not found
+        410:
+          description: Entry already deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Risk & Opportunity Entry (soft-delete)
+      tags:
+      - Cost - Risk & Opportunity
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getCostRiskOpportunityEntry
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: roId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Single register entry
+        403:
+          description: Entry does not belong to this workspace/project
+        404:
+          description: Entry not found
+        410:
+          description: Entry has been deleted
+      security:
+      - JWT_v2: []
+      summary: Get Risk & Opportunity Entry
+      tags:
+      - Cost - Risk & Opportunity
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      description: "Updates editable fields. Status is changed via `/status` (not\
+        \ here).\nClosed entries are read-only \u2014 reopen first via the status\
+        \ endpoint.\nOnly the fields whose values actually change are recorded in\
+        \ the\nactivity log diff.\n"
+      operationId: v2_updateCostRiskOpportunityEntry
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: roId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            best_value:
+              type: number
+            category:
+              type: string
+            cause:
+              type: string
+            description:
+              type: string
+            most_likely_value:
+              type: number
+            owner_name:
+              type: string
+            owner_user_id:
+              type: string
+            target_closure_date:
+              type: string
+            treatment_plan:
+              type: string
+            type:
+              enum:
+              - risk
+              - opportunity
+              type: string
+            worst_value:
+              type: number
+          type: object
+      responses:
+        200:
+          description: Entry updated. Response is the merged entry.
+        400:
+          description: Validation error or no editable fields in body
+        403:
+          description: Entry does not belong to this workspace/project
+        404:
+          description: Entry not found
+        409:
+          description: "Entry is closed \u2014 reopen via /status before editing"
+        410:
+          description: Entry has been deleted
+      security:
+      - JWT_v2: []
+      summary: Update Risk & Opportunity Entry
+      tags:
+      - Cost - Risk & Opportunity
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/risk-opportunity/{roId}/events:
+    get:
+      description: 'Returns the per-entry activity log. Each event captures the
+
+        before/after diff of the changed fields (only fields that actually
+
+        changed) plus a human-readable note. Newest first.
+
+        '
+      operationId: v2_getCostRiskOpportunityEvents
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: roId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of activity log events for the entry, newest first
+        403:
+          description: Entry does not belong to this workspace/project
+        404:
+          description: Entry not found
+        410:
+          description: Entry has been deleted
+      security:
+      - JWT_v2: []
+      summary: List Activity Log Events for an R&O Entry
+      tags:
+      - Cost - Risk & Opportunity
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/risk-opportunity/{roId}/status:
+    post:
+      description: 'Transitions an entry between `open` / `in_progress` / `closed`.
+
+        Closing requires `actual_result` and locks closure-only fields
+
+        (`actual_result`, `closure_note`, `closed_by_user_id`, `closed_at`).
+
+        Reopening clears those fields but the original closure values remain
+
+        in the activity log. CM/PM gate is currently soft (matches existing
+
+        weak-roles state of cost endpoints).
+
+        '
+      operationId: v2_setCostRiskOpportunityStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: roId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actual_result:
+              description: Required when transitioning to closed
+              type: number
+            closure_note:
+              description: Optional context recorded with the closure
+              type: string
+            status:
+              enum:
+              - open
+              - in_progress
+              - closed
+              type: string
+          required:
+          - status
+          type: object
+      responses:
+        200:
+          description: Status changed. Response is the merged entry.
+        400:
+          description: Missing fields, already in target status, or closing without
+            actual_result
+        403:
+          description: Entry does not belong to this workspace/project
+        404:
+          description: Entry not found
+        410:
+          description: Entry has been deleted
+      security:
+      - JWT_v2: []
+      summary: Change Risk & Opportunity Entry Status
+      tags:
+      - Cost - Risk & Opportunity
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/sop:
     get:
       operationId: v2_getSOPs
