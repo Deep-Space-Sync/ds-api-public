@@ -73277,6 +73277,80 @@ paths:
       summary: Batch AI process all unprocessed emails in workspace
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/batch-archive:
+    post:
+      operationId: v2_batchArchiveEmails
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            archived:
+              type: boolean
+            email_ids:
+              items:
+                type: string
+              type: array
+          required:
+          - email_ids
+          - archived
+          type: object
+      responses:
+        200:
+          description: Batch archive update completed
+        400:
+          description: Invalid request
+        403:
+          description: Unauthorized
+        404:
+          description: No valid emails found
+      security:
+      - JWT_v2: []
+      summary: Batch archive/unarchive emails
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/batch-review:
+    post:
+      operationId: v2_batchReviewEmails
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email_ids:
+              items:
+                type: string
+              type: array
+            need_review:
+              type: boolean
+          required:
+          - email_ids
+          - need_review
+          type: object
+      responses:
+        200:
+          description: Batch review update completed
+        400:
+          description: Invalid request
+        403:
+          description: Unauthorized
+        404:
+          description: No valid emails found
+      security:
+      - JWT_v2: []
+      summary: Batch flag/unflag emails for review
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/debug:
     get:
       description: Returns raw Firestore query results for debugging purposes
@@ -73844,6 +73918,42 @@ paths:
       security:
       - JWT_v2: []
       summary: AI process single email to extract invoice data
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/archive:
+    post:
+      operationId: v2_archiveInvoiceEmail
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            archived:
+              type: boolean
+          required:
+          - archived
+          type: object
+      responses:
+        200:
+          description: Archive status updated
+        400:
+          description: Invalid request
+        403:
+          description: Unauthorized
+        404:
+          description: Email not found
+      security:
+      - JWT_v2: []
+      summary: Archive or unarchive a single email
       tags:
       - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/change-status:
