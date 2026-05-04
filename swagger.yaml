@@ -9870,6 +9870,45 @@ paths:
       summary: Get tender portal info via token
       tags:
       - Cost
+  /v2/workspaces/public/cost/public/tender-tokens/{token}/respond:
+    post:
+      operationId: v2_publicTenderRespond
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            decline_reason:
+              description: Optional free-text reason. Only retained when response
+                is 'declined'.
+              type: string
+            response:
+              enum:
+              - accepted
+              - declined
+              type: string
+          required:
+          - response
+          type: object
+      responses:
+        200:
+          description: Response recorded
+        400:
+          description: "Bad request \u2014 invalid body"
+          or deadline passed: null
+          package not open: null
+        403:
+          description: Invalid or expired token
+        404:
+          description: Tender package or invitee not found
+      summary: Accept or decline a tender invitation via token
+      tags:
+      - Cost
   /v2/workspaces/public/cost/public/tender-tokens/{token}/submit:
     post:
       operationId: v2_publicTenderSubmit
