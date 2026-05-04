@@ -9899,9 +9899,8 @@ paths:
         200:
           description: Response recorded
         400:
-          description: "Bad request \u2014 invalid body"
-          or deadline passed: null
-          package not open: null
+          description: "Bad request \u2014 invalid body, package not open, or deadline\
+            \ passed"
         403:
           description: Invalid or expired token
         404:
