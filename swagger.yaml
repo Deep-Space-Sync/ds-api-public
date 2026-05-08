@@ -43680,6 +43680,99 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-manual-entries:
+    get:
+      operationId: v2_listBudgetRegisterManualEntries
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: cost_code_id
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Manual Entries
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createBudgetRegisterManualEntry
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Entry created
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Manual Entry
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-manual-entries/{entryId}/void:
+    post:
+      operationId: v2_voidBudgetRegisterManualEntry
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: entryId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Entry voided
+        400:
+          description: Already voided
+        401:
+          description: Unauthorized
+        404:
+          description: Entry not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Void Manual Entry
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register/notes:
     delete:
       operationId: v2_deleteBudgetRegisterNote
