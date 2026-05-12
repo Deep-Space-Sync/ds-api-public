@@ -37346,10 +37346,7 @@ paths:
         type: integer
       responses:
         200:
-          description:
-            firestore_config: null
-            loi_attribute_sets: null
-            project_settings: null
+          description: Object with keys firestore_config, project_settings, loi_attribute_sets
         500:
           description: Internal Server Error
       security:
@@ -37793,11 +37790,8 @@ paths:
         type: integer
       responses:
         200:
-          description:
-            projects_def:
-              '...': null
-            projectsps:
-            - '...'
+          description: Object with keys projects_def (single row) and projectsps (array
+            of rows)
         404:
           description: Project not found
         500:
@@ -37864,9 +37858,8 @@ paths:
           type: object
       responses:
         200:
-          description:
-            events_emitted: N
-            status: ok
+          description: Object with keys status and events_emitted (count of audit
+            rows written)
         400:
           description: Bad Request (unknown column, nothing to update)
         404:
