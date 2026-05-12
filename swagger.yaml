@@ -37094,11 +37094,13 @@ paths:
     patch:
       consumes:
       - application/json
-      description: 'Partial update on asset_portal. Single update requires `id_asset_portal`;
-        batch update requires `assetIds` (array) and `assetDetail` (object). Most
-        asset_portal columns are pipeline-managed and read-only here.
-
-        '
+      description: "Partial update on asset_portal. Most asset_portal columns are\
+        \ pipeline-managed (set by the polyfill super_update job) and are not writable\
+        \ here \u2014 the editable set is asset_id, asset_location_id, primary_asset_class,\
+        \ primary_coding_scheme, related_attribute_set_id.\nAccepted payload shapes:\n\
+        \  \u2022 Single update:\n      { id_asset_portal: N, <editable fields>, comment?:\
+        \ \"...\" }\n  \u2022 Batch update:\n      { assetIds: [N, ...], assetDetail:\
+        \ { <editable fields> },\n        comment?: \"...\" }\n"
       operationId: v2_patchAssetPortal
       parameters:
       - in: path
@@ -37113,9 +37115,24 @@ paths:
         name: body
         required: true
         schema:
+          description: 'Either single (id_asset_portal + root-level editable fields)
+            or batch (assetIds + assetDetail). `comment` applies in both modes.
+
+            '
           properties:
             assetDetail:
-              description: Fields to apply across all assetIds (batch mode).
+              description: Editable fields to apply across all assetIds (batch only).
+              properties:
+                asset_id:
+                  type: integer
+                asset_location_id:
+                  type: integer
+                primary_asset_class:
+                  type: string
+                primary_coding_scheme:
+                  type: string
+                related_attribute_set_id:
+                  type: integer
               type: object
             assetIds:
               description: Batch-update target IDs.
@@ -37126,6 +37143,8 @@ paths:
               type: integer
             asset_location_id:
               type: integer
+            comment:
+              type: string
             id_asset_portal:
               description: Single-update target.
               type: integer
@@ -37219,21 +37238,143 @@ paths:
       summary: Add a child asset linked to a parent
       tags:
       - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/config:
+    get:
+      description: 'Returns the merged asset_portal_config for (workspace, project).
+        If no doc has been stored yet, returns the hardcoded defaults so callers can
+        always treat the response as complete. Role mappings (parent_identifier, parent_link,
+        cat_code, system_classification) point at LOI bda_attributes_def IDs.
+
+        '
+      operationId: v2_getAssetPortalConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: The merged config (defaults filled in)
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get the asset_portal_config document
+      tags:
+      - Asset Portal
+    put:
+      consumes:
+      - application/json
+      description: "Deep-merges the supplied patch into the existing doc (or seeds\
+        \ from defaults if first write). Server manages id, doc_type, workspace_id,\
+        \ project_id, schema_version, updated_at, updated_by \u2014 those are stripped\
+        \ from the incoming body. Emits an asset_portal_edits audit event with source_table='asset_portal_config'\
+        \ and changes=[{field, old, new}, ...] for every leaf-level change.\n"
+      operationId: v2_putAssetPortalConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: "Partial config \u2014 only changed fields need to be supplied."
+          properties:
+            comment:
+              type: string
+            default_primary_asset_class:
+              type: string
+            default_primary_coding_scheme:
+              type: string
+            default_related_attribute_set_id:
+              type: integer
+            parent_identifier:
+              properties:
+                attribute_def_id:
+                  type: integer
+                field_name:
+                  type: string
+              type: object
+            parent_link:
+              properties:
+                attribute_def_id:
+                  type: integer
+                field_name:
+                  type: string
+              type: object
+          type: object
+      responses:
+        200:
+          description: Merged config after the upsert
+        400:
+          description: Bad Request (body not an object)
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upsert the asset_portal_config document
+      tags:
+      - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/config-bundle:
+    get:
+      description: "Returns firestore_config + project_settings + loi_attribute_sets\
+        \ in a single response. No inter-endpoint HTTP fan-out \u2014 composed in-process\
+        \ from the three direct read paths.\n"
+      operationId: v2_getAssetPortalConfigBundle
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description:
+            firestore_config: null
+            loi_attribute_sets: null
+            project_settings: null
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: One-call bundle of all config the gears popup needs
+      tags:
+      - Asset Portal
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/edits:
     get:
       description: "Returns asset_portal_edits documents from Firestore (`horizon-prod`\
         \ database). All mutations through this endpoint (post_child_asset, patch_metadata,\
         \ future tabular/library/loi/file-meta edits) emit an append-only audit event\
         \ into this collection. Polyfill writes do NOT emit events \u2014 only user-initiated\
-        \ edits are recorded.\nFilters (all optional, AND-combined):\n  - id_asset_portal=N\
+        \ edits are recorded.\nFilters are MUTUALLY EXCLUSIVE \u2014 pick one of id_asset_portal,\
+        \ source_table, or edited_by per request (Firestore composite-index scope).\
+        \ source_table may optionally be paired with record_id.\n\n  - id_asset_portal=N\
         \      \u2192 per-asset timeline\n  - source_table=str       \u2192 per-table\
-        \ activity (e.g. asset_portal_metadata)\n  - edited_by=email        \u2192\
-        \ per-user activity\n  - record_id=N            \u2192 exact-row timeline\
-        \ (pair with source_table)\n  - limit=N                \u2192 page size (default\
-        \ 200, max 1000)\n\nRequired Firestore composite indexes:\n  - workspace_id,\
-        \ project_id, id_asset_portal, edited_at DESC\n  - workspace_id, project_id,\
-        \ source_table,    edited_at DESC\n  - workspace_id, project_id, edited_by,\
-        \       edited_at DESC\n"
+        \ activity (e.g. asset_portal_metadata)\n      + record_id=N         \u2192\
+        \ exact-row timeline (requires source_table)\n  - edited_by=email        \u2192\
+        \ per-user activity\n  - limit=N                \u2192 page size (default\
+        \ 200, max 1000)\n\nRequired Firestore composite indexes (one per filter shape):\n\
+        \  - workspace_id, project_id, id_asset_portal, edited_at DESC\n  - workspace_id,\
+        \ project_id, source_table,    edited_at DESC\n  - workspace_id, project_id,\
+        \ source_table,    record_id, edited_at DESC\n  - workspace_id, project_id,\
+        \ edited_by,       edited_at DESC\n"
       operationId: v2_getAssetPortalEdits
       parameters:
       - in: path
@@ -37500,6 +37641,33 @@ paths:
       summary: Update or bulk-update Object LOI EAV rows
       tags:
       - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/loi-attribute-sets:
+    get:
+      description: 'Read-only summary of bda_attribute_sets for the workspace, with
+        attribute member counts. Surfaced in the gears popup with a "manage in LOI
+        Advanced" deep link. NEVER edited from this endpoint.
+
+        '
+      operationId: v2_getAssetPortalLoiAttributeSets
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A list of attribute sets with counts
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List LOI attribute sets with member counts
+      tags:
+      - Asset Portal
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/metadata:
     get:
       description: 'Returns asset_portal_metadata EAV rows for the project. Note this
@@ -37532,10 +37700,16 @@ paths:
     patch:
       consumes:
       - application/json
-      description: 'Single or batch update of asset_portal_metadata rows. Writes go
-        to the base table directly (NOT through the Xataface __sql__ view).
-
-        '
+      description: "Single or batch update of asset_portal_metadata rows. Writes go\
+        \ to the base table directly (NOT through the Xataface __sql__ view). Each\
+        \ mutation also emits an asset_portal_edits Firestore audit doc.\nAccepted\
+        \ payload shapes:\n  \u2022 Single update by PK:\n      { id_asset_portal_metadata:\
+        \ N, field_value: \"...\", comment?: \"...\" }\n  \u2022 Single upsert by\
+        \ (asset, attribute_def):\n      { id_asset_portal: N, field_name: \"...\"\
+        ,\n        related_attribute_def_id: K, field_value: \"...\", comment?: \"\
+        ...\" }\n  \u2022 Batch:\n      { edits: [ <single-update or single-upsert\
+        \ object>, ... ],\n        comment?: \"...\" }\n\nThe implementation wraps\
+        \ a missing `edits` key by treating the root object as a single edit.\n"
       operationId: v2_patchAssetPortalMetadata
       parameters:
       - in: path
@@ -37550,7 +37724,29 @@ paths:
         name: body
         required: true
         schema:
+          description: 'Either a single edit (root-level fields populated) or a batch
+            (root-level `edits` array populated). `comment` applies to all edits in
+            the batch.
+
+            '
           properties:
+            comment:
+              type: string
+            edits:
+              items:
+                properties:
+                  field_name:
+                    type: string
+                  field_value:
+                    type: string
+                  id_asset_portal:
+                    type: integer
+                  id_asset_portal_metadata:
+                    type: integer
+                  related_attribute_def_id:
+                    type: integer
+                type: object
+              type: array
             field_name:
               type: string
             field_value:
@@ -37564,7 +37760,11 @@ paths:
           type: object
       responses:
         200:
-          description: Metadata row(s) updated
+          description: Metadata row(s) updated. Body is { affected, ids }.
+        400:
+          description: Bad Request (e.g. upsert missing required fields)
+        404:
+          description: id_asset_portal_metadata or id_asset_portal not in project
         500:
           description: Internal Server Error
         501:
@@ -37572,6 +37772,110 @@ paths:
       security:
       - JWT_v2: []
       summary: Update or upsert asset metadata EAV rows
+      tags:
+      - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/project-settings:
+    get:
+      description: 'Returns the editable columns from projects_def for the project
+        and the flat list of projectsps rows (joined through project_parameter_sets)
+        so the FE can render the unique_classifying_param radio.
+
+        '
+      operationId: v2_getAssetPortalProjectSettings
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description:
+            projects_def:
+              '...': null
+            projectsps:
+            - '...'
+        404:
+          description: Project not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Read projects_def + projectsps rows for the gears popup
+      tags:
+      - Asset Portal
+    patch:
+      consumes:
+      - application/json
+      description: 'Single transaction. Updates whichever projects_def columns are
+        supplied (whitelisted to PROJECTS_DEF_EDITABLE) and/or toggles the unique
+        classifying parameter on a single projectsps row (clearing siblings in the
+        same ps_id). Emits asset_portal_edits events per affected row.
+
+        '
+      operationId: v2_patchAssetPortalProjectSettings
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            comment:
+              description: Audit comment, applied to every event emitted.
+              type: string
+            projects_def:
+              description: Editable columns. Unknown keys rejected with 400.
+              properties:
+                asset_install_pri_contractor:
+                  type: string
+                asset_item_ident_fragment:
+                  type: string
+                asset_level_mode:
+                  enum:
+                  - Element
+                  - Zone
+                  type: string
+                coding_scheme:
+                  type: string
+              type: object
+            projectsps_unique_classifying_param:
+              properties:
+                idProjectSPs:
+                  description: Row to mark as unique=1
+                  type: integer
+                ps_id:
+                  description: Parameter set this row belongs to
+                  type: integer
+              required:
+              - idProjectSPs
+              - ps_id
+              type: object
+          type: object
+      responses:
+        200:
+          description:
+            events_emitted: N
+            status: ok
+        400:
+          description: Bad Request (unknown column, nothing to update)
+        404:
+          description: Target row not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update projects_def + toggle projectsps.unique_classifying_param
       tags:
       - Asset Portal
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/tabular:
