@@ -37064,6 +37064,597 @@ paths:
       summary: Get User Activity
       tags:
       - Admin
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal:
+    get:
+      description: Returns all asset_portal rows for the project (BigQuery read).
+      operationId: v2_getAssetPortal
+      parameters:
+      - description: The workspace name or identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: The project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A list of assets
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List assets for a project
+      tags:
+      - Asset Portal
+    patch:
+      consumes:
+      - application/json
+      description: 'Partial update on asset_portal. Single update requires `id_asset_portal`;
+        batch update requires `assetIds` (array) and `assetDetail` (object). Most
+        asset_portal columns are pipeline-managed and read-only here.
+
+        '
+      operationId: v2_patchAssetPortal
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assetDetail:
+              description: Fields to apply across all assetIds (batch mode).
+              type: object
+            assetIds:
+              description: Batch-update target IDs.
+              items:
+                type: integer
+              type: array
+            asset_id:
+              type: integer
+            asset_location_id:
+              type: integer
+            id_asset_portal:
+              description: Single-update target.
+              type: integer
+            primary_asset_class:
+              type: string
+            primary_coding_scheme:
+              type: string
+            related_attribute_set_id:
+              type: integer
+          type: object
+      responses:
+        200:
+          description: Asset(s) updated
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: No record updated
+        500:
+          description: Internal Server Error
+        501:
+          description: Not yet implemented
+      security:
+      - JWT_v2: []
+      summary: Update one or more asset_portal rows
+      tags:
+      - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/children:
+    post:
+      consumes:
+      - application/json
+      description: "Creates a new asset_portal row carrying the parent's project/file\
+        \ context, then inserts an ATC_ParentEquipment row in asset_portal_metadata\
+        \ pointing at the parent's ATC_EquipmentName value. Both writes occur in a\
+        \ single MySQL transaction \u2014 partial success is impossible.\nReplaces\
+        \ the add_child_asset PHP action from ds-command-nextgen.\n"
+      operationId: v2_postAssetPortalChild
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            overrides:
+              description: Optional per-field overrides for the new child (otherwise
+                inherits from parent).
+              properties:
+                asset_location_id:
+                  type: integer
+                primary_asset_class:
+                  type: string
+                related_attribute_set_id:
+                  type: integer
+              type: object
+            parent_id_asset_portal:
+              description: The id_asset_portal of the parent asset.
+              type: integer
+          required:
+          - parent_id_asset_portal
+          type: object
+      responses:
+        201:
+          description: Child asset created
+          schema:
+            properties:
+              id_asset_portal:
+                description: The new child's id_asset_portal.
+                type: integer
+            type: object
+        400:
+          description: Bad Request (e.g. parent has no ATC_EquipmentName)
+        401:
+          description: Unauthorized
+        404:
+          description: Parent asset not found
+        500:
+          description: Internal Server Error
+        501:
+          description: Not yet implemented
+      security:
+      - JWT_v2: []
+      summary: Add a child asset linked to a parent
+      tags:
+      - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/file-meta:
+    get:
+      description: Returns sourcefiles_meta rows for the project.
+      operationId: v2_getAssetPortalFileMeta
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A list of file metadata EAV rows
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List file-level EAV metadata
+      tags:
+      - Asset Portal
+    patch:
+      consumes:
+      - application/json
+      operationId: v2_patchAssetPortalFileMeta
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            field_value:
+              type: string
+            id_sf_metadata_entry:
+              type: integer
+            related_attribute_def_id:
+              type: integer
+            source_file_id:
+              type: integer
+          type: object
+      responses:
+        200:
+          description: File metadata row(s) updated
+        500:
+          description: Internal Server Error
+        501:
+          description: Not yet implemented
+      security:
+      - JWT_v2: []
+      summary: Update or upsert file metadata EAV rows
+      tags:
+      - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/library:
+    get:
+      description: 'Returns arfamtypes_model_unique rows for the project (one per
+        unique Category+Family+Type). Includes is_asset flag, classifying_parameter,
+        and rename proposals.
+
+        '
+      operationId: v2_getAssetPortalLibrary
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A list of Project Library rows
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Project Library family/type rows
+      tags:
+      - Asset Portal
+    patch:
+      consumes:
+      - application/json
+      description: 'Single or batch update. The high-impact edit is `is_asset` which
+        drives Stage 9 of the polyfill (promotion of elements into asset_portal).
+
+        '
+      operationId: v2_patchAssetPortalLibrary
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            arfamtypes_model_unique_id:
+              type: integer
+            classifying_parameter:
+              type: string
+            desired_family_name:
+              type: string
+            desired_param_value:
+              type: string
+            desired_type_name:
+              type: string
+            is_asset:
+              enum:
+              - 0
+              - 1
+              type: integer
+            libraryDetail:
+              type: object
+            libraryIds:
+              items:
+                type: integer
+              type: array
+          type: object
+      responses:
+        200:
+          description: Library row(s) updated
+        500:
+          description: Internal Server Error
+        501:
+          description: Not yet implemented
+      security:
+      - JWT_v2: []
+      summary: Update Project Library rows (is_asset, rename proposals, etc.)
+      tags:
+      - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/loi:
+    get:
+      description: "Returns arfamtypes_model_unique_elems_meta rows for the project.\
+        \ Cursor- based pagination is mandatory \u2014 the table can contain 12M+\
+        \ rows per project. Use `?cursor=<last_id_elem_metadata_entry>&limit=<n>`.\n"
+      operationId: v2_getAssetPortalLoi
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Last id_elem_metadata_entry from previous page. Default 0.
+        in: query
+        name: cursor
+        required: false
+        type: integer
+      - description: Page size. Default 500.
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: A page of Object LOI rows
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Object LOI element-level EAV rows (paginated)
+      tags:
+      - Asset Portal
+    patch:
+      consumes:
+      - application/json
+      description: 'Single or filtered bulk update of arfamtypes_model_unique_elems_meta.
+        Bulk updates are chunked server-side to avoid MySQL UPDATE timeouts.
+
+        '
+      operationId: v2_patchAssetPortalLoi
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            field_value:
+              type: string
+            id_elem_metadata_entry:
+              type: integer
+          type: object
+      responses:
+        200:
+          description: LOI row(s) updated
+        500:
+          description: Internal Server Error
+        501:
+          description: Not yet implemented
+      security:
+      - JWT_v2: []
+      summary: Update or bulk-update Object LOI EAV rows
+      tags:
+      - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/metadata:
+    get:
+      description: 'Returns asset_portal_metadata EAV rows for the project. Note this
+        table is empty for some workspaces (e.g. gammon-52); check row count before
+        relying on it for a given project.
+
+        '
+      operationId: v2_getAssetPortalMetadata
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A list of metadata EAV rows
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List asset EAV metadata rows
+      tags:
+      - Asset Portal
+    patch:
+      consumes:
+      - application/json
+      description: 'Single or batch update of asset_portal_metadata rows. Writes go
+        to the base table directly (NOT through the Xataface __sql__ view).
+
+        '
+      operationId: v2_patchAssetPortalMetadata
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            field_name:
+              type: string
+            field_value:
+              type: string
+            id_asset_portal:
+              type: integer
+            id_asset_portal_metadata:
+              type: integer
+            related_attribute_def_id:
+              type: integer
+          type: object
+      responses:
+        200:
+          description: Metadata row(s) updated
+        500:
+          description: Internal Server Error
+        501:
+          description: Not yet implemented
+      security:
+      - JWT_v2: []
+      summary: Update or upsert asset metadata EAV rows
+      tags:
+      - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/tabular:
+    get:
+      description: 'Returns the joined asset + tabular + sourcefile rows that drive
+        the handover completeness reports. Mirrors the PowerBI canonical query.
+
+        '
+      operationId: v2_getAssetPortalTabular
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: A list of tabular rows
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List handover tabular rows for a project
+      tags:
+      - Asset Portal
+    patch:
+      consumes:
+      - application/json
+      description: 'Single update requires `id_asset_portal_metadata_tabular`; batch
+        update requires `tabularIds` (array) and `rowDetail` (object). The endpoint
+        sets `edited_by_user` to the authenticated user (NOT the system sentinel)
+        so polyfill Stage 7 preserves the row.
+
+        '
+      operationId: v2_patchAssetPortalTabular
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            building:
+              description: L1 - Building
+              type: string
+            component:
+              description: A3 - Component
+              type: string
+            facility_description:
+              description: FDES
+              type: string
+            facility_location:
+              description: FLC
+              type: string
+            id_asset_portal_metadata_tabular:
+              description: Single-update target.
+              type: integer
+            id_number:
+              description: A4 - ID Number
+              type: string
+            installation_contract:
+              description: ICWO
+              type: string
+            installation_contractor:
+              description: IWC
+              type: string
+            installation_date:
+              description: INS
+              type: string
+            level:
+              description: L2 - Level
+              type: string
+            manufacturer:
+              description: MFG
+              type: string
+            manufacturers_model_number:
+              description: MMN
+              type: string
+            manufacturers_serial_number:
+              description: MSN
+              type: string
+            room_id:
+              description: L4 - Room
+              type: string
+            rowDetail:
+              description: Fields to apply across all tabularIds (batch mode).
+              type: object
+            specification_reference_number:
+              description: SRN
+              type: string
+            sub_system:
+              description: A2 - Sub-system
+              type: string
+            system:
+              description: A1 - System
+              type: string
+            tabularIds:
+              description: Batch-update target IDs.
+              items:
+                type: integer
+              type: array
+            useful_life_months:
+              description: ULF
+              type: integer
+            warranty_period_months:
+              description: WPD
+              type: integer
+            zone:
+              description: L3 - Zone
+              type: string
+          type: object
+      responses:
+        200:
+          description: Tabular row(s) updated
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: No record updated
+        500:
+          description: Internal Server Error
+        501:
+          description: Not yet implemented
+      security:
+      - JWT_v2: []
+      summary: Update one or more asset_portal_metadata_tabular rows
+      tags:
+      - Asset Portal
   /v2/workspaces/{workspaceId}/projects/{projectId}/buildings:
     get:
       description: Returns all building records for a project.
