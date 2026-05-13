@@ -37332,8 +37332,10 @@ paths:
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/config-bundle:
     get:
       description: "Returns firestore_config + project_settings + loi_attribute_sets\
-        \ in a single response. No inter-endpoint HTTP fan-out \u2014 composed in-process\
-        \ from the three direct read paths.\n"
+        \ + bda_attributes + known_coding_schemes in a single response. No inter-endpoint\
+        \ HTTP fan-out \u2014 composed in-process. The two trailing lists feed picker\
+        \ dropdowns in the gears popup and soft-fail to empty arrays if their backing\
+        \ query errors.\n"
       operationId: v2_getAssetPortalConfigBundle
       parameters:
       - in: path
@@ -37346,7 +37348,8 @@ paths:
         type: integer
       responses:
         200:
-          description: Object with keys firestore_config, project_settings, loi_attribute_sets
+          description: Object with keys firestore_config, project_settings, loi_attribute_sets,
+            bda_attributes, known_coding_schemes
         500:
           description: Internal Server Error
       security:
@@ -37560,6 +37563,45 @@ paths:
       security:
       - JWT_v2: []
       summary: Update Project Library rows (is_asset, rename proposals, etc.)
+      tags:
+      - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/library/element-count:
+    get:
+      description: 'Returns the number of arfamtypes_model_unique_elems rows that
+        the legacy arfamtypes_model_unique_AFTER_UPDATE trigger would INSERT/DELETE
+        on asset_portal when is_asset is flipped on the given family/type. The FE
+        confirmation modal calls this before letting a user toggle the flag so the
+        blast radius is visible. Mirrors the JOIN shape from legacy-trigger.md. Requires
+        isProjectManager.
+
+        '
+      operationId: v2_getAssetPortalLibraryElementCount
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: arfamtypes_model_unique_id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Object with keys total_elements, distinct_files, would_be_created,
+            already_exists
+        400:
+          description: Missing arfamtypes_model_unique_id
+        403:
+          description: Requires Project Manager permission
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Element count for a Project Library row (is_asset blast radius)
       tags:
       - Asset Portal
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/loi:
@@ -37869,6 +37911,45 @@ paths:
       security:
       - JWT_v2: []
       summary: Update projects_def + toggle projectsps.unique_classifying_param
+      tags:
+      - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/relationships:
+    get:
+      description: "One-call payload for the Relationships sidebar tab. Composes:\n\
+        \  \u2022 file           \u2014 SourceFiles row (MySQL)\n  \u2022 attribute_set\
+        \  \u2014 bda_attribute_sets row (MySQL; null when -1)\n  \u2022 element \
+        \       \u2014 arfamtypes_model_unique_elems row (BigQuery \u2014 the\n  \
+        \                   federated element data; MySQL views are unreliable)\n\
+        \  \u2022 loi            \u2014 element-level EAV rows (BigQuery, capped at\
+        \ 500)\nAsset Number is NOT here \u2014 derived client-side from /metadata\
+        \ + the asset_number_identifier field of asset_portal_config. Mirrors tables/asset_portal/relationships.ini\
+        \ in legacy Xataface.\n"
+      operationId: v2_getAssetPortalRelationships
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: id_asset_portal
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Object with keys asset, file, attribute_set, element, loi
+        400:
+          description: Missing id_asset_portal
+        404:
+          description: Asset not found in this project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Compose all related rows for one asset (Relationships tab)
       tags:
       - Asset Portal
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/tabular:
