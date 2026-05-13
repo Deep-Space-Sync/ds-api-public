@@ -46770,6 +46770,116 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/sov-estimation-config/lock:
+    post:
+      operationId: v2_lockSovFromEstimation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            overrides:
+              description: Final per-cost-code overrides to apply before lock
+              items:
+                properties:
+                  boq_ids:
+                    items:
+                      type: string
+                    type: array
+                  cost_code_id:
+                    type: string
+                  is_checked:
+                    type: boolean
+                  qto_item_ids:
+                    items:
+                      type: string
+                    type: array
+                  sell_override:
+                    type: number
+                type: object
+              type: array
+          type: object
+      responses:
+        200:
+          description: SOV locked successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Already locked or invalid config
+        401:
+          description: Unauthorized
+        404:
+          description: Contract not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Lock SOV from estimation (converts to real sovs[])
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/sov-estimation-config/preview:
+    get:
+      operationId: v2_getSovEstimationConfigPreview
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Live aggregated SOV data from BOQ
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Config not found or already locked
+        401:
+          description: Unauthorized
+        404:
+          description: Contract not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get live SOV estimation preview (pre-lock)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/sovs:
     get:
       operationId: v2_getContractSovs
