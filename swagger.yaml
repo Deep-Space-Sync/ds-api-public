@@ -37480,6 +37480,37 @@ paths:
       summary: Update or upsert file metadata EAV rows
       tags:
       - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/filter-values:
+    get:
+      description: "Returns the candidate sets that drive the asset list dropdown\
+        \ filters: classifying parameters (from arfamtypes_model_unique) and source\
+        \ files (from SourceFiles, scoped to files referenced by at least one asset_portal\
+        \ row in this project). Viewer-OK; cached on the FE for the life of the project\
+        \ visit.\nResponse shape:\n  {\n    \"classifying_parameters\": [\"Electrical\"\
+        , \"Vertical Transportation\", ...],\n    \"source_files\": [{\"file_id\"\
+        : N, \"file_name\": \"...\"}, ...]\n  }\n"
+      operationId: v2_getAssetPortalFilterValues
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Dropdown candidate sets
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Distinct values for the asset list header dropdowns
+      tags:
+      - Asset Portal
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/library:
     get:
       description: 'Returns arfamtypes_model_unique rows for the project (one per
