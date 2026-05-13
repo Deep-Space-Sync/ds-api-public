@@ -37952,6 +37952,54 @@ paths:
       summary: Compose all related rows for one asset (Relationships tab)
       tags:
       - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/reparent:
+    post:
+      consumes:
+      - application/json
+      description: 'Stub endpoint. Returns HTTP 501 today. The eventual handler will
+        move an existing asset''s parent link (jump_rel row), update its ATC_ParentEquipment
+        metadata snapshot, and emit audit events on both child and parent.
+
+        '
+      operationId: v2_postAssetPortalReparent
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            comment:
+              type: string
+            id_asset_portal:
+              description: The asset to be reparented.
+              type: integer
+            new_parent_id_asset_portal:
+              description: The asset to become the new parent. Null/absent means detach
+                to root.
+              type: integer
+          required:
+          - id_asset_portal
+          type: object
+      responses:
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+        501:
+          description: Not yet implemented (current state of this endpoint)
+      security:
+      - JWT_v2: []
+      summary: "Move an existing asset under a new parent (STUB \u2014 returns 501)"
+      tags:
+      - Asset Portal
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/tabular:
     get:
       description: 'Returns the joined asset + tabular + sourcefile rows that drive
