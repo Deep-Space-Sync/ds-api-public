@@ -44786,6 +44786,103 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-cost-transfer:
+    get:
+      operationId: v2_listBudgetRegisterCostTransfers
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: source_cost_code_id
+        required: false
+        type: string
+      - in: query
+        name: destination_cost_code_id
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Cost Transfers
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createBudgetRegisterCostTransfer
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Transfer created
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Cost Transfer
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-cost-transfer/{transferId}/void:
+    post:
+      operationId: v2_voidBudgetRegisterCostTransfer
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: transferId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Transfer voided
+        400:
+          description: Already voided
+        401:
+          description: Unauthorized
+        404:
+          description: Transfer not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Void Cost Transfer
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-manual-entries:
     get:
       operationId: v2_listBudgetRegisterManualEntries
