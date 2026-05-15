@@ -66211,7 +66211,8 @@ paths:
                     description: Project country (Firestore only)
                     type: string
                   current_stage:
-                    description: Current project stage
+                    description: Current project stage (Opportunity / Tender / Delivery
+                      / DLP)
                     type: string
                   custom_fields:
                     description: Custom key-value fields (Firestore only)
@@ -66325,6 +66326,14 @@ paths:
                   project_start_date:
                     description: Project start date (Firestore only)
                     format: date
+                    type: string
+                  project_status:
+                    description: "Operational status \u2014 read-only here. Use PATCH\
+                      \ /projects/{projectId}/status to change. (COR-281)"
+                    enum:
+                    - active
+                    - on_hold
+                    - archived
                     type: string
                   project_type:
                     description: Type of project (Firestore only)
@@ -66916,14 +66925,13 @@ paths:
         schema:
           properties:
             current_stage:
-              description: The new stage for the project. Picking 'Archived' archives
-                the project; transitioning out of 'Archived' restores it. (COR-280)
+              description: The new lifecycle stage for the project. Archive/restore
+                lives on PATCH /status now (COR-281).
               enum:
               - Opportunity
               - Tender
               - Delivery
               - DLP
-              - Archived
               type: string
           required:
           - current_stage
@@ -66955,6 +66963,76 @@ paths:
       security:
       - JWT_v2: []
       summary: Update project stage
+      tags:
+      - Project
+      x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/projects/{projectId}/status:
+    patch:
+      consumes:
+      - application/json
+      operationId: v2_updateProjectStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            project_status:
+              description: New operational status. Picking 'archived' archives the
+                project (runs outseta/codesafe/counter bookkeeping); transitioning
+                out of 'archived' restores it.
+              enum:
+              - active
+              - on_hold
+              - archived
+              type: string
+            target_stage:
+              description: "Optional. Only used when transitioning out of 'archived'\
+                \ \u2014 defaults to 'Delivery'."
+              enum:
+              - Opportunity
+              - Tender
+              - Delivery
+              - DLP
+              type: string
+          required:
+          - project_status
+          type: object
+      responses:
+        200:
+          description: Project status updated successfully
+          schema:
+            properties:
+              message:
+                type: string
+              new_status:
+                type: string
+              old_status:
+                type: string
+              project_id:
+                type: string
+              project_name:
+                type: string
+            type: object
+        400:
+          description: Bad Request - Invalid status or missing parameters
+        401:
+          description: Unauthorized
+        404:
+          description: Project not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update project operational status (active / on_hold / archived) (COR-281)
       tags:
       - Project
       x-min-permissions: isProjectManager
