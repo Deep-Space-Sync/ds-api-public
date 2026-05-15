@@ -66331,9 +66331,9 @@ paths:
                     description: "Operational status \u2014 read-only here. Use PATCH\
                       \ /projects/{projectId}/status to change. (COR-281)"
                     enum:
-                    - active
-                    - on_hold
-                    - archived
+                    - ACTIVE
+                    - ON_HOLD
+                    - ARCHIVED
                     type: string
                   project_type:
                     description: Type of project (Firestore only)
@@ -66986,13 +66986,13 @@ paths:
         schema:
           properties:
             project_status:
-              description: New operational status. Picking 'archived' archives the
+              description: New operational status. Picking 'ARCHIVED' archives the
                 project (runs outseta/codesafe/counter bookkeeping); transitioning
-                out of 'archived' restores it.
+                out of 'ARCHIVED' restores it.
               enum:
-              - active
-              - on_hold
-              - archived
+              - ACTIVE
+              - ON_HOLD
+              - ARCHIVED
               type: string
             target_stage:
               description: "Optional. Only used when transitioning out of 'archived'\
@@ -67032,7 +67032,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Update project operational status (active / on_hold / archived) (COR-281)
+      summary: Update project operational status (ACTIVE / ON_HOLD / ARCHIVED) (COR-281)
       tags:
       - Project
       x-min-permissions: isProjectManager
