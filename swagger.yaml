@@ -9194,6 +9194,60 @@ paths:
       tags:
       - Users
       x-min-permissions: admin
+  /v2/users/lookup-by-email:
+    get:
+      description: "Returns whether a user exists in the global directory (by email)\
+        \ and,\nif so, their single global_user_assignment row. This is the\nno-workspace\
+        \ variant of `/workspaces/{workspaceId}/users/lookup-by-email`\nintended for\
+        \ CS Hub use, where the caller has no natural workspace\ncontext.\n\nAuthorization:\
+        \ cs-admin scope is REQUIRED. The handler in\n`get_lookup_by_email.py` rejects\
+        \ callers without cs-admin scope when\nno workspace context is present (returns\
+        \ 400 \"Missing workspace\ncontext\"). The same case-insensitive exact-match\
+        \ lookup is used \u2014\ncallers must pass the full email address.\n"
+      operationId: v2_getUserLookupByEmailNoWorkspace
+      parameters:
+      - description: Email to look up (case-insensitive, exact match)
+        in: query
+        name: email
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lookup result
+          schema:
+            properties:
+              assignment:
+                description: The global_user_assignment row, or null if none
+                properties:
+                  company_name:
+                    type: string
+                  parent_global_company_id:
+                    type: integer
+                  verified_by_company:
+                    type: boolean
+                  verified_by_user:
+                    type: boolean
+                type: object
+              exists_in_kinde:
+                description: True if a global_user_profile row exists for this email
+                type: boolean
+              kinde_id:
+                description: Kinde user id if the profile exists, else null
+                type: string
+            required:
+            - exists_in_kinde
+            type: object
+        400:
+          description: Missing email, or caller is not cs-admin and no workspace context
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Phone-book lookup of a user by email (cs-admin, no workspace)
+      tags:
+      - Users
   /v2/users/{user_id}/profile:
     get:
       operationId: v2_getUserProfile
