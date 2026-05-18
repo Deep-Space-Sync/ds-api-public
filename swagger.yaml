@@ -18960,6 +18960,85 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/picker:
+    get:
+      operationId: v2_getTenderPackagePicker
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID to scope the picker to
+        in: query
+        name: project_id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Picker payload
+          schema:
+            properties:
+              packages:
+                items:
+                  properties:
+                    budget_category:
+                      type: string
+                    due_date:
+                      type: string
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    recommended_value:
+                      enum:
+                      - budget
+                      - lowest_bid
+                      - average
+                      - awarded_levelled
+                      type: string
+                    stage:
+                      enum:
+                      - draft
+                      - tendering
+                      - responses
+                      - awarded
+                      type: string
+                    submission_count:
+                      type: integer
+                    submission_summary:
+                      type: object
+                    trade:
+                      type: string
+                    values:
+                      description: 4-cell value matrix keyed by value_type
+                      type: object
+                  type: object
+                type: array
+              stage_counts:
+                properties:
+                  awarded:
+                    type: integer
+                  draft:
+                    type: integer
+                  responses:
+                    type: integer
+                  tendering:
+                    type: integer
+                type: object
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Project not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Lifecycle-aware tender package picker for BoQ import
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}:
     delete:
       operationId: v2_deleteTenderPackageById
@@ -19451,6 +19530,70 @@ paths:
       security:
       - JWT_v2: []
       summary: Acknowledge an Addendum
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/boq-prefill:
+    get:
+      operationId: v2_getTenderPackageBoQPrefill
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - enum:
+        - budget
+        - lowest_bid
+        - average
+        - awarded_levelled
+        in: query
+        name: value_type
+        required: true
+        type: string
+      responses:
+        200:
+          description: Pre-fill payload
+          schema:
+            properties:
+              auto_populated_count:
+                type: integer
+              budget_category_id:
+                type: string
+              budget_category_name:
+                type: string
+              default_cost_type:
+                type: string
+              description:
+                type: string
+              name:
+                type: string
+              quantity:
+                type: number
+              rate:
+                type: number
+              source:
+                type: object
+              total_fields:
+                type: integer
+              unit:
+                type: string
+            type: object
+        400:
+          description: "Bad request \u2014 value_type not available for package stage"
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Resolve BoQ pre-fill values for a tender package
       tags:
       - Cost
       x-ds-test-enabled: true
@@ -43768,6 +43911,77 @@ paths:
       security:
       - JWT_v2: []
       summary: Move BOQ Item to Different BOQ
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/boq-versions/{versionId}/boqs/{boqId}/items/{itemId}/source-detail:
+    get:
+      operationId: v2_getBOQItemSourceDetail
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - in: path
+        name: boqId
+        required: true
+        type: string
+      - in: path
+        name: itemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Source detail payload
+          schema:
+            properties:
+              bidder_name:
+                type: string
+              current_package_amount:
+                description: Current amount on the source package. Populated but not
+                  used by phase-1 UI (passive provenance).
+                type: number
+              linked_at:
+                type: string
+              linked_by:
+                type: string
+              package_id:
+                type: string
+              package_name:
+                type: string
+              package_url:
+                type: string
+              rate_overridden:
+                type: boolean
+              source_type:
+                type: string
+              stage:
+                type: string
+              submission_id:
+                type: string
+              value_amount:
+                type: number
+              value_used:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Item not found or has no source link
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get BoQ item source provenance detail
       tags:
       - Cost
       x-ds-test-enabled: true
