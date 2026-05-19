@@ -21366,6 +21366,19 @@ paths:
         name: force_update
         required: false
         type: boolean
+      - description: "When true, skips the Xero \u2192 Firestore inbound pull and\
+          \ only runs the outbound Firestore \u2192 Xero push. Useful for fast per-PO\
+          \ operator actions (e.g. operator just edited a single PO in DS and re-pushed)\
+          \ and for bulk re-push backfills where the DS-side state is already known\
+          \ to be current. The inbound pull on Jubilee-sized tenants takes ~8 minutes\
+          \ per call regardless of payload size \u2014 push_only skips that wasted\
+          \ work. The response shape is unchanged; the xero_to_firestore field will\
+          \ contain {\"skipped\": \"push_only mode\"}. Currently honoured by purchase_orders\
+          \ sync only. API-only, no frontend UI.\n"
+        in: query
+        name: push_only
+        required: false
+        type: boolean
       responses:
         200:
           description: Successful response
