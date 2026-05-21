@@ -10767,6 +10767,328 @@ paths:
       summary: Remove watcher from action
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/approval-thresholds:
+    get:
+      description: 'Returns the company-level DoA matrix. By default only active rows
+
+        are returned (`is_active=true`); pass `include_inactive=true` to
+
+        view superseded / soft-deleted rows for audit review.
+
+
+        Rows are sorted by `threshold_amount` ascending so the UI can render
+
+        the matrix as a natural authority ladder without client-side sort.
+
+        '
+      operationId: v2_v2_listApprovalThresholds
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - default: false
+        description: Include superseded and soft-deleted rows
+        in: query
+        name: include_inactive
+        type: boolean
+      responses:
+        200:
+          description: Thresholds retrieved successfully
+          schema:
+            properties:
+              count:
+                type: integer
+              data:
+                items:
+                  properties:
+                    created_at:
+                      type: integer
+                    created_by_user_id:
+                      type: string
+                    currency:
+                      enum:
+                      - AUD
+                      - NZD
+                      - USD
+                      type: string
+                    description:
+                      type: string
+                    effective_date:
+                      type: integer
+                    expiry_date:
+                      type: integer
+                    is_active:
+                      type: boolean
+                    role_id:
+                      type: string
+                    threshold_amount:
+                      description: Decimal as string to preserve precision
+                      type: string
+                    threshold_id:
+                      type: string
+                    updated_at:
+                      type: integer
+                    updated_by_user_id:
+                      type: string
+                    workspace_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List approval thresholds for a workspace
+      tags:
+      - HzApprovalThreshold
+    post:
+      description: 'Adds a new active threshold for a role. If an active row already
+
+        exists for the same (workspace, role), it is automatically
+
+        superseded (soft-deleted) and the new row becomes the source of
+
+        truth. The previous row remains queryable via `include_inactive=true`
+
+        and the change is captured in the audit log.
+
+        '
+      operationId: v2_v2_createApprovalThreshold
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            currency:
+              default: AUD
+              enum:
+              - AUD
+              - NZD
+              - USD
+              type: string
+            description:
+              type: string
+            effective_date:
+              description: "Unix-ms \u2014 defaults to now if omitted"
+              type: integer
+            expiry_date:
+              description: Optional Unix-ms expiration
+              type: integer
+            role_id:
+              description: Role identifier (project / workspace role this threshold
+                governs)
+              type: string
+            threshold_amount:
+              description: Amount as decimal string (e.g., "50000" or "50000.00")
+              type: string
+          required:
+          - role_id
+          - threshold_amount
+          type: object
+      responses:
+        201:
+          description: Threshold created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request (validation error)
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create a new approval threshold row
+      tags:
+      - HzApprovalThreshold
+  /v2/workspaces/{workspaceId}/approval-thresholds/{thresholdId}:
+    delete:
+      description: "Sets `is_active = false`. Hard delete is not exposed \u2014 audit\
+        \ history\nmust remain queryable.\n"
+      operationId: v2_v2_deleteApprovalThreshold
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: thresholdId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Threshold deactivated
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Soft-delete a threshold
+      tags:
+      - HzApprovalThreshold
+    get:
+      operationId: v2_v2_getApprovalThreshold
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: thresholdId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Threshold retrieved
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get a single threshold by ID
+      tags:
+      - HzApprovalThreshold
+    patch:
+      description: "Patch a threshold. Only the fields supplied in the body are touched.\n\
+        `role_id` is intentionally immutable \u2014 to change a role's authority\n\
+        level, create a new threshold row (which automatically supersedes\nthe current\
+        \ active one). The audit log narrates both the supersession\nand the create.\n"
+      operationId: v2_v2_updateApprovalThreshold
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: thresholdId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            currency:
+              enum:
+              - AUD
+              - NZD
+              - USD
+              type: string
+            description:
+              type: string
+            expiry_date:
+              type: integer
+            is_active:
+              type: boolean
+            threshold_amount:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Updated
+        400:
+          description: Bad request (validation error or immutable field)
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update a threshold row
+      tags:
+      - HzApprovalThreshold
+  /v2/workspaces/{workspaceId}/approval-thresholds/{thresholdId}/audit:
+    get:
+      description: 'Returns the full change history (create / update / delete actions)
+
+        for a single threshold row, newest first. Each entry includes the
+
+        before/after snapshot, acting user, and timestamp.
+
+        '
+      operationId: v2_v2_getApprovalThresholdAudit
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: thresholdId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Audit entries retrieved
+          schema:
+            properties:
+              count:
+                type: integer
+              data:
+                items:
+                  properties:
+                    action:
+                      enum:
+                      - create
+                      - update
+                      - delete
+                      type: string
+                    after:
+                      type: object
+                    audit_id:
+                      type: string
+                    before:
+                      type: object
+                    threshold_id:
+                      type: string
+                    timestamp:
+                      type: integer
+                    user_email:
+                      type: string
+                    user_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Threshold not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get audit log for a threshold
+      tags:
+      - HzApprovalThreshold
   /v2/workspaces/{workspaceId}/cde:
     get:
       operationId: v2_getCdeDocsWorkspaceLevel
