@@ -60980,6 +60980,11 @@ paths:
         required: true
         schema:
           properties:
+            amount:
+              description: "COM-343 \u2014 amount used for per-step threshold activation.\n\
+                Top-level convenience field; also accepted under\n`context.amount`.\
+                \ Decimal-safe \u2014 pass as number or string.\n"
+              type: number
             context:
               description: Context data snapshot (frozen at creation, immutable)
               example:
@@ -60996,7 +61001,8 @@ paths:
               example: PO
               type: string
             workflow:
-              description: Workflow definition (frozen at creation)
+              description: "Legacy \u2014 workflow definition embedded in the request.\
+                \ Use\n`workflow_id` (or rely on entity_type lookup) instead.\n"
               properties:
                 name:
                   example: Standard Purchase Approval
@@ -61031,10 +61037,14 @@ paths:
               required:
               - steps
               type: object
+            workflow_id:
+              description: "COM-343 \u2014 explicit workflow to use. When omitted,\
+                \ the engine\nresolves by (project_id, entity_type) \u2192 workspace-wide\
+                \ active\n\u2192 synthetic soft fallback to project_admin role.\n"
+              type: string
           required:
           - entity_type
           - entity_id
-          - workflow
           type: object
       responses:
         201:
