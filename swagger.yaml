@@ -37727,6 +37727,47 @@ paths:
       summary: Update one or more asset_portal rows
       tags:
       - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/auto-creation-config:
+    get:
+      description: 'Read-only view of the asset-escalation algorithms'' configuration.
+        For now only Algorithm A is data-backed: the family_mapping_basic exact-match
+        rules for this project (the polyfill flips arfamtypes_model_unique.is_asset
+        for any matching category/family/type). Paginated via limit/offset. Lazy-loaded
+        when the Auto Creation tab opens; the row count badge comes from config-bundle''s
+        auto_creation block.
+
+        '
+      operationId: v2_getAssetPortalAutoCreationConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Page size for Algorithm A rows. Default 100, max 50000.
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: Row offset for Algorithm A pagination. Default 0.
+        in: query
+        name: offset
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Object keyed by algorithm (algorithm_a) with paginated rows
+            + total
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Backing data for the Auto Creation settings tab
+      tags:
+      - Asset Portal
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/children:
     post:
       consumes:
@@ -37903,7 +37944,7 @@ paths:
       responses:
         200:
           description: Object with keys firestore_config, project_settings, loi_attribute_sets,
-            bda_attributes, known_coding_schemes
+            bda_attributes, known_coding_schemes, auto_creation
         500:
           description: Internal Server Error
       security:
