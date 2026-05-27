@@ -9985,6 +9985,22 @@ paths:
               type: number
             notes:
               type: string
+            sov_items:
+              description: Optional subcontractor-authored price breakdown (sum becomes
+                headline_price).
+              items:
+                properties:
+                  amount:
+                    type: number
+                  description:
+                    type: string
+                  item_id:
+                    type: string
+                required:
+                - description
+                - amount
+                type: object
+              type: array
           required:
           - headline_price
           type: object
@@ -20319,6 +20335,22 @@ paths:
               type: number
             notes:
               type: string
+            sov_items:
+              description: Optional subcontractor-authored price breakdown. When provided,
+                headline_price is the sum of the line items.
+              items:
+                properties:
+                  amount:
+                    type: number
+                  description:
+                    type: string
+                  item_id:
+                    type: string
+                required:
+                - description
+                - amount
+                type: object
+              type: array
             tax_id:
               type: integer
           required:
@@ -20463,6 +20495,62 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/submissions/{submissionId}/conversion-preview:
+    get:
+      operationId: v2_getTenderConversionPreview
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - description: Which bid value to preview (default levelled = CA-adjusted)
+        enum:
+        - levelled
+        - submitted
+        in: query
+        name: bid_source_mode
+        required: false
+        type: string
+      - enum:
+        - subcontract
+        - purchase_order
+        in: query
+        name: output_type
+        required: false
+        type: string
+      responses:
+        200:
+          description: Conversion preview payload
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: "Bad request \u2014 submission not awarded"
+        401:
+          description: Unauthorized
+        404:
+          description: Submission not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Preview the draft Subcontract for an award conversion
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/submissions/{submissionId}/convert:
     post:
       operationId: v2_convertTenderSubmission
@@ -20484,6 +20572,18 @@ paths:
         required: true
         schema:
           properties:
+            bid_source_mode:
+              description: Which bid value becomes the contract value (default levelled
+                = CA-adjusted)
+              enum:
+              - levelled
+              - submitted
+              type: string
+            contract_name:
+              type: string
+            contract_value:
+              description: Override the resolved contract value
+              type: number
             conversion_type:
               enum:
               - subcontract
@@ -20491,8 +20591,16 @@ paths:
               type: string
             cost_code_num:
               type: string
+            practical_completion_date:
+              format: date
+              type: string
             retention_rate:
               type: number
+            scope_of_work:
+              type: string
+            start_date:
+              format: date
+              type: string
           required:
           - conversion_type
           type: object
@@ -20503,10 +20611,16 @@ paths:
             properties:
               data:
                 properties:
+                  bid_source_mode:
+                    type: string
+                  contract_value:
+                    type: number
                   conversion_type:
                     type: string
                   document_id:
                     type: string
+                  sov_line_count:
+                    type: integer
                 type: object
               message:
                 type: string
@@ -20519,6 +20633,8 @@ paths:
           description: Submission not found
         500:
           description: Internal Server Error
+        501:
+          description: Not Implemented (Purchase Order conversion not yet available)
       security:
       - JWT_v2: []
       summary: Convert awarded submission to Subcontract or Purchase Order
