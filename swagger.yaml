@@ -39274,6 +39274,67 @@ paths:
       summary: Install folder template into project
       tags:
       - CDE Folder Templates
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde-folders/place-document:
+    post:
+      description: Records a document that has already been copied into the workspace's
+        CDE bucket (cde_documents_log), ensures the target folder path exists (creating
+        missing folders), then links the document into the leaf folder via a placement.
+        Used by the tender award->convert flow to file submission attachments into
+        Documentation.
+      operationId: v2_placeCdeDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project association
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_file_name:
+              description: Storage filename within {region}-ds-cde/{workspace}/
+              type: string
+            cde_link:
+              type: string
+            cde_type_id:
+              type: string
+            display_filename:
+              description: User-facing file name
+              type: string
+            file_size_bytes:
+              type: integer
+            file_type:
+              type: string
+            folder_path:
+              description: Target folder path like "Preconstruction/Tenders/Submissions/..."
+              type: string
+            uploaded_by:
+              type: string
+          required:
+          - cde_file_name
+          - display_filename
+          - folder_path
+          type: object
+      responses:
+        201:
+          description: Document recorded and filed
+        400:
+          description: Invalid request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Register and file an already-copied CDE document into a folder path
+      tags:
+      - CDE Folders
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde-helper/finalize:
     post:
       description: 'Step 3 of direct upload workflow: After successfully uploading
