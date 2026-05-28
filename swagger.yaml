@@ -73778,6 +73778,417 @@ paths:
       summary: Restore subcontractor extra details
       tags:
       - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}:
+    get:
+      description: "Reads the week-header doc + cells subcollection from Firestore.\
+        \ If the week\ndoc does not exist, the endpoint transparently creates it by\
+        \ pulling\nsubmissions from DS Site (one-time auto-accept of all initial data).\n\
+        Plain GET does NOT probe DS Site if the week already exists \u2014 use /refresh\n\
+        for that.\n"
+      operationId: v2_getTimesheetsWeek
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: ISO Monday (YYYY-MM-DD)
+        in: path
+        name: weekStart
+        required: true
+        type: string
+      responses:
+        200:
+          description: "GetWeekResponse \u2014 see dto.py for the full shape"
+      security:
+      - JWT_v2: []
+      summary: Get a week of timesheets
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/accept-latest:
+    post:
+      description: "Promotes latest_* \u2192 accepted_*. Scope `\"week\"` (default)\
+        \ operates on all\ncells with `out_of_sync`. Scope as an object `{kindeId,\
+        \ date, entryId?}`\noperates on a single cell. Refuses on locked rows (D8).\n"
+      operationId: v2_acceptLatestTimesheets
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            scope:
+              description: '"week" (default) or {kinde_id, date, entry_id}'
+          type: object
+      responses:
+        200:
+          description: GetWeekResponse
+      security:
+      - JWT_v2: []
+      summary: Accept latest DS Site data into accepted snapshot
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/approvals:
+    post:
+      description: "D8 \u2014 `locked = manager_approved`. `admin_approved` is independent.\
+        \ Soft\nordering (BE does not refuse manager-approve before admin). Refuses\n\
+        `revoke` on locked rows.\n"
+      operationId: v2_approveTimesheetsWorker
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            action:
+              enum:
+              - approve
+              - revoke
+              type: string
+            kinde_id:
+              type: string
+            level:
+              enum:
+              - admin
+              - manager
+              type: string
+          required:
+          - kinde_id
+          - level
+          - action
+          type: object
+      responses:
+        200:
+          description: GetWeekResponse with updated approvals
+      security:
+      - JWT_v2: []
+      summary: Approve / revoke per worker per week
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/cells/{kindeId}/{date}/canonical-switch:
+    post:
+      operationId: v2_switchTimesheetsCanonical
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      - in: path
+        name: date
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            submission_id:
+              type: integer
+          required:
+          - submission_id
+          type: object
+      responses:
+        200:
+          description: Updated cell document
+      security:
+      - JWT_v2: []
+      summary: Pick an alternate submission to become canonical (D15)
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/cells/{kindeId}/{date}/override:
+    delete:
+      operationId: v2_clearTimesheetsOverride
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      - in: path
+        name: date
+        required: true
+        type: string
+      - in: query
+        name: entry_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Updated cell document
+      security:
+      - JWT_v2: []
+      summary: Clear an override
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+    patch:
+      description: "Refuses if the cell is locked. Override stores final minutes_worked\
+        \ and\nbreak_minutes \u2014 operator's chosen values (we do not re-round their\
+        \ input).\n"
+      operationId: v2_setTimesheetsOverride
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      - in: path
+        name: date
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            break_minutes:
+              type: integer
+            entry_id:
+              type: string
+            minutes_worked:
+              type: integer
+            reason:
+              type: string
+          required:
+          - entry_id
+          - minutes_worked
+          type: object
+      responses:
+        200:
+          description: Updated cell document
+      security:
+      - JWT_v2: []
+      summary: Set an override on a single entry within a cell
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/cells/{kindeId}/{date}/refresh:
+    post:
+      operationId: v2_refreshTimesheetsCell
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      - description: YYYY-MM-DD
+        in: path
+        name: date
+        required: true
+        type: string
+      responses:
+        200:
+          description: Updated cell document
+      security:
+      - JWT_v2: []
+      summary: Refresh a single cell from DS Site
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/cells/{kindeId}/{date}/timeline:
+    get:
+      description: 'Events from `timesheet_edits` filtered to this (workspace, kinde_id,
+        date)
+
+        plus worker-week scope events (approvals) that affect this cell.
+
+        Ordered newest-first. Backs the Timeline tab of the cell detail drawer.
+
+        '
+      operationId: v2_getTimesheetsCellTimeline
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      - in: path
+        name: date
+        required: true
+        type: string
+      - default: 100
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: "{ \"events\": [\n    { \"id\", \"event_type\", \"by\", \"\
+            at\", \"kinde_id\", \"date\",\n      \"entry_id\", \"before\", \"after\"\
+            , \"meta\" }\n] }\n"
+      security:
+      - JWT_v2: []
+      summary: Cell audit timeline
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/cost-code:
+    patch:
+      description: "Lazy cost code \u2014 null until set. Setting/changing recomputes\
+        \ labour costs\nacross all entries.\n"
+      operationId: v2_setTimesheetsWeekCostCode
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_code:
+              properties:
+                code:
+                  type: string
+                id:
+                  type: string
+                name:
+                  type: string
+              required:
+              - code
+              type: object
+          required:
+          - cost_code
+          type: object
+      responses:
+        200:
+          description: GetWeekResponse with updated cost_code
+      security:
+      - JWT_v2: []
+      summary: Set or change the week's cost code (D14)
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/exports/csv:
+    post:
+      description: 'Columns: Worker Name, Kinde ID, Date, Day, Project, Cost Code,
+        Labour Type,
+
+        Start, End, Break Start, Break End, Hours, Pay Week.
+
+        '
+      operationId: v2_exportTimesheetsCsv
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      responses:
+        200:
+          description: '{ "csv": "<csv body>", "row_count": <int>, "filename": "<string>"
+            }
+
+            '
+      security:
+      - JWT_v2: []
+      summary: Export the week as CSV (D16 lean column set)
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/refresh:
+    post:
+      description: 'Probes DS Site for fresh submissions. Writes latest_* on changed
+        cells,
+
+        marks `missing` on cells whose canonical submission is gone, never
+
+        overwrites accepted_*. Preserves overrides and approvals.
+
+        '
+      operationId: v2_refreshTimesheetsWeek
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      responses:
+        200:
+          description: GetWeekResponse with refreshed sync states
+      security:
+      - JWT_v2: []
+      summary: Refresh week from DS Site
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
   /v2/workspaces/{workspaceId}/tokens/{tokenId}:
     get:
       operationId: v2_getWorkpaceToken
