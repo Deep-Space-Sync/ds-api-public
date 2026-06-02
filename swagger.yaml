@@ -74242,6 +74242,42 @@ paths:
       - Timesheets
       x-ds-test-enabled: true
       x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/exports/deputy-csv:
+    post:
+      description: 'Matches the 23-column Deputy shift-import template exactly. Populated:
+
+        First Name, Last Name, Email, Start Date, Start Time, End Date, End Time,
+
+        Meal Break Start/End Date+Time. Blank: Location, Area, Meal Break (mins),
+
+        all Rest Break columns, Published, Open, Override Warning?. Comment carries
+
+        the project name (+ override reason).
+
+        '
+      operationId: v2_exportTimesheetsDeputyCsv
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      responses:
+        200:
+          description: '{ "csv": "<csv body>", "row_count": <int>, "filename": "<string>"
+            }
+
+            '
+      security:
+      - JWT_v2: []
+      summary: Export the week as a Deputy shift-import CSV
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
   /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/refresh:
     post:
       description: 'Probes DS Site for fresh submissions. Writes latest_* on changed
