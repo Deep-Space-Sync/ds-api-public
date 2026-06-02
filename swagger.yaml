@@ -60078,6 +60078,89 @@ paths:
       summary: Update Subcontract SOV By Id
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/submit-for-approval:
+    post:
+      description: 'Transitions a Draft subcontract into the approval workflow (COM-383).
+
+        Body may carry an explicit `workflow_id` (overrides whatever''s stored
+
+        on the subcontract); `context` is merged into the approval''s
+
+        context_snapshot. When the resolved workflow_id is null, the engine
+
+        constructs a synthetic single-step workflow (soft fallback).
+
+
+        On success the subcontract advances to "Pending Approval"; the engine
+
+        owns the subsequent move to "Approved" (or back to "Draft" on
+
+        rejection) via entity_status_sync.
+
+        '
+      operationId: v2_submitSubcontractForApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            context:
+              description: Extra fields merged into the approval context_snapshot.
+              type: object
+            workflow_id:
+              description: Override workflow. Falls back to subcontract.workflow_id,
+                then soft fallback.
+              type: string
+          type: object
+      responses:
+        201:
+          description: Approval instance created and subcontract advanced to Pending
+            Approval
+          schema:
+            properties:
+              data:
+                properties:
+                  approval_id:
+                    type: string
+                  approval_instance:
+                    type: object
+                  subcontract_status:
+                    type: string
+                  workflow_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Subcontract not in Draft status, or missing contract value
+        403:
+          description: Access denied
+        404:
+          description: Subcontract not found
+        500:
+          description: Internal server error
+        502:
+          description: Upstream approval engine error
+      security:
+      - JWT_v2: []
+      summary: Submit a subcontract for approval
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tenders:
     get:
       operationId: v2_getTenders
