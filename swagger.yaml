@@ -32749,6 +32749,38 @@ paths:
       tags:
       - External Integrations
       x-min-permissions: isRevitUser
+  /v2/workspaces/{workspaceId}/jobs/status:
+    get:
+      operationId: v2_listWorkspaceJobStatuses
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      - in: query
+        name: offset
+        required: false
+        type: integer
+      - in: query
+        name: status
+        required: false
+        type: string
+      responses:
+        200:
+          description: Returns legacy async job statuses
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List legacy async job statuses for a workspace
+      tags:
+      - Jobs
   /v2/workspaces/{workspaceId}/jobs/{job_id}:
     post:
       operationId: v2_startJobWorkspace
@@ -63622,6 +63654,45 @@ paths:
       security:
       - JWT_v2: []
       summary: Get supported jobs
+      tags:
+      - Jobs
+    responses:
+      200:
+        description: A successful response
+  /v2/workspaces/{workspaceId}/projects/{projectId}/jobs/status:
+    get:
+      operationId: v2_listWorkspaceProjectJobStatuses
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      - in: query
+        name: offset
+        required: false
+        type: integer
+      - in: query
+        name: status
+        required: false
+        type: string
+      responses:
+        200:
+          description: Returns legacy async job statuses
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List legacy async job statuses for a workspace project
       tags:
       - Jobs
   /v2/workspaces/{workspaceId}/projects/{projectId}/jobs/{job_guid}/status:
