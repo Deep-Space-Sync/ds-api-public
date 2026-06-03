@@ -10308,6 +10308,17 @@ paths:
         name: offset
         required: false
         type: integer
+      - description: Filter by action_trigger (data-driven; e.g. weekly, post-refresh,
+          manual)
+        in: query
+        name: trigger
+        required: false
+        type: string
+      - description: Filter by action_category (data-driven; e.g. Task, Automation)
+        in: query
+        name: category
+        required: false
+        type: string
       responses:
         200:
           description: Returns automated DS Pro actions for the workspace
@@ -32800,6 +32811,12 @@ paths:
         name: status
         required: false
         type: string
+      - description: Filter by job_category (data-driven; e.g. ASYNC, CloudFunction,
+          Stored Procedure, TableBackup)
+        in: query
+        name: job_category
+        required: false
+        type: string
       responses:
         200:
           description: Returns legacy async job statuses
@@ -36229,6 +36246,17 @@ paths:
         name: offset
         required: false
         type: integer
+      - description: Filter by action_trigger (data-driven; e.g. weekly, post-refresh,
+          manual)
+        in: query
+        name: trigger
+        required: false
+        type: string
+      - description: Filter by action_category (data-driven; e.g. Task, Automation)
+        in: query
+        name: category
+        required: false
+        type: string
       responses:
         200:
           description: Returns automated DS Pro actions for the project
@@ -63744,6 +63772,12 @@ paths:
         type: integer
       - in: query
         name: status
+        required: false
+        type: string
+      - description: Filter by job_category (data-driven; e.g. ASYNC, CloudFunction,
+          Stored Procedure, TableBackup)
+        in: query
+        name: job_category
         required: false
         type: string
       responses:
