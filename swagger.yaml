@@ -63656,9 +63656,6 @@ paths:
       summary: Get supported jobs
       tags:
       - Jobs
-    responses:
-      200:
-        description: A successful response
   /v2/workspaces/{workspaceId}/projects/{projectId}/jobs/status:
     get:
       operationId: v2_listWorkspaceProjectJobStatuses
