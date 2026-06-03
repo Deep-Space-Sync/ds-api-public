@@ -26066,6 +26066,10 @@ paths:
               type: string
             is_active:
               type: boolean
+            layout_type:
+              description: Layout template wrapper to use (e.g. 'tender' for default-layout-tender);
+                omit for the default layout
+              type: string
             locale:
               type: string
             plain_text:
@@ -26179,6 +26183,10 @@ paths:
               type: string
             is_active:
               type: boolean
+            layout_type:
+              description: Layout template wrapper to use (e.g. 'tender' for default-layout-tender);
+                omit for the default layout
+              type: string
             locale:
               type: string
             plain_text:
