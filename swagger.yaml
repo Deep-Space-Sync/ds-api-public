@@ -5090,6 +5090,94 @@ paths:
       summary: OAuth callback handler for email provider connection
       tags:
       - HzEmailIntegration
+  /v2/notified-users/{kinde_id}/email-accounts/send-with-attachment:
+    post:
+      description: 'Send an email with a PDF attachment (fetched from pdf_url) to
+        one or more
+
+        recipients, using the requesting user''s connected email provider
+
+        (Gmail / Outlook OAuth). A separate email is sent to each recipient.
+
+        '
+      operationId: v2_sendEmailWithAttachment
+      parameters:
+      - description: User's Kinde ID (use 'me' or 'self' for current user)
+        in: path
+        name: kinde_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            html_body:
+              description: HTML email body
+              type: string
+            pdf_filename:
+              example: Subcontract-SC-HRZ001-0009-Executed.pdf
+              type: string
+            pdf_url:
+              description: URL (e.g. signed GCS URL) to fetch the PDF attachment from
+              type: string
+            recipients:
+              description: Recipients; one email is sent to each
+              items:
+                properties:
+                  email:
+                    example: pc@example.com
+                    type: string
+                  name:
+                    example: Project Co
+                    type: string
+                required:
+                - email
+                type: object
+              type: array
+            subject:
+              example: Subcontract SC-HRZ001-0009 has been executed
+              type: string
+          required:
+          - recipients
+          - subject
+          - html_body
+          - pdf_url
+          type: object
+      responses:
+        200:
+          description: All emails sent successfully
+          schema:
+            properties:
+              all_sent:
+                type: boolean
+              message:
+                type: string
+              provider:
+                type: string
+              results:
+                items:
+                  properties:
+                    email:
+                      type: string
+                    error:
+                      type: string
+                    success:
+                      type: boolean
+                  type: object
+                type: array
+            type: object
+        400:
+          description: Invalid request, or sender has no connected email provider
+        401:
+          description: Unauthorized
+        502:
+          description: One or more emails failed to send
+      security:
+      - JWT_v2: []
+      summary: Send an email with a PDF attachment from the user's connected provider
+      tags:
+      - HzEmailIntegration
   /v2/notified-users/{kinde_id}/email-accounts/{provider}:
     delete:
       operationId: v2_disconnectEmailAccountProvider
