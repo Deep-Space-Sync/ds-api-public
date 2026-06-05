@@ -26359,6 +26359,14 @@ paths:
         in: query
         name: priority
         type: string
+      - description: Filter by linked entity type (e.g., tender_package)
+        in: query
+        name: reference_type
+        type: string
+      - description: Filter by linked entity id (e.g., a tender package id)
+        in: query
+        name: reference_id
+        type: string
       - in: query
         name: page
         type: integer
