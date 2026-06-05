@@ -34495,6 +34495,45 @@ paths:
       summary: Set a user preference
       tags:
       - User Preferences
+  /v2/workspaces/{workspaceId}/projects/progress:
+    get:
+      description: Computes each project's duration-weighted WBS completion percentage
+        across the whole workspace in a single call. Replaces the home page's per-project
+        N+1 fetch. Projects with no WBS items are omitted (treat as 0 on the client).
+      operationId: v2_getWorkspaceWbsProgress
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Progress for every project with WBS items in the workspace
+          schema:
+            properties:
+              projects:
+                items:
+                  properties:
+                    progress:
+                      format: float
+                      type: number
+                    project_id:
+                      type: string
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get WBS progress for all projects in a workspace
+      tags:
+      - WBS Progress
   /v2/workspaces/{workspaceId}/menu:
     get:
       description: Returns the menu structure for a workspace based on the workspace's
