@@ -49961,6 +49961,40 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/activity:
+    get:
+      operationId: v2_getHeadContractClaimActivity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Head Contract Claim Activity Timeline
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/change-status:
     patch:
       operationId: v2_patchHeadContractClaimChangeStatus
