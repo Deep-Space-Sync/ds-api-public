@@ -35860,6 +35860,9 @@ paths:
               projects:
                 items:
                   properties:
+                    image_url:
+                      description: Project card image URL (null when not set)
+                      type: string
                     progress:
                       format: float
                       type: number
