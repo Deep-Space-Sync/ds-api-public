@@ -34405,6 +34405,88 @@ paths:
       summary: Update markup
       tags:
       - Markup
+  /v2/workspaces/{workspaceId}/me/preferences/{key}:
+    get:
+      description: Get the current user's preference for a key in this workspace.
+        Returns value=null when never set.
+      operationId: v2_getUserPreference
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Preference key slug (^[A-Za-z0-9_-]{1,64}$)
+        in: path
+        name: key
+        required: true
+        type: string
+      responses:
+        200:
+          description: The current user's preference for the key
+          schema:
+            properties:
+              key:
+                type: string
+              updatedAt:
+                format: date-time
+                type: string
+              updatedBy:
+                type: string
+              value:
+                description: Arbitrary JSON value (null when never set)
+              workspaceId:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a user preference
+      tags:
+      - User Preferences
+    put:
+      description: Create or replace the current user's preference for a key (last-write-wins).
+      operationId: v2_setUserPreference
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Preference key slug (^[A-Za-z0-9_-]{1,64}$)
+        in: path
+        name: key
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            value:
+              description: Arbitrary JSON value to store for this key
+          type: object
+      responses:
+        200:
+          description: The stored preference
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Set a user preference
+      tags:
+      - User Preferences
   /v2/workspaces/{workspaceId}/menu:
     get:
       description: Returns the menu structure for a workspace based on the workspace's
