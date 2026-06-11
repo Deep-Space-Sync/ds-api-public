@@ -3138,6 +3138,7 @@ paths:
                     - SUBCONTRACTOR
                     - SUPPLIER
                     - CLIENT
+                    - SUBCONTRACTOR_AND_SUPPLIER
                     type: string
                   sharing_from_global_company_id:
                     type: number
@@ -23314,6 +23315,27 @@ paths:
         name: companyType
         required: false
         type: string
+      - description: Filter by global_vendor_sharing.relationship_type; requires globalCompanyId
+          and includeSharedCompanies=true
+        enum:
+        - SUBCONTRACTOR
+        - SUPPLIER
+        - CLIENT
+        - CONSULTANT
+        - SUBCONTRACTOR_AND_SUPPLIER
+        in: query
+        name: relationshipType
+        required: false
+        type: string
+      - description: Filter sharing rows by status when relationshipType is supplied
+        enum:
+        - REQUESTED
+        - APPROVED
+        - REJECTED
+        in: query
+        name: sharingStatus
+        required: false
+        type: string
       - description: Include vendor sharing relationships (requires globalCompanyId)
         in: query
         name: includeSharedCompanies
@@ -23442,7 +23464,13 @@ paths:
                 properties:
                   relationship_type:
                     description: 'New relationship type: SUBCONTRACTOR, SUPPLIER,
-                      or CLIENT'
+                      CLIENT, CONSULTANT, or SUBCONTRACTOR_AND_SUPPLIER'
+                    enum:
+                    - SUBCONTRACTOR
+                    - SUPPLIER
+                    - CLIENT
+                    - CONSULTANT
+                    - SUBCONTRACTOR_AND_SUPPLIER
                     type: string
                   sharing_from_global_company_id:
                     description: The vendor company ID whose relationship type to
@@ -23503,8 +23531,14 @@ paths:
               description: The vendor company ID to share with
               type: integer
             relationship_type:
-              description: 'Relationship type: SUBCONTRACTOR, SUPPLIER, or CLIENT
-                (default: SUBCONTRACTOR)'
+              description: 'Relationship type: SUBCONTRACTOR, SUPPLIER, CLIENT, CONSULTANT,
+                or SUBCONTRACTOR_AND_SUPPLIER (default: SUBCONTRACTOR)'
+              enum:
+              - SUBCONTRACTOR
+              - SUPPLIER
+              - CLIENT
+              - CONSULTANT
+              - SUBCONTRACTOR_AND_SUPPLIER
               type: string
             xero_contact_id:
               description: Optional Xero contact ID
