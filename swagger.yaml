@@ -60093,38 +60093,6 @@ paths:
       summary: Update Subcontract Variation Scope By Id
       tags:
       - Cost
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/activity:
-    get:
-      operationId: v2_getSubcontractVariationActivity
-      parameters:
-      - in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: path
-        name: variationId
-        required: true
-        type: string
-      - in: query
-        name: limit
-        required: false
-        type: integer
-      responses:
-        200:
-          description: Successful response
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Get Subcontract Variation Activity Timeline
-      tags:
-      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/update-status:
     patch:
       operationId: v2_patchSubcontractVariationStatus
@@ -67950,6 +67918,14 @@ paths:
                     description: Contract award date (Firestore only, ISO format)
                     format: date-time
                     type: string
+                  budget_view_kpis:
+                    description: 'Derived Budget Register role factors from teams.{role}.budget_kpi.
+
+                      Keys: commercial_lead, project_manager, contracts_manager.
+
+                      '
+                    readOnly: true
+                    type: object
                   contract_number:
                     description: Contract number/reference (Firestore only)
                     type: string
@@ -68122,7 +68098,16 @@ paths:
                       type: string
                     type: array
                   teams:
-                    description: Internal project roles (Firestore only)
+                    description: 'Internal project roles (Firestore only). Role objects
+                      may include
+
+                      `budget_kpi`, a numeric Budget Register view factor stored next
+
+                      to the assigned user (for example, 1.0 = 100%, 0.9 = 90%).
+
+                      `budget_view_kpis` is derived from these role-level values.
+
+                      '
                     type: object
                   tender_due_date:
                     description: Tender due date (Firestore only, ISO format)
@@ -68393,6 +68378,15 @@ paths:
 
                 Valid roles: project_manager, site_manager, contracts_manager, commercial_lead,
                 hseq_lead
+
+                Role objects support `budget_kpi` beside the assigned user:
+
+                `{ "user_id": "...", "name": "...", "username": "...", "budget_kpi":
+                0.9 }`.
+
+                KPI-only patches are supported, for example
+
+                `{ "teams": { "project_manager": { "budget_kpi": 0.9 } } }`.
 
                 '
               type: object
