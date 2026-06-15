@@ -26682,6 +26682,61 @@ paths:
       summary: Send email using template
       tags:
       - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/email/send-with-attachment:
+    post:
+      operationId: v2_sendHzEmailTemplatedWithAttachment
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+          - category
+          - type
+          - entity_type
+          - entity_id
+          - to_recipients
+          - pdf_url
+          properties:
+            category:
+              type: string
+            type:
+              type: string
+            entity_type:
+              type: string
+            entity_id:
+              type: string
+            to_recipients:
+              type: array
+              items:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  name:
+                    type: string
+            pdf_url:
+              type: string
+            pdf_filename:
+              type: string
+      responses:
+        200:
+          description: Emails processed successfully
+        400:
+          description: Invalid request or no connected email provider
+        502:
+          description: Send failed (partial or total delivery failure)
+      security:
+      - JWT_v2: []
+      summary: Send templated email with PDF attachment
+      tags:
+      - HzNotifications
   /v2/workspaces/{workspaceId}/hz-notifications/email/send-bulk:
     post:
       operationId: v2_sendHzBulkEmail
