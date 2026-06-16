@@ -69426,6 +69426,94 @@ paths:
       - Projects
       x-ds-test-enabled: true
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/projects/{projectId}/settings/supply-chain:
+    get:
+      description: 'Live, read-only aggregation of every Company attached to a Project
+        via a
+
+        Purchase Order or Subcontract. One entry per unique company; each entry
+
+        lists every attachment with its status and value. Includes unawarded
+
+        subcontracts (subcontractor_id is non-numeric / email-only) flagged with
+
+        is_awarded=false. Server queries cost_orders and subcontract_contracts
+
+        in parallel; no Firestore cache.
+
+        '
+      operationId: v2_getProjectSupplyChain
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Aggregated supply chain for the project
+          schema:
+            properties:
+              data:
+                properties:
+                  companies:
+                    items:
+                      properties:
+                        attachments:
+                          items:
+                            properties:
+                              currency:
+                                type: string
+                              id:
+                                type: string
+                              identifier:
+                                type: string
+                              is_awarded:
+                                description: Per-attachment award flag (subcontract-only)
+                                type: boolean
+                              kind:
+                                enum:
+                                - po
+                                - subcontract
+                                type: string
+                              name:
+                                type: string
+                              status:
+                                type: string
+                              value:
+                                type: number
+                            type: object
+                          type: array
+                        company_id:
+                          description: id_global_company_directory, or null for unawarded
+                            entries
+                          type: integer
+                        company_name:
+                          type: string
+                        is_awarded:
+                          type: boolean
+                      type: object
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Project not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Project Supply Chain
+      tags:
+      - Projects
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
   /v2/workspaces/{workspaceId}/projects/{projectId}/sourcefiles:
     get:
       description: Returns all sourcefiles details for a project
