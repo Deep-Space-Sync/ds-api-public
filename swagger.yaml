@@ -67972,6 +67972,18 @@ paths:
                     description: Contract award date (Firestore only, ISO format)
                     format: date-time
                     type: string
+                  budget_view_excluded_cost_codes:
+                    description: 'Derived Budget Register exclusion lists from
+
+                      teams.{role}.excluded_cost_codes. Each value is an array of
+
+                      cost-code ids hidden from that role''s Budget Register view.
+
+                      Keys: commercial_lead, project_manager, contracts_manager.
+
+                      '
+                    readOnly: true
+                    type: object
                   budget_view_kpis:
                     description: 'Derived Budget Register role factors from teams.{role}.budget_kpi.
 
@@ -68157,9 +68169,15 @@ paths:
 
                       `budget_kpi`, a numeric Budget Register view factor stored next
 
-                      to the assigned user (for example, 1.0 = 100%, 0.9 = 90%).
+                      to the assigned user (for example, 1.0 = 100%, 0.9 = 90%), and
 
-                      `budget_view_kpis` is derived from these role-level values.
+                      `excluded_cost_codes`, a list of cost-code ids hidden from the
+
+                      Budget Register in that role''s view. `budget_view_kpis` and
+
+                      `budget_view_excluded_cost_codes` are derived from these
+
+                      role-level values.
 
                       '
                     type: object
@@ -68433,14 +68451,18 @@ paths:
                 Valid roles: project_manager, site_manager, contracts_manager, commercial_lead,
                 hseq_lead
 
-                Role objects support `budget_kpi` beside the assigned user:
+                Role objects support `budget_kpi` and `excluded_cost_codes`
 
-                `{ "user_id": "...", "name": "...", "username": "...", "budget_kpi":
-                0.9 }`.
+                beside the assigned user:
 
-                KPI-only patches are supported, for example
+                `{ "user_id": "...", "name": "...", "username": "...",
 
-                `{ "teams": { "project_manager": { "budget_kpi": 0.9 } } }`.
+                "budget_kpi": 0.9, "excluded_cost_codes": ["uuid-a", "uuid-b"] }`.
+
+                Budget-view-only patches are supported, for example
+
+                `{ "teams": { "project_manager": { "budget_kpi": 0.9, "excluded_cost_codes":
+                [] } } }`.
 
                 '
               type: object
