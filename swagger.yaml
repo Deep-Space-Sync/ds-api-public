@@ -21531,6 +21531,84 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/submissions/{submissionId}/resolve-exclusion:
+    post:
+      operationId: v2_resolveTenderExclusion
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            action:
+              description: accept = exclusion stands; reprice = re-open line for the
+                subbie (7-day deadline + notification); adjust = add a builder-only
+                $ to the comparative value
+              enum:
+              - accept
+              - reprice
+              - adjust
+              type: string
+            adjust_amount:
+              description: Required when action=='adjust'. Builder-only $ added to
+                the vendor's comparative value; never exposed to the subbie.
+              type: number
+            item_id:
+              description: Line item id of the excluded line (must currently be response=='excluded')
+              type: string
+            reason:
+              description: Builder's justification (stored on the resolution + audit)
+              type: string
+            trade_section_id:
+              description: Trade section of the excluded line
+              type: string
+          required:
+          - trade_section_id
+          - item_id
+          - action
+          type: object
+      responses:
+        200:
+          description: Exclusion resolved
+          schema:
+            properties:
+              message:
+                type: string
+              notified:
+                type: boolean
+              resolution:
+                type: object
+              submission:
+                type: object
+            type: object
+        400:
+          description: Bad Request (line not excluded, missing adjust_amount, or invalid
+            action)
+        401:
+          description: Unauthorized
+        404:
+          description: Submission or line response not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Resolve a subbie-excluded schedule line (accept / reprice / adjust)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/submissions/{submissionId}/suggest-trade-split:
     post:
       operationId: v2_suggestTenderTradeSplit
@@ -21731,6 +21809,15 @@ paths:
                 description: When true, a submission can only be awarded once a tender
                   recommendation is approved
                 type: boolean
+              contingency_default_pct:
+                description: 'PRE-174: default trade contingency percentage applied
+                  in Compare Bids (default 2.0)'
+                type: number
+              contingency_services_pct:
+                description: 'PRE-174: contingency percentage for services trades
+                  (mechanical/electrical/hydraulic etc.) in Compare Bids (default
+                  7.0)'
+                type: number
             type: object
         401:
           description: Unauthorized
@@ -21758,6 +21845,12 @@ paths:
             award_gated_on_approval:
               description: Toggle the pre-award approval gate for the workspace
               type: boolean
+            contingency_default_pct:
+              description: 'PRE-174: default trade contingency percentage (>= 0)'
+              type: number
+            contingency_services_pct:
+              description: 'PRE-174: services-trade contingency percentage (>= 0)'
+              type: number
           type: object
       responses:
         200:
@@ -21766,6 +21859,10 @@ paths:
             properties:
               award_gated_on_approval:
                 type: boolean
+              contingency_default_pct:
+                type: number
+              contingency_services_pct:
+                type: number
             type: object
         400:
           description: Validation error
