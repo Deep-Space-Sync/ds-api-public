@@ -19070,6 +19070,376 @@ paths:
       summary: Get Subcontracts (Workspace Level)
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/cost/tags-templates:
+    get:
+      operationId: v2_listTagsTemplates
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Search query for template_name or trade_name
+        in: query
+        name: q
+        type: string
+      - description: When provided, returns project-attached tag sets for that bid
+          package instead of the library
+        in: query
+        name: bid_package_id
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              count:
+                type: integer
+              items:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Tags Templates
+      tags:
+      - Tags Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postTagsTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            template_name:
+              description: Name of the tags template
+              type: string
+            trade_id:
+              description: Optional trade identifier
+              type: string
+            trade_name:
+              description: Trade this template belongs to
+              type: string
+          required:
+          - template_name
+          - trade_name
+          type: object
+      responses:
+        201:
+          description: Tags template created successfully
+          schema:
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Tags Template
+      tags:
+      - Tags Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tags-templates/{templateId}:
+    get:
+      operationId: v2_getTagsTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tags template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Tags Template
+      tags:
+      - Tags Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchTagsTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            status:
+              enum:
+              - Draft
+              - Published
+              type: string
+            tags:
+              description: Array of tag objects
+              items:
+                properties:
+                  category:
+                    type: string
+                  default_response:
+                    enum:
+                    - Accepted
+                    - Excluded
+                    - Priced
+                    type: string
+                  default_value:
+                    type: string
+                  description:
+                    type: string
+                  id:
+                    type: string
+                  tag_code:
+                    type: string
+                  visible:
+                    type: boolean
+                type: object
+              type: array
+            template_name:
+              type: string
+            trade_id:
+              type: string
+            trade_name:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Tags template updated successfully
+          schema:
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Tags template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Tags Template
+      tags:
+      - Tags Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tags-templates/{templateId}/clone:
+    post:
+      operationId: v2_cloneTagsTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            bid_package_id:
+              description: Required when is_project_scope is true
+              type: string
+            is_project_scope:
+              description: When true, clone is attached to a bid package instead of
+                forking a new library version
+              type: boolean
+          type: object
+      responses:
+        201:
+          description: New tags template created successfully
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Source tags template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Clone Tags Template (New Version or Project Attach)
+      tags:
+      - Tags Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tags-templates/{templateId}/import:
+    post:
+      operationId: v2_importTagsTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            mode:
+              description: append (default) merges with existing tags, replace overwrites
+                them
+              enum:
+              - append
+              - replace
+              type: string
+            tags:
+              description: Tag rows parsed client-side from CSV/spreadsheet
+              items:
+                properties:
+                  category:
+                    type: string
+                  default_value:
+                    type: string
+                  description:
+                    type: string
+                  tag_code:
+                    type: string
+                type: object
+              type: array
+          required:
+          - tags
+          type: object
+      responses:
+        200:
+          description: Tags imported successfully
+          schema:
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Tags template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Bulk Import Tags (CSV)
+      tags:
+      - Tags Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tags-templates/{templateId}/publish:
+    post:
+      operationId: v2_publishTagsTemplate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tags template published successfully
+          schema:
+            type: object
+        400:
+          description: Template is not in Draft status
+        401:
+          description: Unauthorized
+        404:
+          description: Tags template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Publish Tags Template
+      tags:
+      - Tags Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tags-templates/{templateId}/versions:
+    get:
+      operationId: v2_listTagsTemplateVersions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of all versions
+          schema:
+            properties:
+              count:
+                type: integer
+              items:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tags template not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Tags Template Versions
+      tags:
+      - Tags Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/tender-packages:
     get:
       operationId: v2_getTenderPackages
@@ -19318,6 +19688,12 @@ paths:
                     type: string
                   tax_id:
                     type: integer
+                  trade_section_ids:
+                    description: 'PRE-180: trade_section_ids this subbie may price
+                      (multi_trade). Absent/empty => may price all sections.'
+                    items:
+                      type: string
+                    type: array
                 required:
                 - global_company_id
                 - tax_id
@@ -19346,6 +19722,13 @@ paths:
               type: integer
             tender_id:
               description: Optional linked tender ID (opportunity tracker)
+              type: string
+            tender_mode:
+              description: 'PRE-180: tendering mode. Absent => single_trade (default).
+                Locked once the package leaves draft.'
+              enum:
+              - single_trade
+              - multi_trade
               type: string
             tender_status:
               enum:
@@ -19376,6 +19759,43 @@ paths:
               - flooring
               - other
               type: string
+            trade_sections:
+              description: 'PRE-180/PRE-174 seam: provisional per-trade pricing schedule
+                (multi_trade). Editable while draft; locked after publish.'
+              items:
+                properties:
+                  line_items:
+                    items:
+                      properties:
+                        amount:
+                          type: number
+                        description:
+                          type: string
+                        item_id:
+                          type: string
+                        quantity:
+                          type: number
+                        rate:
+                          type: number
+                        unit:
+                          type: string
+                      required:
+                      - description
+                      type: object
+                    type: array
+                  trade_id:
+                    description: Optional id of a trade category / (future) Tags Library
+                      trade
+                    type: string
+                  trade_name:
+                    type: string
+                  trade_section_id:
+                    description: UUID; generated server-side when absent
+                    type: string
+                required:
+                - trade_name
+                type: object
+              type: array
           required:
           - name
           - project_id
@@ -19787,6 +20207,12 @@ paths:
                     type: string
                   tax_id:
                     type: integer
+                  trade_section_ids:
+                    description: 'PRE-180: trade_section_ids this subbie may price
+                      (multi_trade). Absent/empty => may price all sections.'
+                    items:
+                      type: string
+                    type: array
                 type: object
               type: array
             issue_date:
@@ -19807,6 +20233,13 @@ paths:
               type: integer
             tender_id:
               description: Optional linked tender ID (opportunity tracker)
+              type: string
+            tender_mode:
+              description: 'PRE-180: tendering mode. Locked (400) once the package
+                leaves draft.'
+              enum:
+              - single_trade
+              - multi_trade
               type: string
             tender_status:
               enum:
@@ -19837,6 +20270,40 @@ paths:
               - flooring
               - other
               type: string
+            trade_sections:
+              description: 'PRE-180/PRE-174 seam: provisional per-trade pricing schedule.
+                Editable only while draft (400 after publish).'
+              items:
+                properties:
+                  line_items:
+                    items:
+                      properties:
+                        amount:
+                          type: number
+                        description:
+                          type: string
+                        item_id:
+                          type: string
+                        quantity:
+                          type: number
+                        rate:
+                          type: number
+                        unit:
+                          type: string
+                      required:
+                      - description
+                      type: object
+                    type: array
+                  trade_id:
+                    type: string
+                  trade_name:
+                    type: string
+                  trade_section_id:
+                    type: string
+                required:
+                - trade_name
+                type: object
+              type: array
           type: object
       responses:
         200:
@@ -20266,13 +20733,56 @@ paths:
         name: tenderPackageId
         required: true
         type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            sender_mode:
+              default: system
+              description: PRE-182. Who the invite email is sent from. 'system' (default)
+                sends from the central Deep Space notifications address. 'connected'
+                sends from the acting user's connected mailbox (Gmail/Outlook OAuth)
+                when healthy, falling back to 'system' otherwise. Reply-To is always
+                pinned to the notifications address so subbie replies stay centralised.
+              enum:
+              - system
+              - connected
+              type: string
+            target_company_ids:
+              description: "Optional targeting \u2014 only these directory company\
+                \ ids are notified. Omit/empty to notify all invited subcontractors."
+              items:
+                type: integer
+              type: array
+            target_emails:
+              description: "Optional targeting \u2014 only these email-only invitees\
+                \ are notified. Omit/empty to notify all invited subcontractors."
+              items:
+                type: string
+              type: array
+          type: object
       responses:
         200:
           description: Notifications sent successfully
           schema:
             properties:
+              from_address:
+                description: The From/notifications address used for the invites.
+                type: string
               notified_count:
                 type: integer
+              sender_fallback:
+                description: True when 'connected' was requested but no healthy provider
+                  was found and 'system' was used instead.
+                type: boolean
+              sender_mode:
+                description: The sender that was actually used (may differ from the
+                  requested mode when falling back).
+                enum:
+                - system
+                - connected
+                type: string
               success:
                 type: boolean
             type: object
@@ -20285,6 +20795,249 @@ paths:
       security:
       - JWT_v2: []
       summary: Send notifications to invited subcontractors
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/recommendation:
+    get:
+      operationId: v2_getTenderRecommendation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Current recommendation (null when none)
+          schema:
+            properties:
+              recommendation:
+                type: object
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get the current tender recommendation
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
+    patch:
+      operationId: v2_updateTenderRecommendation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            justification_notes:
+              type: string
+            recommended_award_value:
+              type: number
+            recommended_submission_id:
+              type: string
+            shortlist:
+              items:
+                type: object
+              type: array
+          type: object
+      responses:
+        200:
+          description: Recommendation updated
+          schema:
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Recommendation not found
+        409:
+          description: Recommendation is locked (already submitted for approval)
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: "Update a draft tender recommendation (draft only \u2014 locked once\
+        \ submitted)"
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
+    post:
+      operationId: v2_createTenderRecommendation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            justification_notes:
+              type: string
+            recommended_award_value:
+              description: Recommended award value
+              type: number
+            recommended_submission_id:
+              description: The bidder being recommended for award
+              type: string
+            shortlist_submission_ids:
+              description: Restrict the levelled snapshot to these submissions (defaults
+                to all non-declined)
+              items:
+                type: string
+              type: array
+          type: object
+      responses:
+        201:
+          description: Recommendation saved
+          schema:
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        409:
+          description: Existing recommendation is locked (already submitted/approved/rejected)
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create or replace a draft tender recommendation
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/recommendation/decision:
+    post:
+      operationId: v2_decideTenderRecommendation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            comment:
+              type: string
+            decision:
+              enum:
+              - approved
+              - rejected
+              type: string
+          required:
+          - decision
+          type: object
+      responses:
+        200:
+          description: Decision recorded
+          schema:
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        403:
+          description: Caller is not an approver on this recommendation
+        404:
+          description: Recommendation not found
+        409:
+          description: Recommendation not awaiting approval, or already decided by
+            caller
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Record an approver decision on a pending recommendation
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/recommendation/submit:
+    post:
+      operationId: v2_submitTenderRecommendation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            approvers:
+              description: "One or more approvers (v1 single-step \u2014 any one approving\
+                \ approves)"
+              items:
+                properties:
+                  name:
+                    type: string
+                  user_id:
+                    type: string
+                required:
+                - user_id
+                type: object
+              type: array
+          required:
+          - approvers
+          type: object
+      responses:
+        200:
+          description: Recommendation submitted for approval
+          schema:
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Recommendation not found
+        409:
+          description: Recommendation not in draft state
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Submit a draft recommendation for approval (freezes the snapshot)
       tags:
       - Cost
       x-ds-test-enabled: true
@@ -20484,6 +21237,23 @@ paths:
               type: array
             tax_id:
               type: integer
+            trade_allocations:
+              description: 'PRE-180: optional per-trade price split (multi_trade).
+                Inert ([]) for single_trade. trade_section_id must reference a package
+                trade_section.'
+              items:
+                properties:
+                  amount:
+                    type: number
+                  notes:
+                    type: string
+                  trade_section_id:
+                    type: string
+                required:
+                - trade_section_id
+                - amount
+                type: object
+              type: array
           required:
           - tax_id
           - global_company_id
@@ -20550,6 +21320,22 @@ paths:
               - accepted
               - declined
               type: string
+            trade_allocations:
+              description: 'PRE-180: builder confirms/edits the per-trade split (e.g.
+                after suggest-trade-split). Validated against the package trade_sections.'
+              items:
+                properties:
+                  amount:
+                    type: number
+                  notes:
+                    type: string
+                  trade_section_id:
+                    type: string
+                required:
+                - trade_section_id
+                - amount
+                type: object
+              type: array
           type: object
       responses:
         200:
@@ -20594,12 +21380,18 @@ paths:
         type: string
       - in: body
         name: body
-        required: true
+        required: false
         schema:
           properties:
             award_value:
               description: Awarded value (defaults to headline_price if not provided)
               type: number
+            trade_section_id:
+              description: 'PRE-180: when present on a multi_trade package, awards
+                THIS trade section to the submission (recorded in awarded_by_section).
+                Absent => whole-package award (single_trade behaviour). Re-awarding
+                the same section returns 409.'
+              type: string
           type: object
       responses:
         200:
@@ -20739,6 +21531,65 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/submissions/{submissionId}/suggest-trade-split:
+    post:
+      operationId: v2_suggestTenderTradeSplit
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Suggested trade split
+          schema:
+            properties:
+              basis:
+                enum:
+                - proportional_to_line_items
+                - even_split
+                type: string
+              headline_price:
+                type: number
+              suggested:
+                type: boolean
+              trade_allocations:
+                items:
+                  properties:
+                    amount:
+                      type: number
+                    notes:
+                      type: string
+                    trade_name:
+                      type: string
+                    trade_section_id:
+                      type: string
+                  type: object
+                type: array
+            type: object
+        400:
+          description: Bad Request (not a multi_trade package / no trade sections)
+        401:
+          description: Unauthorized
+        404:
+          description: Submission or tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Suggest a per-trade split of a multi_trade submission (heuristic, read-only)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/tender-sets:
     get:
       operationId: v2_getTenderSets
@@ -20863,6 +21714,72 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-settings:
+    get:
+      operationId: v2_getTenderSettings
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              award_gated_on_approval:
+                description: When true, a submission can only be awarded once a tender
+                  recommendation is approved
+                type: boolean
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get workspace tender settings (PRE-183 award gate)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchTenderSettings
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            award_gated_on_approval:
+              description: Toggle the pre-award approval gate for the workspace
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: Tender settings updated successfully
+          schema:
+            properties:
+              award_gated_on_approval:
+                type: boolean
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update workspace tender settings (PRE-183 award gate)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
   /v2/workspaces/{workspaceId}/cost/tenders:
     get:
       operationId: v2_getTendersWorkspaceLevel
