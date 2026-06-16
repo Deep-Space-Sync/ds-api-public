@@ -37035,6 +37035,66 @@ paths:
       - Projects
       x-ds-test-enabled: true
       x-min-permissions: isWorkspaceMember
+  /v2/workspaces/{workspaceId}/projects/supply-chain-index:
+    get:
+      description: 'Workspace-wide reverse index: for every awarded company, which
+        projects it
+
+        is attached to (via Purchase Orders / Subcontracts) plus PO/subcontract
+
+        counts, and the distinct active-projects count. Live aggregation, no cache.
+
+        Powers the Company Directory''s per-company Projects column, Active Projects
+
+        metric, and reverse project filter.
+
+        '
+      operationId: v2_getSupplyChainCompanyIndex
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: "Company\u2192projects index"
+          schema:
+            properties:
+              data:
+                properties:
+                  active_projects_count:
+                    type: integer
+                  companies:
+                    items:
+                      properties:
+                        company_id:
+                          type: integer
+                        po_count:
+                          type: integer
+                        project_ids:
+                          items:
+                            type: integer
+                          type: array
+                        subcontract_count:
+                          type: integer
+                      type: object
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: "Workspace Supply Chain company\u2192projects index"
+      tags:
+      - Projects
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceMember
   /v2/workspaces/{workspaceId}/projects/{projectId}:
     delete:
       consumes:
