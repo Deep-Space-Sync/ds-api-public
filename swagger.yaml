@@ -76947,6 +76947,76 @@ paths:
       summary: Archive a published template
       tags:
       - HzDocumentTemplates
+  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/assign:
+    patch:
+      operationId: v2_assignHzDocumentTemplate
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Document template ID
+        in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Document template assigned successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch
+        404:
+          description: Document template not found
+      security:
+      - JWT_v2: []
+      summary: Set a template as the assigned default for its category/type
+      tags:
+      - HzDocumentTemplates
+  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/unassign:
+    patch:
+      operationId: v2_unassignHzDocumentTemplate
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Document template ID
+        in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Document template un-assigned successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch
+        404:
+          description: Document template not found
+      security:
+      - JWT_v2: []
+      summary: Clear the assigned-default flag from a template
+      tags:
+      - HzDocumentTemplates
   /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/publish:
     patch:
       operationId: v2_publishHzDocumentTemplate
