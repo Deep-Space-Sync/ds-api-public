@@ -3904,6 +3904,46 @@ paths:
       summary: Process queue item - email or tender document (Cloud Tasks only)
       tags:
       - HzNotificationSender
+  /v2/hz-notifications/email/queue/process-single-v2:
+    post:
+      description: 'Processes a single regular email queue item with backend case-variable
+        resolution (entity_type/entity_id) and explicit email_template_id support.
+        Triggered by Cloud Tasks for entity-linked sends. No authentication required
+        - Cloud Tasks is a trusted service.
+
+        '
+      operationId: v2_processHzNotificationEmailSingleV2
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            queue_id:
+              description: The email queue item ID to process
+              type: string
+          required:
+          - queue_id
+          type: object
+      responses:
+        200:
+          description: Email processed successfully
+          schema:
+            properties:
+              data:
+                additionalProperties: true
+                description: Processing result data
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - invalid queue_id
+        500:
+          description: Internal server error - processing failed
+      summary: Process Email Queue Item (entity-aware)
+      tags:
+      - HzNotificationSenderV2
   /v2/hz-tender-documents-available-sections:
     get:
       description: Retrieve the global list of available tender document sections
