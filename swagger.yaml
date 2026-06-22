@@ -64211,8 +64211,23 @@ paths:
                     is_active:
                       description: Whether the workflow is active and can be used
                       type: boolean
+                    level:
+                      description: "Workflow level \u2014 derived from project_id"
+                      enum:
+                      - workspace
+                      - project
+                      type: string
                     name:
                       description: Workflow template name
+                      type: string
+                    project_id:
+                      description: Project scope (null for workspace-level workflows)
+                      type: string
+                    role_source:
+                      description: Where step approver_role_ids are resolved from
+                      enum:
+                      - workspace_role
+                      - project_team_role
                       type: string
                     steps:
                       description: List of approval steps
@@ -64323,10 +64338,64 @@ paths:
               description: Workflow template name
               example: Standard PO Approval
               type: string
+            project_id:
+              description: 'Project scope. Workflows are now workspace-wide / shared
+
+                (pass null), so a single workflow per entity_type is used by
+
+                every project. A non-null value still produces a legacy
+
+                project-scoped workflow.
+
+                '
+              example: null
+              type: string
+            role_source:
+              description: "Where step approver_role_ids resolve from \u2014 decoupled\
+                \ from\nscope. \"project_team_role\" => the \"project-level roles\
+                \ only\"\ntoggle: step dropdowns are project Team-role keys, resolved\n\
+                against each approval's own project at instance creation.\n\"workspace_role\"\
+                \ => Classic workspace roles. Omit to derive\nfrom scope.\n"
+              enum:
+              - workspace_role
+              - project_team_role
+              type: string
             steps:
               description: List of approval steps
               items:
                 properties:
+                  approver_role_ids:
+                    description: 'Approver role pool. For WORKSPACE-level workflows
+                      these
+
+                      are Classic workspace role ids; for PROJECT-level
+
+                      workflows these are project Team-role keys
+
+                      (project_manager, site_manager, contracts_manager,
+
+                      commercial_lead, hseq_lead).
+
+                      '
+                    items:
+                      type: string
+                    type: array
+                  approver_user_ids:
+                    description: "Optional specific approver users (Kinde ids). PROJECT-level\n\
+                      workflows leave this empty \u2014 the engine resolves each\n\
+                      team-role key to its assigned user at instance creation.\n"
+                    items:
+                      type: string
+                    type: array
+                  assignment_mode:
+                    default: fixed_role
+                    description: fixed_role uses approver_role_ids; doa_driven resolves
+                      a role from the workspace threshold matrix (workspace-level
+                      only)
+                    enum:
+                    - fixed_role
+                    - doa_driven
+                    type: string
                   candidates_snapshot:
                     default:
                       type: manual
@@ -64338,9 +64407,18 @@ paths:
                       mode: ANY
                     description: Rule for approving this step
                     type: object
+                  min_amount:
+                    description: Decimal-as-string threshold; the step is skipped
+                      when the record amount is below it
+                    type: string
                   name:
                     example: Department Manager Approval
                     type: string
+                  requires_all_approvers:
+                    default: false
+                    description: false (any one approver closes the step) vs true
+                      (all roles must approve)
+                    type: boolean
                 required:
                 - name
                 type: object
@@ -64381,8 +64459,23 @@ paths:
                   is_active:
                     description: Whether the workflow is active and can be used
                     type: boolean
+                  level:
+                    description: "Workflow level \u2014 derived from project_id"
+                    enum:
+                    - workspace
+                    - project
+                    type: string
                   name:
                     description: Workflow template name
+                    type: string
+                  project_id:
+                    description: Project scope (null for workspace-level workflows)
+                    type: string
+                  role_source:
+                    description: Where step approver_role_ids are resolved from
+                    enum:
+                    - workspace_role
+                    - project_team_role
                     type: string
                   steps:
                     description: List of approval steps
@@ -64540,8 +64633,23 @@ paths:
                   is_active:
                     description: Whether the workflow is active and can be used
                     type: boolean
+                  level:
+                    description: "Workflow level \u2014 derived from project_id"
+                    enum:
+                    - workspace
+                    - project
+                    type: string
                   name:
                     description: Workflow template name
+                    type: string
+                  project_id:
+                    description: Project scope (null for workspace-level workflows)
+                    type: string
+                  role_source:
+                    description: Where step approver_role_ids are resolved from
+                    enum:
+                    - workspace_role
+                    - project_team_role
                     type: string
                   steps:
                     description: List of approval steps
@@ -64691,8 +64799,23 @@ paths:
                   is_active:
                     description: Whether the workflow is active and can be used
                     type: boolean
+                  level:
+                    description: "Workflow level \u2014 derived from project_id"
+                    enum:
+                    - workspace
+                    - project
+                    type: string
                   name:
                     description: Workflow template name
+                    type: string
+                  project_id:
+                    description: Project scope (null for workspace-level workflows)
+                    type: string
+                  role_source:
+                    description: Where step approver_role_ids are resolved from
+                    enum:
+                    - workspace_role
+                    - project_team_role
                     type: string
                   steps:
                     description: List of approval steps
