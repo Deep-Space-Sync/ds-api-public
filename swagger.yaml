@@ -73827,6 +73827,8 @@ paths:
 
         - status: Update status (e.g., "signed_out")
 
+        - started_at: Sign-in timestamp (ISO-8601; stored as a Firestore Timestamp)
+
         - ended_at: Sign-out timestamp (auto-filled when status changes to "signed_out"
         if not provided)
 
@@ -73858,6 +73860,11 @@ paths:
               type: boolean
             notes:
               description: Notes to add to the record
+              type: string
+            started_at:
+              description: Sign-in timestamp (ISO-8601). ended_at must not precede
+                started_at.
+              format: date-time
               type: string
             status:
               description: New status
