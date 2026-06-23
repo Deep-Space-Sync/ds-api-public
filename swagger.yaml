@@ -54807,8 +54807,22 @@ paths:
               description: Provided identifier for cost order
             cost_order_name:
               description: Name of the cost order
+            created_by_user_email:
+              description: Email of the PO creator. Taken from the token for user
+                logins; REQUIRED in the body for service / M2M tokens. Best-effort
+                resolved to a Kinde id for created_by_user_id when that is not supplied.
+            created_by_user_id:
+              description: Optional Kinde id (kp_...) of the creator. On a service/M2M
+                call, resolved from created_by_user_email when omitted.
+            created_by_user_name:
+              description: Display name of the creator (free text).
             currency:
               description: Currency of the cost order
+            issuing_company_id:
+              description: Issuing (buyer) company id. For user tokens it is resolved
+                from the caller and any value sent here is ignored. REQUIRED in the
+                body for service / M2M (admin-scoped) tokens, which carry no resolved
+                company.
             order_date:
               description: Purchase order date (YYYY-MM-DD). If not provided, created_at
                 will be used.
@@ -55307,8 +55321,22 @@ paths:
               description: Provided identifier for cost order
             cost_order_name:
               description: Name of the cost order
+            created_by_user_email:
+              description: Email of the PO creator. Taken from the token for user
+                logins; REQUIRED in the body for service / M2M tokens. Best-effort
+                resolved to a Kinde id for created_by_user_id when that is not supplied.
+            created_by_user_id:
+              description: Optional Kinde id (kp_...) of the creator. On a service/M2M
+                call, resolved from created_by_user_email when omitted.
+            created_by_user_name:
+              description: Display name of the creator (free text).
             currency:
               description: Currency of the cost order
+            issuing_company_id:
+              description: Issuing (buyer) company id. For user tokens it is resolved
+                from the caller and any value sent here is ignored. REQUIRED in the
+                body for service / M2M (admin-scoped) tokens, which carry no resolved
+                company.
             order_date:
               description: Purchase order date (YYYY-MM-DD). If not provided, created_at
                 will be used.
