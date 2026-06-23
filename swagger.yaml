@@ -73950,6 +73950,78 @@ paths:
       summary: List signin records
       tags:
       - SigninRecords
+  /v2/workspaces/{workspaceId}/signin-records/daily-counts:
+    get:
+      description: 'People-on-site headcount for a project on a given site-local day,
+        from the
+
+        append-only sign-on event log (DEL-255). De-duplicated by person and split
+
+        into workers vs visitors, each broken down by company (DEL-254). Shared
+
+        source for the site diary (DEL-250) and the Delivery dashboard tile.
+
+        '
+      operationId: v2_v2_signinRecordsDailyCounts
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: DS Site project id (the trailing number in the project value)
+        in: query
+        name: project_id
+        required: true
+        type: string
+      - description: Site-local calendar day (YYYY-MM-DD)
+        in: query
+        name: date
+        required: true
+        type: string
+      responses:
+        200:
+          description: Headcount for the day
+          schema:
+            properties:
+              date:
+                type: string
+              message:
+                type: string
+              project_id:
+                type: string
+              total:
+                type: integer
+              visitors:
+                properties:
+                  by_company:
+                    additionalProperties:
+                      type: integer
+                    type: object
+                  total:
+                    type: integer
+                type: object
+              workers:
+                properties:
+                  by_company:
+                    additionalProperties:
+                      type: integer
+                    type: object
+                  total:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Bad request - project_id and date are required
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Date-scoped sign-on headcount
+      tags:
+      - SigninRecords
   /v2/workspaces/{workspaceId}/signin-records/{recordId}:
     patch:
       description: 'Update a signin record. Only certain fields can be modified:
