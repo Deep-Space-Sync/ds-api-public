@@ -73856,6 +73856,10 @@ paths:
               data:
                 items:
                   properties:
+                    company:
+                      description: Worker's company (DS Site profile or typed field;
+                        "No company / unspecified" if unknown)
+                      type: string
                     created_at:
                       format: date-time
                       type: string
@@ -73912,6 +73916,12 @@ paths:
                       type: string
                     worker_name:
                       description: Combined first and last name
+                      type: string
+                    worker_type:
+                      description: Whether the sign-on is a worker or a visitor
+                      enum:
+                      - worker
+                      - visitor
                       type: string
                     workspace_id:
                       type: string
@@ -74003,6 +74013,10 @@ paths:
             properties:
               data:
                 properties:
+                  company:
+                    description: Worker's company (DS Site profile or typed field;
+                      "No company / unspecified" if unknown)
+                    type: string
                   created_at:
                     format: date-time
                     type: string
@@ -74049,6 +74063,12 @@ paths:
                     format: date-time
                     type: string
                   worker_name:
+                    type: string
+                  worker_type:
+                    description: Whether the sign-on is a worker or a visitor
+                    enum:
+                    - worker
+                    - visitor
                     type: string
                   workspace_id:
                     type: string
