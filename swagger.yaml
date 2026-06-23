@@ -8901,8 +8901,6 @@ paths:
       responses:
         200:
           description: Zip archive stream (application/zip)
-          schema:
-            type: file
         404:
           description: One or more ids not in this folder / link revoked
       security: []
