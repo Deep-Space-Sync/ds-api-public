@@ -8849,6 +8849,93 @@ paths:
       summary: Mark proposal as viewed
       tags:
       - Proposals
+  /v2/public/cde/{token}:
+    get:
+      description: Returns the public folder, its subfolders, and the files within
+        (read-only). No auth required.
+      operationId: v2_getPublicCdeFolderTree
+      parameters:
+      - description: Folder share token
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        200:
+          description: The public folder subtree (root, folders, files)
+          schema:
+            type: object
+        404:
+          description: Link not found or revoked
+      security: []
+      summary: Resolve a public folder share token to its read-only tree
+      tags:
+      - CDE Public Access
+  /v2/public/cde/{token}/download-zip:
+    post:
+      description: Streams a zip of the requested files/folders in the token's subtree,
+        preserving folder structure. Empty body = whole subtree. No auth required.
+      operationId: v2_postPublicCdeDownloadZip
+      parameters:
+      - description: Folder share token
+        in: path
+        name: token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            file_ids:
+              items:
+                type: integer
+              type: array
+            folder_ids:
+              items:
+                type: string
+              type: array
+          type: object
+      produces:
+      - application/zip
+      responses:
+        200:
+          description: Zip archive stream (application/zip)
+          schema:
+            type: file
+        404:
+          description: One or more ids not in this folder / link revoked
+      security: []
+      summary: Stream a zip of selected files (or the whole public folder)
+      tags:
+      - CDE Public Access
+  /v2/public/cde/{token}/files/{cde_id}/download:
+    get:
+      description: Returns a short-lived GCS signed URL for a single file in the token's
+        subtree. No auth required.
+      operationId: v2_getPublicCdeFileDownload
+      parameters:
+      - description: Folder share token
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: CDE document id (must belong to the token's subtree)
+        in: path
+        name: cde_id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Signed download URL
+          schema:
+            type: object
+        404:
+          description: File not found in this folder / link revoked
+      security: []
+      summary: Get a signed download URL for one file in a public folder
+      tags:
+      - CDE Public Access
   /v2/record-publishing/public/{token}:
     get:
       description: Fetch a published record by its public token (no auth required)
