@@ -11975,6 +11975,62 @@ paths:
       summary: Update folder permission
       tags:
       - CDE Folder Permissions
+  /v2/workspaces/{workspaceId}/cde-folders/{folderId}/public:
+    delete:
+      description: Revokes a folder's public link by clearing the share token.
+      operationId: v2_disableCdeFolderPublic
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: folderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Public sharing disabled
+        401:
+          description: Unauthorized
+        404:
+          description: Folder not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Disable public sharing for a folder (CDE-159)
+      tags:
+      - CDE Folder Permissions
+    post:
+      description: Makes a project-level folder public and returns a fresh unguessable
+        share token. Project-level folders only.
+      operationId: v2_enableCdeFolderPublic
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: folderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Public sharing enabled; returns share_token + is_public
+        400:
+          description: Folder is not shareable (e.g. workspace-level folder)
+        401:
+          description: Unauthorized
+        404:
+          description: Folder not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Enable public sharing for a folder (CDE-159)
+      tags:
+      - CDE Folder Permissions
   /v2/workspaces/{workspaceId}/cde-helper/jobs/{jobId}:
     get:
       description: 'Poll this endpoint to check the status of an async job (e.g.,
