@@ -24823,6 +24823,123 @@ paths:
       summary: Revoke Global Company Approval
       tags:
       - Global Company Directory V2
+  /v2/workspaces/{workspaceId}/hz-approvals:
+    get:
+      description: "Workspace-scoped \"My Pending\" inbox. Lists approval instances\
+        \ across\nevery project in the workspace so an approver sees their pending\
+        \ items\neven on projects they are not a member of (e.g. an approver resolved\n\
+        from a project team role).\n\nEach IN_REVIEW row carries `assigned_to_current_user`\
+        \ \u2014 true when the\nrequesting user is pinned on the current step's resolved\
+        \ approvers.\nResults are ordered by created_at descending (newest first).\n"
+      operationId: v2_v2_listHzWorkspaceApprovals
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by entity type (e.g., "PO", "SWMS")
+        in: query
+        name: entity_type
+        type: string
+      - description: Filter by entity ID
+        in: query
+        name: entity_id
+        type: string
+      - description: Filter by approval status
+        enum:
+        - IN_REVIEW
+        - APPROVED
+        - REJECTED
+        - CANCELLED
+        in: query
+        name: status
+        type: string
+      - default: 1
+        description: Page number (1-based)
+        in: query
+        name: page
+        type: integer
+      - default: 50
+        description: Items per page
+        in: query
+        maximum: 100
+        name: limit
+        type: integer
+      responses:
+        200:
+          description: Approval instances retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    approval_id:
+                      type: string
+                    assigned_to_current_user:
+                      description: 'True when the requesting user is pinned on the
+                        current
+
+                        step''s resolved approvers (present on IN_REVIEW rows).
+
+                        '
+                      type: boolean
+                    completed_at:
+                      type: integer
+                    context_snapshot:
+                      type: object
+                    created_at:
+                      type: integer
+                    created_by_user_email:
+                      type: string
+                    created_by_user_id:
+                      type: string
+                    current_step_index:
+                      type: integer
+                    entity_id:
+                      type: string
+                    entity_type:
+                      type: string
+                    project_id:
+                      type: string
+                    status:
+                      enum:
+                      - IN_REVIEW
+                      - APPROVED
+                      - REJECTED
+                      - CANCELLED
+                      type: string
+                    updated_at:
+                      type: integer
+                    workflow_snapshot:
+                      type: object
+                    workspace_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+              pagination:
+                properties:
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  total_count:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List approval instances across a workspace (inbox)
+      tags:
+      - HzApproval
   /v2/workspaces/{workspaceId}/hz-commercial-budgets:
     get:
       description: Retrieve budget register entries with optional filters and pagination
