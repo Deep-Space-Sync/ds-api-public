@@ -11537,6 +11537,39 @@ paths:
       summary: Run a process bundle on demand (manual run via process_automation)
       tags:
       - Automation
+  /v2/workspaces/{workspaceId}/automation/logs:
+    get:
+      operationId: v2_listAutomationLogs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      - in: query
+        name: offset
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Normalised processing_log rows for the CS Hub Jobs page
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+        403:
+          description: Insufficient permissions (cs-admin required)
+      security:
+      - JWT_v2: []
+      summary: List process_automation runs (CS-Hub observability, cs-admin read-only)
+      tags:
+      - Automation
   /v2/workspaces/{workspaceId}/automation/triggers:
     get:
       operationId: v2_listAutomationTriggers
