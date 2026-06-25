@@ -9579,34 +9579,6 @@ paths:
       summary: Upload user avatar image
       tags:
       - User Profiles
-  /v2/v2/workspaces/{workspaceId}/projects/{projectId}/programme-export/xml:
-    get:
-      description: Exports the project's programme (WBS hierarchy, scheduling task
-        actions, dependencies) to MS-Project-compatible MSPDI XML.
-      operationId: v2_exportProgrammeXml
-      parameters:
-      - description: Workspace identifier
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Project identifier
-        in: path
-        name: projectId
-        required: true
-        type: integer
-      responses:
-        200:
-          description: MSPDI XML file
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Export programme to MS Project XML
-      tags:
-      - ProgrammeExport
   /v2/webhooks/rfi/dssite:
     post:
       description: Accept DS-site RFI submission webhook, verify token, fetch form
@@ -67281,6 +67253,34 @@ paths:
       summary: Run syncback for power bi app
       tags:
       - Power BI
+  /v2/workspaces/{workspaceId}/projects/{projectId}/programme-export/xml:
+    get:
+      description: Exports the project's programme (WBS hierarchy, scheduling task
+        actions, dependencies) to MS-Project-compatible MSPDI XML.
+      operationId: v2_exportProgrammeXml
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project identifier
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: MSPDI XML file
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Export programme to MS Project XML
+      tags:
+      - ProgrammeExport
   /v2/workspaces/{workspaceId}/projects/{projectId}/project-resources-delete:
     delete:
       description: Bulk delete all resources for a workspace and project. Uses Firestore
