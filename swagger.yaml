@@ -20361,6 +20361,9 @@ paths:
               - detailed breakdown
               - cost plus
               type: string
+            cfo_recommendation:
+              description: 'PRE-82: written recommendation handed to the CFO.'
+              type: string
             description:
               type: string
             document_security:
@@ -20410,8 +20413,28 @@ paths:
               type: array
             name:
               type: string
+            procurement_number:
+              description: "PRE-82: e.g. PP40.5 \u2014 ties to procurement schedule\
+                \ / budget register."
+              type: string
             project_id:
               type: integer
+            scoring_criteria:
+              description: 'PRE-82/PRE-190: bid evaluation scoring criteria snapshot
+                for this package.'
+              items:
+                properties:
+                  criterion_id:
+                    type: string
+                  name:
+                    type: string
+                  weight:
+                    type: number
+                required:
+                - criterion_id
+                - name
+                type: object
+              type: array
             tender_id:
               description: Optional linked tender ID (opportunity tracker)
               type: string
