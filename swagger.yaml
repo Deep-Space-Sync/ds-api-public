@@ -11361,6 +11361,318 @@ paths:
       summary: Get audit log for a threshold
       tags:
       - HzApprovalThreshold
+  /v2/workspaces/{workspaceId}/automation/bundles:
+    get:
+      operationId: v2_listAutomationBundles
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: trigger_firestore_document_guid
+        required: false
+        type: string
+      responses:
+        200:
+          description: List of process bundles
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: List process bundles (filter by trigger_firestore_document_guid)
+      tags:
+      - Automation
+    post:
+      operationId: v2_createAutomationBundle
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            active_flag:
+              type: string
+            bundle_name:
+              type: string
+            processes:
+              items:
+                type: object
+              type: array
+            trigger_firestore_document_guid:
+              type: string
+          required:
+          - trigger_firestore_document_guid
+          type: object
+      responses:
+        201:
+          description: Bundle created
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Create a process bundle
+      tags:
+      - Automation
+  /v2/workspaces/{workspaceId}/automation/bundles/{bundleId}:
+    delete:
+      operationId: v2_deleteAutomationBundle
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: bundleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Soft-delete a process bundle
+      tags:
+      - Automation
+    get:
+      operationId: v2_getAutomationBundle
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: bundleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Process bundle
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Get a process bundle
+      tags:
+      - Automation
+    patch:
+      operationId: v2_updateAutomationBundle
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: bundleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: Partial fields (e.g. processes, active_flag, bundle_name)
+          type: object
+      responses:
+        200:
+          description: Updated bundle
+      security:
+      - JWT_v2: []
+      summary: Update a process bundle (recomputes count_of_processes_to_run)
+      tags:
+      - Automation
+  /v2/workspaces/{workspaceId}/automation/bundles/{bundleId}/run:
+    post:
+      operationId: v2_runAutomationBundle
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: bundleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: Operator-supplied mandatory run inputs
+          properties:
+            project_id:
+              type: integer
+          type: object
+      responses:
+        200:
+          description: Run result (process_automation response)
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Run a process bundle on demand (manual run via process_automation)
+      tags:
+      - Automation
+  /v2/workspaces/{workspaceId}/automation/triggers:
+    get:
+      operationId: v2_listAutomationTriggers
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: trigger_name
+        required: false
+        type: string
+      responses:
+        200:
+          description: List of process triggers
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: List process triggers for a workspace
+      tags:
+      - Automation
+    post:
+      operationId: v2_createAutomationTrigger
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            active_flag:
+              type: string
+            trigger_name:
+              type: string
+            trigger_type:
+              type: string
+          required:
+          - trigger_name
+          type: object
+      responses:
+        201:
+          description: Trigger created
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Create a process trigger (seeds an example bundle for project_creation)
+      tags:
+      - Automation
+  /v2/workspaces/{workspaceId}/automation/triggers/{triggerId}:
+    delete:
+      operationId: v2_deleteAutomationTrigger
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: triggerId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Soft-delete a process trigger
+      tags:
+      - Automation
+    get:
+      operationId: v2_getAutomationTrigger
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: triggerId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Process trigger
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+        404:
+          description: Not found
+      security:
+      - JWT_v2: []
+      summary: Get a process trigger
+      tags:
+      - Automation
+    patch:
+      operationId: v2_updateAutomationTrigger
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: triggerId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: Partial fields to update (e.g. active_flag, trigger_type)
+          type: object
+      responses:
+        200:
+          description: Updated trigger
+      security:
+      - JWT_v2: []
+      summary: Update a process trigger
+      tags:
+      - Automation
   /v2/workspaces/{workspaceId}/cde:
     get:
       operationId: v2_getCdeDocsWorkspaceLevel
