@@ -66135,11 +66135,25 @@ paths:
         name: locationId
         required: true
         type: string
+      - description: When true, deletes the location and all of its descendant locations.
+          Required when the target location has children; otherwise a 409 is returned
+          with the child count.
+        in: query
+        name: cascade
+        type: boolean
       responses:
         200:
           description: Location successfully deleted
           schema:
             properties:
+              deleted_count:
+                description: Number of locations soft-deleted (target plus descendants)
+                type: integer
+              deleted_location_ids:
+                description: IDs of all locations that were soft-deleted
+                items:
+                  type: string
+                type: array
               message:
                 description: Success message
                 type: string
@@ -66150,6 +66164,21 @@ paths:
           description: Unauthorized
         404:
           description: Location not found
+        409:
+          description: Location has child locations and cascade was not requested.
+            Re-send with cascade=true to delete the location and its descendants.
+          schema:
+            properties:
+              child_count:
+                description: Number of descendant locations that would also be deleted
+                type: integer
+              message:
+                description: Error message
+                type: string
+              requires_cascade:
+                description: Always true for this response
+                type: boolean
+            type: object
         500:
           description: Internal Server Error
       security:
@@ -66506,11 +66535,25 @@ paths:
         name: locationId
         required: true
         type: string
+      - description: When true, deletes the location and all of its descendant locations.
+          Required when the target location has children; otherwise a 409 is returned
+          with the child count.
+        in: query
+        name: cascade
+        type: boolean
       responses:
         200:
           description: Location successfully deleted
           schema:
             properties:
+              deleted_count:
+                description: Number of locations soft-deleted (target plus descendants)
+                type: integer
+              deleted_location_ids:
+                description: IDs of all locations that were soft-deleted
+                items:
+                  type: string
+                type: array
               message:
                 type: string
             type: object
@@ -66518,6 +66561,21 @@ paths:
           description: Unauthorized
         404:
           description: Location not found
+        409:
+          description: Location has child locations and cascade was not requested.
+            Re-send with cascade=true to delete the location and its descendants.
+          schema:
+            properties:
+              child_count:
+                description: Number of descendant locations that would also be deleted
+                type: integer
+              message:
+                description: Error message
+                type: string
+              requires_cascade:
+                description: Always true for this response
+                type: boolean
+            type: object
         500:
           description: Internal Server Error
       security:
