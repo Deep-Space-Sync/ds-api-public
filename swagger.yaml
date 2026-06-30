@@ -70491,15 +70491,21 @@ paths:
       description: 'Live, read-only aggregation of every Company attached to a Project
         via a
 
-        Purchase Order or Subcontract. One entry per unique company; each entry
+        Purchase Order, Subcontract, or Head Contract client assignment. One
 
-        lists every attachment with its status and value. Includes unawarded
+        subcontractor/supplier entry per unique company; each entry lists every
 
-        subcontracts (subcontractor_id is non-numeric / email-only) flagged with
+        attachment with its status and value. Includes unawarded subcontracts
 
-        is_awarded=false. Server queries cost_orders and subcontract_contracts
+        (subcontractor_id is non-numeric / email-only) flagged with
 
-        in parallel; no Firestore cache.
+        is_awarded=false. Client entries expose only the client company and Head
+
+        Contract reference numbers; secure Head Contract values are not returned.
+
+        Server queries cost_orders, subcontract_contracts, and cost_contracts in
+
+        parallel; no Firestore cache.
 
         '
       operationId: v2_getProjectSupplyChain
@@ -70519,6 +70525,30 @@ paths:
             properties:
               data:
                 properties:
+                  clients:
+                    items:
+                      properties:
+                        company_id:
+                          description: id_global_company_directory when the Head Contract
+                            client is directory-backed; null for legacy workspace
+                            client records
+                          type: integer
+                        company_name:
+                          type: string
+                        head_contracts:
+                          description: Sanitized Head Contract references only. Values,
+                            names, claims, SOVs, and financial metadata are intentionally
+                            omitted.
+                          items:
+                            properties:
+                              id:
+                                type: string
+                              identifier:
+                                type: string
+                            type: object
+                          type: array
+                      type: object
+                    type: array
                   companies:
                     items:
                       properties:
