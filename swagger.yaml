@@ -36978,6 +36978,134 @@ paths:
       summary: Add comment to opportunity
       tags:
       - Opportunities
+  /v2/workspaces/{workspaceId}/opportunity-stages:
+    get:
+      description: 'PRE-193: retrieve the workspace''s configurable opportunity-stage
+        set.
+
+        A new workspace has no registry yet; the first read lazy-seeds the
+
+        default stage lifecycle and persists it.
+
+        '
+      operationId: v2_getOpportunityStages
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Opportunity stage registry
+          schema:
+            properties:
+              stages:
+                items:
+                  properties:
+                    color:
+                      type: string
+                    id:
+                      type: string
+                    is_active:
+                      description: false = retired
+                      type: boolean
+                    name:
+                      type: string
+                    order:
+                      type: integer
+                    probability:
+                      description: Default win probability (0-100) for weighted pipeline
+                      type: integer
+                    type:
+                      enum:
+                      - open
+                      - won
+                      - lost
+                      type: string
+                  type: object
+                type: array
+            type: object
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get workspace opportunity stages
+      tags:
+      - Opportunities
+    put:
+      description: 'PRE-193: replace the workspace''s full ordered stage list. Array
+        order
+
+        becomes each stage''s order. Requires at least one active open stage and
+
+        one active won stage. Stage ids are generated when absent.
+
+        '
+      operationId: v2_updateOpportunityStages
+      parameters:
+      - description: Workspace identifier
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            stages:
+              description: Full ordered list of opportunity stages for the workspace
+              items:
+                properties:
+                  color:
+                    type: string
+                  id:
+                    description: Stable id; generated if omitted
+                    type: string
+                  is_active:
+                    type: boolean
+                  name:
+                    type: string
+                  probability:
+                    type: integer
+                  type:
+                    enum:
+                    - open
+                    - won
+                    - lost
+                    type: string
+                required:
+                - name
+                - type
+                type: object
+              type: array
+          required:
+          - stages
+          type: object
+      responses:
+        200:
+          description: Updated stage registry
+          schema:
+            properties:
+              stages:
+                items:
+                  type: object
+                type: array
+            type: object
+        400:
+          description: Invalid request data
+        403:
+          description: Workspace access forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update workspace opportunity stages
+      tags:
+      - Opportunities
   /v2/workspaces/{workspaceId}/opportunity-tags:
     get:
       description: Retrieve the workspace-level tag registry for opportunities
