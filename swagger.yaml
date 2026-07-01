@@ -11142,6 +11142,11 @@ paths:
         name: body
         required: true
         schema:
+          description: 'Two shapes. A normal bounded threshold requires `role_id`
+            + `threshold_amount`. The highest-authority backstop sets `is_highest_authority:
+            true` + `role_ids` (one or more roles, any-of, no amount cap) and ignores
+            role_id/threshold_amount; it supersedes any existing active backstop (one
+            per workspace).'
           properties:
             currency:
               default: AUD
@@ -11158,16 +11163,21 @@ paths:
             expiry_date:
               description: Optional Unix-ms expiration
               type: integer
+            is_highest_authority:
+              description: When true, creates/replaces the over-threshold backstop.
+              type: boolean
             role_id:
-              description: Role identifier (project / workspace role this threshold
-                governs)
+              description: Role identifier (bounded threshold). Omit for highest-authority.
               type: string
+            role_ids:
+              description: Roles that jointly hold the highest authority (any-of).
+                Required when is_highest_authority is true.
+              items:
+                type: string
+              type: array
             threshold_amount:
-              description: Amount as decimal string (e.g., "50000" or "50000.00")
+              description: Amount as decimal string (e.g., "50000"). Omit for highest-authority.
               type: string
-          required:
-          - role_id
-          - threshold_amount
           type: object
       responses:
         201:
