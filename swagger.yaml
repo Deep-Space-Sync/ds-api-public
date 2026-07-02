@@ -80347,6 +80347,71 @@ paths:
       summary: Update AI analysis for an email
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/activity:
+    get:
+      description: Returns the append-only activity events (received, KAI processed/matched,
+        manual link, status changes, authorised, Xero, archive) for an email, newest
+        first.
+      operationId: v2_getInvoiceEmailActivity
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - default: 10000
+        in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Activity timeline retrieved
+          schema:
+            properties:
+              count:
+                type: integer
+              data:
+                items:
+                  properties:
+                    activity_type:
+                      type: string
+                    actor_email:
+                      type: string
+                    actor_user_id:
+                      type: string
+                    description:
+                      type: string
+                    id:
+                      type: string
+                    metadata:
+                      type: object
+                    new_status:
+                      type: string
+                    previous_status:
+                      type: string
+                    source:
+                      type: string
+                    timestamp:
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        403:
+          description: Unauthorized
+        500:
+          description: Failed to fetch activity
+      security:
+      - JWT_v2: []
+      summary: Get the lifecycle activity timeline for an invoice email
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/ai-process:
     post:
       description: Process a single email with AI (Vertex AI) to extract invoice information
