@@ -12625,6 +12625,30 @@ paths:
       summary: Bulk move CDE series to a folder
       tags:
       - CDE Placements
+  /v2/workspaces/{workspaceId}/cde/induction-metadata-types:
+    post:
+      description: Idempotently creates ds-insurance-docs / ds-safety-qa-docs / ds-worker-license
+        / ds-business-docs and their expiry_date + insurance_type requirements for
+        the workspace (Company Documents capture mode).
+      operationId: v2_seedInductionCdeTypes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successfully seeded induction CDE types
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Seed the CDE types + metadata requirements needed for induction document
+        capture
+      tags:
+      - Upload Data
   /v2/workspaces/{workspaceId}/cde/process:
     post:
       operationId: v2_processCDEWorkspaceLevel
