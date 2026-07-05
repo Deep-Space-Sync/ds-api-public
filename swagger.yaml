@@ -8882,6 +8882,34 @@ paths:
       summary: Resolve a public folder share token to its read-only tree
       tags:
       - CDE Public Access
+  /v2/public/cde/{token}/changes/{batch_id}:
+    get:
+      description: Returns the files added or updated in the notification batch identified
+        by batch_id, scoped to the token's folder subtree (added/revised only; deletions
+        excluded). No auth required.
+      operationId: v2_getPublicCdeChanges
+      parameters:
+      - description: Folder share token
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Notification digest batch id (from the ?changes= link)
+        in: path
+        name: batch_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: The batch's added/updated changes (sent_at + changes[])
+          schema:
+            type: object
+        404:
+          description: Link revoked, or batch not found / outside this folder
+      security: []
+      summary: List the added/updated files for a folder-notify digest batch (CDE-179)
+      tags:
+      - CDE Public Access
   /v2/public/cde/{token}/download-zip:
     post:
       description: Streams a zip of the requested files/folders in the token's subtree,
