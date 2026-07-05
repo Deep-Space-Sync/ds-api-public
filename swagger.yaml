@@ -81,6 +81,17 @@ paths:
         name: dsProWorkspaceId
         required: false
         type: string
+      - description: When true (with teamCompaniesWorkspaceId), returns the legacy
+          team_company rows for a single workspace (cs-admin/admin only)
+        in: query
+        name: teamCompanies
+        required: false
+        type: boolean
+      - description: Workspace ID to fetch team_company rows for (used with teamCompanies=true)
+        in: query
+        name: teamCompaniesWorkspaceId
+        required: false
+        type: string
       responses:
         200:
           description: Successful response with a list of workspaces and projects
@@ -10028,6 +10039,17 @@ paths:
         name: dsProWorkspaceId
         required: false
         type: string
+      - description: When true (with teamCompaniesWorkspaceId), returns the legacy
+          team_company rows for a single workspace (cs-admin/admin only)
+        in: query
+        name: teamCompanies
+        required: false
+        type: boolean
+      - description: Workspace ID to fetch team_company rows for (used with teamCompanies=true)
+        in: query
+        name: teamCompaniesWorkspaceId
+        required: false
+        type: string
       responses:
         200:
           description: Successful response with a list of workspaces and projects
@@ -10067,8 +10089,11 @@ paths:
     patch:
       consumes:
       - application/json
-      description: Updates the ds_app_template_id for a workspace to enable/disable
-        Horizon features. Requires cs-admin scope.
+      description: Body-routed admin operations on a workspace. Exactly one of horizon_enabled
+        (Horizon toggle), display_name (rename), primary_company_id (mark an existing
+        team_company row as the primary company), or seed_primary_company (insert
+        a team_company row as the primary company) must be present. Requires cs-admin
+        scope.
       operationId: v2_patchWorkspaceHorizon
       parameters:
       - in: body
@@ -10076,18 +10101,39 @@ paths:
         required: true
         schema:
           properties:
+            display_name:
+              description: New display name for the workspace
+              type: string
             horizon_enabled:
               description: Set to true to enable Horizon (ds_app_template_id=30),
                 false to disable (NULL)
               example: true
               type: boolean
+            primary_company_id:
+              description: id_company of an existing team_company row to mark as the
+                workspace's primary company (demotes any current primary)
+              type: integer
+            seed_primary_company:
+              description: Create a team_company row and mark it primary (for workspaces
+                provisioned without one)
+              properties:
+                company_abbreviation:
+                  description: Optional abbreviation; derived from the name's initials
+                    when omitted
+                  type: string
+                company_name:
+                  description: Company name (required)
+                  type: string
+                id_global_company_directory:
+                  description: Optional global directory company to link the row to
+                  type: integer
+              type: object
             workspace_name:
               description: The ds_workspace_name of the workspace to update
               example: ds_12345678_9123_4567_8912_123456789123
               type: string
           required:
           - workspace_name
-          - horizon_enabled
           type: object
       responses:
         200:
@@ -10113,7 +10159,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Update workspace Horizon setting
+      summary: Update workspace admin settings
       tags:
       - Info
   /v2/workspaces/public/cost/public/tender-tokens/{token}:
