@@ -40937,6 +40937,223 @@ paths:
       summary: Update or upsert asset metadata EAV rows
       tags:
       - Asset Portal
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/plant-assets:
+    get:
+      description: 'Firestore plant_assets list for the project. With ?asset_code=
+        returns the single doc (optionally ?edits=1 to include its audit timeline).
+        Viewer access.
+
+        '
+      operationId: v2_getPlantAssets
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: asset_code
+        required: false
+        type: string
+      - in: query
+        name: edits
+        required: false
+        type: string
+      responses:
+        200:
+          description: Plant asset list or single item
+        401:
+          description: Unauthorized
+        404:
+          description: Unknown asset_code
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List plant assets (extension docs) for a project
+      tags:
+      - Plant Assets
+    patch:
+      description: 'Deep-merge patch on the whitelisted extension areas (links, status_ext,
+        qr, client_facing_number, is_deleted). Project Manager (or admin scope) only.
+
+        '
+      operationId: v2_patchPlantAssets
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            asset_code:
+              type: string
+            comment:
+              type: string
+            patch:
+              type: object
+          required:
+          - asset_code
+          - patch
+          type: object
+      responses:
+        200:
+          description: Updated plant asset doc
+        400:
+          description: Nothing patchable supplied
+        401:
+          description: Unauthorized
+        403:
+          description: Requires Project Manager
+        404:
+          description: Unknown asset_code
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a plant asset's extension fields
+      tags:
+      - Plant Assets
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/plant-assets/info-sync:
+    post:
+      description: "Handler-1 write path (D14) \u2014 refreshes info_cache (creating\
+        \ an 'unscaffolded' doc for unknown codes) and best-effort re-asserts the\
+        \ code into the kit's asset_ids CSV. Project Manager or M2M admin scope.\n"
+      operationId: v2_postPlantAssetInfoSync
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            asset_code:
+              type: string
+            fields:
+              type: object
+            source:
+              type: object
+            submission_id:
+              type: integer
+          required:
+          - asset_code
+          type: object
+      responses:
+        200:
+          description: info_cache synced
+        400:
+          description: asset_code missing
+        401:
+          description: Unauthorized
+        403:
+          description: Requires Project Manager
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Sync a captured Asset Information submission onto the plant doc
+      tags:
+      - Plant Assets
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/plant-assets/scaffold:
+    post:
+      description: 'Allocates the next asset code and runs the full DS Site kit sequence
+        (asset_ids CSV, 1:1 Asset Information submission, Asset Page, QR resource,
+        register item, static register upgrade) then records the extension doc. Idempotent
+        per (workspace, code) via automation_jobs. Project Manager or M2M admin scope.
+        Long-running: up to ~2 minutes.
+
+        '
+      operationId: v2_postPlantAssetScaffold
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            asset_code:
+              description: force a specific code (backfill/repair only)
+              type: string
+            registration:
+              description: alias->value map from the Register-New-Asset form
+              type: object
+            source:
+              description: provenance (submission_id, form_alias, channel_alias)
+              type: object
+            trigger_reason:
+              type: string
+          type: object
+      responses:
+        201:
+          description: Scaffold complete (result summary)
+        400:
+          description: Scaffold failed validation
+        401:
+          description: Unauthorized
+        403:
+          description: Requires Project Manager
+        409:
+          description: Code already claimed/in-flight
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Register a new plant asset end-to-end (D9 scaffold)
+      tags:
+      - Plant Assets
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/plant-kit-config:
+    get:
+      description: "The per-workspace plant kit (DS Site form/template/page/resource\
+        \ ids, prefill templates, register_mode \u2014 decision D6). 404 when the\
+        \ workspace has no kit, which the FE treats as \"legacy register mode\".\n"
+      operationId: v2_getPlantKitConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Kit config doc
+        401:
+          description: Unauthorized
+        404:
+          description: No kit configured for this workspace
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get the workspace's plant kit config
+      tags:
+      - Plant Assets
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/project-settings:
     get:
       description: 'Returns the editable columns from projects_def for the project
