@@ -70603,7 +70603,8 @@ paths:
                     description: URL to project logo image (Firestore only)
                     type: string
                   project_name:
-                    description: Name of the project
+                    description: Name of the project (automatically synced to opportunity.project_name
+                      when linked by project_id)
                     type: string
                   project_sector:
                     description: Project sector/industry
@@ -70714,8 +70715,9 @@ paths:
         These fields are NOT synced back to MySQL.
 
 
-        Note: project_description is automatically synced with opportunity.description
-        (when linked by project_id).
+        Note: project_description is automatically synced with opportunity.description,
+        and project_name is automatically synced with opportunity.project_name (when
+        linked by project_id).
 
 
         General: project_name, project_identifier, project_description, current_stage,
@@ -70894,7 +70896,8 @@ paths:
               description: URL to project logo image
               type: string
             project_name:
-              description: Project name
+              description: Project name (automatically synced to opportunity.project_name
+                when linked by project_id)
               type: string
             project_start_date:
               description: Project start date (ISO format YYYY-MM-DD)
