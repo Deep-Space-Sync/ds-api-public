@@ -19412,6 +19412,28 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/provisional-sums:
+    get:
+      operationId: v2_getProvisionalSumsWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Provisional Sums (Workspace Level)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/scope-templates:
     get:
       operationId: v2_listScopeTemplates
@@ -58414,6 +58436,254 @@ paths:
       security:
       - JWT_v2: []
       summary: Get PO Register (Consolidated)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums:
+    get:
+      operationId: v2_getProvisionalSums
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Provisional Sums
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postProvisionalSum
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Object successfully created
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Provisional Sum Draft
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums/{provisionalSumId}:
+    delete:
+      operationId: v2_deleteProvisionalSumById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Object successfully deleted
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Provisional Sum
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getProvisionalSumById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Provisional Sum By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchProvisionalSumById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Object successfully updated
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Provisional Sum
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums/{provisionalSumId}/attach:
+    post:
+      operationId: v2_attachProvisionalSum
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Provisional sum attached
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Attach Provisional Sum To Head Contract
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums/{provisionalSumId}/decline:
+    post:
+      operationId: v2_declineProvisionalSum
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Provisional sum declined
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Decline Unresolved Provisional Sum Lines
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums/{provisionalSumId}/scopes/{scopeId}/update-status:
+    patch:
+      operationId: v2_patchProvisionalSumScopeStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      - in: path
+        name: scopeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Scope status updated
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Approve Or Decline Provisional Sum Scope Line
       tags:
       - Cost
       x-ds-test-enabled: true
