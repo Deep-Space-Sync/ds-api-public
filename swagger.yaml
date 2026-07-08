@@ -81178,6 +81178,66 @@ paths:
       summary: AI process single email to extract invoice data
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/approval-complete:
+    post:
+      description: "Called by the approval engine's entity status sync when an INVOICE\
+        \ approval instance completes. Verifies the instance state with the engine,\
+        \ then executes the staged conversion (APPROVED \u2192 Payment Authorised)\
+        \ or rejects the invoice (REJECTED \u2192 Rejected). Not intended for direct\
+        \ user calls."
+      operationId: v2_invoiceApprovalComplete
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actor_user_email:
+              type: string
+            actor_user_id:
+              type: string
+            approval_completed_by_engine:
+              type: boolean
+            approval_id:
+              type: string
+            comment:
+              type: string
+            status:
+              enum:
+              - Payment Authorised
+              - Rejected
+              type: string
+          required:
+          - status
+          - approval_id
+          - approval_completed_by_engine
+          type: object
+      responses:
+        200:
+          description: Terminal state applied (conversion executed or invoice rejected)
+        400:
+          description: Invalid body
+        403:
+          description: Not an engine callback or approval_id mismatch
+        404:
+          description: Email not found
+        409:
+          description: Invoice not awaiting authorisation or engine state mismatch
+        502:
+          description: Could not verify approval instance with the engine
+      security:
+      - JWT_v2: []
+      summary: Approval engine completion callback for a supplier invoice
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/archive:
     post:
       operationId: v2_archiveInvoiceEmail
@@ -81581,6 +81641,75 @@ paths:
       security:
       - JWT_v2: []
       summary: Save draft record data for an email
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/submit-for-approval:
+    post:
+      description: "Submit a Review Completed supplier invoice to the approval engine\
+        \ (DoA workflow). Stages the conversion payload, creates an hz-approval instance\
+        \ and moves the invoice to Sent for Authorisation. Supplier invoices only\
+        \ \u2014 subcontract claims keep the legacy flow."
+      operationId: v2_submitInvoiceForApproval
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            context:
+              description: Extra context_snapshot fields to merge
+              type: object
+            convert_payload:
+              description: Same shape as the convert endpoint's body (project_id and
+                invoice_to_company_id required); executed by the engine's completion
+                callback on final approval
+              type: object
+            workflow_id:
+              description: Optional explicit workflow template; engine resolution
+                cascade applies when absent
+              type: string
+          required:
+          - convert_payload
+          type: object
+      responses:
+        201:
+          description: Approval instance created, invoice moved to Sent for Authorisation
+          schema:
+            properties:
+              data:
+                properties:
+                  approval_id:
+                    type: string
+                  status:
+                    type: string
+                  workflow_id:
+                    type: string
+                type: object
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+        400:
+          description: Invalid state, wrong record type, or missing convert_payload
+            fields
+        403:
+          description: Unauthorized
+        404:
+          description: Email not found
+        502:
+          description: Approval engine call failed
+      security:
+      - JWT_v2: []
+      summary: Submit a supplier invoice for approval
       tags:
       - InvoiceReconciliation
 schemes:
