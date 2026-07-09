@@ -6476,6 +6476,38 @@ paths:
       summary: Get company employees
       tags:
       - PortalApi
+  /v2/portal/me/party-context:
+    get:
+      description: Resolve the CDE party (type, id, name) owned by the authenticated
+        portal user, so the frontend can show their own document folder.
+      operationId: v2_portalApiMePartyContext
+      parameters:
+      - description: Workspace identifier (e.g., ds_xxx)
+        in: query
+        name: workspace_id
+        required: true
+        type: string
+      - description: 'Portal party type: client | subcontractor | consultant'
+        in: query
+        name: party_type
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Invalid party_type
+        401:
+          description: Unauthorized
+        404:
+          description: No company or client record found for user
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get current user's CDE party context
+      tags:
+      - PortalApi
   /v2/portal/public/esign/signing-sessions/{token}/submissions:
     post:
       description: Submit signature and generate signed PDF for a public signing token.
