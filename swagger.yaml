@@ -12286,6 +12286,73 @@ paths:
       summary: Update a CDE folder (rename/move)
       tags:
       - CDE Folders
+  /v2/workspaces/{workspaceId}/cde-folders/{folderId}/distribution-list:
+    delete:
+      description: Removes the binding; the folder falls back to the project Default
+        distribution list.
+      operationId: v2_clearCdeFolderDistributionList
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: folderId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Binding cleared; returns distribution_list_id=null
+        401:
+          description: Unauthorized
+        404:
+          description: Folder not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Clear a folder's distribution-list binding (CDE-185)
+      tags:
+      - CDE Folder Permissions
+    put:
+      description: Sets which named distribution list receives the folder's change
+        digests. Body {"distribution_list_id"}; "default"/empty clears the binding
+        so the folder uses the project Default list.
+      operationId: v2_setCdeFolderDistributionList
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: folderId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            distribution_list_id:
+              description: Bare list id to bind. "default" or empty clears the binding
+                so the folder falls back to the project Default list.
+              type: string
+          type: object
+      responses:
+        200:
+          description: Binding updated; returns the stored distribution_list_id (null
+            = Default)
+        401:
+          description: Unauthorized
+        404:
+          description: Folder not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Bind a folder's notifications to a distribution list (CDE-185)
+      tags:
+      - CDE Folder Permissions
   /v2/workspaces/{workspaceId}/cde-folders/{folderId}/notifications:
     delete:
       description: Opts a folder out of distribution-list change notifications.
