@@ -25229,6 +25229,13 @@ paths:
         name: includeMetadata
         required: false
         type: boolean
+      - description: Read-time fallback contact per company ({name, email, is_main_contact}
+          or null) resolved from the verified worker roster; never persisted. Only
+          honoured when globalCompanyId is the requesting workspace's own company
+        in: query
+        name: includePrimaryContact
+        required: false
+        type: boolean
       responses:
         200:
           description: Successful response
