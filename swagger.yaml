@@ -52668,6 +52668,60 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/approval-complete:
+    post:
+      description: "Called by hz_approval's entity_status_sync when the internal approval\n\
+        terminates (COM-559). Writes `internal_approval_status`\n(\"approved\"/\"\
+        rejected\") + decision metadata onto the record. Forward-only\n\u2014 never\
+        \ reverts the lifecycle status.\n"
+      operationId: v2_completeHeadContractClaimApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actor_user_email:
+              type: string
+            actor_user_id:
+              type: string
+            approval_completed_by_engine:
+              type: boolean
+            approval_id:
+              type: string
+            comment:
+              type: string
+            status:
+              enum:
+              - approved
+              - rejected
+              type: string
+          type: object
+      responses:
+        200:
+          description: Internal approval recorded
+        404:
+          description: Record not found
+        409:
+          description: approval_id does not match the record's active approval
+      security:
+      - JWT_v2: []
+      summary: Approval-engine completion callback for a head contract progress claim
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/change-status:
     patch:
       operationId: v2_patchHeadContractClaimChangeStatus
@@ -52884,6 +52938,71 @@ paths:
       tags:
       - Cost
       x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/submit-for-approval:
+    post:
+      description: "Creates an approval-engine instance for the head contract progress\
+        \ claim (COM-559).\nBody may carry an explicit `workflow_id`; `context` is\
+        \ merged into the\napproval's context_snapshot. When the resolved workflow_id\
+        \ is null the\nengine constructs a synthetic single-step workflow (soft fallback).\n\
+        \nWrites `internal_approval_status = \"pending_approval\"` on the record.\n\
+        The client-facing lifecycle status is NOT changed \u2014 the internal DoA\n\
+        sign-off and the client/commercial decision are separate dimensions.\n"
+      operationId: v2_submitHeadContractClaimForApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            context:
+              description: Extra fields merged into the approval context_snapshot.
+              type: object
+            workflow_id:
+              description: Override workflow. Falls back to the record's workflow_id,
+                then soft fallback.
+              type: string
+          type: object
+      responses:
+        201:
+          description: Approval instance created; record flagged pending_approval
+          schema:
+            properties:
+              data:
+                properties:
+                  approval_id:
+                    type: string
+                  approval_instance:
+                    type: object
+                  internal_approval_status:
+                    type: string
+                  workflow_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Record not in a submittable state, or approval already in progress
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Submit a head contract progress claim for internal approval
+      tags:
+      - Cost
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-invoices:
     get:
@@ -53946,6 +54065,60 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/approval-complete:
+    post:
+      description: "Called by hz_approval's entity_status_sync when the internal approval\n\
+        terminates (COM-554). Writes `internal_approval_status`\n(\"approved\"/\"\
+        rejected\") + decision metadata onto the record. Forward-only\n\u2014 never\
+        \ reverts the lifecycle status.\n"
+      operationId: v2_completeHeadContractVariationApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actor_user_email:
+              type: string
+            actor_user_id:
+              type: string
+            approval_completed_by_engine:
+              type: boolean
+            approval_id:
+              type: string
+            comment:
+              type: string
+            status:
+              enum:
+              - approved
+              - rejected
+              type: string
+          type: object
+      responses:
+        200:
+          description: Internal approval recorded
+        404:
+          description: Record not found
+        409:
+          description: approval_id does not match the record's active approval
+      security:
+      - JWT_v2: []
+      summary: Approval-engine completion callback for a head contract variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/scopes:
     get:
       operationId: v2_getVariationScopes
@@ -54114,6 +54287,71 @@ paths:
       tags:
       - Cost
       x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/submit-for-approval:
+    post:
+      description: "Creates an approval-engine instance for the head contract variation\
+        \ (COM-554).\nBody may carry an explicit `workflow_id`; `context` is merged\
+        \ into the\napproval's context_snapshot. When the resolved workflow_id is\
+        \ null the\nengine constructs a synthetic single-step workflow (soft fallback).\n\
+        \nWrites `internal_approval_status = \"pending_approval\"` on the record.\n\
+        The client-facing lifecycle status is NOT changed \u2014 the internal DoA\n\
+        sign-off and the client/commercial decision are separate dimensions.\n"
+      operationId: v2_submitHeadContractVariationForApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            context:
+              description: Extra fields merged into the approval context_snapshot.
+              type: object
+            workflow_id:
+              description: Override workflow. Falls back to the record's workflow_id,
+                then soft fallback.
+              type: string
+          type: object
+      responses:
+        201:
+          description: Approval instance created; record flagged pending_approval
+          schema:
+            properties:
+              data:
+                properties:
+                  approval_id:
+                    type: string
+                  approval_instance:
+                    type: object
+                  internal_approval_status:
+                    type: string
+                  workflow_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Record not in a submittable state, or approval already in progress
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Submit a head contract variation for internal approval
+      tags:
+      - Cost
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/update-status:
     patch:
@@ -62939,6 +63177,60 @@ paths:
       summary: Edit Subcontract Variation By Id
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/approval-complete:
+    post:
+      description: "Called by hz_approval's entity_status_sync when the internal approval\n\
+        terminates (COM-558). Writes `internal_approval_status`\n(\"approved\"/\"\
+        rejected\") + decision metadata onto the record. Forward-only\n\u2014 never\
+        \ reverts the lifecycle status.\n"
+      operationId: v2_completeSubcontractVariationApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actor_user_email:
+              type: string
+            actor_user_id:
+              type: string
+            approval_completed_by_engine:
+              type: boolean
+            approval_id:
+              type: string
+            comment:
+              type: string
+            status:
+              enum:
+              - approved
+              - rejected
+              type: string
+          type: object
+      responses:
+        200:
+          description: Internal approval recorded
+        404:
+          description: Record not found
+        409:
+          description: approval_id does not match the record's active approval
+      security:
+      - JWT_v2: []
+      summary: Approval-engine completion callback for a subcontract variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/scopes:
     get:
       operationId: v2_getSubcontractVariationScopes
@@ -63078,6 +63370,71 @@ paths:
       summary: Update Subcontract Variation Scope By Id
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/submit-for-approval:
+    post:
+      description: "Creates an approval-engine instance for the subcontract variation\
+        \ (COM-558).\nBody may carry an explicit `workflow_id`; `context` is merged\
+        \ into the\napproval's context_snapshot. When the resolved workflow_id is\
+        \ null the\nengine constructs a synthetic single-step workflow (soft fallback).\n\
+        \nWrites `internal_approval_status = \"pending_approval\"` on the record.\n\
+        The client-facing lifecycle status is NOT changed \u2014 the internal DoA\n\
+        sign-off and the client/commercial decision are separate dimensions.\n"
+      operationId: v2_submitSubcontractVariationForApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            context:
+              description: Extra fields merged into the approval context_snapshot.
+              type: object
+            workflow_id:
+              description: Override workflow. Falls back to the record's workflow_id,
+                then soft fallback.
+              type: string
+          type: object
+      responses:
+        201:
+          description: Approval instance created; record flagged pending_approval
+          schema:
+            properties:
+              data:
+                properties:
+                  approval_id:
+                    type: string
+                  approval_instance:
+                    type: object
+                  internal_approval_status:
+                    type: string
+                  workflow_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Record not in a submittable state, or approval already in progress
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Submit a subcontract variation for internal approval
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/update-status:
     patch:
       operationId: v2_patchSubcontractVariationStatus
