@@ -11639,8 +11639,8 @@ paths:
               type: integer
           type: object
       responses:
-        200:
-          description: Run result (process_automation response)
+        202:
+          description: Run accepted by the automation Cloud Tasks queue
           schema:
             properties:
               data:
@@ -11684,6 +11684,28 @@ paths:
       security:
       - JWT_v2: []
       summary: List process_automation runs (CS-Hub observability, cs-admin read-only)
+      tags:
+      - Automation
+  /v2/workspaces/{workspaceId}/automation/logs/{jobKey}:
+    get:
+      operationId: v2_getAutomationLog
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: jobKey
+        required: true
+        type: string
+      responses:
+        200:
+          description: Workspace-scoped processing_log status and step results
+        404:
+          description: Run not found in this workspace
+      security:
+      - JWT_v2: []
+      summary: Get one process_automation run (workspace-manager status polling)
       tags:
       - Automation
   /v2/workspaces/{workspaceId}/automation/triggers:
