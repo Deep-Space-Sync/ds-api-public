@@ -50885,6 +50885,64 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/approval-complete:
+    post:
+      description: 'Called by hz_approval''s entity_status_sync when the internal
+        approval
+
+        terminates (COM-519). Writes `internal_approval_status`
+
+        ("approved"/"rejected") + decision metadata onto the record.
+
+        '
+      operationId: v2_completeHeadContractApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actor_user_email:
+              type: string
+            actor_user_id:
+              type: string
+            approval_completed_by_engine:
+              type: boolean
+            approval_id:
+              type: string
+            comment:
+              type: string
+            status:
+              enum:
+              - approved
+              - rejected
+              type: string
+          type: object
+      responses:
+        200:
+          description: Internal approval recorded
+        404:
+          description: Record not found
+        409:
+          description: approval_id does not match the record's active approval
+      security:
+      - JWT_v2: []
+      summary: Approval-engine completion callback for a head contract
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/change-status:
     patch:
       operationId: v2_patchContractStatus
@@ -51580,6 +51638,67 @@ paths:
       tags:
       - Cost
       x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/submit-for-approval:
+    post:
+      description: 'Creates an approval-engine instance for the head contract record
+        (COM-519).
+
+        Body may carry an explicit `workflow_id`; `context` is merged into the
+
+        approval''s context_snapshot. Writes `internal_approval_status =
+
+        "pending_approval"` on the record; the client-facing contract_status is
+
+        NOT changed.
+
+        '
+      operationId: v2_submitHeadContractForApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            context:
+              description: Extra fields merged into the approval context_snapshot.
+              type: object
+            workflow_id:
+              description: Override workflow. Falls back to the record's workflow_id,
+                then soft fallback.
+              type: string
+          type: object
+      responses:
+        201:
+          description: Approval instance created; record flagged pending_approval
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Record not in a submittable state, or approval already in progress
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Submit a head contract for internal approval
+      tags:
+      - Cost
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-edits:
     get:
