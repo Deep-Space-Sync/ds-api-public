@@ -19533,6 +19533,484 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/payment-triage:
+    get:
+      description: Returns the workspace's payment-to-commitment bridge documents
+        (allocated payments with their generated internal PO chain).
+      operationId: v2_listPaymentTriageLinks
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - default: 100
+        description: Maximum number of links to return per page
+        in: query
+        maximum: 500
+        name: limit
+        required: false
+        type: integer
+      - default: 0
+        description: Number of links to skip (links are ordered by updated_at descending)
+        in: query
+        name: offset
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Success
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    allocation_version:
+                      type: integer
+                    allocations:
+                      items:
+                        properties:
+                          claim_line_item_id:
+                            type: string
+                          cost_code_num:
+                            type: string
+                          cost_type_id:
+                            type: string
+                            x-nullable: true
+                          description:
+                            type: string
+                          order_line_item_id:
+                            type: string
+                          source_line_id:
+                            type: string
+                          total:
+                            type: number
+                        type: object
+                      type: array
+                    amount_basis:
+                      properties:
+                        currency_code_reporting:
+                          type: string
+                        lines:
+                          items:
+                            type: object
+                          type: array
+                        payment_gross_reporting:
+                          type: number
+                        payment_net_reporting:
+                          type: number
+                        tax_reporting:
+                          type: number
+                      type: object
+                    contact_name:
+                      type: string
+                      x-nullable: true
+                    generated_cost_claim_id:
+                      type: string
+                    generated_cost_order_id:
+                      type: string
+                    generated_order_identifier:
+                      type: string
+                    generated_payment_schedule_id:
+                      type: string
+                    id:
+                      description: Bridge document ID ({workspaceId}__{paymentId})
+                      type: string
+                    origin_project_id:
+                      type: integer
+                    payment_date:
+                      type: string
+                      x-nullable: true
+                    payment_id:
+                      type: string
+                    payment_source:
+                      enum:
+                      - bill_payment
+                      - bank_spend
+                      type: string
+                    project_id:
+                      type: integer
+                    receiving_company_id:
+                      type: string
+                    reference:
+                      type: string
+                      x-nullable: true
+                    state:
+                      type: string
+                    xero_bank_transaction_id:
+                      type: string
+                      x-nullable: true
+                    xero_bill_id:
+                      type: string
+                      x-nullable: true
+                    xero_sync_suppressed:
+                      type: boolean
+                  type: object
+                type: array
+              message:
+                type: string
+              pagination:
+                properties:
+                  has_more:
+                    type: boolean
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  total:
+                    description: Total number of links in the workspace
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid limit or offset
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace manager permission required
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Payment Triage internal PO links
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/payment-triage/{paymentId}:
+    get:
+      description: Returns an authorised outgoing Xero payment with its normalised
+        ex-tax amount basis, proposed cost code mappings, supplier match and any existing
+        bridge document.
+      operationId: v2_getPaymentTriageDetail
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Xero payment ID
+        in: path
+        name: paymentId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            properties:
+              data:
+                properties:
+                  amount_basis:
+                    properties:
+                      currency_code_reporting:
+                        type: string
+                      lines:
+                        items:
+                          properties:
+                            account_code:
+                              type: string
+                              x-nullable: true
+                            amount:
+                              type: number
+                            cost_code_num:
+                              type: string
+                              x-nullable: true
+                            cost_type_id:
+                              type: string
+                              x-nullable: true
+                            description:
+                              type: string
+                            source_line_id:
+                              type: string
+                            tax_type:
+                              type: string
+                              x-nullable: true
+                          type: object
+                        type: array
+                      payment_gross_reporting:
+                        type: number
+                      payment_net_reporting:
+                        type: number
+                      proposed_project_id:
+                        type: integer
+                        x-nullable: true
+                      tax_reporting:
+                        type: number
+                    type: object
+                  bridge:
+                    description: Existing payment commitment link, if already triaged
+                    type: object
+                    x-nullable: true
+                  payment:
+                    description: The stored Xero payment document
+                    type: object
+                  source:
+                    description: Raw Xero source transaction (Invoice or BankTransaction)
+                    type: object
+                  source_type:
+                    enum:
+                    - bill_payment
+                    - bank_spend
+                    type: string
+                  supplier_match:
+                    properties:
+                      contact_id:
+                        type: string
+                        x-nullable: true
+                      contact_name:
+                        type: string
+                        x-nullable: true
+                      receiving_company_id:
+                        type: string
+                        x-nullable: true
+                    type: object
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Payment is not an authorised outgoing payment or has invalid
+            totals
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace manager permission required
+        404:
+          description: Payment or Xero source transaction not found
+        500:
+          description: Internal Server Error
+        502:
+          description: Xero source detail unavailable
+      security:
+      - JWT_v2: []
+      summary: Get Payment Triage payment detail
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/payment-triage/{paymentId}/generate-po:
+    post:
+      description: Atomically creates the internal PO, paid claim, payment schedule,
+        paired line items, bridge document and audit event for an authorised Xero
+        payment, then refreshes the Budget Register. Idempotent - replays return the
+        existing bridge with 200.
+      operationId: v2_generatePaymentTriagePo
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Xero payment ID
+        in: path
+        name: paymentId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            description:
+              description: Optional PO name/description
+              type: string
+            lines:
+              description: Cost allocation lines; totals must sum to the ex-tax payment
+                amount
+              items:
+                properties:
+                  amount:
+                    type: number
+                  cost_code_num:
+                    description: Must be an active workspace cost code
+                    type: string
+                  cost_type_id:
+                    type: string
+                    x-nullable: true
+                  description:
+                    type: string
+                  source_line_id:
+                    type: string
+                  total:
+                    description: Ex-tax line amount (falls back to amount if omitted)
+                    type: number
+                required:
+                - cost_code_num
+                type: object
+              type: array
+            project_id:
+              description: Target project; must belong to the workspace
+              type: integer
+            receiving_company_id:
+              description: Supplier company receiving the internal PO
+              type: string
+          required:
+          - project_id
+          - receiving_company_id
+          - lines
+          type: object
+      responses:
+        200:
+          description: Payment was already triaged (idempotent replay returns existing
+            link)
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        201:
+          description: Internal purchase order generated
+          schema:
+            properties:
+              budget_register_refresh:
+                items:
+                  properties:
+                    project_id:
+                      type: integer
+                    refreshed:
+                      type: boolean
+                    status:
+                      type: integer
+                  type: object
+                type: array
+              data:
+                description: The created payment commitment link (bridge document)
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Validation error (invalid lines, cost codes or allocation total
+            mismatch)
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace manager permission required or project
+            not in workspace
+        404:
+          description: Payment not found
+        409:
+          description: Payment already linked to a Deep Space commitment, or workspace
+            primary company unresolved
+        500:
+          description: Internal Server Error
+        502:
+          description: Xero source detail unavailable
+      security:
+      - JWT_v2: []
+      summary: Generate internal PO from a Xero payment
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/payment-triage/{paymentId}/reallocate:
+    post:
+      description: Moves a Payment Triage-generated commitment chain to another project
+        and/or recodes its lines. Guarded by optimistic concurrency (allocation_version)
+        and chain integrity checks; every existing generated PO line must be included
+        exactly once. Refreshes the Budget Register for both projects.
+      operationId: v2_reallocatePaymentTriagePo
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Xero payment ID
+        in: path
+        name: paymentId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            allocation_version:
+              description: Version loaded by the client; must match the stored link
+                or the request is rejected as stale
+              type: integer
+            lines:
+              description: Full set of allocation lines; must include every existing
+                generated PO line exactly once and sum to the ex-tax payment amount
+              items:
+                properties:
+                  amount:
+                    type: number
+                  cost_code_num:
+                    description: Must be an active workspace cost code
+                    type: string
+                  cost_type_id:
+                    type: string
+                    x-nullable: true
+                  description:
+                    type: string
+                  order_line_item_id:
+                    description: Existing generated PO line item ID
+                    type: string
+                  source_line_id:
+                    type: string
+                  total:
+                    description: Ex-tax line amount (falls back to amount if omitted)
+                    type: number
+                required:
+                - order_line_item_id
+                - cost_code_num
+                type: object
+              type: array
+            project_id:
+              description: Target project; must belong to the workspace
+              type: integer
+            reason:
+              description: Optional audit reason recorded on the reallocation event
+              type: string
+          required:
+          - project_id
+          - allocation_version
+          - lines
+          type: object
+      responses:
+        200:
+          description: Internal purchase order reallocated
+          schema:
+            properties:
+              budget_register_refresh:
+                items:
+                  properties:
+                    project_id:
+                      type: integer
+                    refreshed:
+                      type: boolean
+                    status:
+                      type: integer
+                  type: object
+                type: array
+              data:
+                description: The updated payment commitment link (bridge document)
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Validation error (invalid lines, cost codes or allocation total
+            mismatch)
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace manager permission required or project
+            not in workspace
+        404:
+          description: Payment Triage commitment link not found
+        409:
+          description: Stale allocation_version or commitment chain integrity violation
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Reallocate a Payment Triage internal PO
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
   /v2/workspaces/{workspaceId}/cost/provisional-sums:
     get:
       operationId: v2_getProvisionalSumsWorkspace
