@@ -16949,6 +16949,214 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/contract-custom-fields:
+    get:
+      operationId: v2_getContractCustomFields
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: subcontract | head_contract
+        in: query
+        name: side
+        required: false
+        type: string
+      - description: Contract profile to scope the definitions to
+        in: query
+        name: profile
+        required: false
+        type: string
+      - description: '''true'' to include archived definitions'
+        in: query
+        name: include_archived
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              count:
+                type: integer
+              items:
+                items:
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List user-defined contract custom field definitions (COM-649)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createContractCustomField
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            field_type:
+              type: string
+            name:
+              type: string
+            options:
+              items:
+                type: string
+              type: array
+            profile:
+              type: string
+            required:
+              type: boolean
+            side:
+              type: string
+          type: object
+      responses:
+        201:
+          description: Field created
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        409:
+          description: Duplicate field name
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a contract custom field definition (COM-649)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/contract-custom-fields/reorder:
+    post:
+      operationId: v2_reorderContractCustomFields
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            order:
+              description: 'map of {field_id: display_order}'
+              type: object
+          type: object
+      responses:
+        200:
+          description: Reordered
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Reorder contract custom field definitions (COM-649)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/contract-custom-fields/{fieldId}:
+    patch:
+      operationId: v2_updateContractCustomField
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: fieldId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            display_order:
+              type: integer
+            name:
+              type: string
+            options:
+              items:
+                type: string
+              type: array
+            required:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: Field updated
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not found
+        409:
+          description: Duplicate field name
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a contract custom field definition (COM-649)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/contract-custom-fields/{fieldId}/archive:
+    post:
+      operationId: v2_archiveContractCustomField
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: fieldId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Field archived
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Archive a contract custom field definition (COM-649)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
   /v2/workspaces/{workspaceId}/cost/contracts:
     get:
       operationId: v2_getCostContractsWorkspace
