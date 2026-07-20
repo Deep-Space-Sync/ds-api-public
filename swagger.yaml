@@ -53979,6 +53979,54 @@ paths:
       summary: Change Head Contract Invoice Status
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-invoices/{invoiceId}/push-to-xero:
+    post:
+      description: 'COM-599. Idempotent "ensure" push: ensures the linked claim''s
+        Xero ACCREC draft exists (creating it via the claim-sync logic when the claim
+        was never batch-synced), verifies the draft total against the tax-invoice
+        amount, backfills missing line account codes from the Default Revenue Account,
+        sets the draft to AUTHORISED, reconciles the invoice''s linked documents/attachments
+        onto it, and writes xero_id/xero_synced back. Deadline is higher than sibling
+        endpoints because a first push may create the draft and upload attachments
+        in the same call.'
+      operationId: v2_postHeadContractInvoicePushToXero
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: invoiceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Draft approved (or already approved/paid); attachments reconciled
+        400:
+          description: Bad request (invoice has no linked claim)
+        403:
+          description: Access denied
+        404:
+          description: Invoice or linked claim not found
+        409:
+          description: Conflict (amount mismatch, voided in Xero, or Xero link not
+            accessible in the connected organisation)
+        422:
+          description: Unprocessable (claim not certified, no linked Xero contact,
+            missing Default Revenue Account, Xero validation error)
+        424:
+          description: Failed dependency (Xero integration not configured)
+        502:
+          description: Bad gateway (Xero API or token refresh communication failure)
+      security:
+      - JWT_v2: []
+      summary: Push Head Contract Invoice to Xero (approve linked draft + attach documents)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-invoices/{invoiceId}/sovs:
     get:
       operationId: v2_getInvoiceSovs
