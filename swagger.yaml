@@ -57346,6 +57346,127 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase/{costOrderId}/revert-to-draft:
+    get:
+      description: 'Read-only probe powering the "Revert to Draft" button state: whether
+
+        the caller may revert (requester who submitted for approval, or a
+
+        Highest Authority holder) and which downstream blockers exist
+
+        (claims/invoices raised, Invoice Register links, variations, Xero
+
+        push, e-signature in flight).
+
+        '
+      operationId: v2_getCostPurchaseOrderRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costOrderId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Eligibility payload
+          schema:
+            properties:
+              data:
+                properties:
+                  authorized:
+                    type: boolean
+                  blockers:
+                    items:
+                      type: string
+                    type: array
+                  can_revert:
+                    type: boolean
+                  is_highest_authority:
+                    type: boolean
+                  is_requester:
+                    type: boolean
+                type: object
+              message:
+                type: string
+            type: object
+        403:
+          description: Access denied
+        404:
+          description: PO not found
+      security:
+      - JWT_v2: []
+      summary: Revert-to-draft eligibility for an approved PO
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      description: 'Reverts an approved PO to draft when nothing has been built on
+        top of
+
+        it (no claims/invoices, no variations, not pushed to Xero, no
+
+        e-signature in flight). Only the requester who submitted the PO for
+
+        approval or a Highest Authority holder may revert. The linked approval
+
+        instance is revoked first (engine notifies every decider, the drafter
+
+        and HA holders); a mandatory reason is audited on both the instance
+
+        and the PO. Resubmission creates a brand-new approval.
+
+        '
+      operationId: v2_revertCostPurchaseOrderToDraft
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costOrderId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              description: Why the approved PO is being reverted (audited).
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: PO reverted to draft
+        400:
+          description: Not an approved PO, or missing reason
+        403:
+          description: Caller is not the requester or a Highest Authority holder
+        404:
+          description: PO not found
+        409:
+          description: Downstream blockers prevent the revert
+        502:
+          description: Upstream approval engine error
+      security:
+      - JWT_v2: []
+      summary: Revert an approved PO to draft
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase/{costOrderId}/submit-for-approval:
     post:
       description: 'Transitions a draft PO into the approval workflow. Body may carry
@@ -64231,6 +64352,125 @@ paths:
       summary: Change Subcontract Status
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/revert-to-draft:
+    get:
+      description: 'Read-only probe powering the "Revert to Draft" button state: whether
+
+        the caller may revert (requester who submitted for approval, or a
+
+        Highest Authority holder) and which downstream blockers exist
+
+        (claims, payment schedules, variations, invoices).
+
+        '
+      operationId: v2_getSubcontractRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload
+          schema:
+            properties:
+              data:
+                properties:
+                  authorized:
+                    type: boolean
+                  blockers:
+                    items:
+                      type: string
+                    type: array
+                  can_revert:
+                    type: boolean
+                  is_highest_authority:
+                    type: boolean
+                  is_requester:
+                    type: boolean
+                type: object
+              message:
+                type: string
+            type: object
+        403:
+          description: Access denied
+        404:
+          description: Subcontract not found
+      security:
+      - JWT_v2: []
+      summary: Revert-to-draft eligibility for an Approved subcontract
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      description: 'Reverts an Approved subcontract to Draft when nothing has been
+        built
+
+        on top of it (no claims, payment schedules, variations or invoices).
+
+        Only the requester who submitted it for approval or a Highest
+
+        Authority holder may revert. The linked approval instance is revoked
+
+        first (engine notifies every decider, the drafter and HA holders);
+
+        a mandatory reason is audited. Resubmission creates a brand-new
+
+        approval.
+
+        '
+      operationId: v2_revertSubcontractToDraft
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              description: Why the approved subcontract is being reverted (audited).
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Subcontract reverted to Draft
+        400:
+          description: Not an Approved subcontract, or missing reason
+        403:
+          description: Caller is not the requester or a Highest Authority holder
+        404:
+          description: Subcontract not found
+        409:
+          description: Downstream blockers prevent the revert
+        502:
+          description: Upstream approval engine error
+      security:
+      - JWT_v2: []
+      summary: Revert an Approved subcontract to Draft
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/sovs:
     get:
       operationId: v2_getSubcontractSovs
@@ -66521,6 +66761,67 @@ paths:
       security:
       - JWT_v2: []
       summary: Submit approval action
+      tags:
+      - HzApproval
+  /v2/workspaces/{workspaceId}/projects/{projectId}/hz-approvals/{approvalId}/revoke:
+    post:
+      description: "Revokes a COMPLETED (APPROVED) approval instance so the entity\
+        \ service\ncan revert its document to draft. M2M-called by the entity services\n\
+        (cost orders / subcontracts) with the acting user's identity in the\nbody\
+        \ \u2014 same trusted-service pattern as instance creation.\n\nAuthorization\
+        \ (enforced in the engine): the acting user must be the\ninstance requester\
+        \ (created_by_user_id) or hold one of the workspace's\nHighest Authority roles.\
+        \ The instance moves APPROVED \u2192 REVOKED\n(terminal), a REVOKE decision\
+        \ is appended to the audit log with the\nmandatory reason, and every decider\
+        \ + the originator + HA holders are\nnotified (email + in-app). Steps are\
+        \ not reopened \u2014 resubmission\ncreates a new instance.\n"
+      operationId: v2_v2_revokeHzApproval
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: Approval instance ID
+        in: path
+        name: approvalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            acting_user_email:
+              type: string
+            acting_user_id:
+              description: Real user performing the revert (M2M caller attribution).
+              type: string
+            reason:
+              description: Why the approval is being revoked (audited).
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Approval revoked
+        400:
+          description: Instance not APPROVED, or missing reason
+        403:
+          description: Acting user is not the requester or a Highest Authority holder
+        404:
+          description: Approval instance not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Revoke a completed approval
       tags:
       - HzApproval
   /v2/workspaces/{workspaceId}/projects/{projectId}/hz-msprojectupload:
