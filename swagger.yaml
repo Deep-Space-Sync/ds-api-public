@@ -83421,8 +83421,9 @@ paths:
       description: "Reverses a record at Payment Authorised or In Xero \u2014 voids/deletes\
         \ the linked Xero bill, soft-deletes the converted claim documents, and moves\
         \ the record to the Draft-like \"Revise and Resubmit\" status for correction\
-        \ and resubmission. Blocked when the bill is paid or part-paid in Xero. AI\
-        \ extraction data and draft coding are preserved."
+        \ and resubmission. Restricted to the project's Commercial Lead (Project Settings\
+        \ \u2192 Team). Blocked when the bill is paid or part-paid in Xero. AI extraction\
+        \ data and draft coding are preserved."
       operationId: v2_reviseResubmitInvoiceEmail
       parameters:
       - in: path
@@ -83470,7 +83471,7 @@ paths:
         400:
           description: Missing reason or record not at a reversible status
         403:
-          description: Unauthorized
+          description: "Unauthorized \u2014 requires the project's Commercial Lead"
         404:
           description: Email not found
         409:
