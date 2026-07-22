@@ -24425,6 +24425,122 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/trades:
+    get:
+      description: "Per-workspace customisable Trades list (PRE-269). A workspace\
+        \ with no\nregistry yet is lazy-seeded from the legacy global trade-categories\n\
+        list, preserving ids so existing tender package / directory references\nkeep\
+        \ resolving. Powers the tender package trade dropdown and \u2014 via the\n\
+        same contract \u2014 DS Site.\n"
+      operationId: v2_getWorkspaceTrades
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Trades list
+          schema:
+            properties:
+              count:
+                type: integer
+              data:
+                items:
+                  properties:
+                    id:
+                      type: string
+                    is_active:
+                      type: boolean
+                    is_default:
+                      type: boolean
+                    name:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+      security:
+      - JWT_v2: []
+      summary: List the workspace's trades registry
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      description: "Adds one custom trade to the workspace registry \u2014 the \"\
+        + Add new\ntrade\" inline affordance on the tender package modal. Names are\n\
+        unique case-insensitively.\n"
+      operationId: v2_addWorkspaceTrade
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+          required:
+          - name
+          type: object
+      responses:
+        201:
+          description: Trade added
+        400:
+          description: Missing/duplicate name or trade limit reached
+      security:
+      - JWT_v2: []
+      summary: Quick-add a single trade
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    put:
+      description: "Full-set replacement for the Company Settings management UI. Archiving\n\
+        a trade is is_active=false \u2014 ids must stay resolvable for historical\n\
+        tender package references, so trades are never hard-removed by\nconvention.\
+        \ At least one trade must remain active.\n"
+      operationId: v2_updateWorkspaceTrades
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            trades:
+              items:
+                properties:
+                  id:
+                    type: string
+                  is_active:
+                    type: boolean
+                  is_default:
+                    type: boolean
+                  name:
+                    type: string
+                type: object
+              type: array
+          required:
+          - trades
+          type: object
+      responses:
+        200:
+          description: Trades updated
+        400:
+          description: Validation error
+      security:
+      - JWT_v2: []
+      summary: Replace the workspace trades set
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/xero-sync/{syncId}:
     post:
       operationId: v2_postXeroSync
