@@ -29107,6 +29107,14 @@ paths:
         in: query
         name: priority
         type: string
+      - description: Filter by template category
+        in: query
+        name: category
+        type: string
+      - description: Filter by template type
+        in: query
+        name: type
+        type: string
       - description: Filter by linked entity type (e.g., tender_package)
         in: query
         name: reference_type
@@ -29114,6 +29122,16 @@ paths:
       - description: Filter by linked entity id (e.g., a tender package id)
         in: query
         name: reference_id
+        type: string
+      - description: Only items created at or after this ISO-8601 datetime
+        format: date-time
+        in: query
+        name: created_after
+        type: string
+      - description: Only items created at or before this ISO-8601 datetime
+        format: date-time
+        in: query
+        name: created_before
         type: string
       - in: query
         name: page
@@ -29719,6 +29737,92 @@ paths:
       security:
       - JWT_v2: []
       summary: List in-app notifications for a user
+      tags:
+      - HzNotifications
+  /v2/workspaces/{workspaceId}/hz-notifications/in-app/log:
+    get:
+      operationId: v2_getHzInAppNotificationLog
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Filter by template category
+        in: query
+        name: category
+        type: string
+      - description: Filter by template type
+        in: query
+        name: type
+        type: string
+      - description: Filter by delivery status
+        enum:
+        - pending
+        - delivered
+        - read
+        - failed
+        in: query
+        name: status
+        type: string
+      - description: Filter by importance level
+        enum:
+        - notification
+        - warning
+        - alert
+        in: query
+        name: importance
+        type: string
+      - description: Only notifications created at or after this ISO-8601 datetime
+        format: date-time
+        in: query
+        name: created_after
+        type: string
+      - description: Only notifications created at or before this ISO-8601 datetime
+        format: date-time
+        in: query
+        name: created_before
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - default: 50
+        description: Number of items per page (max 100)
+        in: query
+        name: limit
+        type: integer
+      responses:
+        200:
+          description: In-app notification log retrieved successfully
+          schema:
+            properties:
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+              pagination:
+                properties:
+                  has_next:
+                    type: boolean
+                  has_previous:
+                    type: boolean
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                type: object
+            type: object
+        400:
+          description: Invalid query parameters
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Workspace-wide in-app notification log (admin observability)
       tags:
       - HzNotifications
   /v2/workspaces/{workspaceId}/hz-notifications/in-app/send:
