@@ -29115,6 +29115,10 @@ paths:
         in: query
         name: type
         type: string
+      - description: Filter by project (only records sent with a project_id)
+        in: query
+        name: project_id
+        type: string
       - description: Filter by linked entity type (e.g., tender_package)
         in: query
         name: reference_type
@@ -29360,6 +29364,9 @@ paths:
               - urgent
               - normal
               - low
+              type: string
+            project_id:
+              description: Optional project scoping for the notification log
               type: string
             template_variables:
               description: Variables to substitute in template
@@ -29773,6 +29780,10 @@ paths:
         in: query
         name: importance
         type: string
+      - description: Filter by project (only records sent with a project_id)
+        in: query
+        name: project_id
+        type: string
       - description: Only notifications created at or after this ISO-8601 datetime
         format: date-time
         in: query
@@ -29855,6 +29866,9 @@ paths:
               default: false
               description: Whether action is required from the recipient
               type: boolean
+            project_id:
+              description: Optional project scoping for the notification log
+              type: string
             recipient_kinde_id:
               description: Kinde ID of the notification recipient
               example: kp_abc123xyz
