@@ -63746,6 +63746,30 @@ paths:
       summary: Edit Subcontract Payment Schedule By Id
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/activity:
+    get:
+      operationId: v2_getSubcontractPaymentScheduleActivity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Subcontract Payment Schedule Activity (COM-630 audit trail)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/change-status:
     patch:
       operationId: v2_patchSubcontractPaymentScheduleStatus
@@ -63912,6 +63936,39 @@ paths:
       security:
       - JWT_v2: []
       summary: Update Subcontract Payment Schedule SOV By Id
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/sovs/{sovId}/certify:
+    post:
+      operationId: v2_postSubcontractPaymentScheduleSovCertify
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: path
+        name: sovId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Line certified
+      security:
+      - JWT_v2: []
+      summary: Certify a Payment Schedule SOV Line (COM-630 approve / partial / reject)
       tags:
       - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-retentions:
