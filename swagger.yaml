@@ -13240,171 +13240,6 @@ paths:
       summary: Archive document by series ID (workspace-level)
       tags:
       - CDE Documents
-  /v2/workspaces/{workspaceId}/cde/v2/move/check:
-    post:
-      description: Detect display-name conflicts for a pending move into a target
-        folder at workspace level
-      operationId: v2_moveCheckWorkspaceLevel
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            cde_series_ids:
-              description: Document series IDs to check for a pending move
-              items:
-                type: string
-              type: array
-            target_folder_id:
-              description: Destination folder ID being moved into
-              type: string
-          required:
-          - cde_series_ids
-          type: object
-      responses:
-        200:
-          description: Successfully returns detected move conflicts
-          schema:
-            properties:
-              conflicts:
-                items:
-                  properties:
-                    displayName:
-                      description: Display name colliding in the target folder
-                      type: string
-                    seriesId:
-                      description: UUID of the document series being moved
-                      type: string
-                    targetSeriesId:
-                      description: UUID of the colliding series already in the target
-                        folder
-                      type: string
-                  type: object
-                type: array
-              invalid:
-                items:
-                  properties:
-                    reason:
-                      description: Why this item cannot be resolved in the dialog
-                      type: string
-                    seriesId:
-                      description: UUID of the document series being moved
-                      type: string
-                  type: object
-                type: array
-            type: object
-        400:
-          description: Bad request - cde_series_ids must not be empty
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Check for move conflicts (workspace-level)
-      tags:
-      - CDE Documents
-  /v2/workspaces/{workspaceId}/cde/v2/move/resolve:
-    post:
-      description: Execute a move by series IDs at workspace level, applying any per-item
-        conflict resolutions
-      operationId: v2_moveResolveWorkspaceLevel
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            cde_series_ids:
-              description: Document series IDs to move
-              items:
-                type: string
-              type: array
-            resolutions:
-              additionalProperties:
-                type: string
-              description: Per-series conflict resolution action (move, replace, keep_both,
-                skip)
-              type: object
-            target_folder_id:
-              description: Destination folder ID being moved into
-              type: string
-          required:
-          - cde_series_ids
-          type: object
-      responses:
-        200:
-          description: Successfully executed the move
-          schema:
-            properties:
-              failed:
-                description: Count of items that failed to move
-                type: integer
-              items:
-                items:
-                  properties:
-                    action:
-                      description: Outcome for this series (moved, replaced, renamed,
-                        skipped, failed)
-                      type: string
-                    error:
-                      description: Failure reason, present only when action is failed
-                      type: string
-                    newCdeId:
-                      description: cde_id of the version row created by a replace
-                      type: integer
-                    newDisplayName:
-                      description: Renamed display name, present only when action
-                        is renamed
-                      type: string
-                    seriesId:
-                      description: UUID of the document series
-                      type: string
-                    targetSeriesId:
-                      description: UUID of the series that was replaced, present only
-                        when action is replaced
-                      type: string
-                  type: object
-                type: array
-              moved:
-                description: Count of items moved without conflict
-                type: integer
-              renamed:
-                description: Count of items renamed via keep_both
-                type: integer
-              replaced:
-                description: Count of items that replaced an existing series
-                type: integer
-              skipped:
-                description: Count of items skipped
-                type: integer
-              targetFolderId:
-                description: Destination folder ID the move was executed against
-                type: string
-            type: object
-        400:
-          description: Bad request - cde_series_ids must not be empty, or unknown
-            resolution action
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Resolve and execute a move (workspace-level)
-      tags:
-      - CDE Documents
   /v2/workspaces/{workspaceId}/cde/v2/by-series:
     get:
       description: 'Fetches CDE documents by a list of document_series_ids at workspace
@@ -13678,6 +13513,179 @@ paths:
       summary: Manually index selected CDE documents
       tags:
       - PDF Text Search
+  /v2/workspaces/{workspaceId}/cde/v2/move/check:
+    post:
+      description: 'Detect display-name conflicts for a pending move into a target
+        folder
+
+        at workspace level.
+
+        '
+      operationId: v2_moveCheckWorkspaceLevel
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_series_ids:
+              description: Document series IDs to check for a pending move
+              items:
+                type: string
+              type: array
+            target_folder_id:
+              description: Destination folder ID being moved into
+              type: string
+          required:
+          - cde_series_ids
+          type: object
+      responses:
+        200:
+          description: Successfully returns detected move conflicts
+          schema:
+            properties:
+              conflicts:
+                items:
+                  properties:
+                    displayName:
+                      description: Display name colliding in the target folder
+                      type: string
+                    seriesId:
+                      description: UUID of the document series being moved
+                      type: string
+                    targetSeriesId:
+                      description: UUID of the colliding series already in the target
+                        folder
+                      type: string
+                  type: object
+                type: array
+              invalid:
+                items:
+                  properties:
+                    reason:
+                      description: Why this item cannot be resolved in the dialog
+                      type: string
+                    seriesId:
+                      description: UUID of the document series being moved
+                      type: string
+                  type: object
+                type: array
+            type: object
+        400:
+          description: Bad request - cde_series_ids must not be empty
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Check for move conflicts (workspace-level)
+      tags:
+      - CDE Documents
+  /v2/workspaces/{workspaceId}/cde/v2/move/resolve:
+    post:
+      description: 'Execute a move by series IDs at workspace level, applying any
+        per-item
+
+        conflict resolutions.
+
+        '
+      operationId: v2_moveResolveWorkspaceLevel
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_series_ids:
+              description: Document series IDs to move
+              items:
+                type: string
+              type: array
+            resolutions:
+              additionalProperties:
+                type: string
+              description: Per-series conflict resolution action (move, replace, keep_both,
+                skip)
+              type: object
+            target_folder_id:
+              description: Destination folder ID being moved into
+              type: string
+          required:
+          - cde_series_ids
+          type: object
+      responses:
+        200:
+          description: Successfully executed the move
+          schema:
+            properties:
+              failed:
+                description: Count of items that failed to move
+                type: integer
+              items:
+                items:
+                  properties:
+                    action:
+                      description: Outcome for this series (moved, replaced, renamed,
+                        skipped, failed)
+                      type: string
+                    error:
+                      description: Failure reason, present only when action is failed
+                      type: string
+                    newCdeId:
+                      description: cde_id of the version row created by a replace
+                      type: integer
+                    newDisplayName:
+                      description: Renamed display name, present only when action
+                        is renamed
+                      type: string
+                    seriesId:
+                      description: UUID of the document series
+                      type: string
+                    targetSeriesId:
+                      description: UUID of the series that was replaced, present only
+                        when action is replaced
+                      type: string
+                  type: object
+                type: array
+              moved:
+                description: Count of items moved without conflict
+                type: integer
+              renamed:
+                description: Count of items renamed via keep_both
+                type: integer
+              replaced:
+                description: Count of items that replaced an existing series
+                type: integer
+              skipped:
+                description: Count of items skipped
+                type: integer
+              targetFolderId:
+                description: Destination folder ID the move was executed against
+                type: string
+            type: object
+        400:
+          description: Bad request - cde_series_ids must not be empty, or unknown
+            resolution action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Resolve and execute a move (workspace-level)
+      tags:
+      - CDE Documents
   /v2/workspaces/{workspaceId}/cde/v2/reindex-all:
     post:
       description: 'Triggers a full re-index of all PDF documents in the workspace.
@@ -43721,180 +43729,6 @@ paths:
       summary: Archive document by series ID
       tags:
       - CDE Documents
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/move/check:
-    post:
-      description: Detect display-name conflicts for a pending move into a target
-        folder
-      operationId: v2_moveCheck
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Project ID
-        in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            cde_series_ids:
-              description: Document series IDs to check for a pending move
-              items:
-                type: string
-              type: array
-            target_folder_id:
-              description: Destination folder ID being moved into
-              type: string
-          required:
-          - cde_series_ids
-          type: object
-      responses:
-        200:
-          description: Successfully returns detected move conflicts
-          schema:
-            properties:
-              conflicts:
-                items:
-                  properties:
-                    displayName:
-                      description: Display name colliding in the target folder
-                      type: string
-                    seriesId:
-                      description: UUID of the document series being moved
-                      type: string
-                    targetSeriesId:
-                      description: UUID of the colliding series already in the target
-                        folder
-                      type: string
-                  type: object
-                type: array
-              invalid:
-                items:
-                  properties:
-                    reason:
-                      description: Why this item cannot be resolved in the dialog
-                      type: string
-                    seriesId:
-                      description: UUID of the document series being moved
-                      type: string
-                  type: object
-                type: array
-            type: object
-        400:
-          description: Bad request - cde_series_ids must not be empty
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Check for move conflicts
-      tags:
-      - CDE Documents
-  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/move/resolve:
-    post:
-      description: Execute a move by series IDs, applying any per-item conflict resolutions
-      operationId: v2_moveResolve
-      parameters:
-      - description: Workspace ID
-        in: path
-        name: workspaceId
-        required: true
-        type: string
-      - description: Project ID
-        in: path
-        name: projectId
-        required: true
-        type: integer
-      - in: body
-        name: body
-        required: true
-        schema:
-          properties:
-            cde_series_ids:
-              description: Document series IDs to move
-              items:
-                type: string
-              type: array
-            resolutions:
-              additionalProperties:
-                type: string
-              description: Per-series conflict resolution action (move, replace, keep_both,
-                skip)
-              type: object
-            target_folder_id:
-              description: Destination folder ID being moved into
-              type: string
-          required:
-          - cde_series_ids
-          type: object
-      responses:
-        200:
-          description: Successfully executed the move
-          schema:
-            properties:
-              failed:
-                description: Count of items that failed to move
-                type: integer
-              items:
-                items:
-                  properties:
-                    action:
-                      description: Outcome for this series (moved, replaced, renamed,
-                        skipped, failed)
-                      type: string
-                    error:
-                      description: Failure reason, present only when action is failed
-                      type: string
-                    newCdeId:
-                      description: cde_id of the version row created by a replace
-                      type: integer
-                    newDisplayName:
-                      description: Renamed display name, present only when action
-                        is renamed
-                      type: string
-                    seriesId:
-                      description: UUID of the document series
-                      type: string
-                    targetSeriesId:
-                      description: UUID of the series that was replaced, present only
-                        when action is replaced
-                      type: string
-                  type: object
-                type: array
-              moved:
-                description: Count of items moved without conflict
-                type: integer
-              renamed:
-                description: Count of items renamed via keep_both
-                type: integer
-              replaced:
-                description: Count of items that replaced an existing series
-                type: integer
-              skipped:
-                description: Count of items skipped
-                type: integer
-              targetFolderId:
-                description: Destination folder ID the move was executed against
-                type: string
-            type: object
-        400:
-          description: Bad request - cde_series_ids must not be empty, or unknown
-            resolution action
-        401:
-          description: Unauthorized
-        500:
-          description: Internal Server Error
-      security:
-      - JWT_v2: []
-      summary: Resolve and execute a move
-      tags:
-      - CDE Documents
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/by-series:
     get:
       description: 'Fetches CDE documents by a list of document_series_ids.
@@ -44268,6 +44102,188 @@ paths:
       security:
       - JWT_v2: []
       summary: Migrate legacy CDE documents to use UUIDs
+      tags:
+      - CDE Documents
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/move/check:
+    post:
+      description: 'Detect display-name conflicts for a pending move by series IDs
+        into a
+
+        target folder.
+
+        '
+      operationId: v2_moveCheck
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_series_ids:
+              description: Document series IDs to check for a pending move
+              items:
+                type: string
+              type: array
+            target_folder_id:
+              description: Destination folder ID being moved into
+              type: string
+          required:
+          - cde_series_ids
+          type: object
+      responses:
+        200:
+          description: Successfully returns detected move conflicts
+          schema:
+            properties:
+              conflicts:
+                items:
+                  properties:
+                    displayName:
+                      description: Display name colliding in the target folder
+                      type: string
+                    seriesId:
+                      description: UUID of the document series being moved
+                      type: string
+                    targetSeriesId:
+                      description: UUID of the colliding series already in the target
+                        folder
+                      type: string
+                  type: object
+                type: array
+              invalid:
+                items:
+                  properties:
+                    reason:
+                      description: Why this item cannot be resolved in the dialog
+                      type: string
+                    seriesId:
+                      description: UUID of the document series being moved
+                      type: string
+                  type: object
+                type: array
+            type: object
+        400:
+          description: Bad request - cde_series_ids must not be empty
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Check for move conflicts
+      tags:
+      - CDE Documents
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/move/resolve:
+    post:
+      description: 'Execute a move by series IDs, applying any per-item conflict
+
+        resolutions.
+
+        '
+      operationId: v2_moveResolve
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_series_ids:
+              description: Document series IDs to move
+              items:
+                type: string
+              type: array
+            resolutions:
+              additionalProperties:
+                type: string
+              description: Per-series conflict resolution action (move, replace, keep_both,
+                skip)
+              type: object
+            target_folder_id:
+              description: Destination folder ID being moved into
+              type: string
+          required:
+          - cde_series_ids
+          type: object
+      responses:
+        200:
+          description: Successfully executed the move
+          schema:
+            properties:
+              failed:
+                description: Count of items that failed to move
+                type: integer
+              items:
+                items:
+                  properties:
+                    action:
+                      description: Outcome for this series (moved, replaced, renamed,
+                        skipped, failed)
+                      type: string
+                    error:
+                      description: Failure reason, present only when action is failed
+                      type: string
+                    newCdeId:
+                      description: cde_id of the version row created by a replace
+                      type: integer
+                    newDisplayName:
+                      description: Renamed display name, present only when action
+                        is renamed
+                      type: string
+                    seriesId:
+                      description: UUID of the document series
+                      type: string
+                    targetSeriesId:
+                      description: UUID of the series that was replaced, present only
+                        when action is replaced
+                      type: string
+                  type: object
+                type: array
+              moved:
+                description: Count of items moved without conflict
+                type: integer
+              renamed:
+                description: Count of items renamed via keep_both
+                type: integer
+              replaced:
+                description: Count of items that replaced an existing series
+                type: integer
+              skipped:
+                description: Count of items skipped
+                type: integer
+              targetFolderId:
+                description: Destination folder ID the move was executed against
+                type: string
+            type: object
+        400:
+          description: Bad request - cde_series_ids must not be empty, or unknown
+            resolution action
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Resolve and execute a move
       tags:
       - CDE Documents
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/registered:
