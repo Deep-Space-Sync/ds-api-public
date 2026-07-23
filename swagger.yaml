@@ -7014,6 +7014,31 @@ paths:
       summary: Revoke e-sign signing session
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/submittal-sign-sessions:
+    post:
+      description: "Orchestrated by the transmittals service (M2M) \u2014 composes\
+        \ the signable PDF, registers the e-sign document/request for the attachment\
+        \ and mints a signing session (DEL-286)."
+      operationId: v2_portalApiCreateSubmittalSignSession
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a submittal-attachment sign session
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/action-items:
     get:
       description: Get paginated list of action items for a project.
@@ -9310,6 +9335,82 @@ paths:
         500:
           description: Internal Server Error
       summary: View transmittal via public token
+      tags:
+      - public-access
+  /v2/transmittals_v2/access/{raw_token}/attachments/{attachment_id}/download:
+    get:
+      description: Unauthenticated endpoint for recipients to get a signed download
+        URL for a distributed notice attachment (DEL-286).
+      operationId: v2_portalDownloadAttachmentV2
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      - in: path
+        name: attachment_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            description: Response containing a signed GCS URL for document download.
+            properties:
+              expires_in_secs:
+                default: 900
+                type: integer
+              file_name:
+                description: Display file name for Content-Disposition hint
+                type: string
+              signed_url:
+                type: string
+            required:
+            - signed_url
+            - file_name
+            type: object
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      summary: Download a notice attachment via public token
+      tags:
+      - public-access
+  /v2/transmittals_v2/access/{raw_token}/attachments/{attachment_id}/sign-session:
+    post:
+      description: Unauthenticated endpoint (token-scoped) creating an e-sign session
+        for a signature-required attachment and returning the public signing URL (DEL-286).
+      operationId: v2_portalAttachmentSignSessionV2
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      - in: path
+        name: attachment_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            description: Public signing URL for the attachment.
+            properties:
+              expires_in_secs:
+                type: integer
+              sign_url:
+                type: string
+            required:
+            - sign_url
+            - expires_in_secs
+            type: object
+        409:
+          description: Attachment already signed
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      summary: Start signing a distributed attachment
       tags:
       - public-access
   /v2/transmittals_v2/access/{raw_token}/documents/{cde_id}/download:
