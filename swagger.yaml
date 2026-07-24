@@ -22818,6 +22818,67 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/recommendation/approval-complete:
+    post:
+      description: "Called by hz_approval's entity_status_sync when the internal approval\n\
+        terminates. Writes the outcome (\"approved\"/\"rejected\") onto\nrecommendation.status\
+        \ \u2014 the same field the award gate reads.\n"
+      operationId: v2_completeTenderRecommendationApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actor_user_email:
+              type: string
+            actor_user_id:
+              type: string
+            approval_completed_by_engine:
+              type: boolean
+            approval_id:
+              type: string
+            comment:
+              type: string
+            status:
+              enum:
+              - approved
+              - rejected
+              type: string
+          required:
+          - status
+          type: object
+      responses:
+        200:
+          description: Outcome recorded on the recommendation
+          schema:
+            type: object
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Package or recommendation not found
+        409:
+          description: Not pending approval / approval_id mismatch
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Approval-engine completion callback for a tender recommendation (PRE-183
+        v2)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/recommendation/decision:
     post:
       operationId: v2_decideTenderRecommendation
@@ -22921,6 +22982,60 @@ paths:
       security:
       - JWT_v2: []
       summary: Submit a draft recommendation for approval (freezes the snapshot)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/recommendation/submit-for-approval:
+    post:
+      description: "Engine-mode replacement for /recommendation/submit \u2014 freezes\
+        \ the draft\nand creates an approval instance (entity_type TENDER_RECOMMENDATION,\n\
+        amount = recommended_award_value) instead of a hand-picked approver\npanel.\
+        \ The engine handles routing, notifications and My Approvals.\n"
+      operationId: v2_submitTenderRecommendationForApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            context:
+              description: Extra context merged into the approval instance snapshot
+              type: object
+            workflow_id:
+              description: Optional explicit workflow; omitted = engine resolves by
+                entity type + amount
+              type: string
+          type: object
+      responses:
+        201:
+          description: Approval instance created; recommendation now pending_approval
+          schema:
+            type: object
+        400:
+          description: Validation error (no bidder / non-positive award value)
+        401:
+          description: Unauthorized
+        404:
+          description: Recommendation not found
+        409:
+          description: Recommendation not in draft state
+        500:
+          description: Internal Server Error
+        502:
+          description: Approval engine rejected the create
+      security:
+      - JWT_v2: []
+      summary: Submit a draft recommendation through the DoA approval engine (PRE-183
+        v2)
       tags:
       - Cost
       x-ds-test-enabled: true
