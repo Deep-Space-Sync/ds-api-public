@@ -9030,6 +9030,39 @@ paths:
       summary: Get a signed download URL for one file in a public folder
       tags:
       - CDE Public Access
+  /v2/public/cde/{token}/signed-urls:
+    post:
+      description: Returns short-lived GCS signed URLs for the requested files in
+        the token's subtree (empty body = all files), so the receiver downloads from
+        GCS directly and zips client-side. No auth required.
+      operationId: v2_postPublicCdeSignedUrls
+      parameters:
+      - description: Folder share token
+        in: path
+        name: token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            file_ids:
+              items:
+                type: integer
+              type: array
+          type: object
+      responses:
+        200:
+          description: Signed download URLs (urls[] + expires_in_secs)
+          schema:
+            type: object
+        404:
+          description: One or more ids not in this folder / link revoked
+      security: []
+      summary: Batch signed download URLs for files in a public folder (CDE-204)
+      tags:
+      - CDE Public Access
   /v2/record-publishing/public/{token}:
     get:
       description: Fetch a published record by its public token (no auth required)
