@@ -24977,7 +24977,9 @@ paths:
         - invoices_to_client
         - payments
         - purchase_orders
-        - subcontractor_payment_schedules
+        - subcontract_claims
+        - supplier_claims
+        - reverse_payment_claims
         in: path
         name: syncId
         required: true
