@@ -54437,6 +54437,131 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/revert-to-draft:
+    get:
+      description: 'Read-only probe powering the "Revert internal approval" button/modal
+
+        (COM-690): whether the caller may revert (requester who submitted for
+
+        approval, or a Highest Authority holder) and which blockers exist.
+
+        Returns both legacy `blockers` strings and structured
+
+        `blockers_detail` entries carrying a code and an actionable
+
+        remediation (text + optional jump link; `external: true` when the fix
+
+        lives outside Deep Space).
+
+        '
+      operationId: v2_getHeadContractClaimRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload
+          schema:
+            properties:
+              data:
+                properties:
+                  authorized:
+                    type: boolean
+                  blockers:
+                    items:
+                      type: string
+                    type: array
+                  blockers_detail:
+                    items:
+                      type: object
+                    type: array
+                  can_revert:
+                    type: boolean
+                  is_highest_authority:
+                    type: boolean
+                  is_requester:
+                    type: boolean
+                type: object
+              message:
+                type: string
+            type: object
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Revert eligibility for a head contract progress claim's internal approval
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      description: 'Revokes the completed internal approval (engine REVOKE with audit
+        +
+
+        notifications) and clears `internal_approval_status` / `approval_id`
+
+        so the record can be edited and resubmitted for a fresh internal
+
+        approval. The client-facing lifecycle `status` is NOT touched.
+
+        Blocked once the record has left Draft (issued/served) or when
+
+        downstream records reference it; a mandatory `reason` is audited.
+
+        Only the requester or a Highest Authority holder may revert.
+
+        '
+      operationId: v2_revertHeadContractClaimToDraft
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              description: Why the internal approval is being reverted (audited).
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Internal approval reverted; record editable again
+        400:
+          description: Missing reason, or internal approval not in a revertible state
+        403:
+          description: Caller is neither the requester nor a Highest Authority holder
+        409:
+          description: Downstream blockers exist (see blockers_detail)
+        502:
+          description: The approval engine refused the revoke
+      security:
+      - JWT_v2: []
+      summary: Revert a head contract progress claim's internal approval to draft
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/sovs:
     get:
       operationId: v2_getClaimSovs
@@ -55831,6 +55956,131 @@ paths:
       security:
       - JWT_v2: []
       summary: Approval-engine completion callback for a head contract variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/revert-to-draft:
+    get:
+      description: 'Read-only probe powering the "Revert internal approval" button/modal
+
+        (COM-690): whether the caller may revert (requester who submitted for
+
+        approval, or a Highest Authority holder) and which blockers exist.
+
+        Returns both legacy `blockers` strings and structured
+
+        `blockers_detail` entries carrying a code and an actionable
+
+        remediation (text + optional jump link; `external: true` when the fix
+
+        lives outside Deep Space).
+
+        '
+      operationId: v2_getHeadContractVariationRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload
+          schema:
+            properties:
+              data:
+                properties:
+                  authorized:
+                    type: boolean
+                  blockers:
+                    items:
+                      type: string
+                    type: array
+                  blockers_detail:
+                    items:
+                      type: object
+                    type: array
+                  can_revert:
+                    type: boolean
+                  is_highest_authority:
+                    type: boolean
+                  is_requester:
+                    type: boolean
+                type: object
+              message:
+                type: string
+            type: object
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Revert eligibility for a head contract variation's internal approval
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      description: 'Revokes the completed internal approval (engine REVOKE with audit
+        +
+
+        notifications) and clears `internal_approval_status` / `approval_id`
+
+        so the record can be edited and resubmitted for a fresh internal
+
+        approval. The client-facing lifecycle `status` is NOT touched.
+
+        Blocked once the record has left Draft (issued/served) or when
+
+        downstream records reference it; a mandatory `reason` is audited.
+
+        Only the requester or a Highest Authority holder may revert.
+
+        '
+      operationId: v2_revertHeadContractVariationToDraft
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              description: Why the internal approval is being reverted (audited).
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Internal approval reverted; record editable again
+        400:
+          description: Missing reason, or internal approval not in a revertible state
+        403:
+          description: Caller is neither the requester nor a Highest Authority holder
+        409:
+          description: Downstream blockers exist (see blockers_detail)
+        502:
+          description: The approval engine refused the revoke
+      security:
+      - JWT_v2: []
+      summary: Revert a head contract variation's internal approval to draft
       tags:
       - Cost
       x-min-permissions: isCostUser
@@ -65121,6 +65371,131 @@ paths:
       security:
       - JWT_v2: []
       summary: Approval-engine completion callback for a subcontract variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/revert-to-draft:
+    get:
+      description: 'Read-only probe powering the "Revert internal approval" button/modal
+
+        (COM-690): whether the caller may revert (requester who submitted for
+
+        approval, or a Highest Authority holder) and which blockers exist.
+
+        Returns both legacy `blockers` strings and structured
+
+        `blockers_detail` entries carrying a code and an actionable
+
+        remediation (text + optional jump link; `external: true` when the fix
+
+        lives outside Deep Space).
+
+        '
+      operationId: v2_getSubcontractVariationRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload
+          schema:
+            properties:
+              data:
+                properties:
+                  authorized:
+                    type: boolean
+                  blockers:
+                    items:
+                      type: string
+                    type: array
+                  blockers_detail:
+                    items:
+                      type: object
+                    type: array
+                  can_revert:
+                    type: boolean
+                  is_highest_authority:
+                    type: boolean
+                  is_requester:
+                    type: boolean
+                type: object
+              message:
+                type: string
+            type: object
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Revert eligibility for a subcontract variation's internal approval
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      description: 'Revokes the completed internal approval (engine REVOKE with audit
+        +
+
+        notifications) and clears `internal_approval_status` / `approval_id`
+
+        so the record can be edited and resubmitted for a fresh internal
+
+        approval. The client-facing lifecycle `status` is NOT touched.
+
+        Blocked once the record has left Draft (issued/served) or when
+
+        downstream records reference it; a mandatory `reason` is audited.
+
+        Only the requester or a Highest Authority holder may revert.
+
+        '
+      operationId: v2_revertSubcontractVariationToDraft
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              description: Why the internal approval is being reverted (audited).
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Internal approval reverted; record editable again
+        400:
+          description: Missing reason, or internal approval not in a revertible state
+        403:
+          description: Caller is neither the requester nor a Highest Authority holder
+        409:
+          description: Downstream blockers exist (see blockers_detail)
+        502:
+          description: The approval engine refused the revoke
+      security:
+      - JWT_v2: []
+      summary: Revert a subcontract variation's internal approval to draft
       tags:
       - Cost
       x-min-permissions: isCostUser
