@@ -50589,6 +50589,40 @@ paths:
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims:
+    delete:
+      operationId: v2_deleteCostClaim
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Internal identifier of the claim to delete
+        in: query
+        name: costClaimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Object successfully deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        409:
+          description: Deletion blocked by status or linked records
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Cost Claim
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
     get:
       operationId: v2_getCostClaims
       parameters:
@@ -56354,6 +56388,40 @@ paths:
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/invoices:
+    delete:
+      operationId: v2_deleteCostInvoice
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Internal identifier of the invoice to delete
+        in: query
+        name: costInvoiceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Object successfully deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        409:
+          description: Deletion blocked by status or linked records
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Cost Invoice
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
     get:
       operationId: v2_getCostInvoices
       parameters:
@@ -66780,6 +66848,40 @@ paths:
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests:
+    delete:
+      operationId: v2_deleteCostVariationRequest
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Internal identifier of the variation request to delete
+        in: query
+        name: costVariationReqId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Object successfully deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        409:
+          description: Deletion blocked by status or linked records
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Cost Variation Request
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
     get:
       operationId: v2_getCostVariationRequests
       parameters:
