@@ -48149,6 +48149,11 @@ paths:
           properties:
             contingency:
               type: number
+            copy_from_version_id:
+              description: "PRE-287 \u2014 seed the new version from this existing\
+                \ version (inherits margins/markup/sections and duplicates its BOQs\
+                \ with items)"
+              type: string
             markup:
               type: array
             overheads:
