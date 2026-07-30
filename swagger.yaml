@@ -52787,6 +52787,130 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/credit-notes:
+    get:
+      operationId: v2_getCreditNotes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Credit Notes
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/credit-notes/{creditNoteId}:
+    delete:
+      operationId: v2_deleteCreditNoteById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: creditNoteId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Credit Note By Id (Draft only)
+      tags:
+      - Cost
+    get:
+      operationId: v2_getCreditNoteById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: creditNoteId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Credit Note By Id
+      tags:
+      - Cost
+    patch:
+      operationId: v2_patchCreditNoteById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: creditNoteId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+      security:
+      - JWT_v2: []
+      summary: Edit Credit Note By Id (Draft only)
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/credit-notes/{creditNoteId}/change-status:
+    patch:
+      operationId: v2_patchCreditNoteStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: creditNoteId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Status updated
+      security:
+      - JWT_v2: []
+      summary: Accept Credit Note (optionally push to Xero)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-edits:
     get:
       operationId: v2_getCostForecastEdits
