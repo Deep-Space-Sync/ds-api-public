@@ -26484,6 +26484,30 @@ paths:
         name: includePrimaryContact
         required: false
         type: boolean
+      - description: "Global-directory search filter \u2014 exact match on country"
+        in: query
+        name: country
+        required: false
+        type: string
+      - description: "Global-directory search filter \u2014 exact match on location_state_province"
+        in: query
+        name: region
+        required: false
+        type: string
+      - collectionFormat: multi
+        description: "Global-directory search filter \u2014 repeatable canonical trade\
+          \ codes (ANY-match against global_company_trade)"
+        in: query
+        items:
+          type: string
+        name: trade
+        required: false
+        type: array
+      - description: Exclude synthetic 999900-placeholder (no verified tax ID) companies
+        in: query
+        name: excludeUnverified
+        required: false
+        type: boolean
       responses:
         200:
           description: Successful response
@@ -26554,6 +26578,43 @@ paths:
       security:
       - JWT_v2: []
       summary: Create Global Company (V2)
+      tags:
+      - Global Company Directory V2
+  /v2/workspaces/{workspaceId}/global-companies-directory/filter-options:
+    get:
+      operationId: v2_getGlobalDirectoryFilterOptionsV2
+      parameters:
+      - description: Workspace ID (ds_workspace_name)
+        in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Filter values for the global-directory search (country/region/trade)
+          schema:
+            properties:
+              countries:
+                items:
+                  type: string
+                type: array
+              regions:
+                type: object
+              trades:
+                items:
+                  properties:
+                    label:
+                      type: string
+                    trade_code:
+                      type: string
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: Global-Directory Search Filter Options
       tags:
       - Global Company Directory V2
   /v2/workspaces/{workspaceId}/global-companies-directory/managed:
