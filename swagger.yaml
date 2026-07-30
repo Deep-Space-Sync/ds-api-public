@@ -84687,6 +84687,113 @@ paths:
       summary: Change invoice approval status
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/convert/credit-note:
+    post:
+      description: Creates a cost_credit_notes document (status Draft) linked to a
+        purchase order or subcontract from the AI-extracted credit note data. Marks
+        the email as converted and advances it to Sent for Authorisation.
+      operationId: v2_convertEmailToCreditNote
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              description: Total credit (must be greater than zero)
+              type: number
+            credit_note_date:
+              description: Credit note date (YYYY-MM-DD)
+              type: string
+            credit_note_number:
+              description: The supplier's credit note number (Xero CreditNoteNumber)
+              type: string
+            currency:
+              type: string
+            description:
+              type: string
+            line_items:
+              description: Selected lines; each targets the linked record ('record')
+                or one of its claims ('claim:<doc_id>')
+              items:
+                properties:
+                  cost_code_num:
+                    type: string
+                  description:
+                    type: string
+                  gst_excluded:
+                    type: boolean
+                  match:
+                    type: string
+                  qty:
+                    type: number
+                  total_amount:
+                    description: Ex-GST line amount; negative allowed (netted positive
+                      at Xero push)
+                    type: number
+                  unit_amount:
+                    type: number
+                type: object
+              type: array
+            match_type:
+              description: Record family the credit note nets against (purchase_order
+                or subcontract)
+              type: string
+            project_id:
+              description: Target project ID
+              type: string
+            related_cost_order_num:
+              description: Linked purchase order document ID (purchase_order family)
+              type: string
+            subcontract_id:
+              description: Linked subcontract document ID (subcontract family)
+              type: string
+            subtotal:
+              type: number
+            tax_amount:
+              type: number
+          required:
+          - project_id
+          - match_type
+          - credit_note_number
+          - credit_note_date
+          - line_items
+          type: object
+      responses:
+        201:
+          description: Credit note created
+          schema:
+            properties:
+              data:
+                properties:
+                  credit_note:
+                    type: object
+                type: object
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+        400:
+          description: Validation error (missing fields, total not positive, claim
+            not under linked record, bad status)
+        403:
+          description: Unauthorized
+        404:
+          description: Email not found
+      security:
+      - JWT_v2: []
+      summary: Convert AI-processed email to credit note
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/convert/subcontract-claim:
     post:
       description: Creates a subcontract_claims document with embedded sovs from the
