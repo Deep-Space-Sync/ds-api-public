@@ -79487,6 +79487,54 @@ paths:
       summary: List subcontractor extra details
       tags:
       - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/subcontractors/expiry-reminders/run:
+    post:
+      description: 'Computes and sends this workspace''s due document-expiry reminder
+        emails at send time from the subcontractor compliance registry (host-anchored).
+        Called daily by the document_expiry_reminders automation process with an M2M
+        admin token; admin/cs-admin scope required. Returns a per-run summary (sent
+        / skipped with reasons) that lands in processing_log results. 409 when the
+        workspace is not enrolled (inductionSettings.dynamicExpiryReminders).
+
+        '
+      operationId: v2_runWorkspaceExpiryReminders
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            calendar_tick_date:
+              description: ISO date of the calendar tick driving the run
+              type: string
+            cc_host:
+              description: Also cc host workspace admins (default false)
+              type: boolean
+            dry_run:
+              description: Compute and report without sending (default false)
+              type: boolean
+            lead_days:
+              description: Reminder day-buckets (default [30, 7, 1])
+              items:
+                type: integer
+              type: array
+          type: object
+      responses:
+        200:
+          description: Run summary (sent / skipped per document)
+        403:
+          description: Admin scope required
+        409:
+          description: Workspace not enrolled in dynamic expiry reminders
+        500:
+          description: Internal server error
+      summary: Run dynamic document-expiry reminders for a workspace
+      tags:
+      - Subcontractor Extra Details
   /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/details:
     delete:
       description: Soft delete extended metadata for a subcontractor
