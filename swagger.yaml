@@ -79532,6 +79532,8 @@ paths:
           description: Workspace not enrolled in dynamic expiry reminders
         500:
           description: Internal server error
+      security:
+      - JWT_v2: []
       summary: Run dynamic document-expiry reminders for a workspace
       tags:
       - Subcontractor Extra Details
