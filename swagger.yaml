@@ -65029,6 +65029,31 @@ paths:
       summary: Change Subcontract Payment Schedule Status
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/push-to-xero:
+    post:
+      operationId: v2_pushSubcontractPaymentScheduleToXero
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Push attempted; outcome in the xero_push object
+      security:
+      - JWT_v2: []
+      summary: Push an Accepted Subcontract Payment Schedule to Xero (SUP-1466 manual
+        retry)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/sovs:
     get:
       operationId: v2_getSubcontractPaymentScheduleSovs
