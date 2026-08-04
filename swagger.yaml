@@ -65000,6 +65000,67 @@ paths:
       summary: Get Subcontract Payment Schedule Activity (COM-630 audit trail)
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/approval-complete:
+    post:
+      description: 'Called by hz_approval''s entity_status_sync when the internal
+        approval
+
+        terminates. Writes `internal_approval_status` ("approved"/"rejected")
+
+        + decision metadata onto the record. Never writes the SOPA-facing
+
+        lifecycle status.
+
+        '
+      operationId: v2_completeSubcontractPaymentScheduleApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actor_user_email:
+              type: string
+            actor_user_id:
+              type: string
+            approval_completed_by_engine:
+              type: boolean
+            approval_id:
+              type: string
+            comment:
+              type: string
+            status:
+              enum:
+              - approved
+              - rejected
+              type: string
+          type: object
+      responses:
+        200:
+          description: Internal approval recorded
+        404:
+          description: Record not found
+        409:
+          description: approval_id does not match the record's active approval
+      security:
+      - JWT_v2: []
+      summary: Approval-engine completion callback for a subcontract payment schedule
+        (COM-714)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/change-status:
     patch:
       operationId: v2_patchSubcontractPaymentScheduleStatus
@@ -65054,6 +65115,94 @@ paths:
         retry)
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/revert-to-draft:
+    get:
+      description: 'Read-only probe powering the "Revert internal approval" button/modal
+
+        (COM-690 machinery): whether the caller may revert (the requester or a
+
+        Highest Authority holder) and which blockers exist (schedule already
+
+        finalised, bill pushed to Xero).
+
+        '
+      operationId: v2_getSubcontractPaymentScheduleRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Revert eligibility for a payment schedule's internal approval (COM-714)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      description: 'Revokes the completed internal approval (engine REVOKE with audit)
+        and
+
+        clears `internal_approval_status` / `approval_id` so the schedule can
+
+        be corrected and resubmitted. The SOPA-facing lifecycle status is NOT
+
+        touched. Blocked once the schedule is finalised (Accepted/Disputed/
+
+        Paid) or its bill is in Xero; a mandatory `reason` is audited.
+
+        '
+      operationId: v2_revertSubcontractPaymentScheduleInternalApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Internal approval reverted
+        403:
+          description: Caller is neither the requester nor a Highest Authority holder
+        404:
+          description: Record not found
+        409:
+          description: Blocked by downstream state (finalised schedule or Xero bill)
+      security:
+      - JWT_v2: []
+      summary: Revert a payment schedule's internal approval (COM-714)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/sovs:
     get:
       operationId: v2_getSubcontractPaymentScheduleSovs
@@ -65226,6 +65375,56 @@ paths:
       summary: Certify a Payment Schedule SOV Line (COM-630 approve / partial / reject)
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/submit-for-approval:
+    post:
+      description: "Creates an approval-engine instance for the payment schedule with\
+        \ the\nDoA chain resolved against the SCHEDULED (certified) amount. Gate:\n\
+        every SOV line must already be decided (decided lines are immutable,\nfreezing\
+        \ the amount) and the certified total must be > 0.\n\nWrites `internal_approval_status\
+        \ = \"pending_approval\"` on the record.\nThe SOPA-facing lifecycle status\
+        \ is NOT changed \u2014 the internal DoA\nsign-off and the subcontractor exchange\
+        \ are separate dimensions.\n"
+      operationId: v2_submitSubcontractPaymentScheduleForApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            context:
+              description: Extra fields merged into the approval context_snapshot.
+              type: object
+            workflow_id:
+              description: Override workflow. Falls back to the record's workflow_id,
+                then soft fallback.
+              type: string
+          type: object
+      responses:
+        201:
+          description: Approval instance created; record flagged pending_approval
+        400:
+          description: Record not in a submittable state, undecided SOV lines, or
+            approval already in progress
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Submit a subcontract payment schedule for internal approval (COM-714)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-retentions:
     get:
       operationId: v2_getSubcontractRetentions
