@@ -47683,6 +47683,163 @@ paths:
       summary: Accept Credit Note (optionally push to Xero)
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-cash-flow:
+    get:
+      operationId: v2_getCostForecastCashFlowGrid
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: period
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              cost_codes:
+                items:
+                  properties:
+                    actuals:
+                      additionalProperties:
+                        type: number
+                      type: object
+                    budget:
+                      additionalProperties:
+                        type: number
+                      type: object
+                    cost_code:
+                      type: string
+                    cost_code_display:
+                      type: string
+                    cost_code_name:
+                      type: string
+                    distribution_source:
+                      type: string
+                    forecast:
+                      additionalProperties:
+                        type: number
+                      type: object
+                    ftc:
+                      type: number
+                    has_task_link:
+                      type: boolean
+                    is_direct_allocation:
+                      type: boolean
+                    overridden_months:
+                      items:
+                        type: string
+                      type: array
+                    program_window:
+                      properties:
+                        end_month:
+                          type: string
+                        start_month:
+                          type: string
+                      type: object
+                    revised_budget:
+                      type: number
+                  type: object
+                type: array
+              forecast_id:
+                type: string
+              forecast_status:
+                type: string
+              months:
+                items:
+                  type: string
+                type: array
+              period:
+                type: string
+              scurve_forecast_id:
+                type: string
+              totals:
+                properties:
+                  actuals:
+                    additionalProperties:
+                      type: number
+                    type: object
+                  budget:
+                    additionalProperties:
+                      type: number
+                    type: object
+                  forecast:
+                    additionalProperties:
+                      type: number
+                    type: object
+                type: object
+              window:
+                properties:
+                  end_month:
+                    type: string
+                  start_month:
+                    type: string
+                type: object
+            type: object
+        400:
+          description: Missing or invalid period
+        404:
+          description: No forecast exists for the period
+      security:
+      - JWT_v2: []
+      summary: Three-series cash flow grid (budget / actuals / forecast) for a forecast
+        period
+      tags:
+      - Cost - Forecast Cash Flow
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-cash-flow/override:
+    post:
+      operationId: v2_saveCostForecastCashFlowOverride
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              type: number
+            cost_code:
+              type: string
+            period:
+              type: string
+            period_month:
+              type: string
+          required:
+          - period
+          - cost_code
+          - period_month
+          type: object
+      responses:
+        200:
+          description: Override saved or cleared
+        400:
+          description: Validation failure (bad month, past month, overrides exceed
+            FTC)
+        404:
+          description: No forecast exists for the period
+      security:
+      - JWT_v2: []
+      summary: Upsert or clear a manual cash flow cell override
+      tags:
+      - Cost - Forecast Cash Flow
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-edits:
     get:
       operationId: v2_getCostForecastEdits
