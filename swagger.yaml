@@ -26145,6 +26145,197 @@ paths:
       summary: Get a form in workspace by ID
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/roles:
+    get:
+      operationId: v2_getDsSiteChannelRoles
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: array
+              message:
+                type: string
+              total:
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List assignable DS Site channel roles
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/users:
+    get:
+      operationId: v2_searchDsSiteChannelMembers
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: searchQuery
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              data:
+                type: array
+              message:
+                type: string
+              total:
+                type: number
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List DS Site channel members with roles and invite status
+      tags:
+      - DS Site Admin Integrations
+    post:
+      operationId: v2_addDsSiteChannelMember
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: Member payload (email, role, first_name, last_name, send_invite)
+          type: object
+      responses:
+        201:
+          description: Member created
+        400:
+          description: Invalid body
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add a member to the linked DS Site channel
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/users/{accountUserId}:
+    delete:
+      operationId: v2_removeDsSiteChannelMember
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: accountUserId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Member removed
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove a member from the linked DS Site channel
+      tags:
+      - DS Site Admin Integrations
+    put:
+      operationId: v2_updateDsSiteChannelMember
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: accountUserId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          description: Member update payload (role, first_name, last_name)
+          type: object
+      responses:
+        200:
+          description: Member updated
+        400:
+          description: Invalid body
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update a DS Site channel member's role
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/users/{accountUserId}/invite:
+    delete:
+      operationId: v2_revokeDsSiteChannelMemberInvite
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: accountUserId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Invitation revoked
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Revoke a DS Site channel invitation
+      tags:
+      - DS Site Admin Integrations
+    put:
+      operationId: v2_inviteDsSiteChannelMember
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: accountUserId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Invitation sent
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Send or resend a DS Site channel invitation
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/files:
     get:
       operationId: v2_v2_getFilesWorkspaceLevel
