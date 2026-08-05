@@ -70922,6 +70922,64 @@ paths:
       summary: Date-scoped sign-on headcount + people list
       tags:
       - SigninRecords
+  /v2/workspaces/{workspaceId}/signin-records/sign-all-out:
+    post:
+      operationId: v2_v2_signinRecordsSignAllOut
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            project_id:
+              type: string
+          required:
+          - project_id
+          type: object
+      responses:
+        200:
+          description: Bulk sign-out result
+          schema:
+            properties:
+              date:
+                type: string
+              events_closed:
+                type: integer
+              failed:
+                items:
+                  properties:
+                    event_id:
+                      type: string
+                    mobile:
+                      type: string
+                    record_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+              project_id:
+                type: string
+              records_updated:
+                type: integer
+              signed_out:
+                type: integer
+            type: object
+        400:
+          description: Bad request - project_id is required
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Bulk sign out everyone currently on site
+      tags:
+      - SigninRecords
   /v2/workspaces/{workspaceId}/signin-records/{recordId}:
     patch:
       operationId: v2_v2_updateSigninRecord
