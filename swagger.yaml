@@ -47715,6 +47715,10 @@ paths:
                       additionalProperties:
                         type: number
                       type: object
+                    committed_outstanding:
+                      additionalProperties:
+                        type: number
+                      type: object
                     cost_code:
                       type: string
                     cost_code_display:
@@ -47733,6 +47737,8 @@ paths:
                       type: boolean
                     is_direct_allocation:
                       type: boolean
+                    outstanding_commitment:
+                      type: number
                     overridden_months:
                       items:
                         type: string
@@ -47767,6 +47773,10 @@ paths:
                       type: number
                     type: object
                   budget:
+                    additionalProperties:
+                      type: number
+                    type: object
+                  committed_outstanding:
                     additionalProperties:
                       type: number
                     type: object
