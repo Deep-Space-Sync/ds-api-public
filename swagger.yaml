@@ -4115,6 +4115,34 @@ paths:
       summary: Add a comment to a task-workspace cell thread
       tags:
       - ImplementationBoard
+  /v2/implementation-board/my-prefs:
+    put:
+      operationId: v2_upsertImplementationBoardMyPrefs
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            hidden_workspace_ids:
+              items:
+                type: string
+              type: array
+            view_mode:
+              enum:
+              - mine
+              - all
+              type: string
+          type: object
+      responses:
+        200:
+          description: Saved prefs
+      security:
+      - JWT_v2: []
+      summary: Upsert the calling user's board view prefs (personal workspace hides
+        + My/All view mode)
+      tags:
+      - ImplementationBoard
   /v2/implementation-board/sections:
     post:
       operationId: v2_createImplementationSection
