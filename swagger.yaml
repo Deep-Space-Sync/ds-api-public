@@ -4046,6 +4046,273 @@ paths:
       summary: Toggle reaction on Site Instruction comment
       tags:
       - PortalApi
+  /v2/implementation-board/board:
+    get:
+      operationId: v2_getImplementationBoard
+      responses:
+        200:
+          description: Board payload
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+        403:
+          description: Insufficient permissions (cs-admin required)
+      security:
+      - JWT_v2: []
+      summary: Full board payload (sections, tasks, cells, workspace meta, team)
+      tags:
+      - ImplementationBoard
+  /v2/implementation-board/cells/{cellId}:
+    put:
+      operationId: v2_upsertImplementationCell
+      parameters:
+      - in: path
+        name: cellId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated cell
+      security:
+      - JWT_v2: []
+      summary: Upsert a task-workspace cell (completion tick, checklist state)
+      tags:
+      - ImplementationBoard
+  /v2/implementation-board/cells/{cellId}/comments:
+    post:
+      operationId: v2_addImplementationCellComment
+      parameters:
+      - in: path
+        name: cellId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            comment_text:
+              type: string
+            created_by_name:
+              type: string
+          required:
+          - comment_text
+          type: object
+      responses:
+        201:
+          description: Comment created
+      security:
+      - JWT_v2: []
+      summary: Add a comment to a task-workspace cell thread
+      tags:
+      - ImplementationBoard
+  /v2/implementation-board/sections:
+    post:
+      operationId: v2_createImplementationSection
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+            order:
+              type: string
+          required:
+          - name
+          type: object
+      responses:
+        201:
+          description: Section created
+      security:
+      - JWT_v2: []
+      summary: Create a board section
+      tags:
+      - ImplementationBoard
+  /v2/implementation-board/sections/{sectionId}:
+    delete:
+      operationId: v2_deleteImplementationSection
+      parameters:
+      - in: path
+        name: sectionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+        400:
+          description: Section still contains tasks
+      security:
+      - JWT_v2: []
+      summary: Soft-delete an empty section
+      tags:
+      - ImplementationBoard
+    put:
+      operationId: v2_updateImplementationSection
+      parameters:
+      - in: path
+        name: sectionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated section
+      security:
+      - JWT_v2: []
+      summary: Rename / reorder a section
+      tags:
+      - ImplementationBoard
+  /v2/implementation-board/tasks:
+    post:
+      operationId: v2_createImplementationTask
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+            order:
+              type: string
+            section_id:
+              type: string
+          required:
+          - name
+          - section_id
+          type: object
+      responses:
+        201:
+          description: Task created
+      security:
+      - JWT_v2: []
+      summary: Create a task row
+      tags:
+      - ImplementationBoard
+  /v2/implementation-board/tasks/{taskId}:
+    put:
+      operationId: v2_updateImplementationTask
+      parameters:
+      - in: path
+        name: taskId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated task
+      security:
+      - JWT_v2: []
+      summary: Rename / reorder / move / archive a task, or edit its description,
+        checklist, notes, links
+      tags:
+      - ImplementationBoard
+  /v2/implementation-board/team:
+    post:
+      operationId: v2_createImplementationTeamMember
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            department:
+              type: string
+            email:
+              type: string
+            kinde_id:
+              type: string
+            name:
+              type: string
+          required:
+          - name
+          - email
+          type: object
+      responses:
+        201:
+          description: Team member created
+      security:
+      - JWT_v2: []
+      summary: Add an internal DS staff member to the team list
+      tags:
+      - ImplementationBoard
+  /v2/implementation-board/team/{memberId}:
+    delete:
+      operationId: v2_deleteImplementationTeamMember
+      parameters:
+      - in: path
+        name: memberId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+      security:
+      - JWT_v2: []
+      summary: Soft-delete a team member
+      tags:
+      - ImplementationBoard
+    put:
+      operationId: v2_updateImplementationTeamMember
+      parameters:
+      - in: path
+        name: memberId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated team member
+      security:
+      - JWT_v2: []
+      summary: Update a team member
+      tags:
+      - ImplementationBoard
+  /v2/implementation-board/workspace-meta/{workspaceId}:
+    put:
+      operationId: v2_upsertImplementationWorkspaceMeta
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated workspace meta
+      security:
+      - JWT_v2: []
+      summary: Upsert per-workspace board meta (hidden flag, salesperson / implementation
+        / support people)
+      tags:
+      - ImplementationBoard
   /v2/internal/transmittals_v2/{transmittal_doc_id}/send-emails:
     post:
       operationId: v2_sendDistributionEmailsInternalV2
