@@ -47715,6 +47715,12 @@ paths:
                       additionalProperties:
                         type: number
                       type: object
+                    category_client_id:
+                      type: string
+                    category_id:
+                      type: string
+                    category_name:
+                      type: string
                     committed_outstanding:
                       additionalProperties:
                         type: number
