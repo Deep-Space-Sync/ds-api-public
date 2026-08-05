@@ -4179,7 +4179,7 @@ paths:
       - ImplementationBoard
   /v2/implementation-board/tasks:
     post:
-      operationId: v2_createImplementationTask
+      operationId: v2_createImplementationBoardTask
       parameters:
       - in: body
         name: body
@@ -4206,7 +4206,7 @@ paths:
       - ImplementationBoard
   /v2/implementation-board/tasks/{taskId}:
     put:
-      operationId: v2_updateImplementationTask
+      operationId: v2_updateImplementationBoardTask
       parameters:
       - in: path
         name: taskId
