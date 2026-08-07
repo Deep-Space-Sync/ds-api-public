@@ -59977,6 +59977,56 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/link-notice:
+    post:
+      operationId: v2_linkNoticeToSubcontractVariation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            notice_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Notice linked (or already linked)
+          schema:
+            properties:
+              linked_notice_ids:
+                items:
+                  type: string
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Missing or invalid notice_id
+        401:
+          description: Unauthorized
+        404:
+          description: Variation not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Link a Notices-platform notice to a Subcontract Variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/revert-to-draft:
     get:
       operationId: v2_getSubcontractVariationRevertEligibility
