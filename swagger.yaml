@@ -6739,6 +6739,31 @@ paths:
       summary: List action items for a project
       tags:
       - PortalApi
+    post:
+      operationId: v2_portalApiCreateActionItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        201:
+          description: Created
+        400:
+          description: Bad Request - assignee is not a member of the project
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create an action item
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/action-items/{itemId}:
     get:
       operationId: v2_portalApiGetActionItemDetail
@@ -36065,14 +36090,18 @@ paths:
         name: project_ids
         required: true
         type: string
+      - in: query
+        name: fields
+        required: false
+        type: string
       responses:
         200:
-          description: Map of project_id to project_image_url
+          description: 'Map of project_id to project_image_url (legacy) or to a {field:
+            value} object when `fields` is passed'
           schema:
             properties:
               data:
-                additionalProperties:
-                  type: string
+                additionalProperties: true
                 type: object
             type: object
         400:
@@ -36083,7 +36112,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Batch Get Project Image URLs
+      summary: Batch Get Project Settings Fields
       tags:
       - Projects
       x-ds-test-enabled: true
