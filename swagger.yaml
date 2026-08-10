@@ -7801,6 +7801,32 @@ paths:
       summary: Get project schedule
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/programme:
+    get:
+      operationId: v2_portalApiGetClientProgramme
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - caller is not a project member
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Client-visible construction programme
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/rfis:
     get:
       operationId: v2_portalApiGetRfis
