@@ -7500,6 +7500,60 @@ paths:
       summary: Transition a Client Instruction
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/head-contracts:
+    get:
+      operationId: v2_portalApiGetHeadContracts
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List client-visible head contracts
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/head-contracts/{contractId}:
+    get:
+      operationId: v2_portalApiGetHeadContractDetail
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: contractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Head contract not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get client-visible head contract detail
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/members:
     get:
       operationId: v2_portalApiGetProjectMembers
