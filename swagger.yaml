@@ -7500,6 +7500,92 @@ paths:
       summary: Transition a Client Instruction
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/head-contract-variations:
+    get:
+      operationId: v2_portalApiGetHeadContractVariations
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List client-visible head contract variations
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/head-contract-variations/{variationId}:
+    get:
+      operationId: v2_portalApiGetHeadContractVariationDetail
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Variation not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get client-visible head contract variation detail
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/head-contract-variations/{variationId}/decision:
+    post:
+      operationId: v2_portalApiDecideHeadContractVariation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request - decision rejected
+        401:
+          description: Unauthorized
+        404:
+          description: Variation not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Record the client's decision on a shared variation
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/head-contracts:
     get:
       operationId: v2_portalApiGetHeadContracts
