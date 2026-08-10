@@ -24132,7 +24132,7 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Update a DS Site channel member's role
+      summary: Update a DS Site channel member's role and/or activation
       tags:
       - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/users/{accountUserId}/invite:
@@ -73883,6 +73883,58 @@ paths:
       security:
       - JWT_v2: []
       summary: Resend invite email to user in workspace
+      tags:
+      - Users
+  /v2/workspaces/{workspaceId}/users/{userId}/kinde-suspension:
+    put:
+      operationId: v2_putUserKindeSuspension
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: userId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            suspended:
+              type: boolean
+          required:
+          - suspended
+          type: object
+      responses:
+        200:
+          description: Suspension flag updated
+          schema:
+            properties:
+              data:
+                properties:
+                  kinde_id:
+                    type: string
+                  suspended:
+                    type: boolean
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid body or unresolvable target user
+        401:
+          description: Unauthorized
+        403:
+          description: Caller is not a workspace manager (and not cs-admin)
+        404:
+          description: User not found in Kinde
+        502:
+          description: Kinde management API unavailable or not authorized (code KINDE_SUSPENSION_UNAVAILABLE)
+      security:
+      - JWT_v2: []
+      summary: Suspend or unsuspend a user's Kinde account
       tags:
       - Users
   /v2/workspaces/{workspaceId}/users_hz:
