@@ -13812,6 +13812,59 @@ paths:
       summary: Update workspace client
       tags:
       - Workspace Clients
+  /v2/workspaces/{workspaceId}/clients/{clientId}/activity:
+    get:
+      operationId: v2_getWorkspaceClientActivity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: clientId
+        required: true
+        type: string
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Activity entries
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    created_at:
+                      format: date-time
+                      type: string
+                    created_by:
+                      type: string
+                    field_name:
+                      type: string
+                    id:
+                      type: string
+                    new_value:
+                      type: string
+                    old_value:
+                      type: string
+                  type: object
+                type: array
+              total_count:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Workspace client activity log
+      tags:
+      - Workspace Clients
   /v2/workspaces/{workspaceId}/clients/{clientId}/restore:
     post:
       operationId: v2_restoreWorkspaceClient
