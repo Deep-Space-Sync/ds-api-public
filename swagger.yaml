@@ -7512,6 +7512,12 @@ paths:
         name: projectId
         required: true
         type: integer
+      - enum:
+        - assignable
+        in: query
+        name: scope
+        required: false
+        type: string
       responses:
         200:
           description: OK
