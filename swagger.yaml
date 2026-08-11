@@ -48292,12 +48292,16 @@ paths:
                       type: boolean
                     is_direct_allocation:
                       type: boolean
+                    linked_sub_code_count:
+                      type: integer
                     outstanding_commitment:
                       type: number
                     overridden_months:
                       items:
                         type: string
                       type: array
+                    program_link_source:
+                      type: string
                     program_window:
                       properties:
                         end_month:
