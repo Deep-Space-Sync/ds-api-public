@@ -73930,6 +73930,9 @@ paths:
           description: Caller is not a workspace manager (and not cs-admin)
         404:
           description: User not found in Kinde
+        409:
+          description: Target user is not a home-company user of this workspace (code
+            KINDE_SUSPENSION_NOT_HOME_USER)
         502:
           description: Kinde management API unavailable or not authorized (code KINDE_SUSPENSION_UNAVAILABLE)
       security:
