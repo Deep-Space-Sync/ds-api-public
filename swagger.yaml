@@ -48409,6 +48409,88 @@ paths:
       - Cost - Forecast Cash Flow
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-cash-flow/tasks:
+    get:
+      operationId: v2_getCostForecastCashFlowTasks
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: period
+        required: true
+        type: string
+      - in: query
+        name: cost_code
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              cost_code:
+                type: string
+              cost_code_display:
+                type: string
+              period:
+                type: string
+              tasks:
+                items:
+                  properties:
+                    actual_end_date:
+                      type: string
+                    actual_start_date:
+                      type: string
+                    duration_days:
+                      type: number
+                    end_date:
+                      type: string
+                    name:
+                      type: string
+                    progress:
+                      type: number
+                    sets_window_end:
+                      type: boolean
+                    sets_window_start:
+                      type: boolean
+                    source:
+                      type: string
+                    source_code:
+                      type: string
+                    source_code_display:
+                      type: string
+                    start_date:
+                      type: string
+                    status:
+                      type: string
+                    task_id:
+                      type: string
+                    wbs_name:
+                      type: string
+                  type: object
+                type: array
+              window_end:
+                type: string
+              window_start:
+                type: string
+            type: object
+        400:
+          description: Missing/invalid params or cost code is not a cash flow row
+        404:
+          description: No forecast exists for the period
+      security:
+      - JWT_v2: []
+      summary: Programme tasks driving one cost code's cash flow window (COM-808 popover)
+      tags:
+      - Cost - Forecast Cash Flow
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-edits:
     get:
       operationId: v2_getCostForecastEdits
