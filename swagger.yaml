@@ -71256,6 +71256,11 @@ paths:
               type: boolean
             name:
               type: string
+            portal_role_preset:
+              enum:
+              - subbie_admin
+              - subbie_worker
+              type: string
             portal_type:
               enum:
               - subcontractor
