@@ -6520,6 +6520,38 @@ paths:
       summary: List e-sign audit events
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/signing-requests/{requestId}/cancel:
+    post:
+      description: "Cancel a signing request and revoke its outstanding signing links.\
+        \ Valid for a completed request too \u2014 voiding an executed signature is\
+        \ what unblocks reverting the parent record (e.g. an approved PO) back to\
+        \ draft. The signed PDF is retained."
+      operationId: v2_portalApiCancelEsignSigningRequest
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: requestId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Signing request not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Cancel (void) an e-sign signing request
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/esign/signing-requests/{requestId}/finalize:
     post:
       operationId: v2_portalApiFinalizeEsignSigningRequest
