@@ -6522,10 +6522,6 @@ paths:
       - PortalApi
   /v2/portal/workspaces/{workspaceId}/esign/signing-requests/{requestId}/cancel:
     post:
-      description: "Cancel a signing request and revoke its outstanding signing links.\
-        \ Valid for a completed request too \u2014 voiding an executed signature is\
-        \ what unblocks reverting the parent record (e.g. an approved PO) back to\
-        \ draft. The signed PDF is retained."
       operationId: v2_portalApiCancelEsignSigningRequest
       parameters:
       - in: path
