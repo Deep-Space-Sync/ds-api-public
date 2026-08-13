@@ -6130,6 +6130,95 @@ paths:
       summary: Get current user's company
       tags:
       - PortalApi
+  /v2/portal/me/company/insurances:
+    post:
+      consumes:
+      - multipart/form-data
+      operationId: v2_portalApiMeCompanyInsurancesPost
+      parameters:
+      - in: query
+        name: workspace_id
+        required: true
+        type: string
+      responses:
+        202:
+          description: Upload queued
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        403:
+          description: Role lacks the company_info feature
+        404:
+          description: Company not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upload an insurance certificate
+      tags:
+      - PortalApi
+  /v2/portal/me/company/profile:
+    get:
+      operationId: v2_portalApiMeCompanyProfileGet
+      parameters:
+      - in: query
+        name: workspace_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        404:
+          description: Company not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get company profile with insurance documents
+      tags:
+      - PortalApi
+    patch:
+      operationId: v2_portalApiMeCompanyProfilePatch
+      parameters:
+      - in: query
+        name: workspace_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            location_postcode:
+              type: string
+            location_state_province:
+              type: string
+            main_contact_email:
+              type: string
+            main_contact_phone:
+              type: string
+          type: object
+      responses:
+        200:
+          description: OK
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        403:
+          description: Role lacks the company_info feature
+        404:
+          description: Company not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update company contact details
+      tags:
+      - PortalApi
   /v2/portal/me/employees:
     get:
       operationId: v2_portalApiMeEmployees
