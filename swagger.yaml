@@ -6318,6 +6318,59 @@ paths:
       summary: Get company employees
       tags:
       - PortalApi
+    post:
+      operationId: v2_portalApiMeEmployeesPost
+      parameters:
+      - in: query
+        name: workspace_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+            project_ids:
+              items:
+                type: integer
+              type: array
+            role_preset:
+              enum:
+              - subbie_worker
+              - subbie_admin
+              type: string
+          required:
+          - first_name
+          - last_name
+          - email
+          - project_ids
+          type: object
+      responses:
+        201:
+          description: Employee created (status complete or partial per step results)
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        403:
+          description: Role lacks the company_info feature
+        404:
+          description: Company not found
+        500:
+          description: Internal Server Error
+        502:
+          description: "Workspace invite failed \u2014 nothing provisioned"
+      security:
+      - JWT_v2: []
+      summary: Add an employee to the caller's company
+      tags:
+      - PortalApi
   /v2/portal/me/party-context:
     get:
       operationId: v2_portalApiMePartyContext
