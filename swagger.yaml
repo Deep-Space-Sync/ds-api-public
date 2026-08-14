@@ -8707,6 +8707,60 @@ paths:
       summary: Mark proposal as viewed
       tags:
       - Proposals
+  /v2/public/cde/albums/{token}:
+    get:
+      operationId: v2_getPublicCdeAlbum
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        200:
+          description: The public album (name, project_name) and its files
+          schema:
+            type: object
+        404:
+          description: Link not found or revoked
+      security: []
+      summary: Resolve a public album share token to its read-only file list
+      tags:
+      - CDE Public Access
+  /v2/public/cde/albums/{token}/signed-urls:
+    post:
+      operationId: v2_postPublicCdeAlbumSignedUrls
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            file_ids:
+              items:
+                type: integer
+              type: array
+          required:
+          - file_ids
+          type: object
+      responses:
+        200:
+          description: Signed download URLs (one per requested cde_id)
+          schema:
+            items:
+              type: object
+            type: array
+        400:
+          description: One or more file_ids are outside this album
+        404:
+          description: Link not found or revoked
+      security: []
+      summary: Batch signed download URLs for files in a public album
+      tags:
+      - CDE Public Access
   /v2/public/cde/{token}:
     get:
       operationId: v2_getPublicCdeFolderTree
@@ -13134,6 +13188,14 @@ paths:
         name: cde_id
         required: true
         type: array
+      - default: original
+        enum:
+        - original
+        - thumbnail
+        in: query
+        name: variant
+        required: false
+        type: string
       responses:
         200:
           description: Successfully returns signed download URLs
@@ -40364,6 +40426,328 @@ paths:
       summary: Get signed URLs for CDE upload
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/albums:
+    get:
+      operationId: v2_listAlbums
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: List of albums in the project
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List albums
+      tags:
+      - CDE Site Photos
+    post:
+      operationId: v2_createAlbum
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+          required:
+          - name
+          type: object
+      responses:
+        200:
+          description: Created album
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create an album
+      tags:
+      - CDE Site Photos
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/albums/{albumId}:
+    delete:
+      operationId: v2_deleteAlbum
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: albumId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Album deleted
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Album not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete an album
+      tags:
+      - CDE Site Photos
+    patch:
+      operationId: v2_renameAlbum
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: albumId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+          required:
+          - name
+          type: object
+      responses:
+        200:
+          description: Renamed album
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Album not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Rename an album
+      tags:
+      - CDE Site Photos
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/albums/{albumId}/files:
+    get:
+      operationId: v2_listAlbumFiles
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: albumId
+        required: true
+        type: string
+      - in: query
+        name: page
+        required: false
+        type: integer
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Paginated file listing for the album
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List files in an album, paginated newest-first
+      tags:
+      - CDE Site Photos
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/albums/{albumId}/items:
+    delete:
+      operationId: v2_removeAlbumItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: albumId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_series_ids:
+              items:
+                type: string
+              maxItems: 500
+              minItems: 1
+              type: array
+          required:
+          - document_series_ids
+          type: object
+      responses:
+        200:
+          description: Items removed from the album
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Album not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove photos from an album
+      tags:
+      - CDE Site Photos
+    post:
+      operationId: v2_addAlbumItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: albumId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_series_ids:
+              items:
+                type: string
+              maxItems: 500
+              minItems: 1
+              type: array
+          required:
+          - document_series_ids
+          type: object
+      responses:
+        200:
+          description: Items added to the album
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Album not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add photos to an album
+      tags:
+      - CDE Site Photos
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/albums/{albumId}/public:
+    delete:
+      operationId: v2_disableAlbumPublic
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: albumId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Public sharing disabled
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Album not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Disable public sharing for an album
+      tags:
+      - CDE Site Photos
+    post:
+      operationId: v2_enableAlbumPublic
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: albumId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Public sharing enabled, includes the share token
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Album not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Enable public sharing for an album
+      tags:
+      - CDE Site Photos
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/archive-by-series-id:
     post:
       operationId: v2_archiveBySeriesId
@@ -40666,6 +41050,44 @@ paths:
       summary: Create a sketch on a drawing (atomic - reserves PDF upload slot)
       tags:
       - CDE Sketches
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/files:
+    get:
+      operationId: v2_listSystemFolderFiles
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: folder_system_key
+        required: true
+        type: string
+      - in: query
+        name: page
+        required: false
+        type: integer
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Paginated file listing for the system folder
+        400:
+          description: Unknown folder_system_key
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List project files, paginated newest-first
+      tags:
+      - CDE Site Photos
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/migrate-legacy:
     post:
       operationId: v2_migrateLegacyCde
@@ -41001,6 +41423,14 @@ paths:
         name: cde_id
         required: true
         type: array
+      - default: original
+        enum:
+        - original
+        - thumbnail
+        in: query
+        name: variant
+        required: false
+        type: string
       responses:
         200:
           description: Successfully returns signed download URLs
