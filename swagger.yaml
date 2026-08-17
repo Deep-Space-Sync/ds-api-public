@@ -5662,6 +5662,33 @@ paths:
       summary: Get correspondence notice detail
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/purchase-orders:
+    get:
+      operationId: v2_portalV2ListPurchaseOrders
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - role lacks the contracts_orders feature or user
+            has no company assignment
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List portal Purchase Orders (v2)
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/rfis:
     get:
       operationId: v2_portalV2ListRfis
@@ -6102,6 +6129,33 @@ paths:
       security:
       - JWT_v2: []
       summary: List portal Subcontracts (v2)
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/subcontracts-issued:
+    get:
+      operationId: v2_portalV2ListIssuedSubcontracts
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - role lacks the contracts_orders feature or user
+            has no company assignment
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List portal issued Subcontracts (v2)
       tags:
       - PortalApi
   /v2/portal/health:
