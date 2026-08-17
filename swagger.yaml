@@ -78,6 +78,14 @@ paths:
         name: teamCompaniesWorkspaceId
         required: false
         type: string
+      - in: query
+        name: powerups
+        required: false
+        type: boolean
+      - in: query
+        name: powerupsWorkspaceId
+        required: false
+        type: string
       responses:
         200:
           description: Successful response with a list of workspaces and projects
@@ -9986,6 +9994,14 @@ paths:
         type: boolean
       - in: query
         name: teamCompaniesWorkspaceId
+        required: false
+        type: string
+      - in: query
+        name: powerups
+        required: false
+        type: boolean
+      - in: query
+        name: powerupsWorkspaceId
         required: false
         type: string
       responses:
