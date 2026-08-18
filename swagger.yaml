@@ -39409,6 +39409,36 @@ paths:
       summary: Update a plant asset's extension fields
       tags:
       - Plant Assets
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/plant-assets/bound-forms:
+    get:
+      operationId: v2_getPlantBoundForms
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: refresh
+        required: false
+        type: string
+      responses:
+        200:
+          description: Bound form list (items, forms_scanned, scanned_at)
+        401:
+          description: Unauthorized
+        404:
+          description: No kit configured for this workspace
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List DS Site form types bound to the kit's asset_ids CSV
+      tags:
+      - Plant Assets
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/plant-assets/info-sync:
     post:
       operationId: v2_postPlantAssetInfoSync
@@ -39451,6 +39481,53 @@ paths:
       security:
       - JWT_v2: []
       summary: Sync a captured Asset Information submission onto the plant doc
+      tags:
+      - Plant Assets
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/plant-assets/renumber:
+    post:
+      operationId: v2_postPlantAssetRenumber
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            force_csv_removal:
+              type: boolean
+            keep_old_picker_row:
+              type: boolean
+            new_code:
+              type: string
+            old_code:
+              type: string
+          required:
+          - old_code
+          - new_code
+          type: object
+      responses:
+        200:
+          description: Renumber summary (old/new codes, csv row state, warnings)
+        400:
+          description: Preflight/validation failure
+        401:
+          description: Unauthorized
+        403:
+          description: Requires Project Manager
+        409:
+          description: New code already exists
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Renumber a plant asset (archive-and-create, kit rule 11)
       tags:
       - Plant Assets
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/plant-assets/scaffold:
@@ -39521,6 +39598,51 @@ paths:
       security:
       - JWT_v2: []
       summary: Get the workspace's plant kit config
+      tags:
+      - Plant Assets
+    patch:
+      operationId: v2_patchPlantKitConfig
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            patch:
+              additionalProperties: false
+              properties:
+                force_plant_mode:
+                  type: boolean
+              required:
+              - force_plant_mode
+              type: object
+          required:
+          - patch
+          type: object
+      responses:
+        200:
+          description: Updated kit config doc
+        400:
+          description: Nothing patchable supplied
+        401:
+          description: Unauthorized
+        403:
+          description: Requires Project Manager
+        404:
+          description: No kit configured for this workspace
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update the FE-writable plant kit settings
       tags:
       - Plant Assets
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/project-settings:
