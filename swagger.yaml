@@ -77843,9 +77843,6 @@ paths:
               items:
                 properties:
                   amount_includes_gst:
-                    description: true = claim_value is GST-inclusive as entered; it
-                      is divided down to ex-GST on the created claim SOV (entered
-                      figure kept as entered_amount with gst_rate_applied).
                     type: boolean
                   claim_value:
                     type: number
@@ -77929,10 +77926,6 @@ paths:
             invoice_to_company_id:
               type: string
             line_items:
-              description: "Optional per-item overrides (positional, matching AI line\
-                \ items). Each item may set amount_includes_gst to true \u2014 total_amount\
-                \ is then treated as GST-inclusive and divided down to ex-GST on the\
-                \ created claim line (entered figure kept as entered_amount with gst_rate_applied)."
               items:
                 type: object
               type: array
@@ -78113,6 +78106,8 @@ paths:
               type: object
             is_overriding:
               type: boolean
+            line_item_amount_includes_gst:
+              type: object
             line_item_amounts:
               type: object
             line_item_cost_codes:
