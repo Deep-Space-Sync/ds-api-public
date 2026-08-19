@@ -19140,6 +19140,432 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/price-lists:
+    get:
+      operationId: v2_getCostPriceLists
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - enum:
+        - active
+        - archived
+        in: query
+        name: status
+        required: false
+        type: string
+      - in: query
+        name: supplier_company_id
+        required: false
+        type: string
+      - in: query
+        name: q
+        required: false
+        type: string
+      - in: query
+        name: page
+        required: false
+        type: integer
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Price Lists
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postCostPriceList
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            currency:
+              type: string
+            price_list_name:
+              type: string
+            region:
+              type: string
+            status:
+              enum:
+              - active
+              - archived
+              type: string
+            supplier_company_id:
+              type: string
+            supplier_name:
+              type: string
+            valid_from:
+              format: date
+              type: string
+            valid_to:
+              format: date
+              type: string
+          required:
+          - price_list_name
+          - currency
+          type: object
+      responses:
+        201:
+          description: Created
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Price List
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/price-lists/{priceListId}:
+    delete:
+      operationId: v2_deleteCostPriceList
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: priceListId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted (soft)
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Price List
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getCostPriceListById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: priceListId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Price List By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchCostPriceList
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: priceListId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            currency:
+              type: string
+            price_list_name:
+              type: string
+            region:
+              type: string
+            status:
+              enum:
+              - active
+              - archived
+              type: string
+            supplier_company_id:
+              type: string
+            supplier_name:
+              type: string
+            valid_from:
+              format: date
+              type: string
+            valid_to:
+              format: date
+              type: string
+          type: object
+      responses:
+        200:
+          description: Updated
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Price List
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/price-lists/{priceListId}/items:
+    get:
+      operationId: v2_getCostPriceListItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: priceListId
+        required: true
+        type: string
+      - in: query
+        name: q
+        required: false
+        type: string
+      - in: query
+        name: page
+        required: false
+        type: integer
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        404:
+          description: Price list not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Price List Items
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_postCostPriceListItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: priceListId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              type: string
+            cost_rate:
+              format: float
+              type: number
+            default_cost_code_id:
+              type: string
+            default_cost_type_id:
+              type: string
+            item_code:
+              type: string
+            item_name:
+              type: string
+            notes:
+              type: string
+            pricing_mode:
+              enum:
+              - rate
+              - lump_sum
+              type: string
+            sell_rate:
+              format: float
+              type: number
+            supplier_item_code:
+              type: string
+            unit:
+              type: string
+          required:
+          - item_name
+          - cost_rate
+          type: object
+      responses:
+        201:
+          description: Created (may include warnings for duplicate item_code)
+        400:
+          description: Validation error / archived list
+        401:
+          description: Unauthorized
+        404:
+          description: Price list not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Price List Item
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/price-lists/{priceListId}/items/bulk:
+    post:
+      operationId: v2_postCostPriceListItemsBulk
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: priceListId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            items:
+              items:
+                type: object
+              type: array
+          required:
+          - items
+          type: object
+      responses:
+        201:
+          description: Created (may include warnings for duplicate item_codes)
+        400:
+          description: Validation error / archived list / over cap
+        401:
+          description: Unauthorized
+        404:
+          description: Price list not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Bulk Create Price List Items
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/price-lists/{priceListId}/items/{priceListItemId}:
+    delete:
+      operationId: v2_deleteCostPriceListItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: priceListId
+        required: true
+        type: string
+      - in: path
+        name: priceListItemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted (soft)
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Price List Item
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchCostPriceListItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: priceListId
+        required: true
+        type: string
+      - in: path
+        name: priceListItemId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Price List Item
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/provisional-sums:
     get:
       operationId: v2_getProvisionalSumsWorkspace
