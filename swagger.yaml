@@ -4136,6 +4136,11 @@ paths:
               items:
                 type: string
               type: array
+            sort_by:
+              enum:
+              - name
+              - queue
+              type: string
             view_mode:
               enum:
               - mine
