@@ -57351,6 +57351,38 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums/{provisionalSumId}/close:
+    post:
+      operationId: v2_closeProvisionalSum
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Provisional sum closed
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Close Provisional Sum Allowance
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums/{provisionalSumId}/decline:
     post:
       operationId: v2_declineProvisionalSum
@@ -57377,6 +57409,191 @@ paths:
       security:
       - JWT_v2: []
       summary: Decline Unresolved Provisional Sum Lines
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums/{provisionalSumId}/drawdowns:
+    post:
+      operationId: v2_postProvisionalSumDrawdown
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Drawdown created
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Provisional Sum Drawdown
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums/{provisionalSumId}/drawdowns/{drawdownId}:
+    delete:
+      operationId: v2_deleteProvisionalSumDrawdownById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      - in: path
+        name: drawdownId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Drawdown deleted
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Provisional Sum Drawdown (Draft Only)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_patchProvisionalSumDrawdownById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      - in: path
+        name: drawdownId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Drawdown updated
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Provisional Sum Drawdown (Draft Only)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums/{provisionalSumId}/drawdowns/{drawdownId}/approve:
+    post:
+      operationId: v2_approveProvisionalSumDrawdown
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      - in: path
+        name: drawdownId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Drawdown approved
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Approve Provisional Sum Drawdown
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums/{provisionalSumId}/drawdowns/{drawdownId}/decline:
+    post:
+      operationId: v2_declineProvisionalSumDrawdown
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      - in: path
+        name: drawdownId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Drawdown declined
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Decline Provisional Sum Drawdown
       tags:
       - Cost
       x-ds-test-enabled: true
