@@ -51708,6 +51708,53 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/unlink-xero:
+    post:
+      operationId: v2_postHeadContractClaimUnlinkXero
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Xero link cleared; the next sync will create a new invoice
+            in Xero
+        400:
+          description: Bad request (claim is not linked to a Xero invoice)
+        401:
+          description: Unauthorized
+        403:
+          description: Access denied
+        404:
+          description: Claim not found, or not in this project
+        409:
+          description: "Conflict \u2014 the Xero invoice is still live, its status\
+            \ is unexpected, or the invoice number it would be recreated under is\
+            \ still held in Xero"
+        424:
+          description: Failed dependency (Xero integration not configured)
+        500:
+          description: Internal Server Error
+        502:
+          description: Bad gateway (the Xero invoice-number lookup could not complete;
+            treated as unknown, not free)
+      security:
+      - JWT_v2: []
+      summary: Clear a Head Contract Claim's stale Xero link so the sync can recreate
+        the invoice
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-invoices:
     get:
       operationId: v2_getHeadContractInvoices
