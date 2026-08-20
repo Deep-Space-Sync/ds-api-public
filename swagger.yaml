@@ -52184,6 +52184,56 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-payment-schedules/{scheduleId}/approval-complete:
+    post:
+      operationId: v2_completeHeadContractPaymentScheduleApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actor_user_email:
+              type: string
+            actor_user_id:
+              type: string
+            approval_completed_by_engine:
+              type: boolean
+            approval_id:
+              type: string
+            comment:
+              type: string
+            status:
+              enum:
+              - approved
+              - rejected
+              type: string
+          type: object
+      responses:
+        200:
+          description: Internal approval recorded
+        404:
+          description: Record not found
+        409:
+          description: approval_id does not match the record's active approval
+      security:
+      - JWT_v2: []
+      summary: Approval-engine completion callback for a head contract payment schedule
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-payment-schedules/{scheduleId}/change-status:
     patch:
       operationId: v2_patchPaymentScheduleChangeStatus
@@ -52232,6 +52282,73 @@ paths:
       tags:
       - Cost
       x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-payment-schedules/{scheduleId}/revert-to-draft:
+    get:
+      operationId: v2_getHeadContractPaymentScheduleRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Revert eligibility for an HC payment schedule's internal approval
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_revertHeadContractPaymentScheduleInternalApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Internal approval reverted
+        403:
+          description: Caller is neither the requester nor a Highest Authority holder
+        404:
+          description: Record not found
+        409:
+          description: Blocked by downstream state (schedule already actioned)
+      security:
+      - JWT_v2: []
+      summary: Revert an HC payment schedule's internal approval
+      tags:
+      - Cost
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-payment-schedules/{scheduleId}/sovs:
     get:
@@ -52401,6 +52518,46 @@ paths:
       tags:
       - Cost
       x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-payment-schedules/{scheduleId}/submit-for-approval:
+    post:
+      operationId: v2_submitHeadContractPaymentScheduleForApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            context:
+              type: object
+            workflow_id:
+              type: string
+          type: object
+      responses:
+        201:
+          description: Approval instance created; record flagged pending_approval
+        400:
+          description: Record not in a submittable state, invalid totals, or approval
+            already in progress
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Submit a head contract payment schedule for internal approval
+      tags:
+      - Cost
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-retentions:
     get:
