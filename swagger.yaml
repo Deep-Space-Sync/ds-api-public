@@ -73106,6 +73106,34 @@ paths:
       summary: Create a new role
       tags:
       - Roles
+  /v2/workspaces/{workspaceId}/roles/assignments:
+    get:
+      operationId: v2_getWorkspaceRoleAssignments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Assignment map keyed by role ID
+          schema:
+            properties:
+              data:
+                properties:
+                  assignments:
+                    type: object
+                  total_users:
+                    type: integer
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Get assigned-user counts and identities per role
+      tags:
+      - Roles
   /v2/workspaces/{workspaceId}/roles/{roleId}:
     delete:
       operationId: v2_deleteWorkspaceRole
@@ -73129,6 +73157,26 @@ paths:
                     type: boolean
                   id:
                     type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
+        409:
+          description: Users are still assigned to this role
+          schema:
+            properties:
+              error:
+                properties:
+                  assigned_count:
+                    type: integer
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  users:
+                    items:
+                      type: object
+                    type: array
                 type: object
               ok:
                 type: boolean
@@ -73264,6 +73312,69 @@ paths:
       security:
       - JWT_v2: []
       summary: Update role
+      tags:
+      - Roles
+  /v2/workspaces/{workspaceId}/roles/{roleId}/reassign:
+    post:
+      operationId: v2_reassignWorkspaceRoleUsers
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: roleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            target_role_id:
+              type: string
+          required:
+          - target_role_id
+          type: object
+      responses:
+        200:
+          description: Reassignment result
+          schema:
+            properties:
+              data:
+                properties:
+                  from_role_id:
+                    type: string
+                  reassigned:
+                    type: integer
+                  target_role_id:
+                    type: string
+                  users:
+                    items:
+                      type: object
+                    type: array
+                type: object
+              ok:
+                type: boolean
+            type: object
+        400:
+          description: Invalid target (missing, wrong workspace, deleted, same role,
+            or kind mismatch)
+          schema:
+            properties:
+              error:
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                type: object
+              ok:
+                type: boolean
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Switch all users on a role to another role
       tags:
       - Roles
   /v2/workspaces/{workspaceId}/signin-records:
