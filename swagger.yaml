@@ -58447,6 +58447,217 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/documents:
+    post:
+      operationId: v2_attachQTODocuments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            documents:
+              items:
+                properties:
+                  cde_id:
+                    type: string
+                  document_series_id:
+                    type: string
+                  file_name:
+                    type: string
+                  file_type:
+                    type: string
+                  folder_id:
+                    type: string
+                  folder_path:
+                    type: string
+                  page_count:
+                    type: integer
+                  register:
+                    type: object
+                  unregistered:
+                    type: boolean
+                  version:
+                    type: integer
+                required:
+                - cde_id
+                - file_name
+                type: object
+              type: array
+          required:
+          - documents
+          type: object
+      responses:
+        201:
+          description: Documents attached; returns the updated documents array
+          schema:
+            properties:
+              attached_count:
+                type: integer
+              count:
+                type: integer
+              documents:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: QTO not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Attach documents to QTO (2D takeoff)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/documents/{cdeId}:
+    delete:
+      operationId: v2_detachQTODocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: path
+        name: cdeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Document detached; measures are untouched (affected_measures
+            is informational)
+          schema:
+            properties:
+              affected_measures:
+                type: integer
+              detached:
+                type: string
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: QTO not found or document not attached
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Detach document from QTO (2D takeoff)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/documents/{cdeId}/calibration:
+    put:
+      operationId: v2_setQTODocumentCalibration
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: path
+        name: cdeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            method:
+              default: known_length
+              type: string
+            page:
+              minimum: 1
+              type: integer
+            points_per_unit:
+              type: number
+            reference:
+              properties:
+                p1:
+                  items:
+                    type: number
+                  type: array
+                p2:
+                  items:
+                    type: number
+                  type: array
+                stated_length:
+                  type: number
+              type: object
+            unit:
+              enum:
+              - m
+              - mm
+              - cm
+              type: string
+          required:
+          - page
+          - points_per_unit
+          - unit
+          type: object
+      responses:
+        200:
+          description: Calibration saved; returns the updated document entry
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: QTO not found or document not attached
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Set per-page calibration on an attached QTO document (2D takeoff)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/items:
     get:
       operationId: v2_getQTOItems
