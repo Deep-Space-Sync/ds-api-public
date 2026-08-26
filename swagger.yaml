@@ -58189,6 +58189,31 @@ paths:
                     type: string
                   location:
                     type: string
+                  measurement:
+                    properties:
+                      buffer_percent:
+                        type: number
+                      kind:
+                        enum:
+                        - length
+                        - area
+                        - volume
+                        - count
+                        type: string
+                      measure_ids:
+                        items:
+                          type: string
+                        type: array
+                      measured_quantity:
+                        type: number
+                      mode:
+                        enum:
+                        - measured
+                        - manual
+                        type: string
+                      unit:
+                        type: string
+                    type: object
                   notes:
                     type: string
                   qto_item_name:
@@ -58504,6 +58529,31 @@ paths:
               type: string
             location:
               type: string
+            measurement:
+              properties:
+                buffer_percent:
+                  type: number
+                kind:
+                  enum:
+                  - length
+                  - area
+                  - volume
+                  - count
+                  type: string
+                measure_ids:
+                  items:
+                    type: string
+                  type: array
+                measured_quantity:
+                  type: number
+                mode:
+                  enum:
+                  - measured
+                  - manual
+                  type: string
+                unit:
+                  type: string
+              type: object
             notes:
               type: string
             qto_item_name:
@@ -58670,6 +58720,31 @@ paths:
               type: string
             location:
               type: string
+            measurement:
+              properties:
+                buffer_percent:
+                  type: number
+                kind:
+                  enum:
+                  - length
+                  - area
+                  - volume
+                  - count
+                  type: string
+                measure_ids:
+                  items:
+                    type: string
+                  type: array
+                measured_quantity:
+                  type: number
+                mode:
+                  enum:
+                  - measured
+                  - manual
+                  type: string
+                unit:
+                  type: string
+              type: object
             notes:
               type: string
             qto_item_name:
