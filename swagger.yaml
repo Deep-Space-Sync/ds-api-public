@@ -25543,6 +25543,57 @@ paths:
       summary: Request Vendor Sharing
       tags:
       - Global Company Directory V2
+  /v2/workspaces/{workspaceId}/global-companies-directory/{globalCompanyId}/profile:
+    get:
+      operationId: v2_getGlobalCompanyProfileV2
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      responses:
+        200:
+          description: The company's self-provided profile (full shape, null where
+            unset)
+          schema:
+            properties:
+              has_profile:
+                type: boolean
+              id_global_company_directory:
+                type: number
+              profile:
+                properties:
+                  contractor_licence:
+                    type: object
+                  invoice_email:
+                    type: string
+                  main_contact_email:
+                    type: string
+                  main_contact_name:
+                    type: string
+                  main_contact_phone:
+                    type: string
+                  postal_address:
+                    type: object
+                  registered_address:
+                    type: object
+                  updated_at:
+                    type: string
+                  updated_by:
+                    type: object
+                type: object
+            type: object
+        401:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: Company Self-Provided Profile
+      tags:
+      - Global Company Directory V2
   /v2/workspaces/{workspaceId}/hz-approvals:
     get:
       operationId: v2_v2_listHzWorkspaceApprovals
