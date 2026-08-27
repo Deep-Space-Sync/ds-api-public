@@ -58996,6 +58996,89 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/items/{itemId}/recompute:
+    post:
+      operationId: v2_recomputeQTOItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: path
+        name: itemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: "Item recomputed from the full measures set \u2014 dangling\
+            \ measure_ids dropped (self-heal); measured-mode quantity/total re-derived.\
+            \ No request body; idempotent."
+          schema:
+            properties:
+              item:
+                properties:
+                  measurement:
+                    properties:
+                      buffer_percent:
+                        type: number
+                      kind:
+                        enum:
+                        - length
+                        - area
+                        - volume
+                        - count
+                        type: string
+                      measure_ids:
+                        items:
+                          type: string
+                        type: array
+                      measured_quantity:
+                        type: number
+                      mode:
+                        enum:
+                        - measured
+                        - manual
+                        type: string
+                      unit:
+                        type: string
+                    type: object
+                  qto_item_id:
+                    type: string
+                  qto_item_name:
+                    type: string
+                  quantity:
+                    type: number
+                  rate:
+                    type: number
+                  total:
+                    type: number
+                  unit:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: QTO or item not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Recompute a QTO item's measurement rollup (2D takeoff repair)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/measures:
     post:
       operationId: v2_createQTOMeasure
