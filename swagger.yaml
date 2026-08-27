@@ -58996,6 +58996,280 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/measures:
+    post:
+      operationId: v2_createQTOMeasure
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            allocate_to:
+              items:
+                type: string
+              type: array
+            cde_id:
+              type: string
+            document_series_id:
+              type: string
+            kind:
+              enum:
+              - length
+              - area
+              - volume
+              - count
+              type: string
+            label:
+              type: string
+            measure_id:
+              type: string
+            page:
+              minimum: 1
+              type: integer
+            points_per_unit:
+              type: number
+            thickness_unit:
+              default: m
+              type: string
+            thickness_value:
+              type: number
+            unit:
+              type: string
+            value:
+              type: number
+            version:
+              type: integer
+          required:
+          - measure_id
+          - cde_id
+          - page
+          - kind
+          - value
+          - unit
+          type: object
+      responses:
+        201:
+          description: Measure created; returns the stored entry and every affected
+            item post-recompute
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              measure:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request (invalid payload, document not attached, unknown
+            item ids, kind mismatch)
+        401:
+          description: Unauthorized
+        404:
+          description: QTO not found
+        409:
+          description: Measure already exists
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create measure on QTO (2D takeoff live-save draw path)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/measures/{measureId}:
+    delete:
+      operationId: v2_deleteQTOMeasureById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: path
+        name: measureId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Measure removed and stripped from every item's links; items
+            keep mode 'measured' at zero when unlinked
+          schema:
+            properties:
+              deleted:
+                type: string
+              items:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: QTO or measure not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete measure from QTO (2D takeoff)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateQTOMeasureById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: path
+        name: measureId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            label:
+              type: string
+            points_per_unit:
+              type: number
+            thickness_value:
+              type: number
+            value:
+              type: number
+          type: object
+      responses:
+        200:
+          description: Measure updated; returns the measure and every linked item
+            post-recompute
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              measure:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: QTO or measure not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update measure on QTO (2D takeoff)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/measures/{measureId}/links:
+    put:
+      operationId: v2_setQTOMeasureLinks
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: path
+        name: measureId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            qto_item_ids:
+              items:
+                type: string
+              type: array
+          required:
+          - qto_item_ids
+          type: object
+      responses:
+        200:
+          description: Link set replaced; items added AND removed are recomputed and
+            returned
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+              measure_id:
+                type: string
+              message:
+                type: string
+              qto_item_ids:
+                items:
+                  type: string
+                type: array
+            type: object
+        400:
+          description: Bad Request (unknown item ids or kind mismatch)
+        401:
+          description: Unauthorized
+        404:
+          description: QTO or measure not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Replace a measure's item links (2D takeoff reallocation)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/retentions:
     get:
       operationId: v2_getRetentionReleases
