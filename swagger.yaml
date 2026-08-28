@@ -45770,6 +45770,73 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/boq-versions/{versionId}/boqs/{boqId}/items/{itemId}/history:
+    get:
+      operationId: v2_getBOQItemHistory
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - in: path
+        name: boqId
+        required: true
+        type: string
+      - in: path
+        name: itemId
+        required: true
+        type: string
+      - in: query
+        name: limit
+        type: integer
+      responses:
+        200:
+          description: Audit history entries, newest first
+          schema:
+            properties:
+              count:
+                type: integer
+              items:
+                items:
+                  properties:
+                    created_at:
+                      type: string
+                    created_by:
+                      type: string
+                    doc_type:
+                      type: string
+                    field_name:
+                      type: string
+                    id:
+                      type: string
+                    new_value:
+                      type: string
+                    old_value:
+                      type: string
+                    record_id:
+                      type: string
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get BoQ item audit history
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/boq-versions/{versionId}/boqs/{boqId}/items/{itemId}/move:
     post:
       operationId: v2_postBOQItemMove
