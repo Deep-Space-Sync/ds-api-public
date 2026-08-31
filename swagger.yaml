@@ -1687,6 +1687,10 @@ paths:
         name: skipEmail
         required: false
         type: boolean
+      - in: query
+        name: workspaceId
+        required: false
+        type: string
       - in: body
         name: body
         required: true
@@ -9821,6 +9825,12 @@ paths:
               worker_details:
                 items:
                   properties:
+                    contact_lists:
+                      items:
+                        type: string
+                      type: array
+                    contact_type:
+                      type: string
                     created_at:
                       format: date-time
                       type: string
@@ -9842,6 +9852,16 @@ paths:
                       type: string
                     labour_rate_id:
                       type: string
+                    metadata:
+                      type: object
+                    mobile:
+                      type: string
+                    notes:
+                      type: string
+                    phone:
+                      type: string
+                    preferred_contact:
+                      type: boolean
                     status:
                       type: boolean
                     tags:
@@ -9877,6 +9897,12 @@ paths:
         required: true
         schema:
           properties:
+            contact_lists:
+              items:
+                type: string
+              type: array
+            contact_type:
+              type: string
             delegation_tier:
               type: string
             employment_type:
@@ -9885,6 +9911,16 @@ paths:
               type: string
             labour_rate_id:
               type: string
+            metadata:
+              type: object
+            mobile:
+              type: string
+            notes:
+              type: string
+            phone:
+              type: string
+            preferred_contact:
+              type: boolean
             status:
               type: boolean
             tags:
@@ -9926,6 +9962,12 @@ paths:
         required: true
         schema:
           properties:
+            contact_lists:
+              items:
+                type: string
+              type: array
+            contact_type:
+              type: string
             delegation_tier:
               type: string
             employment_type:
@@ -9936,6 +9978,16 @@ paths:
               type: string
             labour_rate_id:
               type: string
+            metadata:
+              type: object
+            mobile:
+              type: string
+            notes:
+              type: string
+            phone:
+              type: string
+            preferred_contact:
+              type: boolean
             status:
               type: boolean
             tags:
@@ -9946,13 +9998,6 @@ paths:
               type: string
           required:
           - kinde_id
-          - delegation_tier
-          - employment_type
-          - labour_rate_id
-          - job_title
-          - trade
-          - tags
-          - status
           type: object
       - in: query
         name: workspaceId
