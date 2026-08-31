@@ -49609,6 +49609,28 @@ paths:
           description: Successful response
           schema:
             properties:
+              cash_in:
+                properties:
+                  contracts:
+                    items:
+                      properties:
+                        certified:
+                          additionalProperties:
+                            type: number
+                          type: object
+                        certified_to_date:
+                          type: number
+                        contract_id:
+                          type: string
+                        contract_identifier:
+                          type: string
+                        contract_name:
+                          type: string
+                        contract_status:
+                          type: string
+                      type: object
+                    type: array
+                type: object
               cost_codes:
                 items:
                   properties:
@@ -49714,8 +49736,8 @@ paths:
           description: No forecast exists for the period
       security:
       - JWT_v2: []
-      summary: Three-series cash flow grid (budget / actuals / forecast) for a forecast
-        period
+      summary: "Cash flow grid for a forecast period \u2014 Cost Out series (budget\
+        \ / actuals / committed / forecast) plus the Cash In certified claim history"
       tags:
       - Cost - Forecast Cash Flow
       x-ds-test-enabled: true
