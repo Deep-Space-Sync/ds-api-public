@@ -39060,6 +39060,234 @@ paths:
       summary: Get User Activity
       tags:
       - Admin
+  /v2/workspaces/{workspaceId}/projects/{projectId}/approval-thresholds:
+    get:
+      operationId: v2_v2_listProjectApprovalThresholds
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - default: false
+        in: query
+        name: include_inactive
+        type: boolean
+      responses:
+        200:
+          description: Thresholds retrieved successfully
+          schema:
+            properties:
+              count:
+                type: integer
+              data:
+                items:
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List a project's approval thresholds
+      tags:
+      - HzApprovalThreshold
+    post:
+      operationId: v2_v2_createProjectApprovalThreshold
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            currency:
+              default: AUD
+              enum:
+              - AUD
+              - NZD
+              - USD
+              type: string
+            effective_date:
+              type: integer
+            expiry_date:
+              type: integer
+            role_id:
+              type: string
+            role_source:
+              enum:
+              - workspace_role
+              - project_team_role
+              type: string
+            threshold_amount:
+              type: string
+          type: object
+      responses:
+        201:
+          description: Threshold created successfully
+        400:
+          description: Bad request (validation error or highest-authority body)
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create a new approval threshold row on a project
+      tags:
+      - HzApprovalThreshold
+  /v2/workspaces/{workspaceId}/projects/{projectId}/approval-thresholds/{thresholdId}:
+    delete:
+      operationId: v2_v2_deleteProjectApprovalThreshold
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: thresholdId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Threshold deactivated
+        401:
+          description: Unauthorized
+        404:
+          description: Not found (or row belongs to another scope)
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Soft-delete a project threshold
+      tags:
+      - HzApprovalThreshold
+    get:
+      operationId: v2_v2_getProjectApprovalThreshold
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: thresholdId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Threshold retrieved
+        401:
+          description: Unauthorized
+        404:
+          description: Not found (or row belongs to another scope)
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get a single project threshold by ID
+      tags:
+      - HzApprovalThreshold
+    patch:
+      operationId: v2_v2_updateProjectApprovalThreshold
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: thresholdId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            currency:
+              enum:
+              - AUD
+              - NZD
+              - USD
+              type: string
+            expiry_date:
+              type: integer
+            is_active:
+              type: boolean
+            threshold_amount:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Updated
+        400:
+          description: Bad request (validation error or immutable field)
+        401:
+          description: Unauthorized
+        404:
+          description: Not found (or row belongs to another scope)
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update a project threshold row
+      tags:
+      - HzApprovalThreshold
+  /v2/workspaces/{workspaceId}/projects/{projectId}/approval-thresholds/{thresholdId}/audit:
+    get:
+      operationId: v2_v2_getProjectApprovalThresholdAudit
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: thresholdId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Audit entries retrieved
+        401:
+          description: Unauthorized
+        404:
+          description: Threshold not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get audit log for a project threshold
+      tags:
+      - HzApprovalThreshold
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal:
     get:
       operationId: v2_getAssetPortal
