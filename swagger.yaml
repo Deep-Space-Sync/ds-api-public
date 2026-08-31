@@ -49628,8 +49628,29 @@ paths:
                           type: string
                         contract_status:
                           type: string
+                        distribution_source:
+                          enum:
+                          - cost_curve
+                          - flat
+                          type: string
+                          x-nullable: true
+                        forecast:
+                          additionalProperties:
+                            type: number
+                          type: object
+                        remaining_to_claim:
+                          type: number
+                        seedable:
+                          type: boolean
+                        sov_sell_total:
+                          type: number
                       type: object
                     type: array
+                  seed_source:
+                    enum:
+                    - cost_curve
+                    - flat
+                    type: string
                 type: object
               cost_codes:
                 items:
