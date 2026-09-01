@@ -50022,6 +50022,36 @@ paths:
                           type: boolean
                         sov_sell_total:
                           type: number
+                        streams:
+                          items:
+                            properties:
+                              certified:
+                                additionalProperties:
+                                  type: number
+                                type: object
+                              certified_to_date:
+                                type: number
+                              distribution_source:
+                                enum:
+                                - cost_curve
+                                - flat
+                                type: string
+                                x-nullable: true
+                              forecast:
+                                additionalProperties:
+                                  type: number
+                                type: object
+                              remaining_to_claim:
+                                type: number
+                              sov_sell_total:
+                                type: number
+                              stream:
+                                enum:
+                                - base
+                                - variation
+                                type: string
+                            type: object
+                          type: array
                       type: object
                     type: array
                   seed_source:
