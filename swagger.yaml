@@ -21463,6 +21463,107 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/draft-scope:
+    post:
+      operationId: v2_draftTenderPackageScope
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            instructions:
+              type: string
+            set_id:
+              type: string
+            template_id:
+              type: string
+            trade_name:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Draft produced for review
+          schema:
+            properties:
+              data:
+                properties:
+                  confidence:
+                    enum:
+                    - high
+                    - medium
+                    - low
+                    type: string
+                  documents_analysed:
+                    items:
+                      type: object
+                    type: array
+                  documents_skipped:
+                    items:
+                      type: object
+                    type: array
+                  notes:
+                    type: string
+                  processing_time:
+                    type: number
+                  sections:
+                    items:
+                      properties:
+                        content:
+                          type: string
+                        drafted:
+                          type: boolean
+                        id:
+                          type: string
+                        sources:
+                          items:
+                            type: string
+                          type: array
+                        title:
+                          type: string
+                        visible:
+                          type: boolean
+                      type: object
+                    type: array
+                  sections_drafted:
+                    type: integer
+                  sections_order:
+                    items:
+                      type: string
+                    type: array
+                  trade_interfaces:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        409:
+          description: No readable tender documents are attached to the package
+        500:
+          description: Internal Server Error
+        502:
+          description: KAI could not produce a usable draft
+      security:
+      - JWT_v2: []
+      summary: Draft a Scope of Works from the tender document set with KAI
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
   /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/external-portal:
     get:
       operationId: v2_getExternalPortal
