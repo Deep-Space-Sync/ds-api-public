@@ -78401,6 +78401,106 @@ paths:
       summary: Set a template as the assigned default for its category/type
       tags:
       - HzDocumentTemplates
+  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/docx:
+    get:
+      operationId: v2_downloadHzDocumentTemplateDocx
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Template Word file retrieved successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  docx_base64:
+                    type: string
+                  filename:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Document template not found
+        409:
+          description: Template has no Word file
+      security:
+      - JWT_v2: []
+      summary: Download this template's original Word file (COR-764 round-trip)
+      tags:
+      - HzDocumentTemplates
+    post:
+      operationId: v2_uploadHzDocumentTemplateDocx
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            docx_base64:
+              type: string
+            filename:
+              type: string
+          required:
+          - filename
+          - docx_base64
+          type: object
+      responses:
+        200:
+          description: Template Word file uploaded successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+              report:
+                properties:
+                  unreachable:
+                    items:
+                      type: string
+                    type: array
+                  variables:
+                    items:
+                      type: string
+                    type: array
+                  warnings:
+                    items:
+                      type: string
+                    type: array
+                type: object
+            type: object
+        400:
+          description: Bad request - not a valid .docx
+        401:
+          description: Unauthorized
+        404:
+          description: Document template not found
+        409:
+          description: Template is not a Draft
+      security:
+      - JWT_v2: []
+      summary: Upload a Word file as this template's content (COR-764)
+      tags:
+      - HzDocumentTemplates
   /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/nominate:
     patch:
       operationId: v2_nominateHzDocumentTemplate
@@ -78475,6 +78575,71 @@ paths:
       security:
       - JWT_v2: []
       summary: Publish a draft template
+      tags:
+      - HzDocumentTemplates
+  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/render:
+    post:
+      operationId: v2_renderHzDocumentTemplateDocx
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            filename:
+              type: string
+            output:
+              enum:
+              - pdf
+              - docx
+              type: string
+            variables:
+              type: object
+          type: object
+      responses:
+        200:
+          description: Document rendered successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  content_base64:
+                    type: string
+                  content_type:
+                    type: string
+                  filename:
+                    type: string
+                  replaced:
+                    items:
+                      type: string
+                    type: array
+                  unresolved:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request - not a docx template
+        401:
+          description: Unauthorized
+        404:
+          description: Document template not found
+        502:
+          description: PDF conversion service unavailable
+      security:
+      - JWT_v2: []
+      summary: Render a docx template with resolved variables (COR-764)
       tags:
       - HzDocumentTemplates
   /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/revise:
