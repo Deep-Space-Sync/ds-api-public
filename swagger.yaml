@@ -50273,6 +50273,14 @@ paths:
           description: Successful response
           schema:
             properties:
+              approved_at:
+                type: string
+                x-nullable: true
+              cash_flow_source:
+                enum:
+                - live
+                - snapshot
+                type: string
               cash_in:
                 properties:
                   contracts:
@@ -50430,6 +50438,9 @@ paths:
                 type: string
               scurve_forecast_id:
                 type: string
+              snapshot_id:
+                type: string
+                x-nullable: true
               totals:
                 properties:
                   actuals:
@@ -50509,9 +50520,9 @@ paths:
           description: Cash In override saved or cleared
         400:
           description: "Validation failure \u2014 bad or past month, unknown stream,\
-            \ negative amount, a contract that projects no future revenue, or overrides\
+            \ negative amount, a contract that projects no future revenue, overrides\
             \ exceeding what that stream can still claim (the response states the\
-            \ overage)"
+            \ overage), or an approved period, which COM-961 freezes"
         404:
           description: No forecast exists for the period, or no Cash In row exists
             for that contract and stream
@@ -50556,8 +50567,9 @@ paths:
         200:
           description: Override saved or cleared
         400:
-          description: Validation failure (bad month, past month, overrides exceed
-            FTC)
+          description: "Validation failure (bad month, past month, overrides exceed\
+            \ FTC), or the period is approved \u2014 COM-961 freezes an approved grid,\
+            \ so it takes no edits"
         404:
           description: No forecast exists for the period
       security:
