@@ -11048,6 +11048,292 @@ paths:
       summary: Remove watcher from action
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/approval-delegations:
+    get:
+      operationId: v2_v2_listApprovalDelegations
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: user_id
+        type: string
+      - default: false
+        in: query
+        name: include_inactive
+        type: boolean
+      responses:
+        200:
+          description: Delegations retrieved successfully
+          schema:
+            properties:
+              count:
+                type: integer
+              data:
+                items:
+                  properties:
+                    authority_override:
+                      type: boolean
+                    authority_override_reason:
+                      type: string
+                    cancelled_at:
+                      type: integer
+                    cancelled_by_user_id:
+                      type: string
+                    created_at:
+                      type: integer
+                    created_by_user_id:
+                      type: string
+                    delegate_email:
+                      type: string
+                    delegate_user_id:
+                      type: string
+                    delegation_id:
+                      type: string
+                    delegator_email:
+                      type: string
+                    delegator_user_id:
+                      type: string
+                    ends_at:
+                      type: integer
+                    reason:
+                      type: string
+                    starts_at:
+                      type: integer
+                    status:
+                      enum:
+                      - ACTIVE
+                      - CANCELLED
+                      type: string
+                    updated_at:
+                      type: integer
+                    workspace_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List out-of-office delegation rules
+      tags:
+      - HzApprovalDelegation
+    post:
+      operationId: v2_v2_createApprovalDelegation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            authority_override:
+              default: false
+              type: boolean
+            authority_override_reason:
+              type: string
+            delegate_email:
+              type: string
+            delegate_user_id:
+              type: string
+            delegator_user_id:
+              type: string
+            ends_at:
+              type: integer
+            reason:
+              type: string
+            starts_at:
+              type: integer
+          required:
+          - delegate_user_id
+          - starts_at
+          - ends_at
+          type: object
+      responses:
+        201:
+          description: Delegation created successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+              warnings:
+                items:
+                  type: string
+                type: array
+            type: object
+        400:
+          description: Bad request (validation error, cycle, overlap)
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden (not admin, acting on someone else's behalf)
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create an out-of-office delegation rule
+      tags:
+      - HzApprovalDelegation
+  /v2/workspaces/{workspaceId}/approval-delegations/history:
+    get:
+      operationId: v2_v2_getApprovalDelegationHistory
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - enum:
+        - from
+        - to
+        in: query
+        name: direction
+        required: true
+        type: string
+      - in: query
+        name: user_id
+        type: string
+      responses:
+        200:
+          description: History entries retrieved
+          schema:
+            properties:
+              count:
+                type: integer
+              data:
+                items:
+                  properties:
+                    approval_id:
+                      type: string
+                    created_at:
+                      type: integer
+                    decision_id:
+                      type: string
+                    delegation_id:
+                      type: string
+                    entity_type:
+                      type: string
+                    event_id:
+                      type: string
+                    from_email:
+                      type: string
+                    from_user_id:
+                      type: string
+                    project_id:
+                      type: string
+                    reason:
+                      type: string
+                    to_email:
+                      type: string
+                    to_user_id:
+                      type: string
+                    type:
+                      enum:
+                      - adhoc
+                      - ooo
+                      type: string
+                    workspace_id:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request (missing/invalid direction)
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: "Delegation history \u2014 \"what did I delegate\" / \"what was delegated\
+        \ to me\""
+      tags:
+      - HzApprovalDelegation
+  /v2/workspaces/{workspaceId}/approval-delegations/{delegationId}:
+    delete:
+      operationId: v2_v2_cancelApprovalDelegation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: delegationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Delegation cancelled
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Cancel an out-of-office delegation rule
+      tags:
+      - HzApprovalDelegation
+    patch:
+      operationId: v2_v2_updateApprovalDelegation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: delegationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            delegate_email:
+              type: string
+            delegate_user_id:
+              type: string
+            ends_at:
+              type: integer
+            reason:
+              type: string
+            starts_at:
+              type: integer
+          type: object
+      responses:
+        200:
+          description: Updated
+        400:
+          description: Bad request (validation error, cycle, overlap)
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Edit an out-of-office delegation rule
+      tags:
+      - HzApprovalDelegation
   /v2/workspaces/{workspaceId}/approval-thresholds:
     get:
       operationId: v2_v2_listApprovalThresholds
@@ -65928,6 +66214,7 @@ paths:
               - APPROVE
               - REJECT
               - COMMENT
+              - DELEGATE
               type: string
             attachments:
               default: []
@@ -65937,6 +66224,8 @@ paths:
             comment:
               type: string
             role_id:
+              type: string
+            target_user_id:
               type: string
           required:
           - action
