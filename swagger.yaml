@@ -10533,6 +10533,80 @@ paths:
       summary: Create new action
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/actions/assigned-summary:
+    get:
+      operationId: v2_getAssignedActionsSummary
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: user_id
+        required: false
+        type: string
+      - in: query
+        maximum: 25
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: Assigned actions summary
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    action_id:
+                      type: string
+                    category:
+                      type: string
+                    due_date:
+                      type: string
+                    id:
+                      type: string
+                    priority:
+                      type: string
+                    project_id:
+                      type: string
+                    source:
+                      type: string
+                    status:
+                      type: string
+                    title:
+                      type: string
+                  type: object
+                type: array
+              member_project_ids:
+                items:
+                  type: string
+                type: array
+              target_user_id:
+                type: string
+              total_open:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Caller is not a workspace manager (view-as denied)
+        404:
+          description: Target user not found in workspace
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Top open Delivery Action Items assigned to a user (UHD widget)
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/actions/automated:
     get:
       operationId: v2_listAutomatedActionsForWorkspace
@@ -26061,6 +26135,19 @@ paths:
         maximum: 100
         name: limit
         type: integer
+      - enum:
+        - me
+        in: query
+        name: pending_for
+        type: string
+      - in: query
+        name: as_user_id
+        type: string
+      - enum:
+        - summary
+        in: query
+        name: view
+        type: string
       responses:
         200:
           description: Approval instances retrieved successfully
@@ -37086,6 +37173,94 @@ paths:
       summary: Refresh Power BI app in workspace
       tags:
       - Power BI
+  /v2/workspaces/{workspaceId}/programme/tasks-this-week:
+    get:
+      operationId: v2_getProgrammeTasksThisWeek
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: week_start
+        required: false
+        type: string
+      - in: query
+        maximum: 5
+        minimum: 1
+        name: per_project
+        required: false
+        type: integer
+      - in: query
+        name: user_id
+        required: false
+        type: string
+      responses:
+        200:
+          description: Flat task list, at most per_project rows per member project
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    action_id:
+                      type: string
+                    booking_status:
+                      type: string
+                    end_date:
+                      type: string
+                    id:
+                      type: string
+                    progress_percentage:
+                      type: number
+                    progress_type:
+                      type: string
+                    project_id:
+                      type: string
+                    start_date:
+                      type: string
+                    subcontractor:
+                      type: string
+                    task_name:
+                      type: string
+                    task_status:
+                      type: string
+                    trade:
+                      type: string
+                    wbs_id:
+                      type: string
+                  type: object
+                type: array
+              member_project_ids:
+                items:
+                  type: string
+                type: array
+              per_project_limit:
+                type: integer
+              target_user_id:
+                type: string
+              week_end:
+                type: string
+              week_start:
+                type: string
+            type: object
+        400:
+          description: Invalid week_start
+        401:
+          description: Unauthorized
+        403:
+          description: Caller is not a workspace manager (view-as denied)
+        404:
+          description: Target user not found in workspace
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Programme tasks on the user's projects this week (UHD widget)
+      tags:
+      - WBS Progress
   /v2/workspaces/{workspaceId}/projects:
     get:
       operationId: v2_getProjects
