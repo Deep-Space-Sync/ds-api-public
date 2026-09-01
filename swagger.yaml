@@ -21557,6 +21557,10 @@ paths:
           description: Internal Server Error
         502:
           description: KAI could not produce a usable draft
+        503:
+          description: "The document store could not be reached, so the tender documents\
+            \ could not be opened. Distinct from 409 \u2014 the documents may be fine\
+            \ and the request is worth retrying."
       security:
       - JWT_v2: []
       summary: Draft a Scope of Works from the tender document set with KAI
