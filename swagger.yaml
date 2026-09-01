@@ -50016,6 +50016,12 @@ paths:
                           additionalProperties:
                             type: number
                           type: object
+                        overridden_months:
+                          items:
+                            type: string
+                          type: array
+                        override_total:
+                          type: number
                         remaining_to_claim:
                           type: number
                         seedable:
@@ -50041,6 +50047,12 @@ paths:
                                 additionalProperties:
                                   type: number
                                 type: object
+                              overridden_months:
+                                items:
+                                  type: string
+                                type: array
+                              override_total:
+                                type: number
                               remaining_to_claim:
                                 type: number
                               sov_sell_total:
@@ -50167,6 +50179,59 @@ paths:
       - JWT_v2: []
       summary: "Cash flow grid for a forecast period \u2014 Cost Out series (budget\
         \ / actuals / committed / forecast) plus the Cash In certified claim history"
+      tags:
+      - Cost - Forecast Cash Flow
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-cash-flow/cash-in-override:
+    post:
+      operationId: v2_saveCostForecastCashInOverride
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              type: number
+            contract_id:
+              type: string
+            period:
+              type: string
+            period_month:
+              type: string
+            stream:
+              enum:
+              - base
+              - variation
+              type: string
+          required:
+          - period
+          - contract_id
+          - period_month
+          type: object
+      responses:
+        200:
+          description: Cash In override saved or cleared
+        400:
+          description: "Validation failure \u2014 bad or past month, unknown stream,\
+            \ negative amount, a contract that projects no future revenue, or overrides\
+            \ exceeding what that stream can still claim (the response states the\
+            \ overage)"
+        404:
+          description: No forecast exists for the period, or no Cash In row exists
+            for that contract and stream
+      security:
+      - JWT_v2: []
+      summary: Upsert or clear one Cash In cell for a contract stream (COM-957)
       tags:
       - Cost - Forecast Cash Flow
       x-ds-test-enabled: true
