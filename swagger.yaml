@@ -20099,6 +20099,114 @@ paths:
       - Scope Templates
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/scope-templates/starter-library:
+    get:
+      operationId: v2_getScopeStarterLibraryInfo
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Availability per region
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: What the Scope of Works starter library offers this workspace
+      tags:
+      - Scope Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_seedScopeStarterLibrary
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            region:
+              enum:
+              - AU
+              - NZ
+              type: string
+          required:
+          - region
+          type: object
+      responses:
+        201:
+          description: Templates loaded
+          schema:
+            properties:
+              created:
+                items:
+                  type: string
+                type: array
+              message:
+                type: string
+              region:
+                type: string
+              skipped:
+                items:
+                  type: string
+                type: array
+            type: object
+        400:
+          description: Missing or unsupported region
+        401:
+          description: Unauthorized
+        404:
+          description: No starter templates available for that region
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Load a region's starter Scope of Works templates into the workspace
+      tags:
+      - Scope Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/scope-templates/usage:
+    get:
+      operationId: v2_getScopeTemplatesUsage
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Usage counts keyed by template id
+          schema:
+            properties:
+              complete:
+                type: boolean
+              message:
+                type: string
+              usage:
+                type: object
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Usage counts for every Scope of Works library template
+      tags:
+      - Scope Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/scope-templates/{templateId}:
     get:
       operationId: v2_getScopeTemplate
@@ -20252,6 +20360,58 @@ paths:
       security:
       - JWT_v2: []
       summary: Publish Scope Template
+      tags:
+      - Scope Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/scope-templates/{templateId}/usage:
+    get:
+      operationId: v2_getScopeTemplateUsageDetail
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Where this master template has been used
+          schema:
+            properties:
+              data:
+                properties:
+                  complete:
+                    type: boolean
+                  counts:
+                    type: object
+                  latest_published_version:
+                    type: integer
+                  project_scopes:
+                    items:
+                      type: object
+                    type: array
+                  root_template_id:
+                    type: string
+                  template_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Missing templateId
+        401:
+          description: Unauthorized
+        404:
+          description: Not a library template in this workspace
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Project copies made from a Scope of Works library template
       tags:
       - Scope Templates
       x-ds-test-enabled: true
@@ -20472,6 +20632,37 @@ paths:
       security:
       - JWT_v2: []
       summary: Create Tags Template
+      tags:
+      - Tags Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tags-templates/usage:
+    get:
+      operationId: v2_getTagsTemplatesUsage
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Usage counts keyed by template id
+          schema:
+            properties:
+              complete:
+                type: boolean
+              message:
+                type: string
+              usage:
+                type: object
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Usage counts for every Conditions & Tags library template
       tags:
       - Tags Templates
       x-ds-test-enabled: true
@@ -20699,6 +20890,38 @@ paths:
       security:
       - JWT_v2: []
       summary: Publish Tags Template
+      tags:
+      - Tags Templates
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tags-templates/{templateId}/usage:
+    get:
+      operationId: v2_getTagsTemplateUsageDetail
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: templateId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Where this master template has been used
+          schema:
+            type: object
+        400:
+          description: Missing templateId
+        401:
+          description: Unauthorized
+        404:
+          description: Not a library template in this workspace
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Project copies made from a Conditions & Tags library template
       tags:
       - Tags Templates
       x-ds-test-enabled: true
