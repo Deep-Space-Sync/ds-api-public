@@ -6494,6 +6494,22 @@ paths:
       summary: Whether the caller's company may open the whole Document Register
       tags:
       - PortalApi
+  /v2/portal/me/workspace-roles:
+    get:
+      operationId: v2_portalApiMeWorkspaceRoles
+      responses:
+        200:
+          description: "OK \u2014 an empty map when the caller has no Horizon user\
+            \ document"
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: The caller's Horizon role in every workspace they hold one in
+      tags:
+      - PortalApi
   /v2/portal/public/esign/signing-sessions/{token}/submissions:
     post:
       operationId: v2_portalApiPublicEsignSubmitSignature
