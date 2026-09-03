@@ -11408,6 +11408,95 @@ paths:
       summary: Edit an out-of-office delegation rule
       tags:
       - HzApprovalDelegation
+  /v2/workspaces/{workspaceId}/approval-settings:
+    get:
+      operationId: v2_v2_getApprovalSettings
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Settings retrieved successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  skip_approval_when_unconfigured:
+                    type: boolean
+                  updated_at:
+                    type: string
+                  updated_by_user_email:
+                    type: string
+                  updated_by_user_id:
+                    type: string
+                  workspace_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get workspace approval-engine settings
+      tags:
+      - HzApprovalSettings
+    patch:
+      operationId: v2_v2_updateApprovalSettings
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            skip_approval_when_unconfigured:
+              type: boolean
+          required:
+          - skip_approval_when_unconfigured
+          type: object
+      responses:
+        200:
+          description: Settings updated
+          schema:
+            properties:
+              data:
+                properties:
+                  skip_approval_when_unconfigured:
+                    type: boolean
+                  updated_at:
+                    type: string
+                  updated_by_user_email:
+                    type: string
+                  updated_by_user_id:
+                    type: string
+                  workspace_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request (missing skip_approval_when_unconfigured)
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden (not a workspace admin)
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update workspace approval-engine settings
+      tags:
+      - HzApprovalSettings
   /v2/workspaces/{workspaceId}/approval-thresholds:
     get:
       operationId: v2_v2_listApprovalThresholds
