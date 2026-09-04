@@ -49584,6 +49584,103 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims/progress/{costClaimId}/relink-xero:
+    post:
+      operationId: v2_postSupplierClaimRelinkXero
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costClaimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            xero_invoice_id:
+              type: string
+          required:
+          - xero_invoice_id
+          type: object
+      responses:
+        200:
+          description: The claim and its register row are linked to the chosen Xero
+            bill
+        400:
+          description: Bad request (missing or invalid body)
+        401:
+          description: Unauthorized
+        403:
+          description: Access denied
+        404:
+          description: Claim not found, not in this project, or the target bill is
+            not in the connected Xero org
+        409:
+          description: "Conflict \u2014 the claim's current bill is still live, or\
+            \ the target is voided/deleted, the wrong document type, on a different\
+            \ contact, or already linked to another claim"
+        424:
+          description: Failed dependency (Xero integration not configured)
+        500:
+          description: Internal Server Error
+        502:
+          description: Bad gateway (the Xero read could not complete)
+      security:
+      - JWT_v2: []
+      summary: Link a supplier invoice to a Xero bill the customer already has
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/claims/progress/{costClaimId}/xero-bill-candidates:
+    get:
+      operationId: v2_getSupplierClaimXeroBillCandidates
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costClaimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Ranked candidate bills
+        401:
+          description: Unauthorized
+        403:
+          description: Access denied
+        404:
+          description: Claim not found, or not in this project
+        409:
+          description: "Conflict \u2014 the claim's current Xero bill is still live,\
+            \ or its supplier has no Xero contact"
+        424:
+          description: Failed dependency (Xero integration not configured)
+        500:
+          description: Internal Server Error
+        502:
+          description: Bad gateway (the Xero bill lookup could not complete)
+      security:
+      - JWT_v2: []
+      summary: Xero bills this supplier invoice could be linked to
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts:
     get:
       operationId: v2_getCostContracts
