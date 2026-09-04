@@ -21708,6 +21708,153 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/my-company/{tenderPackageId}:
+    get:
+      operationId: v2_getMyCompanyTenderPackage
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      responses:
+        200:
+          description: The tender package, projected to what a subcontractor may see
+          schema:
+            properties:
+              data:
+                properties:
+                  bid_form_type:
+                    type: string
+                  clarifications:
+                    items:
+                      type: object
+                    type: array
+                  due_date:
+                    type: string
+                  files:
+                    items:
+                      type: object
+                    type: array
+                  invited_via:
+                    enum:
+                    - company
+                    - email
+                    type: string
+                  issue_date:
+                    type: string
+                  my_decline_reason:
+                    type: string
+                  my_response:
+                    type: string
+                  name:
+                    type: string
+                  project_id:
+                    type: integer
+                  project_name:
+                    type: string
+                  tender_mode:
+                    type: string
+                  tender_package_id:
+                    type: string
+                  tender_status:
+                    type: string
+                  tender_type:
+                    type: string
+                  trade_category:
+                    type: string
+                  trade_category_name:
+                    type: string
+                  workflow_status:
+                    type: string
+                  workspace_id:
+                    type: string
+                  workspace_name:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        403:
+          description: The caller's company is not on this package's invitee list
+        404:
+          description: No such tender package
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: One tender invitation addressed to the caller's own company
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/my-company/{tenderPackageId}/respond:
+    post:
+      operationId: v2_respondToMyCompanyTenderPackage
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            decline_reason:
+              type: string
+            response:
+              enum:
+              - accepted
+              - declined
+              - undecided
+              type: string
+          required:
+          - response
+          type: object
+      responses:
+        200:
+          description: Response recorded
+          schema:
+            properties:
+              data:
+                properties:
+                  company_name:
+                    type: string
+                  decline_reason:
+                    type: string
+                  email:
+                    type: string
+                  response:
+                    type: string
+                  tender_package_id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Unknown response value, tender not open, or deadline passed
+        403:
+          description: The caller's company is not on this package's invitee list
+        404:
+          description: No such tender package
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Answer a tender invitation addressed to the caller's own company
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/tender-packages/picker:
     get:
       operationId: v2_getTenderPackagePicker
