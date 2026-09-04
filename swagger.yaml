@@ -4358,6 +4358,52 @@ paths:
         / support people)
       tags:
       - ImplementationBoard
+  /v2/internal/transmittals_v2/submittals/{submittal_doc_id}/send-emails:
+    post:
+      operationId: v2_sendSubmittalEmailsInternal
+      parameters:
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            project_id:
+              type: integer
+            token:
+              type: string
+            token_pairs:
+              items:
+                properties:
+                  hex_token:
+                    type: string
+                  user_id:
+                    type: string
+                required:
+                - user_id
+                - hex_token
+                type: object
+              type: array
+            userinfo:
+              type: string
+            workspace_id:
+              type: string
+          required:
+          - token_pairs
+          - workspace_id
+          - project_id
+          type: object
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: object
+      summary: Send submittal emails (Cloud Tasks callback)
+      tags:
+      - internal
   /v2/internal/transmittals_v2/{transmittal_doc_id}/send-emails:
     post:
       operationId: v2_sendDistributionEmailsInternalV2
@@ -9248,6 +9294,102 @@ paths:
       tags:
       - Admin
       x-min-permissions: admin
+  /v2/submittals/access/{raw_token}:
+    get:
+      operationId: v2_portalViewSubmittal
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            properties:
+              can_respond:
+                type: boolean
+              cover_message:
+                type: string
+              issued_at:
+                format: date-time
+                type: string
+              issued_by:
+                type: string
+              items:
+                items:
+                  properties:
+                    document:
+                      properties:
+                        cde_id:
+                          type: integer
+                        discipline:
+                          type: string
+                        doc_number:
+                          type: string
+                        document_series_id:
+                          type: string
+                        file_type:
+                          type: string
+                        revision:
+                          type: string
+                        title:
+                          type: string
+                        version:
+                          type: integer
+                      type: object
+                    kind:
+                      type: string
+                    pinned_at:
+                      format: date-time
+                      type: string
+                  type: object
+                type: array
+              name:
+                type: string
+              status:
+                type: string
+              submittal_id:
+                type: string
+            type: object
+        403:
+          description: Invalid or expired access token
+          schema:
+            type: object
+      summary: View a submittal via a public token
+      tags:
+      - submittal-public-access
+  /v2/submittals/access/{raw_token}/documents/{cde_id}/download:
+    get:
+      operationId: v2_portalDownloadSubmittalDocument
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      - in: path
+        name: cde_id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            properties:
+              expires_in_secs:
+                type: integer
+              file_name:
+                type: string
+              signed_url:
+                type: string
+            type: object
+        404:
+          description: Document not found in this submittal
+          schema:
+            type: object
+      summary: Download a document via a public token
+      tags:
+      - submittal-public-access
   /v2/transmittals_v2/access/{raw_token}:
     get:
       operationId: v2_portalViewTransmittalV2
@@ -72406,6 +72548,409 @@ paths:
       tags:
       - Project
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals:
+    get:
+      operationId: v2_listSubmittals
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - enum:
+        - draft
+        - issued
+        - responded
+        - closed
+        - voided
+        in: query
+        name: status
+        required: false
+        type: string
+      - in: query
+        name: search
+        required: false
+        type: string
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      - in: query
+        name: after
+        required: false
+        type: string
+      - in: query
+        name: before
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            properties:
+              next_cursor:
+                type: string
+              page_size:
+                type: integer
+              prev_cursor:
+                type: string
+              results:
+                items:
+                  type: object
+                type: array
+            type: object
+      security:
+      - JWT_v2: []
+      summary: List submittals
+      tags:
+      - submittals
+    post:
+      operationId: v2_createSubmittal
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cover_message:
+              type: string
+            items:
+              items:
+                properties:
+                  document:
+                    properties:
+                      cde_id:
+                        type: integer
+                      discipline:
+                        type: string
+                      doc_number:
+                        type: string
+                      document_series_id:
+                        type: string
+                      revision:
+                        type: string
+                      title:
+                        type: string
+                      version:
+                        type: integer
+                    type: object
+                  kind:
+                    enum:
+                    - registered_document
+                    type: string
+                  pinned_at:
+                    format: date-time
+                    type: string
+                type: object
+              type: array
+            name:
+              type: string
+            recipients:
+              items:
+                properties:
+                  company_id:
+                    type: integer
+                  external_contacts:
+                    items:
+                      properties:
+                        email:
+                          type: string
+                        name:
+                          type: string
+                      type: object
+                    type: array
+                  notify_user_ids:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              type: array
+            responder:
+              properties:
+                company_id:
+                  type: integer
+                contact_email:
+                  type: string
+                name:
+                  type: string
+                user_id:
+                  type: string
+              type: object
+          required:
+          - name
+          type: object
+      responses:
+        201:
+          description: Successful Response
+          schema:
+            type: object
+        401:
+          description: Insufficient permissions for workspace/project
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Create a draft submittal
+      tags:
+      - submittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/documents/distributions:
+    get:
+      operationId: v2_getDocumentSubmittalDistributionsBatch
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: document_series_ids
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            items:
+              properties:
+                document_series_id:
+                  type: string
+                id:
+                  type: string
+                project_id:
+                  type: integer
+                submittals:
+                  items:
+                    properties:
+                      cde_id:
+                        type: integer
+                      company_count:
+                        type: integer
+                      issued_at:
+                        format: date-time
+                        type: string
+                      issued_by:
+                        type: string
+                      name:
+                        type: string
+                      recipient_count:
+                        type: integer
+                      revision:
+                        type: string
+                      status:
+                        type: string
+                      submittal_doc_id:
+                        type: string
+                      submittal_id:
+                        type: string
+                    type: object
+                  type: array
+                updated_at:
+                  format: date-time
+                  type: string
+                updated_by:
+                  type: string
+                workspace_id:
+                  type: string
+              type: object
+            type: array
+      security:
+      - JWT_v2: []
+      summary: Get submittal distributions for multiple documents
+      tags:
+      - submittal-distributions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}:
+    delete:
+      operationId: v2_deleteSubmittal
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      responses:
+        204:
+          description: Deleted
+        409:
+          description: Cannot delete an issued submittal
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Delete a draft submittal
+      tags:
+      - submittals
+    get:
+      operationId: v2_getSubmittal
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: object
+        404:
+          description: Submittal not found
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Get a submittal
+      tags:
+      - submittals
+    patch:
+      operationId: v2_updateSubmittal
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cover_message:
+              type: string
+            items:
+              items:
+                type: object
+              type: array
+            name:
+              type: string
+            recipients:
+              items:
+                type: object
+              type: array
+            responder:
+              type: object
+          type: object
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: object
+        409:
+          description: Cannot update an issued submittal
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Update a draft submittal
+      tags:
+      - submittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}/access-events:
+    get:
+      operationId: v2_getSubmittalAccessEvents
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            items:
+              properties:
+                event:
+                  type: object
+                id:
+                  type: string
+                project_id:
+                  type: integer
+                submittal_doc_id:
+                  type: string
+                workspace_id:
+                  type: string
+              type: object
+            type: array
+      security:
+      - JWT_v2: []
+      summary: Get access events for a submittal
+      tags:
+      - submittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}/issue:
+    post:
+      operationId: v2_issueSubmittal
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: object
+        400:
+          description: The pack cannot be issued as it stands
+          schema:
+            type: object
+        409:
+          description: Submittal is already issued
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Issue a draft submittal
+      tags:
+      - submittals
   /v2/workspaces/{workspaceId}/projects/{projectId}/teams:
     get:
       operationId: v2_getTeams
