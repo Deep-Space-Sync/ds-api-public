@@ -9512,10 +9512,6 @@ paths:
         name: cde_id
         required: true
         type: integer
-      - in: formData
-        name: file
-        required: true
-        type: file
       responses:
         201:
           description: Markup stored
