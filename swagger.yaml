@@ -21617,6 +21617,97 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/my-company:
+    get:
+      operationId: v2_getMyCompanyTenderPackages
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - enum:
+        - draft
+        - open
+        - closed
+        in: query
+        name: workflow_status
+        required: false
+        type: string
+      responses:
+        200:
+          description: Tender packages this company was invited to
+          schema:
+            properties:
+              company:
+                properties:
+                  company_name:
+                    type: string
+                  email:
+                    type: string
+                  global_company_id:
+                    type: integer
+                type: object
+              count:
+                type: integer
+              items:
+                items:
+                  properties:
+                    bid_form_type:
+                      type: string
+                    due_date:
+                      type: string
+                    invited_via:
+                      enum:
+                      - company
+                      - email
+                      type: string
+                    issue_date:
+                      type: string
+                    my_response:
+                      type: string
+                    name:
+                      type: string
+                    project_id:
+                      type: integer
+                    project_name:
+                      type: string
+                    tender_mode:
+                      type: string
+                    tender_package_id:
+                      type: string
+                    tender_status:
+                      type: string
+                    tender_type:
+                      type: string
+                    trade_category:
+                      type: string
+                    trade_category_name:
+                      type: string
+                    workflow_status:
+                      type: string
+                    workspace_id:
+                      type: string
+                    workspace_name:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid workflow_status filter
+        403:
+          description: Caller's identity resolves to neither a company nor an email
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Tender invitations addressed to the caller's own company, across all
+        builders
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/tender-packages/picker:
     get:
       operationId: v2_getTenderPackagePicker
