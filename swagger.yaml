@@ -9307,10 +9307,51 @@ paths:
           description: Successful Response
           schema:
             properties:
+              attachments:
+                items:
+                  properties:
+                    cde_id:
+                      type: integer
+                    content_type:
+                      type: string
+                    detached:
+                      type: boolean
+                    filename:
+                      type: string
+                    id:
+                      type: string
+                    origin:
+                      type: string
+                    size_bytes:
+                      type: integer
+                    uploaded_at:
+                      format: date-time
+                      type: string
+                    virus_scanned:
+                      type: boolean
+                  type: object
+                type: array
               can_respond:
+                type: boolean
+              can_write:
                 type: boolean
               cover_message:
                 type: string
+              draft_verdicts:
+                items:
+                  properties:
+                    attachment_ids:
+                      items:
+                        type: string
+                      type: array
+                    cde_id:
+                      type: integer
+                    comment:
+                      type: string
+                    verdict:
+                      type: string
+                  type: object
+                type: array
               issued_at:
                 format: date-time
                 type: string
@@ -9347,6 +9388,12 @@ paths:
                 type: array
               name:
                 type: string
+              responses:
+                description: Submitted responses, oldest first. More than one means
+                  a correction was appended.
+                items:
+                  type: object
+                type: array
               status:
                 type: string
               submittal_id:
@@ -9357,6 +9404,67 @@ paths:
           schema:
             type: object
       summary: View a submittal via a public token
+      tags:
+      - submittal-public-access
+  /v2/submittals/access/{raw_token}/attachments/{attachment_id}:
+    delete:
+      operationId: v2_portalDetachSubmittalResponseAttachment
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      - in: path
+        name: attachment_id
+        required: true
+        type: string
+      responses:
+        204:
+          description: Markup detached
+        403:
+          description: Not the designated responder, or an invalid token
+          schema:
+            type: object
+        404:
+          description: Attachment not found in this submittal
+          schema:
+            type: object
+        409:
+          description: Already part of a submitted response
+          schema:
+            type: object
+      summary: Remove a markup from an unsubmitted response
+      tags:
+      - submittal-public-access
+  /v2/submittals/access/{raw_token}/attachments/{attachment_id}/download:
+    get:
+      operationId: v2_portalDownloadSubmittalResponseAttachment
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      - in: path
+        name: attachment_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            properties:
+              expires_in_secs:
+                type: integer
+              file_name:
+                type: string
+              signed_url:
+                type: string
+            type: object
+        404:
+          description: Attachment not found in this submittal
+          schema:
+            type: object
+      summary: Download a reviewer-uploaded markup via a public token
       tags:
       - submittal-public-access
   /v2/submittals/access/{raw_token}/documents/{cde_id}/download:
@@ -9388,6 +9496,165 @@ paths:
           schema:
             type: object
       summary: Download a document via a public token
+      tags:
+      - submittal-public-access
+  /v2/submittals/access/{raw_token}/items/{cde_id}/attachments:
+    post:
+      consumes:
+      - multipart/form-data
+      operationId: v2_portalUploadSubmittalResponseAttachment
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      - in: path
+        name: cde_id
+        required: true
+        type: integer
+      - in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        201:
+          description: Markup stored
+          schema:
+            properties:
+              cde_id:
+                type: integer
+              content_type:
+                type: string
+              detached:
+                type: boolean
+              filename:
+                type: string
+              id:
+                type: string
+              origin:
+                type: string
+              size_bytes:
+                type: integer
+              uploaded_at:
+                format: date-time
+                type: string
+              virus_scanned:
+                type: boolean
+            type: object
+        400:
+          description: Outside the allowlist, over the size limit, or over the pack
+            quota
+          schema:
+            type: object
+        403:
+          description: Not the designated responder, or an invalid token
+          schema:
+            type: object
+        404:
+          description: Document not found in this submittal
+          schema:
+            type: object
+      summary: Upload a markup against one item via a public token
+      tags:
+      - submittal-public-access
+  /v2/submittals/access/{raw_token}/response:
+    post:
+      operationId: v2_portalSubmitSubmittalResponse
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            position_company:
+              type: string
+            typed_name:
+              type: string
+            verdicts:
+              items:
+                properties:
+                  attachment_ids:
+                    items:
+                      type: string
+                    type: array
+                  cde_id:
+                    type: integer
+                  comment:
+                    type: string
+                  verdict:
+                    type: string
+                type: object
+              type: array
+          required:
+          - verdicts
+          - typed_name
+          - position_company
+          type: object
+      responses:
+        201:
+          description: Response submitted
+          schema:
+            type: object
+        400:
+          description: A partially completed pack, or a bad attachment reference
+          schema:
+            type: object
+        403:
+          description: Not the designated responder, or an invalid token
+          schema:
+            type: object
+        409:
+          description: The submittal no longer accepts a response
+          schema:
+            type: object
+      summary: Submit a response via a public token
+      tags:
+      - submittal-public-access
+  /v2/submittals/access/{raw_token}/response-draft:
+    put:
+      operationId: v2_portalSaveSubmittalResponseDraft
+      parameters:
+      - in: path
+        name: raw_token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            verdicts:
+              items:
+                properties:
+                  attachment_ids:
+                    items:
+                      type: string
+                    type: array
+                  cde_id:
+                    type: integer
+                  comment:
+                    type: string
+                  verdict:
+                    type: string
+                type: object
+              type: array
+          type: object
+      responses:
+        204:
+          description: Progress saved
+        403:
+          description: Not the designated responder, or an invalid token
+          schema:
+            type: object
+        409:
+          description: The submittal no longer accepts a response
+          schema:
+            type: object
+      summary: Save response progress via a public token
       tags:
       - submittal-public-access
   /v2/transmittals_v2/access/{raw_token}:
@@ -73252,6 +73519,47 @@ paths:
       summary: Get access events for a submittal
       tags:
       - submittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}/attachments/{attachment_id}/download:
+    get:
+      operationId: v2_downloadSubmittalResponseAttachment
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      - in: path
+        name: attachment_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            properties:
+              expires_in_secs:
+                type: integer
+              file_name:
+                type: string
+              signed_url:
+                type: string
+            type: object
+        404:
+          description: Attachment not found in this submittal
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Download a reviewer-uploaded markup
+      tags:
+      - submittals
   /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}/issue:
     post:
       operationId: v2_issueSubmittal
@@ -73284,6 +73592,131 @@ paths:
       security:
       - JWT_v2: []
       summary: Issue a draft submittal
+      tags:
+      - submittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}/responses:
+    get:
+      operationId: v2_getSubmittalResponses
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            properties:
+              attachments:
+                items:
+                  properties:
+                    cde_id:
+                      type: integer
+                    content_type:
+                      type: string
+                    detached:
+                      type: boolean
+                    filename:
+                      type: string
+                    id:
+                      type: string
+                    origin:
+                      type: string
+                    size_bytes:
+                      type: integer
+                    uploaded_at:
+                      format: date-time
+                      type: string
+                    virus_scanned:
+                      type: boolean
+                  type: object
+                type: array
+              responses:
+                items:
+                  properties:
+                    attestation:
+                      properties:
+                        position_company:
+                          type: string
+                        signed_at:
+                          format: date-time
+                          type: string
+                        typed_name:
+                          type: string
+                      type: object
+                    channel:
+                      type: string
+                    id:
+                      type: string
+                    opened_at:
+                      format: date-time
+                      type: string
+                    pack_snapshot:
+                      items:
+                        properties:
+                          cde_id:
+                            type: integer
+                          doc_number:
+                            type: string
+                          document_series_id:
+                            type: string
+                          revision:
+                            type: string
+                          title:
+                            type: string
+                          version:
+                            type: integer
+                        type: object
+                      type: array
+                    responder_identity:
+                      properties:
+                        bound_recipient_email:
+                          type: string
+                        company_id:
+                          type: integer
+                        user_id:
+                          type: string
+                      type: object
+                    submittal_doc_id:
+                      type: string
+                    submitted_at:
+                      format: date-time
+                      type: string
+                    supersedes_response_id:
+                      type: string
+                    verdicts:
+                      items:
+                        properties:
+                          attachment_ids:
+                            items:
+                              type: string
+                            type: array
+                          cde_id:
+                            type: integer
+                          comment:
+                            type: string
+                          verdict:
+                            type: string
+                        type: object
+                      type: array
+                  type: object
+                type: array
+            type: object
+        404:
+          description: Submittal not found
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Get the responses submitted for a submittal
       tags:
       - submittals
   /v2/workspaces/{workspaceId}/projects/{projectId}/teams:
