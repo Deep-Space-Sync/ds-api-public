@@ -51822,6 +51822,70 @@ paths:
       - Cost - Forecast Cash Flow
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-cash-flow/payment-terms:
+    post:
+      operationId: v2_saveCostForecastPaymentTerms
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            period:
+              type: string
+            reset:
+              type: boolean
+            side:
+              enum:
+              - cost_out
+              - cash_in
+              type: string
+            term:
+              properties:
+                anchor:
+                  enum:
+                  - claim_reference
+                  - EOM
+                  type: string
+                anchor_day:
+                  type: integer
+                days:
+                  type: integer
+                unit:
+                  enum:
+                  - CD
+                  - BD
+                  type: string
+              type: object
+          required:
+          - period
+          - side
+          type: object
+      responses:
+        200:
+          description: Payment term saved or reset. The body reports the term now
+            in force, where it came from, and its fractional month equivalent.
+        400:
+          description: "Validation failure \u2014 bad period, unknown side, days out\
+            \ of range, unknown unit or anchor, a missing term with no reset flag,\
+            \ or an approved period, which COM-961 freezes"
+        404:
+          description: No forecast exists for the period
+      security:
+      - JWT_v2: []
+      summary: Set or reset one side's payment term (COM-754)
+      tags:
+      - Cost - Forecast Cash Flow
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-cash-flow/tasks:
     get:
       operationId: v2_getCostForecastCashFlowTasks
