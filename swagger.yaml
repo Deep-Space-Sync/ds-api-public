@@ -73246,10 +73246,29 @@ paths:
                   kind:
                     enum:
                     - registered_document
+                    - loose_document
                     type: string
                   pinned_at:
                     format: date-time
                     type: string
+                  registration:
+                    properties:
+                      confirmed:
+                        type: boolean
+                      document_type_id:
+                        type: string
+                      document_type_name:
+                        type: string
+                      document_type_prefix:
+                        type: string
+                      number_source:
+                        enum:
+                        - generated
+                        - manual
+                        type: string
+                      status:
+                        type: string
+                    type: object
                 type: object
               type: array
             name:
@@ -73285,6 +73304,22 @@ paths:
                 user_id:
                   type: string
               type: object
+            supporting_attachments:
+              items:
+                properties:
+                  added_at:
+                    format: date-time
+                    type: string
+                  added_by:
+                    type: string
+                  cde_id:
+                    type: integer
+                  document_series_id:
+                    type: string
+                  file_name:
+                    type: string
+                type: object
+              type: array
           required:
           - name
           type: object
@@ -73300,6 +73335,158 @@ paths:
       security:
       - JWT_v2: []
       summary: Create a draft submittal
+      tags:
+      - submittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/document-types:
+    get:
+      operationId: v2_listSubmittalDocumentTypes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: include_inactive
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            properties:
+              project_code:
+                type: string
+              types:
+                items:
+                  properties:
+                    created_at:
+                      format: date-time
+                      type: string
+                    created_by:
+                      type: string
+                    id:
+                      type: string
+                    is_active:
+                      type: boolean
+                    name:
+                      type: string
+                    next_number:
+                      type: integer
+                    prefix:
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                    updated_by:
+                      type: string
+                    workspace_id:
+                      type: string
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Insufficient permissions for workspace/project
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: List the workspace's document types
+      tags:
+      - submittals
+    post:
+      operationId: v2_createSubmittalDocumentType
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+            prefix:
+              type: string
+          required:
+          - name
+          - prefix
+          type: object
+      responses:
+        201:
+          description: Successful Response
+          schema:
+            type: object
+        400:
+          description: The prefix is malformed, reserved, or already in use
+          schema:
+            type: object
+        403:
+          description: Only a workspace manager or an administrator can change the
+            document type list
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Add a document type
+      tags:
+      - submittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/document-types/{type_id}:
+    patch:
+      operationId: v2_updateSubmittalDocumentType
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: type_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            is_active:
+              type: boolean
+            name:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: object
+        400:
+          description: No fields to update
+          schema:
+            type: object
+        403:
+          description: Only a workspace manager or an administrator can change the
+            document type list
+          schema:
+            type: object
+        404:
+          description: Document type not found
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Rename a document type or switch it off
       tags:
       - submittals
   /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/documents/distributions:
@@ -73461,6 +73648,10 @@ paths:
               type: array
             responder:
               type: object
+            supporting_attachments:
+              items:
+                type: object
+              type: array
           type: object
       responses:
         200:
