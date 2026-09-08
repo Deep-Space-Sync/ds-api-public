@@ -82977,6 +82977,86 @@ paths:
       summary: Convert AI-processed email to supplier claim
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/delete:
+    post:
+      operationId: v2_deleteInvoiceEmailRecord
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            mode:
+              enum:
+              - invoice_only
+              - with_linked_records
+              type: string
+          required:
+          - mode
+          type: object
+      responses:
+        200:
+          description: Invoice deleted
+          schema:
+            properties:
+              data:
+                properties:
+                  claim_collection:
+                    type: string
+                  deleted_claim_id:
+                    type: string
+                  deleted_line_item_count:
+                    type: integer
+                  deleted_schedule_ids:
+                    items:
+                      type: string
+                    type: array
+                  mode:
+                    type: string
+                  removed_retention_records:
+                    type: integer
+                  reversed_sov_count:
+                    type: integer
+                  rollback_warnings:
+                    items:
+                      type: string
+                    type: array
+                  withdrawn_variation_ids:
+                    items:
+                      type: string
+                    type: array
+                  xero_invoice_number:
+                    type: string
+                  xero_left_in_place:
+                    type: boolean
+                type: object
+              message:
+                type: string
+              status:
+                type: string
+            type: object
+        400:
+          description: Missing or invalid mode
+        403:
+          description: Record belongs to another workspace
+        404:
+          description: Email not found
+        409:
+          description: A downstream document (RCTI, cost invoice, cost payment schedule)
+            still references the claim
+      security:
+      - JWT_v2: []
+      summary: Delete an invoice record, optionally with its linked records
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/push-to-xero:
     post:
       operationId: v2_pushSupplierInvoiceToXero
