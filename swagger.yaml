@@ -14288,6 +14288,88 @@ paths:
       summary: Get batch signed download URLs (workspace-level)
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/cde/v2/site-photos/resync:
+    post:
+      operationId: v2_resyncSitePhotosWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            since:
+              format: date-time
+              type: string
+            until:
+              format: date-time
+              type: string
+          required:
+          - since
+          - until
+          type: object
+      responses:
+        202:
+          description: Resync started
+          schema:
+            properties:
+              job_id:
+                type: string
+            type: object
+        400:
+          description: Invalid range -- until is not after since, the range exceeds
+            31 days, or since/until is missing its UTC offset
+        401:
+          description: Unauthorized
+        403:
+          description: Only workspace managers can resync Site Photos
+        409:
+          description: A Site Photos resync is already running for this workspace
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Resync Site Photos for a date range
+      tags:
+      - CDE Site Photos
+  /v2/workspaces/{workspaceId}/cde/v2/site-photos/resync/{jobId}:
+    get:
+      operationId: v2_getSitePhotosResyncStatusWorkspace
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: jobId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Resync job status
+          schema:
+            properties:
+              progress:
+                type: integer
+              result:
+                type: object
+              status:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Job not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Site Photos resync status
+      tags:
+      - CDE Site Photos
   /v2/workspaces/{workspaceId}/cde/v2/smart-folders:
     get:
       operationId: v2_listSmartFoldersWorkspace
