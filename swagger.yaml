@@ -73893,6 +73893,45 @@ paths:
       summary: Download a reviewer-uploaded markup
       tags:
       - submittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}/close-out:
+    post:
+      operationId: v2_closeOutSubmittal
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: object
+        400:
+          description: An item's revision is not a document in this project
+          schema:
+            type: object
+        404:
+          description: Submittal not found
+          schema:
+            type: object
+        409:
+          description: The pack has not been responded to, is already closed, or its
+            response does not line up with it
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Close out a responded submittal
+      tags:
+      - submittals
   /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}/issue:
     post:
       operationId: v2_issueSubmittal
