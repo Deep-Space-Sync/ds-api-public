@@ -66017,6 +66017,361 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tender-quotes:
+    get:
+      operationId: v2_getTenderQuotes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: tender_package_id
+        type: string
+      - in: query
+        name: status
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: q
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    amount: {}
+                    extraction: {}
+                    extraction_status: {}
+                    file: {}
+                    gst_treatment: {}
+                    quote_id: {}
+                    received_at: {}
+                    source: {}
+                    status: {}
+                    subcontractor: {}
+                    supersedes_quote_id: {}
+                    tender_package_id: {}
+                    trade_section_id: {}
+                  type: object
+                type: array
+              page:
+                type: integer
+              total:
+                type: integer
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get Tender Quotes
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createTenderQuotes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              type: number
+            file:
+              properties:
+                file_id:
+                  type: string
+                file_name:
+                  type: string
+                file_type:
+                  type: string
+                gcs_path:
+                  type: string
+                size_bytes:
+                  type: integer
+              type: object
+            gst_treatment:
+              type: string
+            notes:
+              type: string
+            quotes:
+              items:
+                type: object
+              type: array
+            received_at:
+              type: string
+            source:
+              type: string
+            subcontractor:
+              properties:
+                company_name:
+                  type: string
+                contact_email:
+                  type: string
+                global_company_id:
+                  type: integer
+                tax_id:
+                  type: integer
+              type: object
+            supersedes_quote_id:
+              type: string
+            tender_package_id:
+              type: string
+            trade_section_id:
+              type: string
+          type: object
+      responses:
+        201:
+          description: Quote(s) stored
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create Tender Quotes
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tender-quotes/compare:
+    post:
+      operationId: v2_compareTenderQuotes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            quote_ids:
+              items:
+                type: string
+              type: array
+            tender_package_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Comparison
+          schema:
+            properties:
+              common_scope:
+                items:
+                  type: string
+                type: array
+              gaps: {}
+              pricing_outliers:
+                items:
+                  type: object
+                type: array
+              quotes:
+                items:
+                  type: object
+                type: array
+              scope_matrix:
+                items:
+                  type: object
+                type: array
+              timing: {}
+              trade: {}
+            type: object
+        400:
+          description: Fewer than two read quotes to compare
+        502:
+          description: KAI could not compare the quotes
+      security:
+      - JWT_v2: []
+      summary: Compare Tender Quotes
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tender-quotes/{quoteId}:
+    delete:
+      operationId: v2_deleteTenderQuoteById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: quoteId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Quote deleted
+        404:
+          description: Quote not found
+      security:
+      - JWT_v2: []
+      summary: Delete Tender Quote By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getTenderQuoteById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: quoteId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        404:
+          description: Quote not found
+      security:
+      - JWT_v2: []
+      summary: Get Tender Quote By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateTenderQuoteById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: quoteId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amount:
+              type: number
+            extraction:
+              type: object
+            extraction_error:
+              type: string
+            extraction_status:
+              type: string
+            gst_treatment:
+              type: string
+            notes:
+              type: string
+            received_at:
+              type: string
+            reviewed_at:
+              type: string
+            reviewed_by:
+              type: string
+            status:
+              type: string
+            subcontractor:
+              type: object
+            trade_section_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Quote updated
+        400:
+          description: Bad request
+        404:
+          description: Quote not found
+      security:
+      - JWT_v2: []
+      summary: Update Tender Quote By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tender-quotes/{quoteId}/extract:
+    post:
+      operationId: v2_extractTenderQuote
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: quoteId
+        required: true
+        type: string
+      responses:
+        200:
+          description: 'Extraction attempted. Check extraction_status for complete
+            or failed.
+
+            '
+          schema:
+            properties:
+              data: {}
+              extraction_status: {}
+              message:
+                type: string
+            type: object
+        404:
+          description: Quote not found
+      security:
+      - JWT_v2: []
+      summary: Read a Tender Quote with KAI
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tenders:
     get:
       operationId: v2_getTenders
