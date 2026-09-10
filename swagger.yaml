@@ -9388,6 +9388,9 @@ paths:
                 type: array
               name:
                 type: string
+              response_due_date:
+                format: date-time
+                type: string
               responses:
                 description: Submitted responses, oldest first. More than one means
                   a correction was appended.
@@ -74062,6 +74065,9 @@ paths:
                 user_id:
                   type: string
               type: object
+            response_due_date:
+              format: date-time
+              type: string
             supporting_attachments:
               items:
                 properties:
@@ -74406,6 +74412,9 @@ paths:
               type: array
             responder:
               type: object
+            response_due_date:
+              format: date-time
+              type: string
             supporting_attachments:
               items:
                 type: object
@@ -74578,6 +74587,44 @@ paths:
       summary: Issue a draft submittal
       tags:
       - submittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}/resend:
+    post:
+      operationId: v2_resendSubmittal
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: object
+        400:
+          description: The submittal has no recipients
+          schema:
+            type: object
+        404:
+          description: Submittal not found
+          schema:
+            type: object
+        409:
+          description: The submittal is not issued, so there is nobody to chase
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Resend an issued submittal
+      tags:
+      - submittals
   /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}/responses:
     get:
       operationId: v2_getSubmittalResponses
@@ -74701,6 +74748,90 @@ paths:
       security:
       - JWT_v2: []
       summary: Get the responses submitted for a submittal
+      tags:
+      - submittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}/resubmit:
+    post:
+      operationId: v2_resubmitSubmittal
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      responses:
+        201:
+          description: The new draft
+          schema:
+            type: object
+        404:
+          description: Submittal not found
+          schema:
+            type: object
+        409:
+          description: The pack is not closed, holds no response, or had nothing rejected
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Start the next round from a closed submittal
+      tags:
+      - submittals
+  /v2/workspaces/{workspaceId}/projects/{projectId}/submittals/{submittal_doc_id}/void:
+    post:
+      operationId: v2_voidSubmittal
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submittal_doc_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            type: object
+        400:
+          description: No reason was given, or an item's revision is not a document
+            in this project
+          schema:
+            type: object
+        404:
+          description: Submittal not found
+          schema:
+            type: object
+        409:
+          description: The pack was never issued, has already been voided, or has
+            been responded to
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Void an issued submittal
       tags:
       - submittals
   /v2/workspaces/{workspaceId}/projects/{projectId}/teams:
