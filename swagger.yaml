@@ -81655,6 +81655,10 @@ paths:
               type: integer
             record_type:
               type: string
+            rendered_data:
+              type: object
+            versioned:
+              type: boolean
           required:
           - form_object_id
           - record_type
