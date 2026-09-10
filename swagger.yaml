@@ -51608,6 +51608,112 @@ paths:
                 type: string
               cash_in:
                 properties:
+                  build_up:
+                    properties:
+                      cost_rows:
+                        items:
+                          properties:
+                            category_id:
+                              type: string
+                            category_name:
+                              type: string
+                            distribution_source:
+                              type: string
+                            has_task_link:
+                              type: boolean
+                            key:
+                              type: string
+                            label:
+                              type: string
+                            months:
+                              additionalProperties:
+                                type: number
+                              type: object
+                            program_window:
+                              type: object
+                            row_type:
+                              type: string
+                            sub_label:
+                              type: string
+                            total:
+                              type: number
+                          type: object
+                        type: array
+                      incurred_unclaimed:
+                        properties:
+                          label:
+                            type: string
+                          months:
+                            additionalProperties:
+                              type: number
+                            type: object
+                          row_type:
+                            type: string
+                          total:
+                            type: number
+                        type: object
+                      overheads_and_margin:
+                        properties:
+                          derivation:
+                            type: string
+                          label:
+                            type: string
+                          months:
+                            additionalProperties:
+                              type: number
+                            type: object
+                          row_type:
+                            type: string
+                          total:
+                            type: number
+                        type: object
+                      reconciliation:
+                        properties:
+                          balanced:
+                            type: boolean
+                          build_up_total:
+                            type: number
+                          cash_in_seeded_total:
+                            type: number
+                          certified_to_date:
+                            type: number
+                          difference:
+                            type: number
+                          remaining_to_claim:
+                            type: number
+                          revised_contract_price:
+                            type: number
+                        type: object
+                      variations:
+                        items:
+                          properties:
+                            counted:
+                              type: boolean
+                            identity_source:
+                              enum:
+                              - linked
+                              - legacy
+                              type: string
+                            key:
+                              type: string
+                            label:
+                              type: string
+                            months:
+                              additionalProperties:
+                                type: number
+                              type: object
+                            row_type:
+                              type: string
+                            status:
+                              enum:
+                              - approved
+                              - pending
+                              type: string
+                            total:
+                              type: number
+                          type: object
+                        type: array
+                    type: object
                   contracts:
                     items:
                       properties:
