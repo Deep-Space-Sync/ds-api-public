@@ -863,6 +863,567 @@ paths:
       summary: Trigger sync for all workspaces (Cloud Scheduler)
       tags:
       - InvoiceReconciliation
+  /v2/factory-tracker/activities:
+    post:
+      operationId: v2_createFactoryTrackerActivity
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              type: string
+            duration_days:
+              type: number
+            name:
+              type: string
+            order:
+              type: string
+            section_id:
+              type: string
+            trade_id:
+              type: string
+          required:
+          - name
+          type: object
+      responses:
+        201:
+          description: Activity created
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+      security:
+      - JWT_v2: []
+      summary: "Create an activity row (section optional \u2014 defaults to the board's\
+        \ Activity Schedule section)"
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/activities/{activityId}:
+    put:
+      operationId: v2_updateFactoryTrackerActivity
+      parameters:
+      - in: path
+        name: activityId
+        required: true
+        type: string
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated activity
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+        404:
+          description: Activity not found
+      security:
+      - JWT_v2: []
+      summary: Rename / recode / reorder / move / archive an activity, or edit its
+        trade, duration, description, checklist, notes, links
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/board:
+    get:
+      operationId: v2_getFactoryTrackerBoard
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Board payload
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+      security:
+      - JWT_v2: []
+      summary: Full board payload (sections, activities, modules, trades, cells) for
+        one project
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/cells/{cellId}:
+    put:
+      operationId: v2_upsertFactoryTrackerCell
+      parameters:
+      - in: path
+        name: cellId
+        required: true
+        type: string
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated cell
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+        404:
+          description: Activity or module not found
+      security:
+      - JWT_v2: []
+      summary: Upsert an activity-module cell (completion tick, N/A, checklist state,
+        planned date)
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/cells/{cellId}/comments:
+    post:
+      operationId: v2_addFactoryTrackerCellComment
+      parameters:
+      - in: path
+        name: cellId
+        required: true
+        type: string
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            comment_text:
+              type: string
+            created_by_name:
+              type: string
+          required:
+          - comment_text
+          type: object
+      responses:
+        201:
+          description: Comment created
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+      security:
+      - JWT_v2: []
+      summary: Add a comment to an activity-module cell thread
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/import:
+    post:
+      operationId: v2_importFactoryTrackerActivities
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            rows:
+              items:
+                type: object
+              type: array
+          required:
+          - rows
+          type: object
+      responses:
+        201:
+          description: Import result (created activities, counts)
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+      security:
+      - JWT_v2: []
+      summary: Append activities from a pasted / uploaded schedule (creates named
+        trades and sections that are missing)
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/modules:
+    post:
+      operationId: v2_createFactoryTrackerModule
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              type: string
+            name:
+              type: string
+            order:
+              type: string
+          required:
+          - code
+          type: object
+      responses:
+        201:
+          description: Module created
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+      security:
+      - JWT_v2: []
+      summary: Create a module column
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/modules-bulk:
+    post:
+      operationId: v2_bulkCreateFactoryTrackerModules
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            modules:
+              items:
+                type: object
+              type: array
+          required:
+          - modules
+          type: object
+      responses:
+        201:
+          description: Created + skipped lists
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+      security:
+      - JWT_v2: []
+      summary: Create many module columns at once (existing codes are skipped)
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/modules/{moduleId}:
+    put:
+      operationId: v2_updateFactoryTrackerModule
+      parameters:
+      - in: path
+        name: moduleId
+        required: true
+        type: string
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated module
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+        404:
+          description: Module not found
+      security:
+      - JWT_v2: []
+      summary: Rename / recode / reorder / hide / archive a module, or edit its notes
+        and planned dates
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/sections:
+    post:
+      operationId: v2_createFactoryTrackerSection
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+            order:
+              type: string
+          required:
+          - name
+          type: object
+      responses:
+        201:
+          description: Section created
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+      security:
+      - JWT_v2: []
+      summary: Create a board section
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/sections/{sectionId}:
+    delete:
+      operationId: v2_deleteFactoryTrackerSection
+      parameters:
+      - in: path
+        name: sectionId
+        required: true
+        type: string
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Deleted
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+        404:
+          description: Section not found
+      security:
+      - JWT_v2: []
+      summary: Soft-delete an empty section
+      tags:
+      - FactoryTracker
+    put:
+      operationId: v2_updateFactoryTrackerSection
+      parameters:
+      - in: path
+        name: sectionId
+        required: true
+        type: string
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated section
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+        404:
+          description: Section not found
+      security:
+      - JWT_v2: []
+      summary: Rename / reorder a section
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/trades:
+    post:
+      operationId: v2_createFactoryTrackerTrade
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            colour:
+              type: string
+            contact:
+              type: string
+            name:
+              type: string
+          required:
+          - name
+          type: object
+      responses:
+        201:
+          description: Trade created
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+      security:
+      - JWT_v2: []
+      summary: Add a trade / subcontractor to the board
+      tags:
+      - FactoryTracker
+  /v2/factory-tracker/trades/{tradeId}:
+    delete:
+      operationId: v2_deleteFactoryTrackerTrade
+      parameters:
+      - in: path
+        name: tradeId
+        required: true
+        type: string
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Deleted
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+        404:
+          description: Trade not found
+      security:
+      - JWT_v2: []
+      summary: Soft-delete a trade
+      tags:
+      - FactoryTracker
+    put:
+      operationId: v2_updateFactoryTrackerTrade
+      parameters:
+      - in: path
+        name: tradeId
+        required: true
+        type: string
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated trade
+        400:
+          description: Invalid request
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+        404:
+          description: Trade not found
+      security:
+      - JWT_v2: []
+      summary: Update a trade
+      tags:
+      - FactoryTracker
   /v2/files:
     get:
       operationId: v2_v2_getGlobalFiles
