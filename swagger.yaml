@@ -66839,6 +66839,8 @@ paths:
               type: object
             gst_treatment:
               type: string
+            linked_submission_id:
+              type: string
             notes:
               type: string
             quotes:
@@ -67091,6 +67093,61 @@ paths:
       security:
       - JWT_v2: []
       summary: Read a Tender Quote with KAI
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tender-quotes/{quoteId}/promote:
+    post:
+      operationId: v2_promoteTenderQuote
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: quoteId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            exclusions:
+              type: string
+            headline_price:
+              type: number
+            notes:
+              type: string
+            source_note:
+              type: string
+          required:
+          - headline_price
+          type: object
+      responses:
+        201:
+          description: Bid recorded and quote linked
+          schema:
+            properties:
+              data: {}
+              message:
+                type: string
+            type: object
+        400:
+          description: Not a promotable quote, package not open/closed, or no headline_price
+        404:
+          description: Quote or tender package not found
+        409:
+          description: Already promoted, or the subcontractor already has a submitted
+            bid
+      security:
+      - JWT_v2: []
+      summary: Promote a Tender Quote to a Bid
       tags:
       - Cost
       x-ds-test-enabled: true
