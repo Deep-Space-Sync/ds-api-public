@@ -50910,6 +50910,8 @@ paths:
               type: string
             contract_date:
               type: string
+            contract_identifier:
+              type: string
             contract_risk:
               type: string
             contract_status:
@@ -51232,6 +51234,8 @@ paths:
             contract_currency:
               type: string
             contract_date:
+              type: string
+            contract_identifier:
               type: string
             contract_risk:
               type: string
