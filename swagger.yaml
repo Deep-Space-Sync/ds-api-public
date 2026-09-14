@@ -52622,6 +52622,14 @@ paths:
                 properties:
                   end_month:
                     type: string
+                  end_source:
+                    enum:
+                    - practical_completion_date
+                    - project_completion_date
+                    - projects_collection
+                    type: string
+                  project_end_month:
+                    type: string
                   start_month:
                     type: string
                 type: object
