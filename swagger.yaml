@@ -49745,6 +49745,22 @@ paths:
         name: cost_code_id
         required: false
         type: string
+      - in: query
+        name: status
+        required: false
+        type: string
+      - in: query
+        name: entry_type
+        required: false
+        type: string
+      - in: query
+        name: page
+        required: false
+        type: integer
+      - in: query
+        name: limit
+        required: false
+        type: integer
       responses:
         200:
           description: Successful response
@@ -49789,6 +49805,46 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-manual-entries/{entryId}:
+    patch:
+      operationId: v2_patchBudgetRegisterManualEntry
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: entryId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Entry updated
+        400:
+          description: Bad request or entry already voided
+        401:
+          description: Unauthorized
+        404:
+          description: Entry not found
+        409:
+          description: An active cost transfer is sourced from this entry
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit Manual Entry
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-manual-entries/{entryId}/void:
     post:
       operationId: v2_voidBudgetRegisterManualEntry
@@ -49805,6 +49861,14 @@ paths:
         name: entryId
         required: true
         type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            reason:
+              type: string
+          type: object
       responses:
         200:
           description: Entry voided
@@ -49814,6 +49878,8 @@ paths:
           description: Unauthorized
         404:
           description: Entry not found
+        409:
+          description: An active cost transfer is sourced from this entry
         500:
           description: Internal Server Error
       security:
