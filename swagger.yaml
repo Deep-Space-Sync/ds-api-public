@@ -51870,25 +51870,39 @@ paths:
         required: false
         schema:
           properties:
-            overrides:
+            category_overrides:
               items:
                 properties:
-                  boq_ids:
-                    items:
-                      type: string
-                    type: array
+                  budget_category_id:
+                    type: string
                   cost_code_id:
                     type: string
                   is_checked:
                     type: boolean
-                  qto_item_ids:
-                    items:
-                      type: string
-                    type: array
                   sell_override:
                     type: number
                 type: object
               type: array
+            overrides:
+              items:
+                properties:
+                  boq_id:
+                    type: string
+                  cost_code_id:
+                    type: string
+                  is_checked:
+                    type: boolean
+                  qto_item_id:
+                    type: string
+                  sell_override:
+                    type: number
+                type: object
+              type: array
+            sov_mode:
+              enum:
+              - item
+              - category_only
+              type: string
           type: object
       responses:
         200:
