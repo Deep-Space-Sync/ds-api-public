@@ -52464,6 +52464,35 @@ paths:
                 type: string
               cash_in:
                 properties:
+                  anchors:
+                    properties:
+                      approved_variations:
+                        type: number
+                      balanced:
+                        type: boolean
+                      cash_in_total:
+                        type: number
+                      certified_to_date:
+                        type: number
+                      contracts_without_value:
+                        items:
+                          type: string
+                        type: array
+                      difference:
+                        type: number
+                      original_contract_sum:
+                        type: number
+                      pending_variations:
+                        type: number
+                      revised_contract_price:
+                        type: number
+                      still_claimable:
+                        type: number
+                      unknown_reason:
+                        enum:
+                        - no_contract_value
+                        type: string
+                    type: object
                   build_up:
                     properties:
                       cost_rows:
