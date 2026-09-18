@@ -82579,6 +82579,8 @@ paths:
           properties:
             filename:
               type: string
+            keep_unresolved_tokens:
+              type: boolean
             line_items:
               items:
                 type: object
