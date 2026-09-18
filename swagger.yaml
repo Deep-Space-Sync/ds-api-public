@@ -25073,6 +25073,110 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/tender-types:
+    get:
+      operationId: v2_getWorkspaceTenderTypes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tender types list
+          schema:
+            properties:
+              count:
+                type: integer
+              data:
+                items:
+                  properties:
+                    id:
+                      type: string
+                    is_active:
+                      type: boolean
+                    is_default:
+                      type: boolean
+                    name:
+                      type: string
+                  type: object
+                type: array
+              message:
+                type: string
+            type: object
+      security:
+      - JWT_v2: []
+      summary: List the workspace's tender types registry
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_addWorkspaceTenderType
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+          required:
+          - name
+          type: object
+      responses:
+        201:
+          description: Tender type added
+        400:
+          description: Missing/duplicate name or limit reached
+      security:
+      - JWT_v2: []
+      summary: Quick-add a single tender type
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    put:
+      operationId: v2_updateWorkspaceTenderTypes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            tender_types:
+              items:
+                properties:
+                  id:
+                    type: string
+                  is_active:
+                    type: boolean
+                  is_default:
+                    type: boolean
+                  name:
+                    type: string
+                type: object
+              type: array
+          required:
+          - tender_types
+          type: object
+      responses:
+        200:
+          description: Tender types updated
+        400:
+          description: Validation error
+      security:
+      - JWT_v2: []
+      summary: Replace the workspace tender types set
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/tenders:
     get:
       operationId: v2_getTendersWorkspaceLevel
