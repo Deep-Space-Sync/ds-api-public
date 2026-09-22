@@ -66282,6 +66282,26 @@ paths:
       summary: Create Subcontract Variation
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/approved-summary:
+    get:
+      operationId: v2_getApprovedSubcontractVariationSummary
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Get Approved Subcontract Variation Summary
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}:
     delete:
       operationId: v2_deleteSubcontractVariationById
