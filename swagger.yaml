@@ -27280,6 +27280,11 @@ paths:
               type: string
             project_id:
               type: integer
+            role:
+              enum:
+              - induction
+              - swms
+              type: string
           required:
           - project_id
           type: object
@@ -27305,7 +27310,7 @@ paths:
           description: DS Site could not be reached or rejected the change
       security:
       - JWT_v2: []
-      summary: Provision a DS Site form as a project's site induction form
+      summary: Provision a DS Site form as one of a project's site gate forms
       tags:
       - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/roles:
