@@ -14369,6 +14369,57 @@ paths:
       summary: Archive document by series ID (workspace-level)
       tags:
       - CDE Documents
+  /v2/workspaces/{workspaceId}/cde/v2/archive-by-series-ids:
+    post:
+      operationId: v2_archiveBySeriesIdsWorkspaceLevel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_series_ids:
+              items:
+                type: string
+              type: array
+          required:
+          - document_series_ids
+          type: object
+      responses:
+        200:
+          description: Successfully archived documents
+          schema:
+            properties:
+              archived_count:
+                type: integer
+              archived_document_count:
+                type: integer
+              archived_series_ids:
+                items:
+                  type: string
+                type: array
+              not_found_series_ids:
+                items:
+                  type: string
+                type: array
+              success:
+                type: boolean
+            type: object
+        400:
+          description: document_series_ids was empty
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Archive documents by series IDs (workspace-level)
+      tags:
+      - CDE Documents
   /v2/workspaces/{workspaceId}/cde/v2/by-series:
     get:
       operationId: v2_getCdeDocsBySeriesIdsWorkspaceLevel
@@ -44223,6 +44274,61 @@ paths:
       security:
       - JWT_v2: []
       summary: Archive document by series ID
+      tags:
+      - CDE Documents
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/archive-by-series-ids:
+    post:
+      operationId: v2_archiveBySeriesIds
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_series_ids:
+              items:
+                type: string
+              type: array
+          required:
+          - document_series_ids
+          type: object
+      responses:
+        200:
+          description: Successfully archived documents
+          schema:
+            properties:
+              archived_count:
+                type: integer
+              archived_document_count:
+                type: integer
+              archived_series_ids:
+                items:
+                  type: string
+                type: array
+              not_found_series_ids:
+                items:
+                  type: string
+                type: array
+              success:
+                type: boolean
+            type: object
+        400:
+          description: document_series_ids was empty
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Archive documents by series IDs
       tags:
       - CDE Documents
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/by-series:
