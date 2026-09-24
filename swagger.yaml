@@ -6818,6 +6818,118 @@ paths:
       summary: Open the signing page for an issued subcontract (v2)
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/swms:
+    get:
+      operationId: v2_portalV2GetSwmsForm
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        409:
+          description: DS Site is not connected for this workspace, or the caller
+            has no company
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get the company's SWMS form for a project
+      tags:
+      - PortalApi
+    post:
+      operationId: v2_portalV2CreateSwmsForm
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: The form already existed; nothing was changed
+        201:
+          description: Created
+        400:
+          description: The questions describe a form that cannot be built
+        401:
+          description: Unauthorized
+        409:
+          description: DS Site will not allow this, and nothing was written
+        422:
+          description: Invalid input
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create the company's SWMS form for a project
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/swms/archive:
+    post:
+      operationId: v2_portalV2ArchiveSwmsForm
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        409:
+          description: There is no form to replace, or DS Site refused the change.
+            Nothing was altered.
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Take this company's SWMS form for this project out of service
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/swms/status:
+    get:
+      operationId: v2_portalV2GetSwmsStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        409:
+          description: DS Site is not connected for this workspace, or the caller
+            has no company
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: SWMS completion for the company's workers
+      tags:
+      - PortalApi
   /v2/portal/health:
     get:
       operationId: v2_portalApiHealth
