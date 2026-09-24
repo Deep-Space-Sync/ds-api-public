@@ -7052,6 +7052,57 @@ paths:
       summary: Get a signed URL to view an insurance certificate
       tags:
       - PortalApi
+  /v2/portal/me/company/logo:
+    delete:
+      operationId: v2_portalApiMeCompanyLogoDelete
+      parameters:
+      - in: query
+        name: workspace_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Logo cleared
+        401:
+          description: Unauthorized
+        403:
+          description: Role lacks the company_info feature
+        404:
+          description: Company not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Clear the company logo
+      tags:
+      - PortalApi
+    post:
+      consumes:
+      - multipart/form-data
+      operationId: v2_portalApiMeCompanyLogoPost
+      parameters:
+      - in: query
+        name: workspace_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Logo stored
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        403:
+          description: Role lacks the company_info feature
+        404:
+          description: Company not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Set the company logo
+      tags:
+      - PortalApi
   /v2/portal/me/company/profile:
     get:
       operationId: v2_portalApiMeCompanyProfileGet
