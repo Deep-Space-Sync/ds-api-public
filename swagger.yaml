@@ -7690,6 +7690,32 @@ paths:
       summary: Create a submittal-attachment sign session
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/induction/members/{memberId}/projects:
+    get:
+      operationId: v2_portalApiGetInductionMemberProjects
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: memberId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Projects a member may be sent an induction for
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/action-items:
     get:
       operationId: v2_portalApiGetActionItems
@@ -8630,6 +8656,71 @@ paths:
       security:
       - JWT_v2: []
       summary: Get client-visible head contract detail
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/induction:
+    get:
+      operationId: v2_portalApiGetProjectInduction
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - default: 1
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - default: 50
+        in: query
+        maximum: 200
+        minimum: 1
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get the project induction register
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/projects/{projectId}/induction/send:
+    post:
+      operationId: v2_portalApiSendProjectInduction
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        409:
+          description: The project or workspace is not set up for this send
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Email a worker this project's induction
       tags:
       - PortalApi
   /v2/portal/workspaces/{workspaceId}/projects/{projectId}/members:
