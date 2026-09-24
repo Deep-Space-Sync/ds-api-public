@@ -61471,10 +61471,21 @@ paths:
                     type: array
                   statistics:
                     properties:
+                      amount_basis:
+                        enum:
+                        - revised_ex_gst
+                        - header_amount
+                        type: string
+                      approved_value:
+                        type: number
                       currencies:
                         items:
                           type: string
                         type: array
+                      draft_count:
+                        type: integer
+                      original_amount:
+                        type: number
                       pending_approvals:
                         type: integer
                       status_breakdown:
