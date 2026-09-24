@@ -52643,6 +52643,441 @@ paths:
       summary: Accept Credit Note (optionally push to Xero)
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/departures:
+    get:
+      operationId: v2_getCostDepartures
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - enum:
+        - Open
+        - Under Review
+        - Firming Up
+        - Converted
+        - Absorbed
+        - Rejected
+        in: query
+        name: status
+        required: false
+        type: string
+      - in: query
+        name: q
+        required: false
+        type: string
+      responses:
+        200:
+          description: '`{ message, data: [departure], summary }` - soft-deleted excluded,
+            newest first.'
+      security:
+      - JWT_v2: []
+      summary: List Departures Register Entries
+      tags:
+      - Cost - Departures
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_createCostDeparture
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_attachments:
+              items:
+                type: object
+              type: array
+            cost_code_id:
+              type: string
+            date_raised:
+              type: string
+            estimated_cost:
+              type: number
+            estimated_time_days:
+              type: integer
+            linked_cde_documents:
+              items:
+                type: string
+              type: array
+            raised_by_name:
+              type: string
+            raised_by_user_id:
+              type: string
+            source_refs:
+              items:
+                type: string
+              type: array
+            source_type:
+              enum:
+              - Drawing revision
+              - Site instruction
+              - RFI response
+              - Latent condition
+              - Consultant advice
+              - Client request
+              - Other
+              type: string
+            status:
+              enum:
+              - Open
+              - Under Review
+              - Firming Up
+              type: string
+            title:
+              type: string
+          required:
+          - title
+          type: object
+      responses:
+        201:
+          description: '`{ message, data }` - the created departure with its allocated
+            departure_id.'
+        400:
+          description: Validation error (missing title, unknown source_type, non-numeric
+            estimate, unknown cost code)
+      security:
+      - JWT_v2: []
+      summary: Log Departure
+      tags:
+      - Cost - Departures
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/departures/{departureId}:
+    delete:
+      operationId: v2_deleteCostDeparture
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: departureId
+        required: true
+        type: string
+      responses:
+        200:
+          description: '`{ message, id, deleted: true }`'
+        404:
+          description: Departure not found
+        409:
+          description: Departure is Converted
+        410:
+          description: Departure already deleted
+      security:
+      - JWT_v2: []
+      summary: Delete Departure (soft-delete)
+      tags:
+      - Cost - Departures
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    get:
+      operationId: v2_getCostDeparture
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: departureId
+        required: true
+        type: string
+      responses:
+        200:
+          description: '`{ message, data }` - includes read-time `cost_code_details`,
+            `linked_cde_documents_details` and a `link_state` on each converted variation
+            / linked R&O entry.'
+        403:
+          description: Departure does not belong to this workspace/project
+        404:
+          description: Departure not found
+        410:
+          description: Departure has been deleted
+      security:
+      - JWT_v2: []
+      summary: Get Departure
+      tags:
+      - Cost - Departures
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateCostDeparture
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: departureId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_attachments:
+              items:
+                type: object
+              type: array
+            cost_code_id:
+              type: string
+            date_raised:
+              type: string
+            estimated_cost:
+              type: number
+            estimated_time_days:
+              type: integer
+            linked_cde_documents:
+              items:
+                type: string
+              type: array
+            raised_by_name:
+              type: string
+            raised_by_user_id:
+              type: string
+            source_refs:
+              items:
+                type: string
+              type: array
+            source_type:
+              enum:
+              - Drawing revision
+              - Site instruction
+              - RFI response
+              - Latent condition
+              - Consultant advice
+              - Client request
+              - Other
+              type: string
+            title:
+              type: string
+          type: object
+      responses:
+        200:
+          description: '`{ message, data }` - the merged departure.'
+        400:
+          description: Validation error, `status` in body, or no editable fields
+        403:
+          description: Departure does not belong to this workspace/project
+        404:
+          description: Departure not found
+        409:
+          description: Departure is Converted (read-only) or Absorbed / Rejected (reopen
+            first)
+        410:
+          description: Departure has been deleted
+      security:
+      - JWT_v2: []
+      summary: Update Departure
+      tags:
+      - Cost - Departures
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/departures/{departureId}/activity:
+    get:
+      operationId: v2_getCostDepartureActivity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: departureId
+        required: true
+        type: string
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: '`{ message, data: [activity], count }`'
+        403:
+          description: Departure does not belong to this workspace/project
+        404:
+          description: Departure not found
+        410:
+          description: Departure has been deleted
+      security:
+      - JWT_v2: []
+      summary: Get Departure Activity Timeline
+      tags:
+      - Cost - Departures
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/departures/{departureId}/convert:
+    post:
+      operationId: v2_convertCostDeparture
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: departureId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            head_contract_id:
+              type: string
+            subcontract_id:
+              type: string
+            target:
+              enum:
+              - hvo
+              - svo
+              type: string
+          required:
+          - target
+          type: object
+      responses:
+        201:
+          description: '`{ message, data, variation: { type, id, variation_id, status,
+            head_contract_id | subcontract_id }, risk_opportunity_flagged }`'
+        400:
+          description: Bad target; `no_head_contract` / `head_contract_required` /
+            `invalid_head_contract`; missing subcontract_id; or a validation error
+            relayed from the variation create
+        404:
+          description: Departure or subcontract not found
+        409:
+          description: '`departure_not_convertible` (closed status), `already_converted`,
+            or `orphan_variation_exists` (a variation already references this departure)'
+        410:
+          description: Departure has been deleted
+      security:
+      - JWT_v2: []
+      summary: Convert Departure to a Head Contract / Subcontract Variation
+      tags:
+      - Cost - Departures
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/departures/{departureId}/link-risk-opportunity:
+    post:
+      operationId: v2_linkCostDepartureRiskOpportunity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: departureId
+        required: true
+        type: string
+      responses:
+        201:
+          description: '`{ message, data, risk_opportunity }` - the merged departure
+            and the created R&O entry (with its allocated ro_number).'
+        400:
+          description: Validation error relayed from the R&O create
+        404:
+          description: Departure not found
+        409:
+          description: '`departure_not_linkable` (closed status) or `already_linked`'
+        410:
+          description: Departure has been deleted
+      security:
+      - JWT_v2: []
+      summary: Link Departure to the Risk & Opportunity Register
+      tags:
+      - Cost - Departures
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/departures/{departureId}/update-status:
+    post:
+      operationId: v2_setCostDepartureStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: departureId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            note:
+              type: string
+            status:
+              enum:
+              - Open
+              - Under Review
+              - Firming Up
+              - Absorbed
+              - Rejected
+              type: string
+          required:
+          - status
+          type: object
+      responses:
+        200:
+          description: '`{ message, data }` - the merged departure.'
+        400:
+          description: Missing / unknown status, `Converted` requested, already in
+            that status, or transition not allowed
+        404:
+          description: Departure not found
+        409:
+          description: Departure is Converted (locked)
+        410:
+          description: Departure has been deleted
+      security:
+      - JWT_v2: []
+      summary: Change Departure Status
+      tags:
+      - Cost - Departures
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-cash-flow:
     get:
       operationId: v2_getCostForecastCashFlowGrid
