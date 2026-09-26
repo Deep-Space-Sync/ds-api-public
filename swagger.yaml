@@ -15409,6 +15409,14 @@ paths:
         name: cdeId
         required: true
         type: integer
+      - in: query
+        name: expiry_minutes
+        required: false
+        type: integer
+      - in: query
+        name: download_name
+        required: false
+        type: string
       responses:
         200:
           description: Successfully returns CDE url
@@ -45488,6 +45496,14 @@ paths:
         name: cdeId
         required: true
         type: integer
+      - in: query
+        name: expiry_minutes
+        required: false
+        type: integer
+      - in: query
+        name: download_name
+        required: false
+        type: string
       responses:
         200:
           description: Successfully returns CDE url
