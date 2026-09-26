@@ -82528,6 +82528,104 @@ paths:
       summary: Get Resolved Case Variables
       tags:
       - HzNotificationSenderV2
+  /v2/workspaces/{workspace_id}/hz-document-render/html:
+    post:
+      operationId: v2_renderHzDocumentHtml
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            css:
+              type: string
+            groups:
+              items:
+                properties:
+                  columns:
+                    enum:
+                    - 1
+                    - 2
+                    type: integer
+                  html:
+                    type: string
+                  margins_mm:
+                    properties:
+                      bottom:
+                        type: number
+                      left:
+                        type: number
+                      right:
+                        type: number
+                      top:
+                        type: number
+                    type: object
+                  orientation:
+                    enum:
+                    - portrait
+                    - landscape
+                    type: string
+                required:
+                - html
+                type: object
+              type: array
+            title:
+              type: string
+            unsplittable_selectors:
+              items:
+                type: string
+              type: array
+          required:
+          - groups
+          type: object
+      responses:
+        200:
+          description: Document rendered successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  content_type:
+                    type: string
+                  group_page_counts:
+                    items:
+                      type: integer
+                    type: array
+                  pdf_base64:
+                    type: string
+                  render_ms:
+                    type: integer
+                  renderer_version:
+                    type: integer
+                  warnings:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        413:
+          description: Request or HTML larger than 10 MB, or CSS larger than 64 KB
+        422:
+          description: Invalid request, or more than 600 pages
+        429:
+          description: Too many render requests for this user
+        502:
+          description: Render service unavailable or failed
+        504:
+          description: Rendering timed out
+      security:
+      - JWT_v2: []
+      summary: Render HTML page groups to a native-text PDF (B17)
+      tags:
+      - HzDocumentTemplates
   /v2/workspaces/{workspace_id}/hz-document-templates:
     get:
       operationId: v2_listHzDocumentTemplates
