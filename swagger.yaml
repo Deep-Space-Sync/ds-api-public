@@ -83406,6 +83406,48 @@ paths:
       summary: Replace a literal value in the template Word file with a variable (COR-764)
       tags:
       - HzDocumentTemplates
+  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/duplicate:
+    post:
+      operationId: v2_duplicateHzDocumentTemplate
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        201:
+          description: Copy created successfully
+          schema:
+            properties:
+              data:
+                properties:
+                  id:
+                    type: string
+                  status:
+                    type: string
+                  title:
+                    type: string
+                  version_number:
+                    type: integer
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace mismatch
+        404:
+          description: Document template not found
+      security:
+      - JWT_v2: []
+      summary: Copy a template into a new, independent Draft template (Clone & Edit)
+      tags:
+      - HzDocumentTemplates
   /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/nominate:
     patch:
       operationId: v2_nominateHzDocumentTemplate
