@@ -83204,6 +83204,99 @@ paths:
       summary: Set a template as the assigned default for its category/type
       tags:
       - HzDocumentTemplates
+  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/convert-to-docx:
+    post:
+      operationId: v2_convertHzDocumentTemplateToDocx
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            company_logo_url:
+              type: string
+            html:
+              type: string
+            page_orientation:
+              enum:
+              - portrait
+              - landscape
+              type: string
+            title:
+              type: string
+          required:
+          - html
+          type: object
+      responses:
+        201:
+          description: Word template created
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+              report:
+                properties:
+                  conversion_warnings:
+                    items:
+                      type: string
+                    type: array
+                  dropped:
+                    items:
+                      type: string
+                    type: array
+                  logo:
+                    enum:
+                    - embedded
+                    - removed
+                    - none
+                    type: string
+                  tokens:
+                    type: object
+                  unreachable:
+                    items:
+                      type: string
+                    type: array
+                  variables:
+                    items:
+                      type: string
+                    type: array
+                  warnings:
+                    items:
+                      type: string
+                    type: array
+                type: object
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - not a member of the workspace
+        404:
+          description: Document template not found
+        409:
+          description: The template is already a Word template
+        413:
+          description: The HTML is over 5 MB
+        422:
+          description: AS 4901 template, or a variable was lost or split in conversion
+        502:
+          description: The conversion service failed
+        504:
+          description: The conversion took too long
+      security:
+      - JWT_v2: []
+      summary: Convert an HTML template into a new Word template (F1)
+      tags:
+      - HzDocumentTemplates
   /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/docx:
     get:
       operationId: v2_downloadHzDocumentTemplateDocx
