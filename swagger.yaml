@@ -70013,6 +70013,53 @@ paths:
       summary: Submit approval action
       tags:
       - HzApproval
+  /v2/workspaces/{workspaceId}/projects/{projectId}/hz-approvals/{approvalId}/cancel:
+    post:
+      operationId: v2_v2_cancelHzApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: approvalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            acting_user_email:
+              type: string
+            acting_user_id:
+              type: string
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Approval cancelled, or already closed (data.cancelled=false)
+        400:
+          description: Missing reason
+        403:
+          description: Caller is not a service, the requester or a Highest Authority
+            holder
+        404:
+          description: Approval instance not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Cancel an in-review approval (B94)
+      tags:
+      - HzApproval
   /v2/workspaces/{workspaceId}/projects/{projectId}/hz-approvals/{approvalId}/revoke:
     post:
       operationId: v2_v2_revokeHzApproval
