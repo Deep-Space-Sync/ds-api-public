@@ -13807,6 +13807,8 @@ paths:
           description: Missing required parameters
         401:
           description: Unauthorized
+        404:
+          description: The company is not a client of this workspace
         409:
           description: Permission already exists
         500:
