@@ -52837,6 +52837,28 @@ paths:
               type: string
             date_raised:
               type: string
+            estimate_lines:
+              items:
+                properties:
+                  cost_code_num:
+                    type: string
+                  line_id:
+                    type: string
+                  line_item_name:
+                    type: string
+                  qty:
+                    type: number
+                  total_amount:
+                    readOnly: true
+                    type: number
+                  unit_amount:
+                    type: number
+                  unit_of_measure:
+                    type: string
+                required:
+                - line_item_name
+                type: object
+              type: array
             estimated_cost:
               type: number
             estimated_time_days:
@@ -52880,7 +52902,8 @@ paths:
             departure_id.'
         400:
           description: Validation error (missing title, unknown source_type, non-numeric
-            estimate, unknown cost code)
+            estimate, unknown cost code, malformed estimate line - `estimate_lines[i].<field>
+            ...`)
       security:
       - JWT_v2: []
       summary: Log Departure
@@ -52937,9 +52960,9 @@ paths:
         type: string
       responses:
         200:
-          description: '`{ message, data }` - includes read-time `cost_code_details`,
-            `linked_cde_documents_details` and a `link_state` on each converted variation
-            / linked R&O entry.'
+          description: '`{ message, data }` - includes `estimate_lines` (always a
+            list), read-time `cost_code_details`, `linked_cde_documents_details` and
+            a `link_state` on each converted variation / order / linked R&O entry.'
         403:
           description: Departure does not belong to this workspace/project
         404:
@@ -52981,6 +53004,28 @@ paths:
               type: string
             date_raised:
               type: string
+            estimate_lines:
+              items:
+                properties:
+                  cost_code_num:
+                    type: string
+                  line_id:
+                    type: string
+                  line_item_name:
+                    type: string
+                  qty:
+                    type: number
+                  total_amount:
+                    readOnly: true
+                    type: number
+                  unit_amount:
+                    type: number
+                  unit_of_measure:
+                    type: string
+                required:
+                - line_item_name
+                type: object
+              type: array
             estimated_cost:
               type: number
             estimated_time_days:
@@ -53014,7 +53059,8 @@ paths:
         200:
           description: '`{ message, data }` - the merged departure.'
         400:
-          description: Validation error, `status` in body, or no editable fields
+          description: Validation error (including a malformed estimate line - `estimate_lines[i].<field>
+            ...`), `status` in body, or no editable fields
         403:
           description: Departure does not belong to this workspace/project
         404:
@@ -53088,14 +53134,19 @@ paths:
         required: true
         schema:
           properties:
+            currency:
+              type: string
             head_contract_id:
               type: string
             subcontract_id:
               type: string
+            supplier_id:
+              type: integer
             target:
               enum:
               - hvo
               - svo
+              - po
               type: string
           required:
           - target
@@ -53103,21 +53154,26 @@ paths:
       responses:
         201:
           description: '`{ message, data, variation: { type, id, variation_id, status,
-            head_contract_id | subcontract_id }, risk_opportunity_flagged }`'
+            head_contract_id | subcontract_id | supplier_id }, risk_opportunity_flagged
+            }` - `variation_id` is the PO''s order_identifier for `po`'
         400:
           description: Bad target; `no_head_contract` / `head_contract_required` /
-            `invalid_head_contract`; missing subcontract_id; or a validation error
-            relayed from the variation create
+            `invalid_head_contract`; missing subcontract_id; `unpriced_departure`
+            / `supplier_required` for `po`; or a validation error relayed from the
+            variation / order create
         404:
           description: Departure or subcontract not found
         409:
-          description: '`departure_not_convertible` (closed status), `already_converted`,
-            or `orphan_variation_exists` (a variation already references this departure)'
+          description: '`departure_not_convertible` (Absorbed / Rejected), `already_converted`
+            (the requested side is already linked - `variation` names the link), or
+            `orphan_variation_exists` (a record of that type already references this
+            departure)'
         410:
           description: Departure has been deleted
       security:
       - JWT_v2: []
-      summary: Convert Departure to a Head Contract / Subcontract Variation
+      summary: Convert Departure to a Head Contract / Subcontract Variation or Purchase
+        Order
       tags:
       - Cost - Departures
       x-ds-test-enabled: true
