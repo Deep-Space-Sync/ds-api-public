@@ -24559,6 +24559,8 @@ paths:
               type: array
             company_name:
               type: string
+            email:
+              type: string
             exclusions:
               type: string
             global_company_id:
@@ -24596,8 +24598,6 @@ paths:
                 type: object
               type: array
           required:
-          - tax_id
-          - global_company_id
           - company_name
           - headline_price
           - exclusions
