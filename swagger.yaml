@@ -84440,10 +84440,6 @@ paths:
         name: workspace_id
         required: true
         type: string
-      - in: formData
-        name: file
-        required: true
-        type: file
       responses:
         201:
           description: Import report
