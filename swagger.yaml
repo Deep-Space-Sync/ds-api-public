@@ -44140,6 +44140,14 @@ paths:
         name: limit
         required: false
         type: integer
+      - in: query
+        name: date_from
+        required: false
+        type: string
+      - in: query
+        name: date_to
+        required: false
+        type: string
       responses:
         200:
           description: Paginated file listing for the album
@@ -44150,6 +44158,40 @@ paths:
       security:
       - JWT_v2: []
       summary: List files in an album, paginated newest-first
+      tags:
+      - CDE Site Photos
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/albums/{albumId}/files/day-counts:
+    get:
+      operationId: v2_albumDayCounts
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: albumId
+        required: true
+        type: string
+      - in: query
+        name: tz
+        required: false
+        type: string
+      responses:
+        200:
+          description: Per-day counts for the album
+        400:
+          description: Unknown folder_system_key or malformed tz
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Count album files per day
       tags:
       - CDE Site Photos
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/albums/{albumId}/items:
@@ -44687,6 +44729,14 @@ paths:
         name: limit
         required: false
         type: integer
+      - in: query
+        name: date_from
+        required: false
+        type: string
+      - in: query
+        name: date_to
+        required: false
+        type: string
       responses:
         200:
           description: Paginated file listing for the system folder
@@ -44699,6 +44749,40 @@ paths:
       security:
       - JWT_v2: []
       summary: List project files, paginated newest-first
+      tags:
+      - CDE Site Photos
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/files/day-counts:
+    get:
+      operationId: v2_systemFolderDayCounts
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: folder_system_key
+        required: true
+        type: string
+      - in: query
+        name: tz
+        required: false
+        type: string
+      responses:
+        200:
+          description: Per-day counts for the system folder
+        400:
+          description: Unknown folder_system_key or malformed tz
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Count files per day in a system folder
       tags:
       - CDE Site Photos
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/migrate-legacy:
