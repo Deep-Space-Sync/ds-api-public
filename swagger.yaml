@@ -68404,6 +68404,62 @@ paths:
       summary: Record a contract details render (Contract Templates)
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/contract-details/upgrade:
+    post:
+      operationId: v2_postSubcontractContractDetailsUpgrade
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            contract_template_id:
+              type: string
+            dry_run:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: 'Moved (or the dry run''s report): {message, summary: {from_version,
+            to_version, kept, dropped[], added[], required_missing[]}, data?: subcontract}'
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+              summary:
+                type: object
+            type: object
+        400:
+          description: Bad body, a version of another contract type (upgrade_other_family)
+            or not Published
+        403:
+          description: Access denied
+        404:
+          description: Subcontract not found
+        409:
+          description: Not Draft (upgrade_requires_draft), issued or locked, uploaded
+            mode, no newer version (no_newer_version), no contract details, or a newer
+            template format
+      security:
+      - JWT_v2: []
+      summary: Move a Draft subcontract onto a newer version of its contract type
+        (G18)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/revert-to-draft:
     get:
       operationId: v2_getSubcontractRevertEligibility
@@ -86978,6 +87034,166 @@ paths:
       summary: Export a contract type as a .dsct package
       tags:
       - HzContractTemplates
+  /v2/workspaces/{workspace_id}/hz-contract-templates/{template_id}/import-version:
+    post:
+      consumes:
+      - multipart/form-data
+      operationId: v2_importHzContractTemplateVersion
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      - in: query
+        name: publish_when_valid
+        required: false
+        type: boolean
+      responses:
+        201:
+          description: Import report
+          schema:
+            properties:
+              data:
+                properties:
+                  attachments_to_relink:
+                    items:
+                      type: object
+                    type: array
+                  changes:
+                    type: object
+                  contract_template_id:
+                    type: string
+                  document_template_family_id:
+                    type: string
+                  document_template_id:
+                    type: string
+                  document_template_version:
+                    type: integer
+                  from_contract_template_id:
+                    type: string
+                  from_version_number:
+                    type: integer
+                  master_action:
+                    enum:
+                    - unchanged
+                    - draft_reused
+                    - new_version
+                    - new_family
+                    type: string
+                  master_note:
+                    type: string
+                  name:
+                    type: string
+                  package_name:
+                    type: string
+                  publish_blocked:
+                    type: string
+                  published:
+                    type: boolean
+                  records_on_family:
+                    type: integer
+                  requirements:
+                    type: object
+                  status:
+                    type: string
+                  validation:
+                    properties:
+                      document_template_id:
+                        type: string
+                        x-nullable: true
+                      document_template_version:
+                        type: integer
+                        x-nullable: true
+                      errors:
+                        items:
+                          properties:
+                            code:
+                              type: string
+                            message:
+                              type: string
+                            ref:
+                              type: string
+                              x-nullable: true
+                          required:
+                          - code
+                          - message
+                          type: object
+                        type: array
+                      master_content_control_tags:
+                        items:
+                          type: string
+                        type: array
+                      master_other_markers:
+                        items:
+                          type: string
+                        type: array
+                      master_part_markers:
+                        items:
+                          type: string
+                        type: array
+                      master_tokens:
+                        items:
+                          type: string
+                        type: array
+                      master_untagged_content_controls:
+                        default: 0
+                        type: integer
+                      ok:
+                        type: boolean
+                      warnings:
+                        items:
+                          properties:
+                            code:
+                              type: string
+                            message:
+                              type: string
+                            ref:
+                              type: string
+                              x-nullable: true
+                          required:
+                          - code
+                          - message
+                          type: object
+                        type: array
+                    required:
+                    - ok
+                    type: object
+                  version_number:
+                    type: integer
+                required:
+                - contract_template_id
+                - version_number
+                - status
+                - document_template_id
+                - master_action
+                - changes
+                - validation
+                type: object
+              message:
+                type: string
+            required:
+            - message
+            - data
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Not a member of this workspace
+        404:
+          description: Not found
+        409:
+          description: The contract type or its Word master already has a Draft
+        422:
+          description: The package is not valid
+      security:
+      - JWT_v2: []
+      summary: Import a .dsct package as the next version of this contract type (G18)
+      tags:
+      - HzContractTemplates
   /v2/workspaces/{workspace_id}/hz-contract-templates/{template_id}/publish:
     patch:
       operationId: v2_publishHzContractTemplate
@@ -86989,6 +87205,11 @@ paths:
       - in: path
         name: template_id
         required: true
+        type: string
+      - in: query
+        maxLength: 128
+        name: document_template_id
+        required: false
         type: string
       responses:
         200:
@@ -87436,8 +87657,11 @@ paths:
           description: Not a member of this workspace
         404:
           description: Not found
+        409:
+          description: The Word master version is Archived
         422:
-          description: Validation errors; body carries the report
+          description: Validation errors; body carries the report (and, for a joint
+            publish, the master check)
           schema:
             properties:
               data:
@@ -88036,6 +88260,11 @@ paths:
       - in: path
         name: template_id
         required: true
+        type: string
+      - in: query
+        maxLength: 128
+        name: document_template_id
+        required: false
         type: string
       responses:
         200:
@@ -89596,6 +89825,221 @@ paths:
       summary: Set a template as the assigned default for its category/type
       tags:
       - HzDocumentTemplates
+  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/contract-template-check:
+    get:
+      operationId: v2_checkHzDocumentTemplateContractMaster
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: The check
+          schema:
+            properties:
+              data:
+                properties:
+                  contract_templates:
+                    items:
+                      properties:
+                        contract_template_id:
+                          type: string
+                        family_id:
+                          type: string
+                        name:
+                          type: string
+                        ok:
+                          type: boolean
+                        records:
+                          type: integer
+                        report:
+                          properties:
+                            document_template_id:
+                              type: string
+                              x-nullable: true
+                            document_template_version:
+                              type: integer
+                              x-nullable: true
+                            errors:
+                              items:
+                                properties:
+                                  code:
+                                    type: string
+                                  message:
+                                    type: string
+                                  ref:
+                                    type: string
+                                    x-nullable: true
+                                required:
+                                - code
+                                - message
+                                type: object
+                              type: array
+                            master_content_control_tags:
+                              items:
+                                type: string
+                              type: array
+                            master_other_markers:
+                              items:
+                                type: string
+                              type: array
+                            master_part_markers:
+                              items:
+                                type: string
+                              type: array
+                            master_tokens:
+                              items:
+                                type: string
+                              type: array
+                            master_untagged_content_controls:
+                              default: 0
+                              type: integer
+                            ok:
+                              type: boolean
+                            warnings:
+                              items:
+                                properties:
+                                  code:
+                                    type: string
+                                  message:
+                                    type: string
+                                  ref:
+                                    type: string
+                                    x-nullable: true
+                                required:
+                                - code
+                                - message
+                                type: object
+                              type: array
+                          required:
+                          - ok
+                          type: object
+                        status:
+                          type: string
+                        version_number:
+                          type: integer
+                      type: object
+                    type: array
+                  document_template_family_id:
+                    type: string
+                  document_template_id:
+                    type: string
+                  document_template_version:
+                    type: integer
+                  ok:
+                    type: boolean
+                  pinned_versions:
+                    items:
+                      properties:
+                        contract_template_id:
+                          type: string
+                        family_id:
+                          type: string
+                        name:
+                          type: string
+                        ok:
+                          type: boolean
+                        records:
+                          type: integer
+                        report:
+                          properties:
+                            document_template_id:
+                              type: string
+                              x-nullable: true
+                            document_template_version:
+                              type: integer
+                              x-nullable: true
+                            errors:
+                              items:
+                                properties:
+                                  code:
+                                    type: string
+                                  message:
+                                    type: string
+                                  ref:
+                                    type: string
+                                    x-nullable: true
+                                required:
+                                - code
+                                - message
+                                type: object
+                              type: array
+                            master_content_control_tags:
+                              items:
+                                type: string
+                              type: array
+                            master_other_markers:
+                              items:
+                                type: string
+                              type: array
+                            master_part_markers:
+                              items:
+                                type: string
+                              type: array
+                            master_tokens:
+                              items:
+                                type: string
+                              type: array
+                            master_untagged_content_controls:
+                              default: 0
+                              type: integer
+                            ok:
+                              type: boolean
+                            warnings:
+                              items:
+                                properties:
+                                  code:
+                                    type: string
+                                  message:
+                                    type: string
+                                  ref:
+                                    type: string
+                                    x-nullable: true
+                                required:
+                                - code
+                                - message
+                                type: object
+                              type: array
+                          required:
+                          - ok
+                          type: object
+                        status:
+                          type: string
+                        version_number:
+                          type: integer
+                      type: object
+                    type: array
+                required:
+                - document_template_id
+                - document_template_family_id
+                - document_template_version
+                - ok
+                type: object
+              message:
+                type: string
+            required:
+            - message
+            - data
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Not a member of this workspace
+        404:
+          description: Not found
+        409:
+          description: The version has no Word file
+      security:
+      - JWT_v2: []
+      summary: Check a Word master version against the contract types that render
+        with it (read-only)
+      tags:
+      - HzContractTemplates
   /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/convert-to-docx:
     post:
       operationId: v2_convertHzDocumentTemplateToDocx
@@ -90577,6 +91021,10 @@ paths:
           description: Forbidden - workspace mismatch
         404:
           description: Document template not found
+        409:
+          description: A Contract Template Word master that a Published Contract Template
+            linked to its family doesn't validate against (code contract_template_mismatch,
+            with the check)
       security:
       - JWT_v2: []
       summary: Publish a draft template
