@@ -81117,6 +81117,8 @@ paths:
                             type: string
                         type: object
                       type: array
+                    favourite:
+                      type: boolean
                     global_company_id:
                       type: integer
                     id:
@@ -81189,6 +81191,12 @@ paths:
                       items:
                         type: string
                       type: array
+                    tender_rank:
+                      enum:
+                      - 1
+                      - 2
+                      - 3
+                      type: integer
                     timeliness_rating:
                       maximum: 5
                       minimum: 0
@@ -81386,6 +81394,8 @@ paths:
                       type: string
                   type: object
                 type: array
+              favourite:
+                type: boolean
               global_company_id:
                 type: integer
               id:
@@ -81458,6 +81468,12 @@ paths:
                 items:
                   type: string
                 type: array
+              tender_rank:
+                enum:
+                - 1
+                - 2
+                - 3
+                type: integer
               timeliness_rating:
                 maximum: 5
                 minimum: 0
@@ -81548,6 +81564,8 @@ paths:
                       type: string
                   type: object
                 type: array
+              favourite:
+                type: boolean
               global_company_id:
                 type: integer
               id:
@@ -81620,6 +81638,12 @@ paths:
                 items:
                   type: string
                 type: array
+              tender_rank:
+                enum:
+                - 1
+                - 2
+                - 3
+                type: integer
               timeliness_rating:
                 maximum: 5
                 minimum: 0
@@ -81725,6 +81749,8 @@ paths:
                     type: string
                 type: object
               type: array
+            favourite:
+              type: boolean
             insurance_expiry:
               format: date
               type: string
@@ -81791,6 +81817,12 @@ paths:
               items:
                 type: string
               type: array
+            tender_rank:
+              enum:
+              - 1
+              - 2
+              - 3
+              type: integer
             timeliness_rating:
               maximum: 5
               minimum: 0
@@ -81875,6 +81907,8 @@ paths:
                       type: string
                   type: object
                 type: array
+              favourite:
+                type: boolean
               global_company_id:
                 type: integer
               id:
@@ -81947,6 +81981,12 @@ paths:
                 items:
                   type: string
                 type: array
+              tender_rank:
+                enum:
+                - 1
+                - 2
+                - 3
+                type: integer
               timeliness_rating:
                 maximum: 5
                 minimum: 0
@@ -82054,6 +82094,8 @@ paths:
                     type: string
                 type: object
               type: array
+            favourite:
+              type: boolean
             insurance_expiry:
               format: date
               type: string
@@ -82120,6 +82162,12 @@ paths:
               items:
                 type: string
               type: array
+            tender_rank:
+              enum:
+              - 1
+              - 2
+              - 3
+              type: integer
             timeliness_rating:
               maximum: 5
               minimum: 0
@@ -82204,6 +82252,8 @@ paths:
                       type: string
                   type: object
                 type: array
+              favourite:
+                type: boolean
               global_company_id:
                 type: integer
               id:
@@ -82276,6 +82326,12 @@ paths:
                 items:
                   type: string
                 type: array
+              tender_rank:
+                enum:
+                - 1
+                - 2
+                - 3
+                type: integer
               timeliness_rating:
                 maximum: 5
                 minimum: 0
@@ -82392,6 +82448,8 @@ paths:
                       type: string
                   type: object
                 type: array
+              favourite:
+                type: boolean
               global_company_id:
                 type: integer
               id:
@@ -82464,6 +82522,12 @@ paths:
                 items:
                   type: string
                 type: array
+              tender_rank:
+                enum:
+                - 1
+                - 2
+                - 3
+                type: integer
               timeliness_rating:
                 maximum: 5
                 minimum: 0
