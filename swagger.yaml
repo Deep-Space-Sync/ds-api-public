@@ -13435,6 +13435,22 @@ paths:
         name: parentId
         required: false
         type: string
+      - in: query
+        name: scope
+        required: false
+        type: string
+      - in: query
+        name: page
+        required: false
+        type: integer
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      - in: query
+        name: startAfter
+        required: false
+        type: string
       responses:
         200:
           description: Folders list
@@ -14064,6 +14080,18 @@ paths:
         type: string
       - in: query
         name: folderId
+        required: false
+        type: string
+      - in: query
+        name: page
+        required: false
+        type: integer
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      - in: query
+        name: startAfter
         required: false
         type: string
       responses:
