@@ -41108,6 +41108,624 @@ paths:
       summary: Get optimized network diagram data for critical path visualization
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/programme-versions:
+    get:
+      operationId: v2_listProgrammeVersions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - enum:
+        - draft
+        - baseline
+        in: query
+        name: kind
+        required: false
+        type: string
+      - enum:
+        - active
+        - published
+        - archived
+        in: query
+        name: status
+        required: false
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: '{versions: [header], count}'
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List the programme versions (drafts / baselines) visible to the caller
+      tags:
+      - Actions
+    post:
+      operationId: v2_createProgrammeVersion
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            from:
+              type: string
+            name:
+              type: string
+            note:
+              type: string
+          required:
+          - name
+          - from
+          type: object
+      responses:
+        201:
+          description: '{version: header, cloned: {tasks, wbs, dependencies}}'
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Source version not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create a draft programme by cloning the live programme or another version
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/programme-versions/{versionId}:
+    delete:
+      operationId: v2_deleteProgrammeVersion
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: '{message, version_id, deleted: {tasks, wbs, dependencies}}'
+        401:
+          description: Unauthorized
+        404:
+          description: Not found or not visible to the caller
+        409:
+          description: Baselines cannot be deleted
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete a draft and its tasks, WBS and dependencies
+      tags:
+      - Actions
+    get:
+      operationId: v2_getProgrammeVersion
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        - 'false'
+        in: query
+        name: treeStructure
+        required: false
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: '{version, tasks, wbs, dependencies}'
+        401:
+          description: Unauthorized
+        404:
+          description: Not found or not visible to the caller
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a programme version with its tasks, WBS and dependencies
+      tags:
+      - Actions
+    patch:
+      operationId: v2_updateProgrammeVersion
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+            note:
+              type: string
+            shared_with:
+              items:
+                type: string
+              type: array
+            status:
+              enum:
+              - active
+              - archived
+              type: string
+          type: object
+      responses:
+        200:
+          description: '{version: header}'
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Not found or not visible to the caller
+        409:
+          description: Baselines are read-only
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Rename, share, annotate or archive a draft
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/programme-versions/{versionId}/dependencies:
+    post:
+      operationId: v2_createProgrammeVersionDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            dependency_type:
+              type: string
+            lag_days:
+              type: integer
+            predecessor_action_id:
+              type: string
+            successor_action_id:
+              type: string
+          required:
+          - predecessor_action_id
+          - successor_action_id
+          type: object
+      responses:
+        201:
+          description: '{message, dependency_id, propagated_tasks, propagated_wbs_ids}'
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Version or task not found
+        409:
+          description: Not an active draft
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add a dependency edge to a draft
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/programme-versions/{versionId}/dependencies/{dependencyId}:
+    delete:
+      operationId: v2_deleteProgrammeVersionDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - in: path
+        name: dependencyId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: '{message}'
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        409:
+          description: Not an active draft
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove a dependency edge from a draft
+      tags:
+      - Actions
+    patch:
+      operationId: v2_updateProgrammeVersionDependency
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - in: path
+        name: dependencyId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            dependency_type:
+              type: string
+            lag_days:
+              type: integer
+            predecessor_action_id:
+              type: string
+            successor_action_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: '{message, propagated_tasks, propagated_wbs_ids}'
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        409:
+          description: Not an active draft
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit a dependency edge in a draft
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/programme-versions/{versionId}/diff:
+    get:
+      operationId: v2_diffProgrammeVersion
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - in: query
+        name: against
+        required: false
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: '{version_id, against, base_live_snapshot_at, added, removed,
+            removed_tasks, changed, edges: {added, removed, changed}, conflicts, summary}'
+        401:
+          description: Unauthorized
+        404:
+          description: Version (or comparison version) not found or not visible to
+            the caller
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Diff a programme version against live or another version
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/programme-versions/{versionId}/publish:
+    post:
+      operationId: v2_publishProgrammeVersion
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            force:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: '{message, version, baseline_id, baseline, applied, failed,
+            tasks_reconciled, notifications, notifications_sent, errors, residual,
+            forced, conflicts_overridden, log}'
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Not found or not visible to the caller
+        409:
+          description: Conflicts ({message, conflicts, summary}) without force; a
+            baseline; already published or being published; archived
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Publish a draft to the live programme
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/programme-versions/{versionId}/tasks:
+    post:
+      operationId: v2_createProgrammeVersionTask
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: '{message, action_id, id, warnings, notification: null, propagated_tasks,
+            propagated_wbs_ids}'
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Not found or not visible to the caller
+        409:
+          description: Not an active draft, or the action_id already exists
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add a scheduling task to a draft
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/programme-versions/{versionId}/tasks/{actionId}:
+    delete:
+      operationId: v2_deleteProgrammeVersionTask
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      responses:
+        200:
+          description: '{message, action_id}'
+        401:
+          description: Unauthorized
+        404:
+          description: Not found or not visible to the caller
+        409:
+          description: Not an active draft
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Remove a task from a draft
+      tags:
+      - Actions
+    patch:
+      operationId: v2_updateProgrammeVersionTask
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - in: path
+        name: actionId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: '{message, warnings, notification: null, propagated_tasks,
+            propagated_wbs_ids}'
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Not found or not visible to the caller
+        409:
+          description: Not an active draft
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Edit a task in a draft (successor dates and WBS rollups propagate inside
+        the draft)
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/project-constraints-delete:
     delete:
       operationId: v2_deleteAllActionConstraints
