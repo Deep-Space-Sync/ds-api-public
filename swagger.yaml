@@ -2080,6 +2080,79 @@ paths:
       summary: Create Missing Workspaces for Global Companies
       tags:
       - Global Company Directory
+  /v2/global-companies/name-drift/report:
+    get:
+      operationId: v2_getNameDriftReport
+      parameters:
+      - in: query
+        name: lane
+        required: false
+        type: string
+      responses:
+        200:
+          description: Report
+          schema:
+            properties:
+              lane:
+                type: string
+              lane_summary:
+                type: object
+              remaining_to_scan:
+                type: number
+              row_limit:
+                type: number
+              rows:
+                items:
+                  type: object
+                type: array
+            type: object
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Name drift lane summary and rows for a lane (default mismatch)
+      tags:
+      - Global Company Directory
+  /v2/global-companies/name-drift/scan:
+    post:
+      operationId: v2_scanNameDriftBatch
+      parameters:
+      - in: query
+        name: limit
+        required: false
+        type: number
+      - in: query
+        name: force
+        required: false
+        type: string
+      responses:
+        200:
+          description: Batch scanned and persisted
+          schema:
+            properties:
+              lane_summary:
+                type: object
+              remaining:
+                type: number
+              results:
+                items:
+                  type: object
+                type: array
+              scanned:
+                type: number
+            type: object
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Scan the next batch of directory companies for name drift against the
+        ABR/NZBN registry
+      tags:
+      - Global Company Directory
   /v2/global-companies/trade-categories:
     get:
       operationId: v2_getAllTradeCategories
@@ -3254,6 +3327,8 @@ paths:
           properties:
             company_name:
               type: string
+            preserve_origin_workspace_label:
+              type: boolean
             reason:
               minLength: 8
               type: string
@@ -3272,6 +3347,8 @@ paths:
             properties:
               global_company_id:
                 type: number
+              label_preservation:
+                type: object
               message:
                 type: string
               new_name:
@@ -3366,6 +3443,15 @@ paths:
                   reason:
                     type: string
                   trading_name:
+                    type: string
+                type: object
+              xero_origin:
+                properties:
+                  builder_global_company_id:
+                    type: number
+                  builder_name:
+                    type: string
+                  ds_workspace_name:
                     type: string
                 type: object
             type: object
