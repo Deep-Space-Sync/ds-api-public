@@ -84544,6 +84544,12 @@ paths:
                               or_user:
                                 default: false
                                 type: boolean
+                              set_by:
+                                default: field
+                                enum:
+                                - field
+                                - checklist
+                                type: string
                               when:
                                 enum:
                                 - amendments_present
@@ -84998,6 +85004,12 @@ paths:
                       or_user:
                         default: false
                         type: boolean
+                      set_by:
+                        default: field
+                        enum:
+                        - field
+                        - checklist
+                        type: string
                       when:
                         enum:
                         - amendments_present
@@ -85406,6 +85418,12 @@ paths:
                             or_user:
                               default: false
                               type: boolean
+                            set_by:
+                              default: field
+                              enum:
+                              - field
+                              - checklist
+                              type: string
                             when:
                               enum:
                               - amendments_present
@@ -86317,6 +86335,12 @@ paths:
                             or_user:
                               default: false
                               type: boolean
+                            set_by:
+                              default: field
+                              enum:
+                              - field
+                              - checklist
+                              type: string
                             when:
                               enum:
                               - amendments_present
@@ -86765,6 +86789,12 @@ paths:
                       or_user:
                         default: false
                         type: boolean
+                      set_by:
+                        default: field
+                        enum:
+                        - field
+                        - checklist
+                        type: string
                       when:
                         enum:
                         - amendments_present
@@ -87174,6 +87204,12 @@ paths:
                             or_user:
                               default: false
                               type: boolean
+                            set_by:
+                              default: field
+                              enum:
+                              - field
+                              - checklist
+                              type: string
                             when:
                               enum:
                               - amendments_present
@@ -87641,6 +87677,12 @@ paths:
                             or_user:
                               default: false
                               type: boolean
+                            set_by:
+                              default: field
+                              enum:
+                              - field
+                              - checklist
+                              type: string
                             when:
                               enum:
                               - amendments_present
@@ -88305,6 +88347,12 @@ paths:
                             or_user:
                               default: false
                               type: boolean
+                            set_by:
+                              default: field
+                              enum:
+                              - field
+                              - checklist
+                              type: string
                             when:
                               enum:
                               - amendments_present
@@ -88844,6 +88892,12 @@ paths:
                             or_user:
                               default: false
                               type: boolean
+                            set_by:
+                              default: field
+                              enum:
+                              - field
+                              - checklist
+                              type: string
                             when:
                               enum:
                               - amendments_present
@@ -89457,6 +89511,12 @@ paths:
                               or_user:
                                 default: false
                                 type: boolean
+                              set_by:
+                                default: field
+                                enum:
+                                - field
+                                - checklist
+                                type: string
                               when:
                                 enum:
                                 - amendments_present
@@ -91053,6 +91113,7 @@ paths:
               - toc
               - fia
               - list
+              - insert
               type: string
             replace:
               default: false
