@@ -3239,6 +3239,150 @@ paths:
       summary: Update specific item in global company hz metadata array
       tags:
       - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/name:
+    patch:
+      operationId: v2_renameGlobalCompany
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            company_name:
+              type: string
+            reason:
+              minLength: 8
+              type: string
+            update_name_main:
+              type: boolean
+            update_name_org:
+              type: boolean
+          required:
+          - company_name
+          - reason
+          type: object
+      responses:
+        200:
+          description: Successfully renamed
+          schema:
+            properties:
+              global_company_id:
+                type: number
+              message:
+                type: string
+              new_name:
+                type: string
+              old_name:
+                type: string
+              referenced_by:
+                items:
+                  properties:
+                    company_name:
+                      type: string
+                    ds_workspace_name:
+                      type: string
+                    id:
+                      type: number
+                  type: object
+                type: array
+              updated_name_main:
+                type: boolean
+              updated_name_org:
+                type: boolean
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        404:
+          description: Global company not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: CS Hub rename of the public-facing global directory company name (affects
+        all workspaces)
+      tags:
+      - Global Company Directory
+  /v2/global-companies/{globalCompanyId}/name-check:
+    get:
+      operationId: v2_nameCheckGlobalCompany
+      parameters:
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      responses:
+        200:
+          description: Name check details
+          schema:
+            properties:
+              company:
+                properties:
+                  company_name:
+                    type: string
+                  company_name_main:
+                    type: string
+                  company_name_org:
+                    type: string
+                  country:
+                    type: string
+                  ds_workspace_name:
+                    type: string
+                  id_global_company_directory:
+                    type: number
+                  tax_id:
+                    type: string
+                  tax_id_verified:
+                    type: number
+                type: object
+              has_linked_workspace:
+                type: boolean
+              referenced_by:
+                items:
+                  properties:
+                    company_name:
+                      type: string
+                    ds_workspace_name:
+                      type: string
+                    id:
+                      type: number
+                  type: object
+                type: array
+              registry:
+                properties:
+                  available:
+                    type: boolean
+                  entity_type:
+                    type: string
+                  is_current:
+                    type: boolean
+                  organisation_name:
+                    type: string
+                  reason:
+                    type: string
+                  trading_name:
+                    type: string
+                type: object
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        404:
+          description: Global company not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: CS Hub pre-rename check - current names, registry-verified name and
+        referencing workspaces
+      tags:
+      - Global Company Directory
   /v2/global-companies/{globalCompanyId}/users:
     get:
       operationId: v2_getGlobalCompanyUsers
