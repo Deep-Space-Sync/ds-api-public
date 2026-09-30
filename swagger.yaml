@@ -24761,6 +24761,7 @@ paths:
                       - accepted
                       - declined
                       - submitted
+                      - superseded
                       - overdue
                       type: string
                     submitted_at:
@@ -69218,14 +69219,20 @@ paths:
         required: true
         schema:
           properties:
+            email:
+              type: string
             exclusions:
               type: string
+            global_company_id:
+              type: integer
             headline_price:
               type: number
             notes:
               type: string
             source_note:
               type: string
+            tax_id:
+              type: integer
           required:
           - headline_price
           type: object
@@ -69239,12 +69246,16 @@ paths:
                 type: string
             type: object
         400:
-          description: Not a promotable quote, package not open/closed, or no headline_price
+          description: "Not a promotable quote, package not open/closed, no headline_price,\
+            \ or the quote's sender is not an invited subcontractor on the package\
+            \ (add them as an invitee first \u2014 PRE-456)"
         404:
           description: Quote or tender package not found
         409:
-          description: Already promoted, or the subcontractor already has a submitted
-            bid
+          description: "Already promoted, or several invited subcontractors match\
+            \ the sender (send global_company_id or email to pick one). An earlier\
+            \ live bid from the same party no longer conflicts \u2014 it is superseded\
+            \ and kept as history (PRE-456)"
       security:
       - JWT_v2: []
       summary: Promote a Tender Quote to a Bid
