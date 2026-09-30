@@ -50312,6 +50312,94 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register/estimate-items:
+    get:
+      operationId: v2_getBudgetRegisterEstimateItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: cost_code_ids
+        required: false
+        type: string
+      - in: query
+        name: include_commitments
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              boq_version_id:
+                type: string
+              by_cost_code:
+                type: object
+              commitments:
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Budget register data not found
+        422:
+          description: Budget register has no estimate version
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get contributing estimate items per Budget Register cost code
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register/estimate-items/commitments:
+    get:
+      operationId: v2_getBudgetRegisterEstimateItemCommitments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: qto_item_ids
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            properties:
+              commitments:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: qto_item_ids parameter is required
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get where estimate items have been committed
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register/notes:
     delete:
       operationId: v2_deleteBudgetRegisterNote
