@@ -16454,6 +16454,8 @@ paths:
                   swiftBic:
                     type: string
                 type: object
+              claimsEmail:
+                type: string
               country:
                 type: string
               defaultClaimDeclarationText:
@@ -16532,6 +16534,8 @@ paths:
                 swiftBic:
                   type: string
               type: object
+            claimsEmail:
+              type: string
             country:
               type: string
             defaultClaimDeclarationText:
