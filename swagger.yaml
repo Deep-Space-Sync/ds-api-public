@@ -60672,6 +60672,52 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase/{costOrderId}/close-out:
+    post:
+      operationId: v2_closeOutCostPurchaseOrder
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costOrderId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            dry_run:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: Close-out preview (dry run) or applied close-out
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        403:
+          description: Access denied
+        404:
+          description: PO not found
+        409:
+          description: "Refused \u2014 see `code`"
+      security:
+      - JWT_v2: []
+      summary: Close out a purchase order's remaining balance, line by line
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders/purchase/{costOrderId}/revert-to-draft:
     get:
       operationId: v2_getCostPurchaseOrderRevertEligibility
