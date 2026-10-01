@@ -67340,6 +67340,39 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/approve-remaining:
+    post:
+      operationId: v2_postSubcontractPaymentScheduleApproveRemaining
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            dry_run:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: Plan (dry run) or the updated schedule plus the applied plan
+      security:
+      - JWT_v2: []
+      summary: Approve every remaining undecided SOV line of a payment schedule in
+        one action (COM-1138)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/change-status:
     patch:
       operationId: v2_patchSubcontractPaymentScheduleStatus
