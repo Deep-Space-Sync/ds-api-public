@@ -83309,6 +83309,176 @@ paths:
       summary: Restore subcontractor extra details
       tags:
       - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/payee-bank-details:
+    delete:
+      operationId: v2_deleteSubcontractorPayeeBankDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: '{exists: false, can_edit: true, details: null}'
+        401:
+          description: Unauthorized
+        403:
+          description: Admin edit permission required
+        404:
+          description: No bank details to delete
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete subcontractor payee bank details
+      tags:
+      - Subcontractor Extra Details
+    get:
+      operationId: v2_getSubcontractorPayeeBankDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: '{exists, can_edit, details} - details is null when nothing
+            is stored'
+          schema:
+            properties:
+              can_edit:
+                type: boolean
+              details:
+                type: object
+              exists:
+                type: boolean
+            type: object
+        400:
+          description: Invalid global company ID
+        401:
+          description: Unauthorized
+        403:
+          description: Workspace mismatch
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get subcontractor payee bank details
+      tags:
+      - Subcontractor Extra Details
+    put:
+      operationId: v2_putSubcontractorPayeeBankDetails
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            account_name:
+              type: string
+            account_number:
+              type: string
+            bank_name:
+              type: string
+            bsb:
+              type: string
+            country:
+              enum:
+              - AU
+              - NZ
+              type: string
+            swift_bic:
+              type: string
+          required:
+          - country
+          - account_name
+          - account_number
+          type: object
+      responses:
+        200:
+          description: '{exists: true, can_edit: true, details} with the full account
+            number'
+        400:
+          description: '{message, field_errors} - invalid or unknown fields'
+        401:
+          description: Unauthorized
+        403:
+          description: Admin edit permission required
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create or replace subcontractor payee bank details
+      tags:
+      - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/payee-bank-details/document:
+    get:
+      operationId: v2_getSubcontractorPayeeBankDetailsForDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: '{exists, details} - details carries the full account number,
+            or null'
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Subcontractor payee bank details for document generation
+      tags:
+      - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/payee-bank-details/history:
+    get:
+      operationId: v2_getSubcontractorPayeeBankDetailsHistory
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: '{events: [{id, action, changed_at, changed_by {id, email},
+            changes [{field, old, new}]}]}'
+        401:
+          description: Unauthorized
+        403:
+          description: Admin edit permission required
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Subcontractor payee bank details change history
+      tags:
+      - Subcontractor Extra Details
   /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}:
     get:
       operationId: v2_getTimesheetsWeek
