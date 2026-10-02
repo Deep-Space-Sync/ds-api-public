@@ -25224,7 +25224,7 @@ paths:
             properties:
               basis:
                 enum:
-                - proportional_to_line_items
+                - proportional_to_estimate
                 - even_split
                 type: string
               headline_price:
