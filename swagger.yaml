@@ -25045,6 +25045,10 @@ paths:
         name: output_type
         required: false
         type: string
+      - in: query
+        name: trade_section_id
+        required: false
+        type: string
       responses:
         200:
           description: Conversion preview payload
