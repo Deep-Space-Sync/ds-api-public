@@ -94333,6 +94333,17 @@ paths:
               type: string
             invoice_number:
               type: string
+            line_amount_basis:
+              enum:
+              - exclusive
+              - inclusive
+              - gst-free
+              - unknown
+              type: string
+            line_item_amount_includes_gst:
+              additionalProperties:
+                type: boolean
+              type: object
             line_items:
               items:
                 type: object
