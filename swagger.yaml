@@ -81474,6 +81474,8 @@ paths:
                     deleted_at:
                       format: date-time
                       type: string
+                    email:
+                      type: string
                     ended_at:
                       format: date-time
                       type: string
@@ -81495,6 +81497,9 @@ paths:
                       type: string
                     source_account_id:
                       type: string
+                    source_form_alias:
+                      type: string
+                      x-nullable: true
                     source_form_id:
                       type: string
                     source_signout_form_id:
@@ -81574,11 +81579,16 @@ paths:
                   properties:
                     company:
                       type: string
+                    email:
+                      type: string
                     ended_at:
                       format: date-time
                       type: string
                     mobile:
                       type: string
+                    source_form_alias:
+                      type: string
+                      x-nullable: true
                     started_at:
                       format: date-time
                       type: string
@@ -81736,6 +81746,8 @@ paths:
                   deleted_at:
                     format: date-time
                     type: string
+                  email:
+                    type: string
                   ended_at:
                     format: date-time
                     type: string
@@ -81755,6 +81767,9 @@ paths:
                     type: string
                   project:
                     type: string
+                  source_form_alias:
+                    type: string
+                    x-nullable: true
                   source_signout_form_id:
                     type: string
                   started_at:
