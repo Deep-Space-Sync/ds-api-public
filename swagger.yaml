@@ -22904,7 +22904,6 @@ paths:
                 - tax_id
                 - company_name
                 type: object
-              minItems: 1
               type: array
             issue_date:
               format: date
@@ -26432,6 +26431,8 @@ paths:
               data:
                 items:
                   properties:
+                    discipline:
+                      type: string
                     id:
                       type: string
                     is_active:
@@ -26463,6 +26464,8 @@ paths:
         required: true
         schema:
           properties:
+            discipline:
+              type: string
             name:
               type: string
           required:
@@ -26494,6 +26497,8 @@ paths:
             trades:
               items:
                 properties:
+                  discipline:
+                    type: string
                   id:
                     type: string
                   is_active:
