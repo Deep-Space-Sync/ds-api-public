@@ -69652,10 +69652,15 @@ paths:
                 items:
                   properties:
                     amount: {}
+                    assigned_at: {}
+                    assigned_by: {}
+                    assignment_method: {}
                     extraction: {}
                     extraction_status: {}
                     file: {}
                     gst_treatment: {}
+                    intake: {}
+                    intake_match: {}
                     quote_id: {}
                     received_at: {}
                     source: {}
@@ -69715,6 +69720,17 @@ paths:
               type: object
             gst_treatment:
               type: string
+            intake:
+              properties:
+                forwarder_email:
+                  type: string
+                forwarder_name:
+                  type: string
+                message_id:
+                  type: string
+                subject:
+                  type: string
+              type: object
             linked_submission_id:
               type: string
             notes:
@@ -69932,6 +69948,8 @@ paths:
               type: string
             subcontractor:
               type: object
+            tender_package_id:
+              type: string
             trade_section_id:
               type: string
           type: object
