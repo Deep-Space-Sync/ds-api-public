@@ -60239,6 +60239,63 @@ paths:
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/line-items/variation/{lineItemId}:
+    delete:
+      operationId: v2_deleteCostVariationLineItemById
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: lineItemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Line item successfully deleted
+          schema:
+            properties:
+              data:
+                properties:
+                  id:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Line item or its variation not found
+        409:
+          description: The variation is no longer a Draft
+          schema:
+            properties:
+              blockers:
+                properties:
+                  status:
+                    type: string
+                type: object
+              code:
+                type: string
+              message:
+                type: string
+            type: object
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Delete Variation Line Item By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
     patch:
       operationId: v2_patchCostVariationLineItemById
       parameters:
@@ -60253,7 +60310,7 @@ paths:
       - in: path
         name: lineItemId
         required: true
-        type: integer
+        type: string
       - in: body
         name: body
         required: true
@@ -60305,6 +60362,9 @@ paths:
           description: Unauthorized
         404:
           description: Line item not found
+        409:
+          description: The variation is no longer a Draft, or a modify line would
+            go below what is invoiced
         500:
           description: Internal Server Error
       security:
