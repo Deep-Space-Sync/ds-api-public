@@ -28478,6 +28478,11 @@ paths:
         in: query
         name: finished_for
         type: string
+      - enum:
+        - me
+        in: query
+        name: requested_by
+        type: string
       responses:
         200:
           description: Approval instances retrieved successfully
