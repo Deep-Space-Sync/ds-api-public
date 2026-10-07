@@ -69778,11 +69778,15 @@ paths:
         required: true
         schema:
           properties:
+            gst_rate:
+              type: number
             quote_ids:
               items:
                 type: string
               type: array
             tender_package_id:
+              type: string
+            trade_section_id:
               type: string
           type: object
       responses:
@@ -69790,16 +69794,23 @@ paths:
           description: Comparison
           schema:
             properties:
+              apparent_low: {}
+              clarifications: {}
               common_scope:
                 items:
                   type: string
                 type: array
+              estimate: {}
               gaps: {}
               pricing_outliers:
                 items:
                   type: object
                 type: array
               quotes:
+                items:
+                  type: object
+                type: array
+              risks:
                 items:
                   type: object
                 type: array
@@ -69811,7 +69822,10 @@ paths:
               trade: {}
             type: object
         400:
-          description: Fewer than two read quotes to compare
+          description: 'Fewer than two read quotes to compare, or a multi_trade package
+            with no (or an unknown) trade_section_id
+
+            '
         502:
           description: KAI could not compare the quotes
       security:
