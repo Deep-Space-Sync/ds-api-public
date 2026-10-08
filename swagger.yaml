@@ -11467,6 +11467,82 @@ paths:
       summary: Get tender portal info via token
       tags:
       - Cost
+  /v2/workspaces/public/cost/public/tender-tokens/{token}/downloads:
+    post:
+      operationId: v2_publicTenderDownloads
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_ids:
+              items:
+                type: string
+              type: array
+            file_ids:
+              items:
+                type: string
+              type: array
+            mode:
+              enum:
+              - single
+              - all
+              type: string
+            tender_set_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Links for the requested documents the token may see
+        400:
+          description: Nothing requested, or invalid mode
+        403:
+          description: Invalid or expired token
+        404:
+          description: Tender package not found, or none of the documents are available
+      summary: Get download links for tender documents via token (logged)
+      tags:
+      - Cost
+  /v2/workspaces/public/cost/public/tender-tokens/{token}/events:
+    post:
+      operationId: v2_publicTenderEvent
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            addendum_id:
+              type: string
+            type:
+              enum:
+              - opened
+              - addendum_viewed
+              type: string
+          required:
+          - type
+          type: object
+      responses:
+        202:
+          description: Accepted; `recorded` is false when debounced
+        400:
+          description: Unknown type or missing addendum_id
+        403:
+          description: Invalid or expired token
+        404:
+          description: Tender package or addendum not found
+      summary: Record a tender portal view (Activity beacon) via token
+      tags:
+      - Cost
   /v2/workspaces/public/cost/public/tender-tokens/{token}/respond:
     post:
       operationId: v2_publicTenderRespond
@@ -23239,6 +23315,57 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/my-company/{tenderPackageId}/downloads:
+    post:
+      operationId: v2_myCompanyTenderPackageDownloads
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_ids:
+              items:
+                type: string
+              type: array
+            file_ids:
+              items:
+                type: string
+              type: array
+            mode:
+              enum:
+              - single
+              - all
+              type: string
+            tender_set_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Links for the requested documents
+        400:
+          description: Nothing requested, or invalid mode
+        403:
+          description: The caller's company is not on this package's invitee list
+        404:
+          description: No such tender package, or none of the documents are available
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get download links for a tender invitation's documents (logged)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/tender-packages/my-company/{tenderPackageId}/respond:
     post:
       operationId: v2_respondToMyCompanyTenderPackage
@@ -23756,6 +23883,54 @@ paths:
       security:
       - JWT_v2: []
       summary: Update Tender Package By Id
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/access-events:
+    get:
+      operationId: v2_getTenderPackageAccessEvents
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Activity events and roll-ups
+          schema:
+            properties:
+              data:
+                properties:
+                  addenda:
+                    items:
+                      type: object
+                    type: array
+                  events:
+                    items:
+                      type: object
+                    type: array
+                  invitees:
+                    items:
+                      type: object
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a tender package's Activity log
       tags:
       - Cost
       x-ds-test-enabled: true
