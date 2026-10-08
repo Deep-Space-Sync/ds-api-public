@@ -94087,6 +94087,15 @@ paths:
         name: subject
         required: false
         type: string
+      - in: query
+        name: project_id
+        required: false
+        type: string
+      - default: false
+        in: query
+        name: project_unmatched
+        required: false
+        type: boolean
       - format: date-time
         in: query
         name: start_date
@@ -95386,6 +95395,83 @@ paths:
       security:
       - JWT_v2: []
       summary: Delete an invoice record, optionally with its linked records
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/project-match:
+    post:
+      operationId: v2_setInvoiceEmailProjectMatch
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            project_id:
+              type: string
+              x-nullable: true
+          required:
+          - project_id
+          type: object
+      responses:
+        200:
+          description: Project match written
+          schema:
+            properties:
+              project_match:
+                properties:
+                  confidence:
+                    type: number
+                    x-nullable: true
+                  project_id:
+                    type: string
+                    x-nullable: true
+                  rationale:
+                    type: string
+                    x-nullable: true
+                  source:
+                    type: string
+                  status:
+                    enum:
+                    - likely
+                    - confirmed
+                    - unmatched
+                    - not_applicable
+                    type: string
+                type: object
+              status:
+                type: string
+            type: object
+        400:
+          description: Invalid request or unknown project
+        403:
+          description: Unauthorized
+        404:
+          description: Email not found
+        409:
+          description: Project locked, or conflicts with the linked record
+          schema:
+            properties:
+              code:
+                enum:
+                - project_locked
+                - project_conflicts_with_linked_record
+                type: string
+              linked_project_id:
+                type: string
+              message:
+                type: string
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Confirm, change or clear the project of an inbox email
       tags:
       - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/push-to-xero:
