@@ -43827,6 +43827,68 @@ paths:
       summary: List DS Site form types bound to the kit's asset_ids CSV
       tags:
       - Plant Assets
+  /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/plant-assets/documents:
+    get:
+      operationId: v2_getPlantAssetDocuments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: asset_code
+        required: true
+        type: string
+      responses:
+        200:
+          description: '{items, count, folder_path}'
+        400:
+          description: asset_code missing
+        401:
+          description: Unauthorized
+        404:
+          description: Unknown asset_code
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List a plant asset's documents (Documents tab)
+      tags:
+      - Plant Assets
+    post:
+      operationId: v2_postPlantAssetDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        201:
+          description: '{item: documents[] entry, document_count}'
+        400:
+          description: Validation error (file type/size, service date, missing asset_code
+            or file)
+        401:
+          description: Unauthorized
+        403:
+          description: Requires Project Manager or Collaborator
+        404:
+          description: Unknown or archived asset_code
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Upload a document to a plant asset (Documents tab)
+      tags:
+      - Plant Assets
   /v2/workspaces/{workspaceId}/projects/{projectId}/asset-portal/plant-assets/info-sync:
     post:
       operationId: v2_postPlantAssetInfoSync
