@@ -82401,6 +82401,36 @@ paths:
       summary: Run dynamic document-expiry reminders for a workspace
       tags:
       - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/compliance-documents:
+    post:
+      operationId: v2_uploadSubcontractorComplianceDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      responses:
+        202:
+          description: Upload accepted - queued to the CDE capture pipeline (job_id
+            returned)
+        400:
+          description: Validation error (file type/size, category, subtype, expiry
+            date)
+        401:
+          description: Unauthorized
+        403:
+          description: Primary Company Admin permission required
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Upload a compliance document for a subcontractor
+      tags:
+      - Subcontractor Extra Details
   /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/details:
     delete:
       operationId: v2_deleteSubcontractorDetails
