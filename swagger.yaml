@@ -24486,6 +24486,87 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/nudge:
+    post:
+      operationId: v2_nudgeTenderContacts
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            message:
+              maxLength: 1000
+              type: string
+            sender_mode:
+              default: system
+              enum:
+              - system
+              - connected
+              type: string
+            targets:
+              items:
+                type: string
+              type: array
+          required:
+          - targets
+          - message
+          type: object
+      responses:
+        200:
+          description: Per-invitee results
+          schema:
+            properties:
+              data:
+                properties:
+                  failed:
+                    items:
+                      type: object
+                    type: array
+                  from_address:
+                    type: string
+                  reply_to:
+                    type: string
+                  sender_fallback:
+                    type: boolean
+                  sender_mode:
+                    type: string
+                  sent:
+                    items:
+                      type: object
+                    type: array
+                  unknown:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              success:
+                type: boolean
+            type: object
+        400:
+          description: Invalid request (empty message or targets, not published, no
+            known targets)
+        401:
+          description: Unauthorized
+        404:
+          description: Tender package not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Send a follow-up nudge to chosen invited subcontractors
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/recommendation:
     get:
       operationId: v2_getTenderRecommendation
