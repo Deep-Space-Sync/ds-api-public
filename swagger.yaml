@@ -24238,6 +24238,11 @@ paths:
         required: true
         schema:
           properties:
+            notify:
+              enum:
+              - entitled
+              - all
+              type: string
             subject:
               type: string
             tender_set_id:
