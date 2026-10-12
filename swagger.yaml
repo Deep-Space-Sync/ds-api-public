@@ -45412,6 +45412,44 @@ paths:
       summary: Count album files per day
       tags:
       - CDE Site Photos
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/albums/{albumId}/files/photo-index:
+    get:
+      operationId: v2_albumPhotoIndex
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: albumId
+        required: true
+        type: string
+      - in: query
+        name: date_from
+        required: false
+        type: string
+      - in: query
+        name: date_to
+        required: false
+        type: string
+      responses:
+        200:
+          description: Photo index for the album
+        400:
+          description: Malformed date_from or date_to
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Every photo of an album as one slim row
+      tags:
+      - CDE Site Photos
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/albums/{albumId}/items:
     delete:
       operationId: v2_removeAlbumItems
@@ -46001,6 +46039,44 @@ paths:
       security:
       - JWT_v2: []
       summary: Count files per day in a system folder
+      tags:
+      - CDE Site Photos
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/files/photo-index:
+    get:
+      operationId: v2_systemFolderPhotoIndex
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: folder_system_key
+        required: true
+        type: string
+      - in: query
+        name: date_from
+        required: false
+        type: string
+      - in: query
+        name: date_to
+        required: false
+        type: string
+      responses:
+        200:
+          description: Photo index for the system folder
+        400:
+          description: Unknown folder_system_key or malformed date window
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Every photo of a system folder as one slim row
       tags:
       - CDE Site Photos
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/migrate-legacy:
