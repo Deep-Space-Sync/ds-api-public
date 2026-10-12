@@ -890,6 +890,8 @@ paths:
               type: string
             section_id:
               type: string
+            stream:
+              type: string
             trade_id:
               type: string
           required:
@@ -930,6 +932,47 @@ paths:
         name: body
         required: true
         schema:
+          properties:
+            checklist:
+              items:
+                properties:
+                  id:
+                    type: string
+                  is_deleted:
+                    type: boolean
+                  label:
+                    type: string
+                type: object
+              type: array
+            code:
+              type: string
+            duration_days:
+              type: number
+            is_archived:
+              type: boolean
+            links:
+              items:
+                properties:
+                  id:
+                    type: string
+                  label:
+                    type: string
+                  url:
+                    type: string
+                type: object
+              type: array
+            name:
+              type: string
+            notes:
+              type: string
+            order:
+              type: string
+            section_id:
+              type: string
+            stream:
+              type: string
+            trade_id:
+              type: string
           type: object
       responses:
         200:
@@ -975,6 +1018,72 @@ paths:
         one project
       tags:
       - FactoryTracker
+  /v2/factory-tracker/cells-import:
+    post:
+      operationId: v2_importFactoryTrackerCells
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            rows:
+              items:
+                properties:
+                  activity_id:
+                    type: string
+                  actual_date:
+                    format: date
+                    type: string
+                  module_code:
+                    type: string
+                  module_id:
+                    type: string
+                  planned_date:
+                    format: date
+                    type: string
+                  status:
+                    enum:
+                    - complete
+                    - open
+                    - na
+                    type: string
+                required:
+                - activity_id
+                type: object
+              type: array
+            today:
+              format: date
+              type: string
+          required:
+          - rows
+          type: object
+      responses:
+        200:
+          description: Counts (cells_updated, cells_created, unchanged, completed,
+            reopened, marked_na, cleared_na, planned_set, planned_cleared, actual_set)
+            plus modules_created
+        400:
+          description: Invalid request (error.errors lists every failing row; nothing
+            written)
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+      security:
+      - JWT_v2: []
+      summary: Import status / planned / actual dates for many cells (the exported
+        Cells sheet); diff-only, all-or-nothing
+      tags:
+      - FactoryTracker
   /v2/factory-tracker/cells/{cellId}:
     put:
       operationId: v2_upsertFactoryTrackerCell
@@ -995,6 +1104,24 @@ paths:
         name: body
         required: true
         schema:
+          properties:
+            actual_date:
+              format: date
+              type: string
+            checklist_state:
+              type: object
+            completed:
+              type: boolean
+            created_by_name:
+              type: string
+            not_applicable:
+              type: boolean
+            planned_date:
+              format: date
+              type: string
+            today:
+              format: date
+              type: string
           type: object
       responses:
         200:
@@ -1010,7 +1137,7 @@ paths:
       security:
       - JWT_v2: []
       summary: Upsert an activity-module cell (completion tick, N/A, checklist state,
-        planned date)
+        planned + actual completion date)
       tags:
       - FactoryTracker
   /v2/factory-tracker/cells/{cellId}/comments:
@@ -1074,6 +1201,27 @@ paths:
           properties:
             rows:
               items:
+                properties:
+                  code:
+                    type: string
+                  duration_days:
+                    type: number
+                  name:
+                    type: string
+                  order:
+                    type: string
+                  section:
+                    type: string
+                  section_id:
+                    type: string
+                  stream:
+                    type: string
+                  trade:
+                    type: string
+                  trade_id:
+                    type: string
+                required:
+                - name
                 type: object
               type: array
           required:
@@ -1172,6 +1320,59 @@ paths:
       summary: Create many module columns at once (existing codes are skipped)
       tags:
       - FactoryTracker
+  /v2/factory-tracker/modules-layout:
+    put:
+      operationId: v2_updateFactoryTrackerModulesLayout
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            positions:
+              items:
+                properties:
+                  floor_x:
+                    maximum: 199
+                    minimum: 0
+                    type: integer
+                  floor_y:
+                    maximum: 199
+                    minimum: 0
+                    type: integer
+                  id:
+                    type: string
+                required:
+                - id
+                type: object
+              type: array
+          required:
+          - positions
+          type: object
+      responses:
+        200:
+          description: 'Updated modules: {modules: [...]}'
+        400:
+          description: Invalid request (error.errors lists every failing row; nothing
+            written)
+        401:
+          description: Not a member of the workspace / project
+        403:
+          description: Factory Tracker powerup not enabled for this workspace
+      security:
+      - JWT_v2: []
+      summary: Set factory-floor positions for many modules (validated up front, one
+        batch)
+      tags:
+      - FactoryTracker
   /v2/factory-tracker/modules/{moduleId}:
     put:
       operationId: v2_updateFactoryTrackerModule
@@ -1192,6 +1393,33 @@ paths:
         name: body
         required: true
         schema:
+          properties:
+            code:
+              type: string
+            floor_x:
+              maximum: 199
+              minimum: 0
+              type: integer
+            floor_y:
+              maximum: 199
+              minimum: 0
+              type: integer
+            is_archived:
+              type: boolean
+            is_hidden:
+              type: boolean
+            name:
+              type: string
+            notes:
+              type: string
+            order:
+              type: string
+            planned_end:
+              format: date
+              type: string
+            planned_start:
+              format: date
+              type: string
           type: object
       responses:
         200:
