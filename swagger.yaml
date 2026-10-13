@@ -59055,6 +59055,75 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/revert-approval:
+    get:
+      operationId: v2_getHeadContractVariationApprovalRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload (same shape as /revert-to-draft)
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Eligibility to revert a head contract variation's CLIENT approval
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_revertHeadContractVariationApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            force:
+              type: boolean
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Approval reverted; the variation is Submitted again
+        400:
+          description: Missing reason, or the variation is not Approved
+        403:
+          description: Caller is not a workspace manager
+        409:
+          description: Blockers exist (can_force says whether force is offered)
+      security:
+      - JWT_v2: []
+      summary: Revert a head contract variation's CLIENT approval (god mode)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/revert-to-draft:
     get:
       operationId: v2_getHeadContractVariationRevertEligibility
@@ -69057,6 +69126,75 @@ paths:
       security:
       - JWT_v2: []
       summary: Link a Notices-platform notice to a Subcontract Variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/revert-approval:
+    get:
+      operationId: v2_getSubcontractVariationApprovalRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload (same shape as /revert-to-draft)
+        404:
+          description: Record not found
+      security:
+      - JWT_v2: []
+      summary: Eligibility to revert a subcontract variation's commercial approval
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_revertSubcontractVariationApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            force:
+              type: boolean
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Approval reverted; the variation is Pending Approval again
+        400:
+          description: Missing reason, or the variation is not Approved
+        403:
+          description: Caller is not a workspace manager
+        409:
+          description: Blockers exist (can_force says whether force is offered)
+      security:
+      - JWT_v2: []
+      summary: Revert a subcontract variation's commercial approval (god mode)
       tags:
       - Cost
       x-min-permissions: isCostUser
