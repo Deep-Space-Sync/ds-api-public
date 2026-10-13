@@ -61006,6 +61006,66 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/margin-method/convert:
+    post:
+      operationId: v2_postMarginMethodConvert
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            dry_run:
+              type: boolean
+            expected_target:
+              properties:
+                margin_cost_code_num:
+                  type: string
+                margin_method:
+                  enum:
+                  - Embedded
+                  - CostCoded
+                  type: string
+              type: object
+          type: object
+      responses:
+        200:
+          description: "`data` holds dry_run, applied, target {margin_method, margin_cost_code_num,\
+            \ margin_cost_code_label}, summary {variations_total, variations_changed,\
+            \ items_total, items_changed, ps_instruments_skipped, non_posting_items,\
+            \ margin_total_affected}, register_deltas [{column, cost_code_num, before,\
+            \ after, delta}], materialised_margin_lines, head_contracts, variations,\
+            \ applied_summary {written, drifted, failed, reverted}, drifted_variations,\
+            \ failed_variations, reverted_variations (stamps put back by a concurrent\
+            \ edit \u2014 re-run to finish) and register_refresh_required."
+        400:
+          description: Project has CostCoded without a live Margin Cost Code, or apply
+            without expected_target
+        401:
+          description: Unauthorized
+        403:
+          description: Caller is not a project manager or workspace manager
+        409:
+          description: The project's margin method changed since the previewed expected_target
+            (code margin_method_changed)
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Convert existing head contract variation scope items to the project's
+        margin method (PRE-334)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectManager
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/orders:
     get:
       operationId: v2_getCostOrders
@@ -77681,6 +77741,13 @@ paths:
               items:
                 type: integer
               type: array
+            margin_cost_code_num:
+              type: string
+            margin_method:
+              enum:
+              - Embedded
+              - CostCoded
+              type: string
             notes:
               type: string
             owner_type:
