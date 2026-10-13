@@ -95715,6 +95715,8 @@ paths:
               - Approved
               - Rejected
               type: string
+            target_claim_schedule_attachment_id:
+              type: string
           required:
           - status
           type: object
