@@ -45610,6 +45610,10 @@ paths:
         name: date_to
         required: false
         type: string
+      - in: query
+        name: tz
+        required: false
+        type: string
       responses:
         200:
           description: Paginated file listing for the album
@@ -45678,6 +45682,10 @@ paths:
         type: string
       - in: query
         name: date_to
+        required: false
+        type: string
+      - in: query
+        name: tz
         required: false
         type: string
       responses:
@@ -46237,6 +46245,10 @@ paths:
         name: date_to
         required: false
         type: string
+      - in: query
+        name: tz
+        required: false
+        type: string
       responses:
         200:
           description: Paginated file listing for the system folder
@@ -46307,6 +46319,10 @@ paths:
         type: string
       - in: query
         name: date_to
+        required: false
+        type: string
+      - in: query
+        name: tz
         required: false
         type: string
       responses:
