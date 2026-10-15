@@ -7995,6 +7995,37 @@ paths:
       summary: Cancel (void) an e-sign signing request
       tags:
       - PortalApi
+  /v2/portal/workspaces/{workspaceId}/esign/signing-requests/{requestId}/capture:
+    post:
+      operationId: v2_portalApiCaptureEsignExecutedCopy
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: requestId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          type: object
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        409:
+          description: The request is not complete or does not belong to the record
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Capture a completed signing request's executed copy (COM-1236)
+      tags:
+      - PortalApi
   /v2/portal/workspaces/{workspaceId}/esign/signing-requests/{requestId}/finalize:
     post:
       operationId: v2_portalApiFinalizeEsignSigningRequest
