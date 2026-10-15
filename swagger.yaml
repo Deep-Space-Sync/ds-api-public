@@ -34956,6 +34956,43 @@ paths:
       summary: Send proposal to client
       tags:
       - Proposals
+  /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/signed-pdf-url:
+    get:
+      operationId: v2_getProposalSignedPdfUrl
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: proposalId
+        required: true
+        type: string
+      - in: query
+        name: source
+        required: false
+        type: string
+      responses:
+        200:
+          description: The CDE id, or a fresh signed URL
+          schema:
+            properties:
+              cde_id:
+                type: integer
+              expires_in_secs:
+                type: integer
+              url:
+                type: string
+            type: object
+        404:
+          description: Proposal or signed PDF not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Fresh link to the accepted, signed proposal PDF (COM-1236)
+      tags:
+      - Proposals
   /v2/workspaces/{workspaceId}/hz-proposals/{proposalId}/versions:
     get:
       operationId: v2_getProposalVersions
