@@ -17362,6 +17362,43 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/activities/{activityId}/steps/{stepId}/action-item:
+    post:
+      operationId: v2_postCostActivityStepActionItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: activityId
+        required: true
+        type: string
+      - in: path
+        name: stepId
+        required: true
+        type: string
+      responses:
+        201:
+          description: Action item created and linked to the step
+        401:
+          description: Unauthorized
+        404:
+          description: Package or step not found
+        409:
+          description: The step already has a live action item
+        422:
+          description: The step has no owner, no date, or an owner that is not a Deep
+            Space user
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create Action Item From Activity Step
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/aggregate:
     post:
       operationId: v2_postCostAggregate
