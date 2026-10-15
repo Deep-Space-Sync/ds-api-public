@@ -73360,6 +73360,9 @@ paths:
             steps:
               items:
                 properties:
+                  allow_submitter_action:
+                    default: false
+                    type: boolean
                   approver_role_ids:
                     items:
                       type: string
