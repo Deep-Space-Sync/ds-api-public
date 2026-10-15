@@ -27443,6 +27443,229 @@ paths:
       summary: Create a data point link
       tags:
       - DataPointLink
+  /v2/workspaces/{workspaceId}/design-items:
+    get:
+      operationId: v2_listDesignItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Design items
+          schema:
+            properties:
+              items:
+                items:
+                  type: object
+                type: array
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: List design items
+      tags:
+      - DesignTracker
+    post:
+      operationId: v2_createDesignItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            design_manager:
+              type: string
+            design_value:
+              type: number
+            pct_complete:
+              type: integer
+            planned_finish_date:
+              type: string
+            planned_start_date:
+              type: string
+            project_id:
+              type: integer
+            project_name:
+              type: string
+            sector:
+              type: string
+            stage_id:
+              type: string
+            stage_plan:
+              type: object
+            status:
+              enum:
+              - on_track
+              - at_risk
+              - on_hold
+              type: string
+            tags:
+              items:
+                type: string
+              type: array
+          required:
+          - project_name
+          type: object
+      responses:
+        201:
+          description: Design item created (carries project_id and project_created)
+        400:
+          description: Invalid request data
+        404:
+          description: project_id not found in this workspace
+        409:
+          description: Project already has a design item
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Create a design item
+      tags:
+      - DesignTracker
+  /v2/workspaces/{workspaceId}/design-items/{designItemId}:
+    delete:
+      operationId: v2_deleteDesignItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: designItemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deleted
+        404:
+          description: Design item not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete a design item (soft)
+      tags:
+      - DesignTracker
+    get:
+      operationId: v2_getDesignItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: designItemId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Design item
+        404:
+          description: Design item not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get a design item
+      tags:
+      - DesignTracker
+    put:
+      operationId: v2_updateDesignItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: designItemId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Updated design item
+        400:
+          description: Invalid request data
+        404:
+          description: Design item not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Update a design item
+      tags:
+      - DesignTracker
+  /v2/workspaces/{workspaceId}/design-stages:
+    get:
+      operationId: v2_getDesignStages
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Design stage registry
+          schema:
+            properties:
+              stages:
+                items:
+                  type: object
+                type: array
+            type: object
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Get workspace design stages
+      tags:
+      - DesignTracker
+    put:
+      operationId: v2_updateDesignStages
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reassign:
+              type: object
+            stages:
+              items:
+                type: object
+              type: array
+          required:
+          - stages
+          type: object
+      responses:
+        200:
+          description: Updated design stage registry
+        400:
+          description: Invalid stage list
+        409:
+          description: Stage reassignment required
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Replace workspace design stages
+      tags:
+      - DesignTracker
   /v2/workspaces/{workspaceId}/ds-site/ds_activity:
     get:
       operationId: v2_searchDsActivities
