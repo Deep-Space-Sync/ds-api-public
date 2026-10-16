@@ -42821,6 +42821,55 @@ paths:
         the draft)
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/programme-versions/{versionId}/wbs/{wbsId}:
+    patch:
+      operationId: v2_updateProgrammeVersionWbs
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - in: path
+        name: wbsId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: '{message, wbs}'
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Not found or not visible to the caller
+        409:
+          description: Not an active draft
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Rename or describe a WBS node inside an editable draft (SCH-158)
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/project-constraints-delete:
     delete:
       operationId: v2_deleteAllActionConstraints
