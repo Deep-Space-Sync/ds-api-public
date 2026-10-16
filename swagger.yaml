@@ -42569,6 +42569,69 @@ paths:
       summary: Diff a programme version against live or another version
       tags:
       - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/programme-versions/{versionId}/propagate:
+    post:
+      operationId: v2_previewProgrammeVersionPropagation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: versionId
+        required: true
+        type: string
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            changedEdges:
+              items:
+                type: object
+              type: array
+            changedTaskIds:
+              items:
+                type: string
+              type: array
+            reason:
+              type: string
+            removedDependencyIds:
+              items:
+                type: string
+              type: array
+            taskOverrides:
+              type: object
+          type: object
+      responses:
+        200:
+          description: '{updated_tasks: [{id, name, start, end, previous_start, previous_end}],
+            errors}'
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: Not found or not visible to the caller
+        409:
+          description: Not an editable draft
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Preview the dependency cascade inside an editable draft
+      tags:
+      - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/programme-versions/{versionId}/publish:
     post:
       operationId: v2_publishProgrammeVersion
@@ -42865,6 +42928,70 @@ paths:
       security:
       - JWT_v2: []
       summary: Bulk delete all scheduling task actions
+      tags:
+      - Actions
+  /v2/workspaces/{workspaceId}/projects/{projectId}/actions/propagate:
+    post:
+      operationId: v2_propagateSchedulingChange
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - enum:
+        - 'true'
+        in: header
+        name: X-Horizon-Product
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            changedEdges:
+              items:
+                type: object
+              type: array
+            changedTaskIds:
+              items:
+                type: string
+              type: array
+            dryRun:
+              type: boolean
+            reason:
+              enum:
+              - TASK_CREATE
+              - TASK_UPDATE
+              - DEP_CREATE
+              - DEP_UPDATE
+              type: string
+            removedDependencyIds:
+              items:
+                type: string
+              type: array
+            taskOverrides:
+              type: object
+          type: object
+      responses:
+        200:
+          description: '{updated_tasks: [{id, name, start, end, previous_start, previous_end}],
+            errors}'
+        400:
+          description: Bad Request (invalid reason, taskOverrides or date range)
+        401:
+          description: Unauthorized
+        409:
+          description: Cycle detected in dependencies
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Run or preview the dependency cascade for live scheduling tasks
       tags:
       - Actions
   /v2/workspaces/{workspaceId}/projects/{projectId}/actions/schedule/bulk-update:
