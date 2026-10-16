@@ -94239,6 +94239,49 @@ paths:
       summary: Clear the assigned-default flag from a template
       tags:
       - HzDocumentTemplates
+  /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/usage:
+    get:
+      operationId: v2_getHzDocumentTemplateUsage
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: template_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Usage
+          schema:
+            properties:
+              data:
+                properties:
+                  contract_template_family_ids:
+                    items:
+                      type: string
+                    type: array
+                  count:
+                    type: integer
+                  family_id:
+                    type: string
+                  subcontract_ids:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              message:
+                type: string
+            required:
+            - message
+            - data
+            type: object
+        404:
+          description: Document template not found
+      summary: Who uses a document template family
+      tags:
+      - HzDocumentTemplates
   /v2/workspaces/{workspace_id}/hz-document-templates/{template_id}/versions:
     get:
       operationId: v2_listHzDocumentTemplateVersions
