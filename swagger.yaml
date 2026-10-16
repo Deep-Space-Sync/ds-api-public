@@ -65035,6 +65035,73 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/bulk-items:
+    post:
+      operationId: v2_postQTOBulkItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: qtoId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: All items imported successfully
+          schema:
+            properties:
+              created:
+                items:
+                  type: object
+                type: array
+              created_count:
+                type: integer
+              errors:
+                items:
+                  properties:
+                    error:
+                      type: string
+                    index:
+                      type: integer
+                  type: object
+                type: array
+              message:
+                type: string
+              success:
+                type: boolean
+            type: object
+        207:
+          description: "Partial success \u2014 invalid rows skipped and reported in\
+            \ errors with their index"
+        400:
+          description: Bad request (non-array body, empty body, over the 500-row cap,
+            or no valid rows)
+        401:
+          description: Unauthorized
+        404:
+          description: QTO not found (or not in this workspace/project)
+        413:
+          description: Import would exceed the Firestore 1MiB document limit
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Bulk Create QTO Items (Excel takeoff import)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/qto/{qtoId}/documents:
     post:
       operationId: v2_attachQTODocuments
