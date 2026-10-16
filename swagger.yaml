@@ -54027,6 +54027,123 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/notice-periods/amend:
+    post:
+      operationId: v2_amendHeadContractNoticePeriod
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            anchor:
+              enum:
+              - issue_date
+              - awareness_date
+              type: string
+            clause_ref:
+              type: string
+            day_basis:
+              enum:
+              - calendar
+              - working
+              type: string
+            is_contractual:
+              type: boolean
+            notice_type:
+              type: string
+            period_days:
+              type: integer
+            reason:
+              type: string
+            reference:
+              type: string
+          required:
+          - notice_type
+          - reason
+          - reference
+          type: object
+      responses:
+        200:
+          description: Row amended; returns the contract with its grid
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Missing reason / reference, no change, or a bad value
+        403:
+          description: Caller is not a workspace administrator
+        404:
+          description: Contract not found
+      security:
+      - JWT_v2: []
+      summary: Amend a locked notice response period (admin)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/notice-periods/confirm:
+    post:
+      operationId: v2_confirmHeadContractNoticePeriods
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            notice_types:
+              items:
+                type: string
+              type: array
+          type: object
+      responses:
+        200:
+          description: Rows confirmed; returns the contract with its grid
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: A row to confirm has no number of days, or an unknown notice
+            type
+        404:
+          description: Contract not found
+      security:
+      - JWT_v2: []
+      summary: Confirm the head contract's notice response periods
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/retention-rules:
     get:
       operationId: v2_getContractRetentionRules
