@@ -78710,6 +78710,77 @@ paths:
       - Projects
       x-ds-test-enabled: true
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/projects/{projectId}/settings/external-stakeholders:
+    post:
+      operationId: v2_addProjectExternalStakeholder
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            company_id:
+              type: integer
+            company_name:
+              type: string
+            contact_email:
+              type: string
+            contact_name:
+              type: string
+            membership_role:
+              type: string
+            source:
+              type: string
+            stakeholder_type:
+              enum:
+              - Subcontractor
+              - Supplier
+              - Consultant
+              type: string
+            stakeholder_types:
+              items:
+                enum:
+                - Subcontractor
+                - Supplier
+                - Consultant
+                type: string
+              type: array
+            trade_discipline:
+              type: string
+          required:
+          - company_id
+          - company_name
+          - stakeholder_type
+          type: object
+      responses:
+        200:
+          description: "Nothing added \u2014 already a stakeholder (status \"existing\"\
+            ) or already on the project (status \"on_project\")"
+        201:
+          description: Added (status "added")
+        400:
+          description: Invalid body
+        401:
+          description: Unauthorized
+        404:
+          description: Project not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Add an External Stakeholder
+      tags:
+      - Projects
+      x-ds-test-enabled: true
+      x-min-permissions: isProjectMember
   /v2/workspaces/{workspaceId}/projects/{projectId}/settings/supply-chain:
     get:
       operationId: v2_getProjectSupplyChain
