@@ -7223,6 +7223,71 @@ paths:
       summary: Take this company's SWMS form for this project out of service
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/swms/overview:
+    get:
+      operationId: v2_portalV2GetSwmsOverview
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        409:
+          description: DS Site is not connected for this workspace, or the caller
+            has no company
+        500:
+          description: Internal Server Error
+        503:
+          description: Whether SWMS sign-on is switched on could not be read
+      security:
+      - JWT_v2: []
+      summary: SWMS statement link, sign-on form, documents and the company's statements
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/swms/signons:
+    get:
+      operationId: v2_portalV2ListSwmsSignons
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - format: date
+        in: query
+        name: date
+        required: false
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        409:
+          description: DS Site is not connected for this workspace, or the caller
+            has no company
+        422:
+          description: Invalid date
+        500:
+          description: Internal Server Error
+        503:
+          description: Whether SWMS sign-on is switched on could not be read
+      security:
+      - JWT_v2: []
+      summary: Submissions of the company's SWMS sign-on form
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/swms/status:
     get:
       operationId: v2_portalV2GetSwmsStatus
@@ -28471,6 +28536,122 @@ paths:
       security:
       - JWT_v2: []
       summary: List assignable DS Site channel roles
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/swms/signon-forms:
+    get:
+      operationId: v2_listSwmsSignOnForms
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: project_id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+        503:
+          description: Whether SWMS sign-on is switched on could not be read
+      security:
+      - JWT_v2: []
+      summary: List the SWMS sign-on forms of one project
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/swms/submissions/{submissionId}/status:
+    patch:
+      operationId: v2_updateSwmsStatementStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            status:
+              type: string
+          required:
+          - status
+          type: object
+      responses:
+        200:
+          description: Status written and sign-on form reconciled
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: No such submission
+        409:
+          description: The sign-on form cannot be updated automatically
+        422:
+          description: The submission's project or company cannot be resolved
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site could not be reached or rejected the change
+        503:
+          description: Whether SWMS sign-on is switched on could not be read
+      security:
+      - JWT_v2: []
+      summary: Set a SWMS statement's DS Site status, then reconcile its sign-on form
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/swms/sync:
+    post:
+      operationId: v2_syncSwmsSignOnForm
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            submission_id:
+              type: integer
+          required:
+          - submission_id
+          type: object
+      responses:
+        200:
+          description: The sign-on form after the sync
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: No such submission
+        409:
+          description: The sign-on form cannot be updated automatically
+        422:
+          description: The submission's project or company cannot be resolved
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site could not be reached or rejected the change
+        503:
+          description: Whether SWMS sign-on is switched on could not be read
+      security:
+      - JWT_v2: []
+      summary: Reconcile the SWMS sign-on form for one statement submission
       tags:
       - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/users:
