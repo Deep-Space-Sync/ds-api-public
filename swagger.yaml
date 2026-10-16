@@ -94531,6 +94531,8 @@ paths:
             type: object
         404:
           description: Document template not found
+      security:
+      - JWT_v2: []
       summary: Who uses a document template family
       tags:
       - HzDocumentTemplates
