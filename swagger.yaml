@@ -85898,6 +85898,49 @@ paths:
       - Timesheets
       x-ds-test-enabled: true
       x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/cells/{kindeId}/{date}/alternate-dismiss:
+    post:
+      operationId: v2_dismissTimesheetsAlternate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      - in: path
+        name: date
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            submission_id:
+              type: integer
+            undo:
+              type: boolean
+          required:
+          - submission_id
+          type: object
+      responses:
+        200:
+          description: Updated cell document
+      security:
+      - JWT_v2: []
+      summary: Dismiss (or restore) a second DS Site submission for this worker-day
+        (DEL-394)
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
   /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/cells/{kindeId}/{date}/canonical-switch:
     post:
       operationId: v2_switchTimesheetsCanonical
