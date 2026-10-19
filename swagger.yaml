@@ -60147,6 +60147,55 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/chase-approval:
+    post:
+      operationId: v2_chaseHeadContractVariationApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Reminder sent; data.sent_to lists the recipients
+          schema:
+            properties:
+              data:
+                properties:
+                  chased_on:
+                    type: string
+                  log_key:
+                    type: string
+                  sent_to:
+                    items:
+                      type: object
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        404:
+          description: Variation not found
+        409:
+          description: Not Submitted, never issued to the client, or already chased
+            today
+        502:
+          description: The email service refused the send
+      security:
+      - JWT_v2: []
+      summary: Send the client an on-demand approval reminder for a Submitted head
+        contract variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/link-notice:
     post:
       operationId: v2_linkNoticeToHeadContractVariation
