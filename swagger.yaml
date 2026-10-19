@@ -97591,6 +97591,58 @@ paths:
       summary: Delete an invoice record, optionally with its linked records
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/preview-schedule:
+    post:
+      operationId: v2_previewInvoiceDraftSchedule
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Preview of the payment schedule
+          schema:
+            properties:
+              lines:
+                items:
+                  type: object
+                type: array
+              not_on_schedule:
+                items:
+                  type: object
+                type: array
+              removed_lines:
+                items:
+                  type: object
+                type: array
+              status:
+                type: string
+              syncs_on_save:
+                type: boolean
+              totals:
+                type: object
+            type: object
+        400:
+          description: Invalid request
+        403:
+          description: Unauthorized
+        404:
+          description: Email not found
+      security:
+      - JWT_v2: []
+      summary: Preview the generated payment schedule a draft save would produce
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/project-match:
     post:
       operationId: v2_setInvoiceEmailProjectMatch
