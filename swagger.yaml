@@ -54231,6 +54231,48 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/extract-from-document:
+    post:
+      operationId: v2_extractHeadContractFromDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_ids:
+              items:
+                type: integer
+              type: array
+          required:
+          - cde_ids
+          type: object
+      responses:
+        200:
+          description: 'Proposals: data.fields (one per head contract field), data.warnings,
+            data.documents_analysed, data.documents_skipped'
+        400:
+          description: Invalid body, or none of the documents can be read
+        401:
+          description: Unauthorized
+        502:
+          description: KAI could not read the contract
+        503:
+          description: The document store could not be reached
+      security:
+      - JWT_v2: []
+      summary: Read a client-provided head contract with KAI
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}:
     delete:
       operationId: v2_deleteCostContractById
