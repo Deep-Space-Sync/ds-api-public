@@ -16854,6 +16854,8 @@ paths:
           description: Retrieve Company settings for the workspace
           schema:
             properties:
+              accountsPayableEmail:
+                type: string
               bank:
                 properties:
                   accountName:
@@ -16934,6 +16936,8 @@ paths:
         required: true
         schema:
           properties:
+            accountsPayableEmail:
+              type: string
             bank:
               properties:
                 accountName:
