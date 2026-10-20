@@ -56068,6 +56068,53 @@ paths:
       - Cost - Departures
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/departures/{departureId}/recovery:
+    post:
+      operationId: v2_setCostDepartureRecovery
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: departureId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              type: string
+            recoverable:
+              type: boolean
+          required:
+          - recoverable
+          type: object
+      responses:
+        200:
+          description: '`{ message, data }` - the merged departure, carrying `recovery`.'
+        400:
+          description: recoverable missing / not a boolean, reason missing, or not
+            currently marked not recoverable
+        403:
+          description: Departure belongs to another workspace / project
+        409:
+          description: The departure already has a head contract variation (code already_recovered)
+        410:
+          description: Departure has been deleted
+      security:
+      - JWT_v2: []
+      summary: Mark a Departure Recoverable or Not Recoverable
+      tags:
+      - Cost - Departures
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/departures/{departureId}/update-status:
     post:
       operationId: v2_setCostDepartureStatus
@@ -60193,6 +60240,111 @@ paths:
       - JWT_v2: []
       summary: Send the client an on-demand approval reminder for a Submitted head
         contract variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/counterpart-suggestions:
+    get:
+      operationId: v2_getHeadContractVariationCounterpartSuggestions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: data is a list of counterpart summaries with match_reason
+        404:
+          description: Variation not found
+      security:
+      - JWT_v2: []
+      summary: Subcontract variations worth linking to this head contract variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/counterparts:
+    post:
+      operationId: v2_linkHeadContractVariationCounterpart
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            subcontract_variation_id:
+              type: string
+          required:
+          - subcontract_variation_id
+          type: object
+      responses:
+        201:
+          description: Linked; data is the counterpart entry
+        400:
+          description: Missing id, or the two variations are on different projects
+        403:
+          description: A variation belongs to another workspace
+        404:
+          description: Variation not found
+        409:
+          description: Already linked (code already_linked, sources lists how)
+      security:
+      - JWT_v2: []
+      summary: Manually link a head contract variation to a subcontract variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-variations/{variationId}/counterparts/{counterpartId}:
+    delete:
+      operationId: v2_unlinkHeadContractVariationCounterpart
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: path
+        name: counterpartId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Unlinked; data.remaining_sources lists any other source still
+            pairing them
+        404:
+          description: Variation not found, or the two are not linked
+        409:
+          description: The pair is not manually linked (code link_not_manual)
+      security:
+      - JWT_v2: []
+      summary: Remove a manual link between a head contract variation and a subcontract
+        variation
       tags:
       - Cost
       x-min-permissions: isCostUser
@@ -70335,6 +70487,111 @@ paths:
       security:
       - JWT_v2: []
       summary: Approval-engine completion callback for a subcontract variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/counterpart-suggestions:
+    get:
+      operationId: v2_getSubcontractVariationCounterpartSuggestions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      responses:
+        200:
+          description: data is a list of counterpart summaries with match_reason
+        404:
+          description: Variation not found
+      security:
+      - JWT_v2: []
+      summary: Head contract variations worth linking to this subcontract variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/counterparts:
+    post:
+      operationId: v2_linkSubcontractVariationCounterpart
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            head_contract_variation_id:
+              type: string
+          required:
+          - head_contract_variation_id
+          type: object
+      responses:
+        201:
+          description: Linked; data is the counterpart entry
+        400:
+          description: Missing id, or the two variations are on different projects
+        403:
+          description: A variation belongs to another workspace
+        404:
+          description: Variation not found
+        409:
+          description: Already linked (code already_linked, sources lists how)
+      security:
+      - JWT_v2: []
+      summary: Manually link a subcontract variation to a head contract variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-variations/{variationId}/counterparts/{counterpartId}:
+    delete:
+      operationId: v2_unlinkSubcontractVariationCounterpart
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: variationId
+        required: true
+        type: string
+      - in: path
+        name: counterpartId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Unlinked; data.remaining_sources lists any other source still
+            pairing them
+        404:
+          description: Variation not found, or the two are not linked
+        409:
+          description: The pair is not manually linked (code link_not_manual)
+      security:
+      - JWT_v2: []
+      summary: Remove a manual link between a subcontract variation and a head contract
+        variation
       tags:
       - Cost
       x-min-permissions: isCostUser
