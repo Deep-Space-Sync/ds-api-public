@@ -11639,6 +11639,298 @@ paths:
       summary: Create worker extra details
       tags:
       - WorkerExtraDetails
+  /v2/workspace-groups:
+    get:
+      operationId: v2_listWorkspaceGroups
+      parameters:
+      - enum:
+        - active
+        - suspended
+        - archived
+        in: query
+        name: status
+        required: false
+        type: string
+      - default: 100
+        in: query
+        maximum: 500
+        name: limit
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Groups, sorted by name (case-insensitive)
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    created_at:
+                      format: date-time
+                      type: string
+                    created_by:
+                      type: string
+                    id:
+                      example: wg_7f3c0a1b2c3d4e5f6a7b8c9d0e1f2a3b
+                      type: string
+                    member_workspace_ids:
+                      items:
+                        type: string
+                      type: array
+                    members:
+                      items:
+                        properties:
+                          display_name:
+                            type: string
+                          global_company_id:
+                            type: integer
+                          joined_at:
+                            format: date-time
+                            type: string
+                          joined_by:
+                            type: string
+                          tax_id:
+                            type: string
+                            x-nullable: true
+                          tax_id_type:
+                            enum:
+                            - ABN
+                            - NZBN
+                            type: string
+                          workspace_id:
+                            type: string
+                        type: object
+                      type: array
+                    name:
+                      type: string
+                    notes:
+                      type: string
+                    revision:
+                      type: integer
+                    status:
+                      enum:
+                      - active
+                      - suspended
+                      - archived
+                      type: string
+                    updated_at:
+                      format: date-time
+                      type: string
+                    updated_by:
+                      type: string
+                  type: object
+                type: array
+              ok:
+                type: boolean
+            type: object
+        401:
+          description: Missing or invalid credentials (code_name UNAUTHENTICATED)
+        403:
+          description: Not a CS user or service token (code_name FORBIDDEN)
+      security:
+      - JWT_v2: []
+      summary: List workspace groups (CS Hub)
+      tags:
+      - Workspace Groups
+    post:
+      operationId: v2_createWorkspaceGroup
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              maxLength: 120
+              type: string
+            notes:
+              maxLength: 4000
+              type: string
+            workspace_ids:
+              items:
+                pattern: ^[A-Za-z0-9_\-]{3,80}$
+                type: string
+              maxItems: 10
+              minItems: 1
+              type: array
+          required:
+          - name
+          - workspace_ids
+          type: object
+      responses:
+        201:
+          description: Created group (CS projection with an empty syncs list)
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+        400:
+          description: Validation (code_name INVALID_BODY, INVALID_NAME, INVALID_MEMBERS,
+            INVALID_WORKSPACE_ID, GROUP_TOO_LARGE, INVALID_NOTES)
+        404:
+          description: A workspace is not linked to a global company (code_name WORKSPACE_UNKNOWN)
+        409:
+          description: A workspace already belongs to a group (WORKSPACE_ALREADY_GROUPED,
+            with workspace_id and group_id), two members share a tax id (DUPLICATE_TAX_ID),
+            or a workspace has duplicate directory rows (WORKSPACE_AMBIGUOUS)
+      security:
+      - JWT_v2: []
+      summary: Create a workspace group (CS Hub)
+      tags:
+      - Workspace Groups
+  /v2/workspace-groups/{groupId}:
+    get:
+      operationId: v2_getWorkspaceGroup
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Group
+          schema:
+            properties:
+              data:
+                properties:
+                  syncs:
+                    items:
+                      properties:
+                        config:
+                          type: object
+                        declaration_version:
+                          type: integer
+                        enabled:
+                          type: boolean
+                        last_run:
+                          properties:
+                            counts:
+                              properties:
+                                archived:
+                                  type: integer
+                                created:
+                                  type: integer
+                                failed:
+                                  type: integer
+                                skipped:
+                                  type: integer
+                                updated:
+                                  type: integer
+                                warnings:
+                                  type: integer
+                              type: object
+                            finished_at:
+                              format: date-time
+                              type: string
+                            mode:
+                              enum:
+                              - preview
+                              - execute
+                              - restore
+                              type: string
+                            run_id:
+                              type: string
+                            started_at:
+                              format: date-time
+                              type: string
+                            status:
+                              type: string
+                          type: object
+                          x-nullable: true
+                        mode:
+                          enum:
+                          - upsert_never_delete
+                          type: string
+                        source_workspace_id:
+                          type: string
+                        sync_type:
+                          enum:
+                          - ROLES
+                          - MEMBERSHIP
+                          - COMPANY_SETTINGS
+                          - COST_CODES
+                          - WORKFLOWS_DOA
+                          - DIRECTORY
+                          type: string
+                        target_workspace_ids:
+                          items:
+                            type: string
+                          type: array
+                      type: object
+                    type: array
+                type: object
+              ok:
+                type: boolean
+            type: object
+        404:
+          description: code_name GROUP_NOT_FOUND
+      security:
+      - JWT_v2: []
+      summary: Get a workspace group with its sync declarations (CS Hub)
+      tags:
+      - Workspace Groups
+    patch:
+      operationId: v2_patchWorkspaceGroup
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            add_workspace_ids:
+              items:
+                type: string
+              type: array
+            expected_revision:
+              type: integer
+            name:
+              maxLength: 120
+              type: string
+            notes:
+              maxLength: 4000
+              type: string
+            remove_workspace_ids:
+              items:
+                type: string
+              type: array
+            status:
+              enum:
+              - active
+              - suspended
+              type: string
+          required:
+          - expected_revision
+          type: object
+      responses:
+        200:
+          description: Updated group (CS projection with syncs)
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+        400:
+          description: Validation (REVISION_REQUIRED, EMPTY_PATCH, INVALID_STATUS,
+            INVALID_MEMBERS, GROUP_TOO_LARGE, INVALID_NAME, INVALID_NOTES)
+        404:
+          description: GROUP_NOT_FOUND, NOT_A_MEMBER, WORKSPACE_UNKNOWN
+        409:
+          description: REVISION_MISMATCH (current_revision), GROUP_ARCHIVED, ALREADY_MEMBER,
+            WORKSPACE_ALREADY_GROUPED, DUPLICATE_TAX_ID, TRANSITION_REQUIRED (roles)
+      security:
+      - JWT_v2: []
+      summary: Update a workspace group (CS Hub)
+      tags:
+      - Workspace Groups
   /v2/workspaces:
     get:
       operationId: v2_getWorkspaces
@@ -39586,6 +39878,83 @@ paths:
       summary: Create labour rate project override
       tags:
       - LabourRates
+  /v2/workspaces/{workspaceId}/linked:
+    get:
+      operationId: v2_getWorkspaceLinked
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Linked projection. An unlinked workspace gets linked=false
+            with empty members and syncs.
+          schema:
+            properties:
+              data:
+                properties:
+                  group:
+                    properties:
+                      name:
+                        type: string
+                      status:
+                        enum:
+                        - active
+                        - suspended
+                        - archived
+                        type: string
+                    type: object
+                    x-nullable: true
+                  linked:
+                    type: boolean
+                  members:
+                    items:
+                      properties:
+                        display_name:
+                          type: string
+                        workspace_id:
+                          type: string
+                      type: object
+                    type: array
+                  syncs:
+                    items:
+                      properties:
+                        direction:
+                          enum:
+                          - in
+                          - out
+                          type: string
+                        enabled:
+                          type: boolean
+                        last_run:
+                          properties:
+                            counts:
+                              type: object
+                            finished_at:
+                              format: date-time
+                              type: string
+                            status:
+                              type: string
+                          type: object
+                          x-nullable: true
+                        source_display_name:
+                          type: string
+                        sync_type:
+                          type: string
+                      type: object
+                    type: array
+                type: object
+              ok:
+                type: boolean
+            type: object
+        403:
+          description: Not a member of this workspace (FORBIDDEN)
+      security:
+      - JWT_v2: []
+      summary: Linked workspaces (read-only, workspace-facing)
+      tags:
+      - Workspace Groups
   /v2/workspaces/{workspaceId}/markups:
     get:
       operationId: v2_getWorkspaceMarkups
