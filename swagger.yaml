@@ -69843,6 +69843,55 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/solvency-acknowledgement:
+    post:
+      operationId: v2_postSubcontractPaymentScheduleSolvencyAcknowledgement
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Record an approver's acknowledgement of the subcontractor's register
+        status (COR-1125)
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/solvency-check:
+    get:
+      operationId: v2_getSubcontractPaymentScheduleSolvencyCheck
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+      security:
+      - JWT_v2: []
+      summary: Check the subcontractor's NZ register status before Accept (COR-1124)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/sovs:
     get:
       operationId: v2_getSubcontractPaymentScheduleSovs
