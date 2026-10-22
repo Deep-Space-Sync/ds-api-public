@@ -11781,6 +11781,31 @@ paths:
       summary: Create a workspace group (CS Hub)
       tags:
       - Workspace Groups
+  /v2/workspace-groups/reconcile:
+    post:
+      operationId: v2_reconcileWorkspaceGroups
+      parameters:
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            repair:
+              default: false
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: Report
+          schema:
+            type: object
+        403:
+          description: Not a platform service token
+      security:
+      - JWT_v2: []
+      summary: Reconcile the reverse index (platform service token only)
+      tags:
+      - Workspace Groups
   /v2/workspace-groups/{groupId}:
     get:
       operationId: v2_getWorkspaceGroup
@@ -11929,6 +11954,188 @@ paths:
       security:
       - JWT_v2: []
       summary: Update a workspace group (CS Hub)
+      tags:
+      - Workspace Groups
+  /v2/workspace-groups/{groupId}/syncs/{syncType}:
+    get:
+      operationId: v2_getWorkspaceGroupSync
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+      - enum:
+        - ROLES
+        - MEMBERSHIP
+        - COMPANY_SETTINGS
+        - COST_CODES
+        - WORKFLOWS_DOA
+        - DIRECTORY
+        in: path
+        name: syncType
+        required: true
+        type: string
+      responses:
+        200:
+          description: The declaration
+          schema:
+            type: object
+        404:
+          description: SYNC_NOT_FOUND
+      security:
+      - JWT_v2: []
+      summary: Get one sync declaration (CS Hub)
+      tags:
+      - Workspace Groups
+    patch:
+      operationId: v2_patchWorkspaceGroupSync
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+      - in: path
+        name: syncType
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            enabled:
+              type: boolean
+            expected_revision:
+              type: integer
+          required:
+          - expected_revision
+          - enabled
+          type: object
+      responses:
+        200:
+          description: Group (CS projection with syncs)
+          schema:
+            type: object
+      security:
+      - JWT_v2: []
+      summary: Enable or disable a sync (freeze) (CS Hub)
+      tags:
+      - Workspace Groups
+    put:
+      operationId: v2_putWorkspaceGroupSync
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+      - enum:
+        - ROLES
+        - MEMBERSHIP
+        - COMPANY_SETTINGS
+        - COST_CODES
+        - WORKFLOWS_DOA
+        - DIRECTORY
+        in: path
+        name: syncType
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            config:
+              type: object
+            enabled:
+              default: true
+              type: boolean
+            expected_revision:
+              type: integer
+            mode:
+              enum:
+              - upsert_never_delete
+              type: string
+            source_workspace_id:
+              type: string
+            target_workspace_ids:
+              items:
+                type: string
+              maxItems: 9
+              minItems: 1
+              type: array
+          required:
+          - expected_revision
+          - source_workspace_id
+          - target_workspace_ids
+          type: object
+      responses:
+        200:
+          description: Group (CS projection with syncs); group revision bumped; index
+            roles recomputed
+          schema:
+            type: object
+        400:
+          description: INVALID_SYNC_TYPE, SOURCE_IN_TARGETS, TOO_MANY_TARGETS, INVALID_CONFIG,
+            NOT_A_MEMBER, REVISION_REQUIRED
+        409:
+          description: REVISION_MISMATCH, GROUP_ARCHIVED, TRANSITION_REQUIRED (transition,
+            managed)
+      security:
+      - JWT_v2: []
+      summary: Create or replace a sync declaration (CS Hub)
+      tags:
+      - Workspace Groups
+  /v2/workspace-groups/{groupId}/transitions:
+    post:
+      operationId: v2_workspaceGroupTransition
+      parameters:
+      - in: path
+        name: groupId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            action:
+              enum:
+              - remove_target
+              - remove_member
+              - change_source
+              - archive
+              type: string
+            confirm:
+              default: false
+              type: boolean
+            expected_revision:
+              type: integer
+            new_source_workspace_id:
+              type: string
+            sync_type:
+              type: string
+            workspace_id:
+              type: string
+          required:
+          - action
+          - expected_revision
+          type: object
+      responses:
+        200:
+          description: Preview {affected[], managed_total, requires_confirm} or result
+            {revision, detached[], group}
+          schema:
+            type: object
+        400:
+          description: INVALID_TRANSITION, INVALID_SYNC_TYPE, INVALID_WORKSPACE_ID,
+            SOURCE_IN_TARGETS, NO_CHANGE, INVALID_MEMBERS
+        404:
+          description: GROUP_NOT_FOUND, SYNC_NOT_FOUND, NOT_A_TARGET, NOT_A_MEMBER
+        409:
+          description: REVISION_MISMATCH, GROUP_ARCHIVED, SOURCE_IN_USE (sync_types)
+      security:
+      - JWT_v2: []
+      summary: Preview or apply a lifecycle transition (CS Hub)
       tags:
       - Workspace Groups
   /v2/workspaces:
