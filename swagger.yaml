@@ -97669,6 +97669,10 @@ paths:
               additionalProperties:
                 type: boolean
               type: object
+            line_item_gst_free:
+              additionalProperties:
+                type: boolean
+              type: object
             line_items:
               items:
                 type: object
@@ -98580,6 +98584,8 @@ paths:
             line_item_amounts:
               type: object
             line_item_cost_codes:
+              type: object
+            line_item_gst_free:
               type: object
             line_item_matches:
               type: object
