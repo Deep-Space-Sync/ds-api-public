@@ -29352,6 +29352,39 @@ paths:
       summary: Provision a DS Site form as one of a project's site gate forms
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/numbered-items/{itemType}/items:
+    get:
+      operationId: v2_listNumberedItems
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: itemType
+        required: true
+        type: string
+      - in: query
+        name: project_id
+        required: false
+        type: integer
+      responses:
+        200:
+          description: The numbers, sorted by project then number
+        401:
+          description: Unauthorized, or a portal user
+        404:
+          description: Unknown item type
+        405:
+          description: Method not allowed
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Every number the store holds for a numbered-item type, by submission
+        id
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/numbered-items/{itemType}/rebuild:
     post:
       operationId: v2_rebuildNumberedItems
