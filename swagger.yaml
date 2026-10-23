@@ -27943,6 +27943,62 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/xero-bank-details/apply:
+    post:
+      operationId: v2_postXeroBankDetailsApply
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        403:
+          description: Caller cannot edit Payment Details
+        409:
+          description: Contacts sync is off or the Xero organisation is unsupported
+        500:
+          description: Internal Server Error
+        502:
+          description: The Payment Details batch route failed
+      security:
+      - JWT_v2: []
+      summary: Apply the Xero bank details sync and turn the setting on
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/xero-bank-details/preview:
+    post:
+      operationId: v2_postXeroBankDetailsPreview
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        403:
+          description: Caller cannot edit Payment Details
+        409:
+          description: Contacts sync is off or the Xero organisation is unsupported
+        500:
+          description: Internal Server Error
+        502:
+          description: The Payment Details batch route failed
+      security:
+      - JWT_v2: []
+      summary: Dry-run the Xero bank details sync into Payment Details
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/xero-sync/{syncId}:
     post:
       operationId: v2_postXeroSync
@@ -41288,6 +41344,65 @@ paths:
       summary: Update workspace opportunity tags
       tags:
       - Opportunities
+  /v2/workspaces/{workspaceId}/payee-bank-details/xero-sync:
+    post:
+      operationId: v2_postPayeeBankDetailsXeroSync
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            dry_run:
+              type: boolean
+            items:
+              items:
+                properties:
+                  account_name:
+                    type: string
+                    x-nullable: true
+                  account_number:
+                    type: string
+                    x-nullable: true
+                  global_company_id:
+                    type: integer
+                  xero_contact_id:
+                    type: string
+                required:
+                - global_company_id
+                type: object
+              type: array
+            org_country:
+              enum:
+              - AU
+              - NZ
+              type: string
+          required:
+          - org_country
+          - items
+          type: object
+      responses:
+        200:
+          description: '{dry_run, counts: {updated, unchanged, invalid, blank}, updated:
+            [global_company_id], invalid: [{global_company_id, reason}]}'
+        400:
+          description: org_country is not AU/NZ, or items is malformed
+        401:
+          description: Unauthorized
+        403:
+          description: Admin edit permission required, or a write without the system
+            M2M scope
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Sync Xero contact bank details into payee bank details
+      tags:
+      - Subcontractor Extra Details
   /v2/workspaces/{workspaceId}/powerbi:
     post:
       operationId: v2_postPowerBiWorkspace
