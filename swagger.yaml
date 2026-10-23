@@ -42127,6 +42127,36 @@ paths:
       summary: Get specific operation from registry
       tags:
       - Automated Config Registry
+  /v2/workspaces/{workspaceId}/projects/next-code:
+    get:
+      operationId: v2_getNextProjectCode
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: The suggested code
+          schema:
+            properties:
+              auto_generate:
+                type: boolean
+              project_code:
+                type: string
+                x-nullable: true
+            type: object
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Next auto-generated Project Code
+      tags:
+      - Projects
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceMember
   /v2/workspaces/{workspaceId}/projects/progress:
     get:
       operationId: v2_getWorkspaceWbsProgress
