@@ -30220,6 +30220,53 @@ paths:
       summary: Global-Directory Search Filter Options
       tags:
       - Global Company Directory V2
+  /v2/workspaces/{workspaceId}/global-companies-directory/resolve-names:
+    get:
+      operationId: v2_resolveGlobalCompanyNamesV2
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - collectionFormat: multi
+        in: query
+        items:
+          minimum: 1
+          type: integer
+        maxItems: 200
+        minItems: 1
+        name: directoryIds
+        required: true
+        type: array
+      responses:
+        200:
+          description: Resolved display-only company names
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    company_name:
+                      type: string
+                    id_global_company_directory:
+                      type: integer
+                  required:
+                  - id_global_company_directory
+                  - company_name
+                  type: object
+                type: array
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Workspace does not map to a global company
+        422:
+          description: Invalid or excessive directory IDs
+      security:
+      - JWT_v2: []
+      summary: Resolve Global Company Display Names
+      tags:
+      - Global Company Directory V2
   /v2/workspaces/{workspaceId}/global-companies-directory/vendors/relationship-type:
     patch:
       operationId: v2_updateVendorRelationshipTypeV2
