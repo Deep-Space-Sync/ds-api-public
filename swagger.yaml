@@ -87523,17 +87523,24 @@ paths:
         required: true
         schema:
           properties:
+            break_end:
+              type: string
             break_minutes:
               type: integer
+            break_start:
+              type: string
+            end_time:
+              type: string
             entry_id:
               type: string
             minutes_worked:
               type: integer
             reason:
               type: string
+            start_time:
+              type: string
           required:
           - entry_id
-          - minutes_worked
           type: object
       responses:
         200:
