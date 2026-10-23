@@ -29480,6 +29480,46 @@ paths:
         CSV
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/numbered-items/{itemType}/submissions/{submissionId}/refresh:
+    post:
+      operationId: v2_refreshNumberedItem
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: itemType
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: The submission's number and what happened, or why it was skipped
+        401:
+          description: Unauthorized, or a portal user
+        404:
+          description: Unknown item type
+        405:
+          description: Method not allowed
+        422:
+          description: The submission cannot be numbered (no resolvable project, a
+            project id over 999, a full sequence)
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site failed or refused a call
+        503:
+          description: Another run holds the first-touch backfill, or the channel
+            could not be resolved
+      security:
+      - JWT_v2: []
+      summary: Re-capture one numbered submission after a change made in Horizon
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/roles:
     get:
       operationId: v2_getDsSiteChannelRoles
