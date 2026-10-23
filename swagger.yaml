@@ -30514,6 +30514,11 @@ paths:
         in: query
         name: requested_by
         type: string
+      - enum:
+        - me
+        in: query
+        name: returned_to
+        type: string
       responses:
         200:
           description: Approval instances retrieved successfully
@@ -75304,6 +75309,52 @@ paths:
       security:
       - JWT_v2: []
       summary: Cancel an in-review approval (B94)
+      tags:
+      - HzApproval
+  /v2/workspaces/{workspaceId}/projects/{projectId}/hz-approvals/{approvalId}/dismiss:
+    post:
+      operationId: v2_v2_dismissHzApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      - in: path
+        name: approvalId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            acting_user_email:
+              type: string
+            acting_user_id:
+              type: string
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Dismissed, or already closed (data.dismissed=false)
+        400:
+          description: Missing reason
+        403:
+          description: Caller is not the submitter, a workspace manager or a service
+        404:
+          description: Approval instance not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Dismiss a rejected approval from Returned to me
       tags:
       - HzApproval
   /v2/workspaces/{workspaceId}/projects/{projectId}/hz-approvals/{approvalId}/revoke:
