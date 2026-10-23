@@ -87108,6 +87108,49 @@ paths:
       summary: Subcontractor payee bank details change history
       tags:
       - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/payee-bank-details/verify:
+    post:
+      operationId: v2_postSubcontractorPayeeBankDetailsVerify
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            changed_at:
+              type: string
+          required:
+          - changed_at
+          type: object
+      responses:
+        200:
+          description: Same shape as GET payee-bank-details, marker cleared
+        400:
+          description: changed_at missing
+        401:
+          description: Unauthorized
+        403:
+          description: Admin edit permission required
+        404:
+          description: No bank details
+        409:
+          description: Nothing to verify, or the bank details changed again since
+            the reviewed change
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Mark Xero-synced payee bank details as verified
+      tags:
+      - Subcontractor Extra Details
   /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}:
     get:
       operationId: v2_getTimesheetsWeek
