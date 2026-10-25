@@ -25689,6 +25689,85 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isProjectMember
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/recommendation/revert-to-draft:
+    get:
+      operationId: v2_getTenderRecommendationRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload ({message, data})
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Reset-to-draft eligibility for a tender recommendation (COR-896)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_revertTenderRecommendationToDraft
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            force:
+              type: boolean
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Recommendation reset to draft (body carries recommendation
+            + data.engine_action)
+          schema:
+            type: object
+        400:
+          description: Missing reason, or the record is not in a state this action
+            applies to
+        401:
+          description: Unauthorized
+        403:
+          description: Caller is not authorized
+        404:
+          description: Not found
+        409:
+          description: Blockers stand (body carries blockers, blockers_detail, can_force)
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Reset a tender recommendation to draft (COR-896)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/recommendation/submit:
     post:
       operationId: v2_submitTenderRecommendation
@@ -25789,6 +25868,84 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isProjectManager
+  /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/reopen:
+    get:
+      operationId: v2_getTenderPackageReopenEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload ({message, data})
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        404:
+          description: Not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Reopen eligibility for a closed tender package (COR-896)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_reopenTenderPackage
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: tenderPackageId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            force:
+              type: boolean
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Package reopened
+          schema:
+            type: object
+        400:
+          description: Missing reason, or the record is not in a state this action
+            applies to
+        401:
+          description: Unauthorized
+        403:
+          description: Caller is not authorized
+        404:
+          description: Not found
+        409:
+          description: Blockers stand (body carries blockers, blockers_detail, can_force)
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Reopen a closed tender package (COR-896)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/tender-packages/{tenderPackageId}/subcontractors/{taxId}:
     patch:
       operationId: v2_updateSubcontractorResponse
@@ -41391,6 +41548,81 @@ paths:
       summary: Add comment to opportunity
       tags:
       - Opportunities
+  /v2/workspaces/{workspaceId}/opportunities/{opportunityId}/reopen:
+    get:
+      operationId: v2_getOpportunityReopenEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: opportunityId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload ({message, data})
+          schema:
+            type: object
+        403:
+          description: Workspace access forbidden
+        404:
+          description: Opportunity not found
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Reopen eligibility for a won or lost opportunity (COR-896)
+      tags:
+      - Opportunities
+    post:
+      operationId: v2_reopenOpportunity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: opportunityId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            force:
+              type: boolean
+            reason:
+              type: string
+            stage_id:
+              type: string
+          required:
+          - reason
+          - stage_id
+          type: object
+      responses:
+        200:
+          description: Opportunity reopened
+          schema:
+            type: object
+        400:
+          description: Missing reason/stage_id, invalid target stage, or not on a
+            won/lost stage
+        403:
+          description: Caller is not a workspace manager
+        404:
+          description: Opportunity not found
+        409:
+          description: Blockers stand (body carries blockers, blockers_detail, can_force)
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Reopen a won or lost opportunity (COR-896)
+      tags:
+      - Opportunities
   /v2/workspaces/{workspaceId}/opportunity-stages:
     get:
       operationId: v2_getOpportunityStages
@@ -56033,6 +56265,108 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/revert-to-draft:
+    get:
+      operationId: v2_getHeadContractRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload
+          schema:
+            properties:
+              data:
+                properties:
+                  authorized:
+                    type: boolean
+                  blockers:
+                    items:
+                      type: string
+                    type: array
+                  blockers_detail:
+                    items:
+                      type: object
+                    type: array
+                  can_force:
+                    type: boolean
+                  can_revert:
+                    type: boolean
+                  is_highest_authority:
+                    type: boolean
+                  is_requester:
+                    type: boolean
+                  is_workspace_manager:
+                    type: boolean
+                type: object
+              message:
+                type: string
+            type: object
+        404:
+          description: Head contract not found
+      security:
+      - JWT_v2: []
+      summary: Revert eligibility for a head contract's internal approval
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_revertHeadContractToDraft
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            force:
+              type: boolean
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Internal approval reverted; contract editable again
+        400:
+          description: Missing reason, or internal approval not in a revertible state
+        403:
+          description: Caller is not the requester, a Highest Authority holder or
+            a workspace manager
+        404:
+          description: Head contract not found
+        409:
+          description: Blockers exist (see blockers_detail, can_force)
+        502:
+          description: The approval engine refused the revoke
+      security:
+      - JWT_v2: []
+      summary: Revert a head contract's internal approval
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/sov-estimation-config/lock:
     post:
       operationId: v2_lockSovFromEstimation
@@ -70010,6 +70344,79 @@ paths:
       summary: Change Subcontract Claim Status
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-claims/{claimId}/revert-to-draft:
+    get:
+      operationId: v2_getSubcontractClaimRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload
+        403:
+          description: Access denied
+        404:
+          description: Claim not found
+      security:
+      - JWT_v2: []
+      summary: Revert-to-draft eligibility for a subcontract claim
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_revertSubcontractClaimToDraft
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            force:
+              type: boolean
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Claim reverted to Draft
+        400:
+          description: Missing reason, or the claim is already Draft
+        403:
+          description: Caller is not a workspace manager
+        404:
+          description: Claim not found
+        409:
+          description: Blockers exist (see blockers_detail, can_force)
+      security:
+      - JWT_v2: []
+      summary: Revert a subcontract claim to Draft
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-claims/{claimId}/sovs:
     get:
       operationId: v2_getSubcontractClaimSovs
@@ -99165,6 +99572,61 @@ paths:
       tags:
       - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/revise-resubmit:
+    get:
+      operationId: v2_getReviseResubmitInvoiceEmailEligibility
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload
+          schema:
+            properties:
+              data:
+                properties:
+                  authorized:
+                    type: boolean
+                  blockers:
+                    items:
+                      type: string
+                    type: array
+                  blockers_detail:
+                    items:
+                      type: object
+                    type: array
+                  can_force:
+                    type: boolean
+                  can_revert:
+                    type: boolean
+                  commercial_lead_assigned:
+                    type: boolean
+                  current_status:
+                    type: string
+                  is_commercial_lead:
+                    type: boolean
+                  is_workspace_manager:
+                    type: boolean
+                  xero_check:
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
+        403:
+          description: Record belongs to another workspace
+        404:
+          description: Email not found
+      security:
+      - JWT_v2: []
+      summary: Revise and Resubmit eligibility for an invoice record
+      tags:
+      - InvoiceReconciliation
     post:
       operationId: v2_reviseResubmitInvoiceEmail
       parameters:
@@ -99181,6 +99643,8 @@ paths:
         required: true
         schema:
           properties:
+            force:
+              type: boolean
             reason:
               type: string
           required:
@@ -99210,11 +99674,13 @@ paths:
         400:
           description: Missing reason or record not at a reversible status
         403:
-          description: "Unauthorized \u2014 requires the project's Commercial Lead"
+          description: "Unauthorized \u2014 requires the project's Commercial Lead\
+            \ or a workspace manager"
         404:
           description: Email not found
         409:
-          description: Bill is paid/part-paid in Xero, or a downstream document exists
+          description: "Blockers exist (see blockers_detail, can_force) \u2014 e.g.\
+            \ bill paid/part-paid in Xero, or a downstream document exists"
         424:
           description: Xero integration not configured for workspace
         502:
