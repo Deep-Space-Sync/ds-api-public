@@ -55375,6 +55375,10 @@ paths:
                 value:
                   type: integer
               type: object
+            fee_cost_code_num:
+              type: string
+            fee_percent:
+              type: number
             gst:
               type: number
             head_contract_type:
@@ -55386,6 +55390,11 @@ paths:
             payment_term:
               type: integer
             pc_date:
+              type: string
+            pricing_type:
+              enum:
+              - lump_sum
+              - cost_plus
               type: string
             receiving_company_id:
               type: integer
@@ -55795,6 +55804,10 @@ paths:
                 value:
                   type: integer
               type: object
+            fee_cost_code_num:
+              type: string
+            fee_percent:
+              type: number
             gst:
               type: number
             head_contract_type:
@@ -55806,6 +55819,11 @@ paths:
             payment_term:
               type: integer
             pc_date:
+              type: string
+            pricing_type:
+              enum:
+              - lump_sum
+              - cost_plus
               type: string
             receiving_company_id:
               type: integer
@@ -81024,6 +81042,10 @@ paths:
               - Embedded
               - CostCoded
               type: string
+            non_reimbursable_cost_codes:
+              items:
+                type: string
+              type: array
             notes:
               type: string
             owner_type:
