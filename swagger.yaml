@@ -56553,10 +56553,22 @@ paths:
                     type: number
                 type: object
               type: array
+            section_overrides:
+              items:
+                properties:
+                  is_checked:
+                    type: boolean
+                  section_id:
+                    type: string
+                  sell_override:
+                    type: number
+                type: object
+              type: array
             sov_mode:
               enum:
               - item
               - category_only
+              - section_only
               type: string
           type: object
       responses:
