@@ -44177,7 +44177,8 @@ paths:
       responses:
         200:
           description: '{version_id, against, base_live_snapshot_at, added, removed,
-            removed_tasks, changed, edges: {added, removed, changed}, conflicts, summary}'
+            removed_tasks, changed, edges: {added, removed, changed}, wbs: {changed},
+            progress: {changed, not_published}, conflicts, summary}'
         401:
           description: Unauthorized
         404:
@@ -44280,6 +44281,18 @@ paths:
         required: false
         schema:
           properties:
+            conflicts_seen:
+              items:
+                properties:
+                  action_id:
+                    type: string
+                  live:
+                    type: object
+                required:
+                - action_id
+                - live
+                type: object
+              type: array
             force:
               type: boolean
           type: object
@@ -44287,7 +44300,9 @@ paths:
         200:
           description: '{message, version, baseline_id, baseline, applied, failed,
             tasks_reconciled, notifications, notifications_sent, errors, residual,
-            forced, conflicts_overridden, log}'
+            forced, conflicts_overridden, progress_skipped: [{action_id, task_name,
+            draft, live_now}], progress_failed: [{action_id, task_name, draft, error}],
+            progress_not_published, log}; applied / failed include progress_changed'
         400:
           description: Bad Request
         401:
@@ -44295,8 +44310,9 @@ paths:
         404:
           description: Not found or not visible to the caller
         409:
-          description: Conflicts ({message, conflicts, summary}) without force; a
-            baseline; already published or being published; archived
+          description: Conflicts ({message, conflicts, summary}) without force, or
+            with force when conflicts_seen no longer matches them; a baseline; already
+            published or being published; archived
         500:
           description: Internal Server Error
       security:
