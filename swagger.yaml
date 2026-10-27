@@ -87811,10 +87811,14 @@ paths:
               type: string
             bsb:
               type: string
+            confirm_shared:
+              type: boolean
             country:
               enum:
               - AU
               - NZ
+              type: string
+            source_email_id:
               type: string
             swift_bic:
               type: string
@@ -87826,13 +87830,20 @@ paths:
       responses:
         200:
           description: '{exists: true, can_edit: true, details} with the full account
-            number'
+            number (machine caller, or nothing changed)'
+        202:
+          description: '{status: pending_approval, pending_change, ...GET shape} -
+            waiting for a second Admin'
         400:
           description: '{message, field_errors} - invalid or unknown fields'
         401:
           description: Unauthorized
         403:
           description: Admin edit permission required
+        409:
+          description: '{message, code: bank_account_shared, holders [{global_company_id,
+            company_name}]} - another company uses this account; resend with confirm_shared,
+            or the record is managed by Xero'
         500:
           description: Internal server error
       security:
@@ -87858,6 +87869,9 @@ paths:
             or null'
         401:
           description: Unauthorized
+        409:
+          description: '{message, code: payee_bank_unverified, data {reasons [xero_change_unverified|shared],
+            holders}} - COM-1348, not printable on an RCTI/BCTI yet'
         500:
           description: Internal server error
       security:
@@ -87890,6 +87904,89 @@ paths:
       security:
       - JWT_v2: []
       summary: Subcontractor payee bank details change history
+      tags:
+      - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/payee-bank-details/pending/approve:
+    post:
+      operationId: v2_postSubcontractorPayeeBankDetailsPendingApprove
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            request_id:
+              type: string
+          required:
+          - request_id
+          type: object
+      responses:
+        200:
+          description: Same shape as GET payee-bank-details, request applied
+        400:
+          description: request_id missing
+        401:
+          description: Unauthorized
+        403:
+          description: Admin edit permission required, or code second_admin_required
+            when the requester approves their own change
+        409:
+          description: The change request is no longer open
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Approve a pending payee bank details change (second Admin)
+      tags:
+      - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/payee-bank-details/pending/reject:
+    post:
+      operationId: v2_postSubcontractorPayeeBankDetailsPendingReject
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              type: string
+            request_id:
+              type: string
+          required:
+          - request_id
+          type: object
+      responses:
+        200:
+          description: Same shape as GET payee-bank-details, request closed
+        400:
+          description: request_id missing
+        401:
+          description: Unauthorized
+        403:
+          description: Admin edit permission required
+        409:
+          description: The change request is no longer open
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Reject or withdraw a pending payee bank details change
       tags:
       - Subcontractor Extra Details
   /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/payee-bank-details/verify:
@@ -99688,6 +99785,41 @@ paths:
       - JWT_v2: []
       summary: Clear a possible duplicate (with a reason) or archive the record as
         a duplicate
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/identity-check:
+    post:
+      operationId: v2_runInvoiceEmailIdentityCheck
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Identity check result
+          schema:
+            properties:
+              identity_check:
+                type: object
+                x-nullable: true
+              stale:
+                type: boolean
+              vendor_company_id:
+                type: integer
+                x-nullable: true
+            type: object
+        403:
+          description: Unauthorized
+        404:
+          description: Email not found
+      security:
+      - JWT_v2: []
+      summary: Re-run the supplier identity check for an inbox email
       tags:
       - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/preview-schedule:
