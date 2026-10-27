@@ -59654,6 +59654,49 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/cost-plus-prefill:
+    get:
+      operationId: v2_getHeadContractClaimCostPlusPrefill
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: head_contract_id
+        required: true
+        type: string
+      - in: query
+        name: cost_period_to
+        required: false
+        type: string
+      - in: query
+        name: claim_id
+        required: false
+        type: string
+      responses:
+        200:
+          description: The prefill (lines, fee, ps_lines, excluded, unlinked, totals)
+        400:
+          description: Missing head_contract_id, a bad date, or the head contract
+            is not Cost Plus
+        401:
+          description: Unauthorized
+        404:
+          description: Head contract not found, or not in this project
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Cost Plus claim prefill
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}:
     delete:
       operationId: v2_deleteHeadContractClaimById
@@ -66728,6 +66771,47 @@ paths:
       security:
       - JWT_v2: []
       summary: Create Provisional Sum Drawdown
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/provisional-sums/{provisionalSumId}/drawdowns/from-cost:
+    post:
+      operationId: v2_postProvisionalSumDrawdownFromCost
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: provisionalSumId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          type: object
+      responses:
+        200:
+          description: Drawdown created from cost
+        400:
+          a bad date: null
+          description: Not a Dayworks allowance
+          or no new cost to draw down: null
+        401:
+          description: Unauthorized
+        404:
+          description: Provisional sum not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Draw down a Dayworks allowance from cost
       tags:
       - Cost
       x-ds-test-enabled: true
