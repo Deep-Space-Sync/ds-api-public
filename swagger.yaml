@@ -99544,6 +99544,52 @@ paths:
       summary: Delete an invoice record, optionally with its linked records
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/duplicate-resolution:
+    post:
+      operationId: v2_resolveInvoiceDuplicate
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            decision:
+              enum:
+              - not_duplicate
+              - duplicate
+              type: string
+            duplicate_of:
+              type: string
+            reason:
+              type: string
+          required:
+          - decision
+          type: object
+      responses:
+        200:
+          description: Decision recorded
+        400:
+          description: Invalid request
+        403:
+          description: Unauthorized
+        404:
+          description: Email or original record not found
+        409:
+          description: Not flagged, or the record already has a claim / payment schedule
+      security:
+      - JWT_v2: []
+      summary: Clear a possible duplicate (with a reason) or archive the record as
+        a duplicate
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/preview-schedule:
     post:
       operationId: v2_previewInvoiceDraftSchedule
