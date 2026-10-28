@@ -73405,6 +73405,55 @@ paths:
         (G18)
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/final-account:
+    post:
+      operationId: v2_postSubcontractFinalAccount
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            action:
+              enum:
+              - send
+              - principal_signed
+              - agree
+              - invalidate
+              - void
+              type: string
+          required:
+          - action
+          type: object
+      responses:
+        200:
+          description: Final account updated
+        400:
+          description: Invalid action or payload
+        403:
+          description: Access denied, or void attempted by a non-admin
+        404:
+          description: Subcontract not found
+        409:
+          description: Action not allowed in the statement's current state
+      security:
+      - JWT_v2: []
+      summary: Advance a subcontract's Final Account Statement
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/revert-to-draft:
     get:
       operationId: v2_getSubcontractRevertEligibility
