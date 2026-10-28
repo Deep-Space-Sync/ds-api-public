@@ -29542,6 +29542,40 @@ paths:
         id
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/numbered-items/{itemType}/items/{submissionId}/linked-forms:
+    get:
+      operationId: v2_listNumberedItemLinkedForms
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: itemType
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: The record and one quick link per related form type
+        401:
+          description: Unauthorized, or a portal user
+        404:
+          description: Unknown item type, or not a numbered record
+        405:
+          description: Method not allowed
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site call failed
+      security:
+      - JWT_v2: []
+      summary: How to raise each related form type from one master record (quick links)
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/numbered-items/{itemType}/rebuild:
     post:
       operationId: v2_rebuildNumberedItems
