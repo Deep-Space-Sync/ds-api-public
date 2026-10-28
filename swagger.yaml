@@ -56554,6 +56554,84 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/security/amend:
+    post:
+      operationId: v2_amendHeadContractSecurity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            milestone_rules:
+              items:
+                type: object
+              type: array
+            reason:
+              type: string
+            reference:
+              type: string
+            release_at_bg_issue:
+              type: boolean
+            retention_cap_setting:
+              type: object
+            retention_cap_value:
+              type: number
+            retention_include_variations:
+              type: boolean
+            retention_mode:
+              type: string
+              x-nullable: true
+            retention_setting:
+              type: object
+            retention_tier_setting:
+              type: object
+            security_type:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Settings amended; returns the contract and the ids of the claims
+            pinned
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+              pinned_claim_ids:
+                items:
+                  type: string
+                type: array
+            type: object
+        400:
+          description: Missing reason, no change, a bad value, or not a head contract
+        403:
+          description: Caller is not a workspace administrator, or access denied
+        404:
+          description: Contract not found
+        409:
+          description: Security / retention is locked on this contract (SECURITY_AMEND_REQUIRED)
+      security:
+      - JWT_v2: []
+      summary: Amend Security / Retention on an executed head contract (admin)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/sov-estimation-config/lock:
     post:
       operationId: v2_lockSovFromEstimation
