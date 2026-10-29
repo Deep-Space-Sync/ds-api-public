@@ -76418,6 +76418,8 @@ paths:
               type: string
             reason:
               type: string
+            superseding:
+              type: boolean
           required:
           - reason
           type: object
