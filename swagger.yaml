@@ -52227,6 +52227,23 @@ paths:
           properties:
             contingency:
               type: number
+            margin_settings:
+              properties:
+                basis:
+                  enum:
+                  - cost_of_works
+                  - all_cost
+                  type: string
+                cost_code_id:
+                  type: string
+                margin_pct:
+                  type: number
+                method:
+                  enum:
+                  - per_line
+                  - margin_line
+                  type: string
+              type: object
             markup:
               type: array
             overheads:
@@ -52235,6 +52252,8 @@ paths:
               type: number
             profit_margin:
               type: number
+            recalculate_margin_line:
+              type: boolean
             status:
               type: string
             version_code:
