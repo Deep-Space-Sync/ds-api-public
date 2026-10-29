@@ -73585,6 +73585,257 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/payment-conditions:
+    get:
+      operationId: v2_listSubcontractPaymentConditions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Conditions and summary
+        403:
+          description: Access denied, or a non head-contractor company tried to write
+        404:
+          description: Subcontract or condition not found
+      security:
+      - JWT_v2: []
+      summary: List a subcontract's payment conditions
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_addSubcontractPaymentCondition
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+            required_before:
+              enum:
+              - first_payment
+              - every_payment
+              - practical_completion
+              - final_payment
+              type: string
+          required:
+          - name
+          - required_before
+          type: object
+      responses:
+        200:
+          description: Conditions and summary
+        400:
+          description: Invalid payload
+        403:
+          description: Access denied, or a non head-contractor company tried to write
+        404:
+          description: Subcontract or condition not found
+      security:
+      - JWT_v2: []
+      summary: Add a payment condition to a subcontract
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/payment-conditions/apply-defaults:
+    post:
+      operationId: v2_applySubcontractPaymentConditionDefaults
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Conditions, summary and the number added
+        403:
+          description: Access denied, or a non head-contractor company tried to write
+        404:
+          description: Subcontract or condition not found
+      security:
+      - JWT_v2: []
+      summary: Apply the workspace default payment-condition set to an existing subcontract
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/payment-conditions/{conditionId}:
+    delete:
+      operationId: v2_removeSubcontractPaymentCondition
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: path
+        name: conditionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Conditions and summary
+        403:
+          description: Access denied, or a non head-contractor company tried to write
+        404:
+          description: Subcontract or condition not found
+      security:
+      - JWT_v2: []
+      summary: Remove a payment condition from a subcontract
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    patch:
+      operationId: v2_updateSubcontractPaymentCondition
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: path
+        name: conditionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+            required_before:
+              enum:
+              - first_payment
+              - every_payment
+              - practical_completion
+              - final_payment
+              type: string
+          type: object
+      responses:
+        200:
+          description: Conditions and summary
+        400:
+          description: Invalid payload
+        403:
+          description: Access denied, or a non head-contractor company tried to write
+        404:
+          description: Subcontract or condition not found
+        409:
+          description: Condition is not outstanding
+      security:
+      - JWT_v2: []
+      summary: Rename a payment condition or move its required-before point
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  ? /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/payment-conditions/{conditionId}/{action}
+  : post:
+      operationId: v2_actionSubcontractPaymentCondition
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: subcontractId
+        required: true
+        type: string
+      - in: path
+        name: conditionId
+        required: true
+        type: string
+      - enum:
+        - receive
+        - waive
+        - reopen
+        in: path
+        name: action
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cde_id:
+              type: string
+            display_file_name:
+              type: string
+            document_series_id:
+              type: string
+            file_type:
+              type: string
+            reason:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Conditions and summary
+        400:
+          description: Invalid payload, e.g. waive without a reason
+        403:
+          description: Access denied, or a non head-contractor company tried to write
+        404:
+          description: Subcontract or condition not found
+        409:
+          description: Action not allowed in the condition's current status
+      security:
+      - JWT_v2: []
+      summary: Receive, waive or reopen a payment condition
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontracts/{subcontractId}/revert-to-draft:
     get:
       operationId: v2_getSubcontractRevertEligibility
