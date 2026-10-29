@@ -71479,6 +71479,78 @@ paths:
       summary: Change Subcontract Payment Schedule Status
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/payment-readiness:
+    get:
+      operationId: v2_getSubcontractPaymentScheduleReadiness
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Readiness payload
+        403:
+          description: Access denied
+        404:
+          description: Payment schedule not found
+      security:
+      - JWT_v2: []
+      summary: Payment readiness of a subcontract payment schedule
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  ? /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/payment-readiness-override
+  : post:
+      operationId: v2_overrideSubcontractPaymentScheduleReadiness
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Override recorded; readiness payload
+        400:
+          description: Missing reason
+        403:
+          description: Access denied, or the caller may not override
+        404:
+          description: Payment schedule not found
+        409:
+          description: Nothing to override, or the schedule is not awaiting approval
+      security:
+      - JWT_v2: []
+      summary: Override the payment readiness block before approving
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/push-to-xero:
     post:
       operationId: v2_pushSubcontractPaymentScheduleToXero
