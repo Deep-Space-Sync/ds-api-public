@@ -86864,6 +86864,52 @@ paths:
       summary: Upload a compliance document for a subcontractor
       tags:
       - Subcontractor Extra Details
+  /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/compliance-documents/{cdeId}:
+    delete:
+      operationId: v2_deleteSubcontractorComplianceDocument
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: integer
+      - in: path
+        name: cdeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: '{removed, cde_archived, reminders_cancelled} - removed is
+            the registry entry taken out'
+          schema:
+            properties:
+              cde_archived:
+                type: boolean
+              reminders_cancelled:
+                type: integer
+              removed:
+                type: object
+            type: object
+        400:
+          description: Invalid global company ID or CDE ID
+        401:
+          description: Unauthorized
+        403:
+          description: Primary Company Admin permission required
+        404:
+          description: No compliance registry for this company, or the document is
+            not in it
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Delete a compliance document from the Company Directory Compliance
+        tab
+      tags:
+      - Subcontractor Extra Details
   /v2/workspaces/{workspaceId}/subcontractors/{globalCompanyId}/details:
     delete:
       operationId: v2_deleteSubcontractorDetails
