@@ -75436,6 +75436,75 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/variation-requests/{costVariationReqId}/revert-approval:
+    get:
+      operationId: v2_getPoVariationApprovalRevertEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costVariationReqId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload (same shape as the HC / SC variation /revert-approval)
+        404:
+          description: Variation not found
+      security:
+      - JWT_v2: []
+      summary: Eligibility to revert an approved PO variation
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_revertPoVariationApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costVariationReqId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            force:
+              type: boolean
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Variation approval reverted
+        400:
+          description: Missing reason
+        403:
+          description: Not a workspace manager
+        409:
+          description: Blocked (blockers_detail, can_force)
+      security:
+      - JWT_v2: []
+      summary: Revert an approved PO variation (workspace manager)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/data:
     get:
       operationId: v2_getSupportedUploads
