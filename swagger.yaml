@@ -10175,6 +10175,60 @@ paths:
       summary: Batch signed download URLs for files in a public album
       tags:
       - CDE Public Access
+  /v2/public/cde/links/{token}:
+    get:
+      operationId: v2_getPublicCdeShareLink
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        200:
+          description: The public link and its files
+          schema:
+            type: object
+        404:
+          description: Link not found or revoked
+      security: []
+      summary: Resolve a public share link token to its read-only file list
+      tags:
+      - CDE Public Access
+  /v2/public/cde/links/{token}/signed-urls:
+    post:
+      operationId: v2_postPublicCdeShareLinkSignedUrls
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            file_ids:
+              items:
+                type: integer
+              type: array
+          required:
+          - file_ids
+          type: object
+      responses:
+        200:
+          description: Signed download URLs (one per requested cde_id)
+          schema:
+            items:
+              type: object
+            type: array
+        400:
+          description: One or more file_ids are outside this link
+        404:
+          description: Link not found or revoked
+      security: []
+      summary: Batch signed download URLs for files behind a public share link
+      tags:
+      - CDE Public Access
   /v2/public/cde/{token}:
     get:
       operationId: v2_getPublicCdeFolderTree
@@ -49040,6 +49094,52 @@ paths:
       security:
       - JWT_v2: []
       summary: Rename document by series ID
+      tags:
+      - CDE Documents
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/share-links:
+    put:
+      operationId: v2_upsertCdeShareLink
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_series_ids:
+              items:
+                type: string
+              type: array
+            name:
+              type: string
+            source_id:
+              type: string
+            source_type:
+              type: string
+          required:
+          - source_type
+          - source_id
+          - name
+          type: object
+      responses:
+        200:
+          description: The share link, including its share token
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Create or update a public share link
       tags:
       - CDE Documents
   /v2/workspaces/{workspaceId}/projects/{projectId}/cde/v2/signed-urls:
