@@ -58617,6 +58617,7 @@ paths:
       - enum:
         - draft
         - approved
+        - superseded
         in: query
         name: status
         required: false
@@ -58746,6 +58747,73 @@ paths:
       - Cost - Forecast Monthly
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-monthly/correct:
+    get:
+      operationId: v2_getCostForecastMonthlyCorrectionAvailability
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: forecastId
+        required: true
+        type: string
+      responses:
+        200:
+          description: '{enabled, code, message, revision, open_correction_id}. Only
+            the latest approved period can be corrected, and not while a later-period
+            draft exists or a correction is already open.'
+      security:
+      - JWT_v2: []
+      summary: Check Whether an Approved Monthly Forecast Can Be Corrected
+      tags:
+      - Cost - Forecast Monthly
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_correctCostForecastMonthly
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: forecastId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        201:
+          description: The revision draft
+        400:
+          description: Reason missing, or the forecast is not the approved version
+        409:
+          description: A correction is already open, or a later-period draft exists
+      security:
+      - JWT_v2: []
+      summary: Correct an Approved Monthly Forecast
+      tags:
+      - Cost - Forecast Monthly
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-monthly/refresh:
     post:
       operationId: v2_refreshCostForecastMonthly
@@ -58795,6 +58863,33 @@ paths:
       security:
       - JWT_v2: []
       summary: Validate Monthly Forecast
+      tags:
+      - Cost - Forecast Monthly
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/forecast-monthly/versions:
+    get:
+      operationId: v2_getCostForecastMonthlyVersions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: period
+        required: true
+        type: string
+      responses:
+        200:
+          description: Versions of the period with changes against the version each
+            corrected
+      security:
+      - JWT_v2: []
+      summary: Monthly Forecast Version History
       tags:
       - Cost - Forecast Monthly
       x-ds-test-enabled: true
