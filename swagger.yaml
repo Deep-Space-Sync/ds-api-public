@@ -54180,6 +54180,192 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-cost-transfer/commitment-candidates:
+    get:
+      operationId: v2_listCostTransferCommitmentCandidates
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: source_type
+        required: true
+        type: string
+      - in: query
+        name: source_record_id
+        required: true
+        type: string
+      - in: query
+        name: source_cost_code_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Candidate PO lines
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        404:
+          description: Invoice not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List PO lines whose commitment can move with a PO invoice transfer
+        (COM-1400)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-cost-transfer/commitment-reallocations:
+    get:
+      operationId: v2_listCostCommitmentReallocations
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: order_id
+        required: false
+        type: string
+      - in: query
+        name: transfer_id
+        required: false
+        type: string
+      - in: query
+        name: include_voided
+        required: false
+        type: string
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List commitment reallocations (COM-1400)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  ? /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-cost-transfer/commitment-reallocations/{reallocationId}/void
+  : post:
+      operationId: v2_voidCostCommitmentReallocation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: reallocationId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        200:
+          description: Reallocation voided
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        403:
+          description: Not permitted
+        404:
+          description: Reallocation not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Void a commitment reallocation, keeping its transfer (COM-1400)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-cost-transfer/permissions:
+    get:
+      operationId: v2_getCostTransferPermissions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Whether the caller may make cost transfers on this project (COM-1400)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-cost-transfer/{transferId}/align-commitment:
+    post:
+      operationId: v2_alignCostTransferCommitment
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: transferId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      responses:
+        201:
+          description: Commitment aligned
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized
+        403:
+          description: Not permitted
+        404:
+          description: Transfer not found
+        409:
+          description: Already aligned
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Move a transfer's linked PO commitment (COM-1400)
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/budget-register-cost-transfer/{transferId}/void:
     post:
       operationId: v2_voidBudgetRegisterCostTransfer
