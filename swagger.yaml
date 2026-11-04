@@ -12537,6 +12537,46 @@ paths:
       summary: Submit a structured bid via token
       tags:
       - Cost
+  /v2/workspaces/public/cost/public/tender-tokens/{token}/tender-set-zip:
+    post:
+      operationId: v2_publicTenderSetZip
+      parameters:
+      - in: path
+        name: token
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            entries:
+              items:
+                properties:
+                  cde_id:
+                    type: string
+                  path:
+                    type: string
+                type: object
+              type: array
+            tender_set_id:
+              type: string
+            zip_name:
+              type: string
+          type: object
+      responses:
+        200:
+          description: A signed link to the zip, and any documents it could not include
+        400:
+          description: Missing tender_set_id or entries
+        403:
+          description: Invalid or expired token
+        404:
+          description: Tender package or set not found, or none of the documents are
+            available
+      summary: Build (or reuse) one zip of a tender set's documents via token (logged)
+      tags:
+      - Cost
   /v2/workspaces/public/cost/public/tender-tokens/{token}/upload:
     post:
       operationId: v2_publicTenderUpload
