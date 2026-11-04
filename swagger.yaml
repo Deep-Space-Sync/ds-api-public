@@ -26672,7 +26672,8 @@ paths:
           description: Internal Server Error
       security:
       - JWT_v2: []
-      summary: Suggest a per-trade split of a multi_trade submission (heuristic, read-only)
+      summary: Suggest a per-trade split of a multi_trade submission (KAI reads the
+        quote PDF, else heuristic; read-only)
       tags:
       - Cost
       x-ds-test-enabled: true
