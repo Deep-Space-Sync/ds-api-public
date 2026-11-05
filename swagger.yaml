@@ -7386,6 +7386,39 @@ paths:
       summary: SWMS completion for the company's workers
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/worker-onboarding:
+    get:
+      operationId: v2_portalV2GetProjectWorkerOnboarding
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: company_id
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - not the builder's staff (with company_id), or not
+            a Subbie Admin who can manage this project (without)
+        500:
+          description: Internal Server Error
+        503:
+          description: The caller's role could not be read
+      security:
+      - JWT_v2: []
+      summary: A company's workers on a project, with their onboarding state
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/subcontracts/{subcontractId}/people:
     get:
       operationId: v2_portalV2GetSubcontractPeople
