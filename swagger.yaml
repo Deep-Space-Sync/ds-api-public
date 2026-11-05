@@ -99399,6 +99399,52 @@ paths:
       tags:
       - HzFormLinks
   /v2/workspaces/{workspace_id}/hz-record-publishing:
+    get:
+      operationId: v2_v2_listPublishedRecordVersions
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: query
+        name: form_object_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Published versions, oldest first
+          schema:
+            properties:
+              items:
+                items:
+                  properties:
+                    created_at:
+                      format: date-time
+                      type: string
+                    id:
+                      type: string
+                    is_current:
+                      type: boolean
+                    rendered_data:
+                      type: object
+                    token:
+                      type: string
+                    version:
+                      type: integer
+                  type: object
+                type: array
+            type: object
+        400:
+          description: form_object_id query param is required
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+      security:
+      - JWT_v2: []
+      summary: List the published versions of a record
+      tags:
+      - Record Publishing
     post:
       operationId: v2_v2_publishRecord
       parameters:
