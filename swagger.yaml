@@ -22049,6 +22049,175 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/payment-triage/batch:
+    post:
+      operationId: v2_batchPaymentTriage
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            acknowledge_open_commitment:
+              type: boolean
+            cost_code_num:
+              type: string
+            cost_type_id:
+              type: string
+              x-nullable: true
+            lines_by_payment:
+              type: object
+            payment_ids:
+              items:
+                type: string
+              type: array
+            po_name:
+              type: string
+            project_id:
+              type: integer
+            receiving_company_id:
+              type: string
+            target_cost_order_id:
+              type: string
+          required:
+          - payment_ids
+          type: object
+      responses:
+        201:
+          description: Payments posted; data has cost_order_id, order_identifier,
+            posted and rejected
+        400:
+          description: Validation error (no payments, too many, missing cost code)
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace manager permission required or project
+            not in workspace
+        404:
+          description: Target internal PO not found
+        409:
+          description: Nothing could be posted, mixed suppliers, supplier unresolved
+            or PO not extendable
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Post several Xero payments from one supplier in one go
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/payment-triage/candidate-orders:
+    post:
+      operationId: v2_paymentTriageCandidateOrders
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            payments:
+              items:
+                properties:
+                  amount:
+                    type: number
+                  contact_id:
+                    type: string
+                    x-nullable: true
+                  invoice_number:
+                    type: string
+                    x-nullable: true
+                  payment_id:
+                    type: string
+                  reference:
+                    type: string
+                    x-nullable: true
+                  xero_bill_id:
+                    type: string
+                    x-nullable: true
+                type: object
+              type: array
+          required:
+          - payments
+          type: object
+      responses:
+        200:
+          description: Candidate summary per payment, plus existing_commitments, subcontract_hints
+            and supplier_company_counts per payment
+          schema:
+            properties:
+              data:
+                type: object
+              existing_commitments:
+                type: object
+              message:
+                type: string
+              subcontract_hints:
+                type: object
+              supplier_company_counts:
+                type: object
+            type: object
+        400:
+          description: payments is not a list
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace manager permission required
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Batch existing-commitment check for the unallocated payment list
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/payment-triage/internal-pos:
+    post:
+      operationId: v2_listPaymentTriageInternalPos
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            contact_id:
+              type: string
+            project_id:
+              type: integer
+            receiving_company_id:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Internal POs (id, order_identifier, cost_order_name, amount,
+            currency, project_id, receiving_company_id)
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace manager permission required or project
+            not in workspace
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: List Payment Triage internal POs a payment can be added to
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
   /v2/workspaces/{workspaceId}/cost/payment-triage/{paymentId}:
     get:
       operationId: v2_getPaymentTriageDetail
@@ -22151,6 +22320,76 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/payment-triage/{paymentId}/extend-po:
+    post:
+      operationId: v2_extendPaymentTriagePo
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: paymentId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_order_id:
+              type: string
+            lines:
+              items:
+                properties:
+                  cost_code_num:
+                    type: string
+                  cost_type_id:
+                    type: string
+                    x-nullable: true
+                  source_line_id:
+                    type: string
+                  total:
+                    type: number
+                required:
+                - cost_code_num
+                type: object
+              type: array
+            receiving_company_id:
+              type: string
+          required:
+          - cost_order_id
+          - receiving_company_id
+          - lines
+          type: object
+      responses:
+        200:
+          description: Payment was already triaged (idempotent replay)
+        201:
+          description: Payment added to the internal PO
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace manager permission required or project
+            not in workspace
+        404:
+          description: Payment or internal PO not found
+        409:
+          description: Payment already linked or committed, supplier mismatch, or
+            PO not extendable
+        500:
+          description: Internal Server Error
+        502:
+          description: Xero source detail unavailable
+      security:
+      - JWT_v2: []
+      summary: Add a Xero payment to an existing Payment Triage internal PO
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
   /v2/workspaces/{workspaceId}/cost/payment-triage/{paymentId}/generate-po:
     post:
       operationId: v2_generatePaymentTriagePo
@@ -22168,6 +22407,8 @@ paths:
         required: true
         schema:
           properties:
+            acknowledge_open_commitment:
+              type: boolean
             lines:
               items:
                 properties:
@@ -22246,6 +22487,59 @@ paths:
       security:
       - JWT_v2: []
       summary: Generate internal PO from a Xero payment
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/payment-triage/{paymentId}/link-po:
+    post:
+      operationId: v2_linkPaymentTriagePo
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: paymentId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            acknowledge_po_overrun:
+              type: boolean
+            acknowledge_supplier_mismatch:
+              type: boolean
+            cost_order_id:
+              type: string
+            reason:
+              type: string
+          required:
+          - cost_order_id
+          type: object
+      responses:
+        201:
+          description: Payment linked to the existing purchase order
+        400:
+          description: Validation error
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace manager permission required or project
+            not in workspace
+        404:
+          description: Payment or purchase order not found
+        409:
+          description: Payment already linked or already on a Deep Space commitment,
+            target is not a supplier PO, or SUPPLIER_MISMATCH / PO_OVERRUN (data.acknowledge_with
+            names the flag that overrides it)
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Link a Xero payment to an existing purchase order
       tags:
       - Cost
       x-ds-test-enabled: true
@@ -22337,6 +22631,49 @@ paths:
       security:
       - JWT_v2: []
       summary: Reallocate a Payment Triage internal PO
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/cost/payment-triage/{paymentId}/unlink:
+    post:
+      operationId: v2_unlinkPaymentTriagePo
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: paymentId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            reason:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Payment unlinked
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - workspace manager permission required or project
+            not available
+        404:
+          description: No Payment Triage link for this payment
+        409:
+          description: The link is not a linked-mode link (generated / extended /
+            batch internal POs are reallocated instead), or its records are inconsistent
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Unlink a Xero payment from the existing purchase order it was linked
+        to
       tags:
       - Cost
       x-ds-test-enabled: true
