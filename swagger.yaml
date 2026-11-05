@@ -7450,6 +7450,41 @@ paths:
       summary: The subcontractor's people on a subcontract, with site status
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/worker-onboarding/release:
+    post:
+      operationId: v2_portalV2ReleaseWorkerOnboardingAccess
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            company_id:
+              type: integer
+            project_id:
+              type: integer
+          type: object
+      responses:
+        200:
+          description: OK - checked and granted counts
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - not the builder's staff (with company_id), or not
+            a Subbie Admin who can manage the project (without)
+        500:
+          description: Internal Server Error
+        503:
+          description: The caller's role could not be read
+      security:
+      - JWT_v2: []
+      summary: Give project access to held workers whose project inductions are done
+      tags:
+      - PortalApi
   /v2/portal/health:
     get:
       operationId: v2_portalApiHealth
