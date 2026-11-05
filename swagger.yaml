@@ -5263,8 +5263,6 @@ paths:
             type: object
         401:
           description: Unauthorized
-        403:
-          description: Forbidden - Deep Space staff only
         404:
           description: Unknown setting key
         422:
