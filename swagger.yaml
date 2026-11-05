@@ -30385,6 +30385,161 @@ paths:
       summary: Reconcile the SWMS sign-on form for one statement submission
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/toolbox-talks/attendance:
+    get:
+      operationId: v2_getToolboxTalkAttendance
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: project_id
+        required: true
+        type: integer
+      - in: query
+        name: talk_ids
+        required: true
+        type: string
+      responses:
+        200:
+          description: Attendance by talk id
+        400:
+          description: project_id or talk_ids missing or malformed (at most 100 talk
+            ids)
+        401:
+          description: Unauthorized, or a portal user
+        405:
+          description: Method not allowed
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: x / y attendance per toolbox talk, with who signed and who was on site
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/toolbox-talks/projects/{projectId}/page:
+    post:
+      operationId: v2_getOrCreateToolboxTalkPage
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: string
+      responses:
+        200:
+          description: The page and whether it already existed
+        401:
+          description: Unauthorized, or a portal user
+        404:
+          description: The project is not in this workspace
+        405:
+          description: Method not allowed
+        409:
+          description: The channel is not PUBLIC, the types could not be installed,
+            or there is no channel
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site failed or refused a call
+        503:
+          description: The page is still being created by another run; try again
+      security:
+      - JWT_v2: []
+      summary: Get or create the project's toolbox talk sign-off page
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/toolbox-talks/rebuild:
+    post:
+      operationId: v2_rebuildToolboxTalkPages
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            date:
+              type: string
+          type: object
+      responses:
+        200:
+          description: How many pages were rebuilt and changed, and which failed
+        400:
+          description: date is not YYYY-MM-DD
+        401:
+          description: Unauthorized
+        403:
+          description: The caller is not Deep Space's M2M admin token
+        405:
+          description: Method not allowed
+        409:
+          description: The workspace has no usable DS Site channel (reason no_channel)
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site failed or refused a call
+        503:
+          description: The channel could not be resolved
+      security:
+      - JWT_v2: []
+      summary: Rebuild every toolbox talk page of the workspace for the day
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/toolbox-talks/submissions/{submissionId}/capture:
+    post:
+      operationId: v2_captureToolboxTalkSubmission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            changed_on:
+              type: string
+            form_alias:
+              type: string
+          type: object
+      responses:
+        200:
+          description: What was recorded, or why the submission was skipped
+        401:
+          description: Unauthorized
+        403:
+          description: The caller is not Deep Space's M2M admin token
+        404:
+          description: Invalid path
+        405:
+          description: Method not allowed
+        409:
+          description: The workspace has no usable DS Site channel (reason no_channel)
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site failed or refused a call
+        503:
+          description: The page is still being created by another run, or the channel
+            could not be resolved
+      security:
+      - JWT_v2: []
+      summary: Record a toolbox talk or a worker's sign-off from a DS Site submission
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/users:
     get:
       operationId: v2_searchDsSiteChannelMembers
