@@ -5239,6 +5239,79 @@ paths:
         / support people)
       tags:
       - ImplementationBoard
+  /v2/internal-settings/{key}:
+    get:
+      operationId: v2_getInternalSetting
+      parameters:
+      - in: path
+        name: key
+        required: true
+        type: string
+      responses:
+        200:
+          description: The setting
+          schema:
+            properties:
+              key:
+                type: string
+              updatedAt:
+                format: date-time
+                type: string
+              updatedBy:
+                type: string
+              value: {}
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - Deep Space staff only
+        404:
+          description: Unknown setting key
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get an internal setting
+      tags:
+      - Internal Settings
+    put:
+      operationId: v2_setInternalSetting
+      parameters:
+      - in: path
+        name: key
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            value: {}
+          required:
+          - value
+          type: object
+      responses:
+        200:
+          description: The stored setting
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - cs-admin scope required
+        404:
+          description: Unknown setting key
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Set an internal setting
+      tags:
+      - Internal Settings
   /v2/internal/transmittals_v2/submittals/{submittal_doc_id}/send-emails:
     post:
       operationId: v2_sendSubmittalEmailsInternal
