@@ -56887,6 +56887,12 @@ paths:
               type: string
             signed_contract_pack:
               type: integer
+            sov_source:
+              enum:
+              - generate_from_budget
+              - client_breakdown
+              - import_from_estimation
+              type: string
             sov_structure:
               type: string
             sovs:
@@ -56896,6 +56902,9 @@ paths:
                     type: string
                   contract_num:
                     type: number
+                  item_ref:
+                    maxLength: 32
+                    type: string
                   linked_cost_code:
                     items:
                       type: string
@@ -57316,6 +57325,12 @@ paths:
               type: string
             signed_contract_pack:
               type: integer
+            sov_source:
+              enum:
+              - generate_from_budget
+              - client_breakdown
+              - import_from_estimation
+              type: string
             sov_structure:
               type: string
             sovs:
@@ -57325,6 +57340,9 @@ paths:
                     type: string
                   contract_num:
                     type: number
+                  item_ref:
+                    maxLength: 32
+                    type: string
                   linked_cost_code:
                     items:
                       type: string
