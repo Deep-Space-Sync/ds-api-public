@@ -55263,6 +55263,29 @@ paths:
         name: body
         required: true
         schema:
+          properties:
+            offsets_commitment:
+              properties:
+                id:
+                  type: string
+                lines:
+                  items:
+                    properties:
+                      amount:
+                        type: number
+                      line_id:
+                        type: string
+                    required:
+                    - line_id
+                    - amount
+                    type: object
+                  type: array
+                type:
+                  enum:
+                  - purchase_order
+                  - subcontract
+                  type: string
+              type: object
           type: object
       responses:
         201:
@@ -55299,6 +55322,29 @@ paths:
         name: body
         required: true
         schema:
+          properties:
+            offsets_commitment:
+              properties:
+                id:
+                  type: string
+                lines:
+                  items:
+                    properties:
+                      amount:
+                        type: number
+                      line_id:
+                        type: string
+                    required:
+                    - line_id
+                    - amount
+                    type: object
+                  type: array
+                type:
+                  enum:
+                  - purchase_order
+                  - subcontract
+                  type: string
+              type: object
           type: object
       responses:
         200:
@@ -64973,6 +65019,14 @@ paths:
         name: lineItemId
         required: false
         type: integer
+      - in: query
+        name: cost_order_num
+        required: false
+        type: string
+      - in: query
+        name: include
+        required: false
+        type: string
       responses:
         200:
           description: Successful response
