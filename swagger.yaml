@@ -6677,6 +6677,113 @@ paths:
       summary: Get correspondence notice detail
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/permits:
+    get:
+      operationId: v2_portalV2ListPermits
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: include_closed
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: The caller's role does not include Permits
+        404:
+          description: The caller is not on this project
+        409:
+          description: DS Site is not connected for this workspace, or the caller
+            has no company
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: The company's Permits to Work on a project
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/permits/{submissionId}:
+    get:
+      operationId: v2_portalV2GetPermit
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submissionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: The caller's role does not include Permits
+        404:
+          description: Not this company's permit on this project, or no such permit
+        409:
+          description: DS Site is not connected for this workspace, or the caller
+            has no company
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: One of the company's Permits to Work
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/permits/{submissionId}/close-out:
+    post:
+      operationId: v2_portalV2CloseOutPermit
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submissionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Closed, or already closed
+        401:
+          description: Unauthorized
+        403:
+          description: The caller's role may not close permits out
+        404:
+          description: Not this company's permit on this project, or no such permit
+        409:
+          description: The permit's status or the form's edit access does not allow
+            it; nothing was written
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site refused the new status; nothing was changed
+      security:
+      - JWT_v2: []
+      summary: Close out one of the company's Permits to Work
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/purchase-orders:
     get:
       operationId: v2_portalV2ListPurchaseOrders
