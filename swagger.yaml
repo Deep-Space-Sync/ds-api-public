@@ -101482,6 +101482,69 @@ paths:
       summary: AI process single email to extract invoice data
       tags:
       - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/allocation-handoff:
+    post:
+      operationId: v2_sendInvoiceToProjectTeam
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Hand-off recorded
+          schema:
+            properties:
+              allocation_handoff:
+                type: object
+              status:
+                type: string
+            type: object
+        403:
+          description: Email belongs to another workspace
+        404:
+          description: Email not found
+        409:
+          description: Refused (setting off, not a subcontract claim, flagged, every
+            line mapped, no PM/CA)
+      security:
+      - JWT_v2: []
+      summary: Send a subcontract invoice with unmapped lines to the project team
+        (COM-907)
+      tags:
+      - InvoiceReconciliation
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/allocation-handoff-withdraw:
+    post:
+      operationId: v2_takeInvoiceBackFromProjectTeam
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: path
+        name: email_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Hand-off withdrawn
+          schema:
+            type: object
+        403:
+          description: Email belongs to another workspace
+        404:
+          description: Email not found
+        409:
+          description: Not awaiting, or mapping has started
+      security:
+      - JWT_v2: []
+      summary: Take a subcontract invoice back from the project team (COM-907)
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-inbox/{email_id}/approval-complete:
     post:
       operationId: v2_invoiceApprovalComplete
@@ -101749,6 +101812,8 @@ paths:
               type: string
             claim_due_date:
               type: string
+            create_schedule:
+              type: boolean
             created_by_company_id:
               type: integer
             notes:
