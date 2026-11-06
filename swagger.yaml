@@ -56270,6 +56270,240 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/commercial-periods:
+    get:
+      operationId: v2_getCostCommercialPeriods
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Closes, settings and closed periods
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get Commercial Period Closes and Cut-off Settings for a Project
+      tags:
+      - Cost - Commercial Periods
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/commercial-periods/claims/{claimId}:
+    patch:
+      operationId: v2_moveSupplierClaimCommercialPeriod
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_period:
+              pattern: ^\d{4}-\d{2}$
+              type: string
+            reason:
+              maxLength: 1000
+              type: string
+            reset:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: The claim's cost period fields after the move
+        400:
+          description: Reason missing or period invalid
+        403:
+          description: The caller lacks the Move commercial period permission
+        409:
+          description: The target period is closed
+      security:
+      - JWT_v2: []
+      summary: Move a Supplier Claim's Commercial Period (audited override)
+      tags:
+      - Cost - Commercial Periods
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/commercial-periods/preview:
+    get:
+      operationId: v2_previewCostCommercialPeriod
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: document_date
+        required: false
+        type: string
+      - in: query
+        name: received_at
+        required: false
+        type: string
+      - enum:
+        - subcontract
+        - supplier
+        in: query
+        name: kind
+        required: false
+        type: string
+      responses:
+        200:
+          description: The assignment (period, late flag and reason, basis) and the
+            settings used
+        400:
+          description: Missing or invalid dates
+      security:
+      - JWT_v2: []
+      summary: Preview the Cost Period a Document Would Be Assigned
+      tags:
+      - Cost - Commercial Periods
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/commercial-periods/subcontract-claims/{claimId}:
+    patch:
+      operationId: v2_moveSubcontractClaimCommercialPeriod
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            cost_period:
+              pattern: ^\d{4}-\d{2}$
+              type: string
+            reason:
+              maxLength: 1000
+              type: string
+            reset:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: The claim's cost period fields after the move
+        400:
+          description: Reason missing or period invalid
+        403:
+          description: The caller lacks the Move commercial period permission
+        409:
+          description: The target period is closed
+      security:
+      - JWT_v2: []
+      summary: Move a Subcontract Claim's Commercial Period (audited override)
+      tags:
+      - Cost - Commercial Periods
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/commercial-periods/{period}/close:
+    post:
+      operationId: v2_closeCostCommercialPeriod
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: period
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            reason:
+              type: string
+          type: object
+      responses:
+        200:
+          description: Closed; includes the close record and whether the position
+            was saved
+        403:
+          description: Not a workspace manager or admin
+        409:
+          description: Already closed, or the following period is already closed
+      security:
+      - JWT_v2: []
+      summary: Close a Commercial Period for a Project
+      tags:
+      - Cost - Commercial Periods
+      x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/commercial-periods/{period}/reopen:
+    post:
+      operationId: v2_reopenCostCommercialPeriod
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: period
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              maxLength: 1000
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Reopened; includes the close record with its history
+        400:
+          description: Reason missing
+        403:
+          description: Not a workspace manager or admin
+        409:
+          description: The period is not closed
+      security:
+      - JWT_v2: []
+      summary: Reopen a Closed Commercial Period (admin only, audited)
+      tags:
+      - Cost - Commercial Periods
+      x-min-permissions: isWorkspaceManager
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts:
     get:
       operationId: v2_getCostContracts
@@ -86885,6 +87119,117 @@ paths:
       security:
       - JWT_v2: []
       summary: Get cost forecast summary metrics for workspace
+      tags:
+      - Reports
+  /v2/workspaces/{workspaceId}/reports/wip/close-period:
+    post:
+      operationId: v2_closeWipPeriod
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actor_id:
+              type: string
+            actor_name:
+              type: string
+            forecast_overrides:
+              type: object
+            period:
+              pattern: ^\d{4}-\d{2}$
+              type: string
+            project_ids:
+              items:
+                type: integer
+              type: array
+            report_date:
+              type: string
+            source:
+              enum:
+              - wip_close_period
+              - forecast_approve
+              - manual
+              type: string
+          required:
+          - period
+          type: object
+      responses:
+        200:
+          description: saved / failed / open_projects / skipped per project
+        403:
+          description: Closing a period needs create or edit on the reporting feature
+      security:
+      - JWT_v2: []
+      summary: Close a commercial period on the WIP report (replaces Save WIP position)
+      tags:
+      - Reports
+  /v2/workspaces/{workspaceId}/reports/wip/periods:
+    get:
+      operationId: v2_listWipClosedPeriods
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: periods and the workspace basis line
+      security:
+      - JWT_v2: []
+      summary: List the closed WIP periods (period selector)
+      tags:
+      - Reports
+  /v2/workspaces/{workspaceId}/reports/wip/periods/{period}:
+    get:
+      operationId: v2_getWipClosedPeriod
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: period
+        required: true
+        type: string
+      - in: query
+        name: version
+        required: false
+        type: integer
+      responses:
+        200:
+          description: columns, rows and meta.closedPeriod
+      security:
+      - JWT_v2: []
+      summary: A closed WIP period as reported
+      tags:
+      - Reports
+  /v2/workspaces/{workspaceId}/reports/wip/periods/{period}/versions:
+    get:
+      operationId: v2_getWipClosedPeriodVersions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: period
+        required: true
+        type: string
+      - in: query
+        name: project_id
+        required: false
+        type: integer
+      responses:
+        200:
+          description: versions
+      security:
+      - JWT_v2: []
+      summary: Version history of a closed WIP period
       tags:
       - Reports
   /v2/workspaces/{workspaceId}/reports/wip/projects:
