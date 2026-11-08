@@ -25588,6 +25588,10 @@ paths:
                     items:
                       type: object
                     type: array
+                  history:
+                    items:
+                      type: object
+                    type: array
                   invitees:
                     items:
                       type: object
