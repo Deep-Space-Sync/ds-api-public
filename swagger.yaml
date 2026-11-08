@@ -11970,6 +11970,97 @@ paths:
       summary: Create worker extra details
       tags:
       - WorkerExtraDetails
+  /v2/worker-extra-details/headshot:
+    delete:
+      operationId: v2_deleteWorkerHeadshot
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: kinde_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Removed (removed false when there was no photo)
+        403:
+          description: View and Manage Company Directory or Workspace Manager required
+        404:
+          description: No worker details for this worker in this workspace
+      security:
+      - JWT_v2: []
+      summary: Remove a worker's headshot
+      tags:
+      - WorkerExtraDetails
+    get:
+      operationId: v2_getWorkerHeadshot
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: kinde_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: The photo's signed URLs
+          schema:
+            properties:
+              expires_at:
+                type: string
+              height:
+                type: integer
+              kinde_id:
+                type: string
+              source:
+                type: string
+              submission_id:
+                type: string
+              thumbnail_url:
+                type: string
+              updated_at:
+                type: string
+              url:
+                type: string
+              width:
+                type: integer
+            type: object
+        400:
+          description: kinde_id missing or invalid
+        403:
+          description: View and Manage Company Directory or Workspace Manager required
+        404:
+          description: No photo for this worker in this workspace
+      security:
+      - JWT_v2: []
+      summary: Get a worker's headshot
+      tags:
+      - WorkerExtraDetails
+    post:
+      operationId: v2_saveWorkerHeadshot
+      parameters:
+      - in: query
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Not written, the stored photo is newer (headshot_stale true)
+        201:
+          description: Saved
+        400:
+          description: No file, not a readable photo, too large, or kinde_id invalid
+        403:
+          description: View and Manage Company Directory or Workspace Manager required
+      security:
+      - JWT_v2: []
+      summary: Save a worker's headshot
+      tags:
+      - WorkerExtraDetails
   /v2/workspace-groups:
     get:
       operationId: v2_listWorkspaceGroups
