@@ -30569,6 +30569,46 @@ paths:
       summary: List assignable DS Site channel roles
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/submissions/{submissionId}/archived:
+    post:
+      operationId: v2_archivedDsSiteSubmission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            dry_run:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: What was cancelled, or why nothing was
+        401:
+          description: Unauthorized, or a portal user
+        404:
+          description: Invalid path
+        405:
+          description: Method not allowed
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site or the approval engine failed
+        503:
+          description: The workspace's DS Site channel could not be resolved
+      security:
+      - JWT_v2: []
+      summary: Cancel the approvals of a submission archived in Horizon
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/swms/signon-forms:
     get:
       operationId: v2_listSwmsSignOnForms
@@ -31800,6 +31840,51 @@ paths:
       security:
       - JWT_v2: []
       summary: List approval instances across a workspace (inbox)
+      tags:
+      - HzApproval
+  /v2/workspaces/{workspaceId}/hz-approvals/cancel-for-entity:
+    post:
+      operationId: v2_v2_cancelHzApprovalsForEntity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            acting_user_email:
+              type: string
+            acting_user_id:
+              type: string
+            entity_id:
+              type: string
+            entity_types:
+              items:
+                type: string
+              type: array
+            reason:
+              type: string
+          required:
+          - entity_types
+          - entity_id
+          - reason
+          type: object
+      responses:
+        200:
+          description: Approval ids by outcome (cancelled, dismissed, already_closed,
+            failed)
+        400:
+          description: Missing or invalid entity_types, entity_id or reason
+        403:
+          description: Caller is not a Deep Space service
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Cancel every approval a record holds (service only, COM-1449)
       tags:
       - HzApproval
   /v2/workspaces/{workspaceId}/hz-commercial-budgets:
