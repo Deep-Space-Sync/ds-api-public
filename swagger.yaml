@@ -7557,6 +7557,149 @@ paths:
       summary: The subcontractor's people on a subcontract, with site status
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/worker-inductions:
+    get:
+      operationId: v2_portalV2ListWorkerInductions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - the caller's role does not allow managing their
+            company's team
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Worker Induction status of everyone in the caller's company
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/worker-inductions/{kindeId}/decision:
+    post:
+      operationId: v2_portalV2DecideWorkerInduction
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            decision:
+              enum:
+              - approve
+              - reject
+              type: string
+            reason:
+              type: string
+            submission_id:
+              type: string
+          required:
+          - submission_id
+          - decision
+          type: object
+      responses:
+        200:
+          description: OK - the worker's updated entry
+        400:
+          description: A rejection without a reason
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - not allowed to manage the team, or the person is
+            not in the caller's company
+        409:
+          description: Not the worker's latest submission, or already decided
+        500:
+          description: Internal Server Error
+        503:
+          description: The Worker Induction state could not be read
+      security:
+      - JWT_v2: []
+      summary: Approve or reject the worker's latest Worker Induction submission
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/worker-inductions/{kindeId}/send:
+    post:
+      operationId: v2_portalV2SendWorkerInduction
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK - sent_at and next_send_at
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - not allowed to manage the team, or the person is
+            not in the caller's company
+        409:
+          description: The worker's Worker Induction awaits approval or is approved
+        412:
+          description: The builder has no Worker Induction form
+        429:
+          description: A Worker Induction email went to this person in the last 24
+            hours
+        500:
+          description: Internal Server Error
+        502:
+          description: The email could not be sent
+        503:
+          description: The Worker Induction state could not be read
+      security:
+      - JWT_v2: []
+      summary: Email one worker their Worker Induction (first send or Remind)
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/worker-inductions/{kindeId}/submission:
+    get:
+      operationId: v2_portalV2GetWorkerInductionSubmission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - not allowed to manage the team, or the person is
+            not in the caller's company
+        404:
+          description: No submission
+        500:
+          description: Internal Server Error
+        503:
+          description: DS Site or the Worker Induction state could not be read
+      security:
+      - JWT_v2: []
+      summary: The worker's latest Worker Induction submission
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/worker-onboarding/release:
     post:
       operationId: v2_portalV2ReleaseWorkerOnboardingAccess
