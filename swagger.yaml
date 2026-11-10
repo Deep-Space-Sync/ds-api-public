@@ -6631,6 +6631,102 @@ paths:
       summary: Email one worker what they still have to do on one project (Remind)
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/project-inductions/{kindeId}/projects/{projectId}/site-induction:
+    get:
+      operationId: v2_portalV2GetSiteInductionSubmission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - not allowed to manage the team, or the person or
+            project is not the caller's
+        404:
+          description: The worker is not on the project, or has submitted no site
+            induction there
+        500:
+          description: Internal Server Error
+        503:
+          description: DS Site or the worker's site induction could not be read
+      security:
+      - JWT_v2: []
+      summary: The worker's latest site induction submission on one project
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/project-inductions/{kindeId}/projects/{projectId}/site-induction/decision:
+    post:
+      operationId: v2_portalV2DecideSiteInduction
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            decision:
+              enum:
+              - approve
+              - reject
+              type: string
+            reason:
+              type: string
+            submission_id:
+              type: string
+          required:
+          - submission_id
+          - decision
+          type: object
+      responses:
+        200:
+          description: OK - the worker's updated project entry
+        400:
+          description: A rejection without a reason
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - not allowed to manage the team, or the person or
+            project is not the caller's
+        409:
+          description: Not on the project, not the latest submission, not waiting
+            for approval, or already decided
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site refused to set the status
+        503:
+          description: The worker's site induction or the workspace settings could
+            not be read
+      security:
+      - JWT_v2: []
+      summary: A Subbie Admin approves or rejects a worker's site induction on one
+        project
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/cans/{canId}/ci-draft/ai:
     post:
       operationId: v2_portalV2GenerateCiAiDraftFromCan
@@ -7777,7 +7873,7 @@ paths:
         type: string
       - in: body
         name: body
-        required: true
+        required: false
         schema:
           properties:
             company_id:
