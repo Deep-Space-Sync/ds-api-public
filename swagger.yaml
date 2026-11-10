@@ -101071,6 +101071,16 @@ paths:
         name: include_attachments
         required: false
         type: boolean
+      - enum:
+        - register
+        in: query
+        name: view
+        required: false
+        type: string
+      - in: query
+        name: ids
+        required: false
+        type: string
       responses:
         200:
           description: Email list retrieved
