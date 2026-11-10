@@ -57943,6 +57943,82 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/client-pos:
+    patch:
+      operationId: v2_patchContractClientPos
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            assignments:
+              items:
+                properties:
+                  client_po:
+                    type: string
+                    x-nullable: true
+                  sov_id:
+                    type: string
+                required:
+                - sov_id
+                type: object
+              type: array
+            client_pos:
+              items:
+                properties:
+                  invoice_to:
+                    type: string
+                  is_default:
+                    type: boolean
+                  label:
+                    type: string
+                  po_number:
+                    type: string
+                required:
+                - po_number
+                type: object
+              type: array
+          type: object
+      responses:
+        200:
+          description: Client POs updated successfully
+          schema:
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Invalid client POs or assignments
+        401:
+          description: Unauthorized
+        403:
+          description: Access denied
+        404:
+          description: Contract not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Update Head Contract Client POs
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/notice-periods/amend:
     post:
       operationId: v2_amendHeadContractNoticePeriod
