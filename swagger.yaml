@@ -6564,6 +6564,73 @@ paths:
       summary: Create or replace global permissions registry
       tags:
       - Roles
+  /v2/portal-v2/workspaces/{workspaceId}/project-inductions:
+    get:
+      operationId: v2_portalV2ListProjectInductions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - the caller's role does not allow managing their
+            company's team
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Site induction and SWMS sign-on of everyone in the caller's company,
+        per project
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/project-inductions/{kindeId}/projects/{projectId}/remind:
+    post:
+      operationId: v2_portalV2RemindProjectInductions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK - the worker's updated project entry
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - not allowed to manage the team, or the person or
+            project is not the caller's
+        409:
+          description: The worker is not on the project, or has nothing outstanding
+            there
+        412:
+          description: Nothing can be sent - no site induction form and no approved
+            SWMS sign-on form
+        429:
+          description: The worker was emailed about this project in the last 24 hours
+        500:
+          description: Internal Server Error
+        502:
+          description: The email could not be sent
+        503:
+          description: The worker's inductions could not be read
+      security:
+      - JWT_v2: []
+      summary: Email one worker what they still have to do on one project (Remind)
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/cans/{canId}/ci-draft/ai:
     post:
       operationId: v2_portalV2GenerateCiAiDraftFromCan
