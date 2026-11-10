@@ -59302,6 +59302,30 @@ paths:
       summary: Accept Credit Note (optionally push to Xero)
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/credit-notes/{creditNoteId}/push-to-xero:
+    post:
+      operationId: v2_postCreditNotePushToXero
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: creditNoteId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Push attempted (outcome in xero_push)
+      security:
+      - JWT_v2: []
+      summary: Push an Accepted Credit Note to Xero (COM-1393)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/departures:
     get:
       operationId: v2_getCostDepartures
