@@ -30779,6 +30779,77 @@ paths:
       summary: List assignable DS Site channel roles
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/site-induction-gate/submissions/{submissionId}/sync:
+    post:
+      operationId: v2_syncDsSiteSiteInductionSubmission
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: What was written, or why nothing was
+        400:
+          description: submissionId is not a positive integer
+        401:
+          description: Unauthorized, or a portal user
+        404:
+          description: The submission no longer exists in DS Site, or invalid path
+        405:
+          description: Method not allowed
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site could not be read or refused the change
+      security:
+      - JWT_v2: []
+      summary: Keep one site induction's approval field in step with its status
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/site-induction-gate/sync:
+    post:
+      operationId: v2_syncDsSiteSiteInductionGate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            dry_run:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: What changed, what could not, and whether the run finished
+        401:
+          description: Unauthorized
+        403:
+          description: The caller is not Deep Space's M2M admin token
+        404:
+          description: Invalid path, or the workspace has no ds-site-admin integration
+        405:
+          description: Method not allowed
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site could not be read or refused a change
+        503:
+          description: The workspace's induction settings could not be read
+      security:
+      - JWT_v2: []
+      summary: Bring the DS Site sign-in check in line with "Project inductions before
+        access"
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/submissions/{submissionId}/archived:
     post:
       operationId: v2_archivedDsSiteSubmission
@@ -31177,6 +31248,9 @@ paths:
         schema:
           type: object
       responses:
+        200:
+          description: The email is already a member of the channel; that member is
+            returned unchanged (already_member true) and no invitation is sent
         201:
           description: Member created
         400:
