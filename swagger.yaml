@@ -62281,6 +62281,113 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/revert-submission:
+    get:
+      operationId: v2_getHeadContractClaimRevertSubmissionEligibility
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Eligibility payload
+          schema:
+            properties:
+              data:
+                properties:
+                  authorization_error:
+                    type: string
+                  authorized:
+                    type: boolean
+                  blockers:
+                    items:
+                      type: string
+                    type: array
+                  blockers_detail:
+                    items:
+                      type: object
+                    type: array
+                  can_force:
+                    type: boolean
+                  can_revert:
+                    type: boolean
+                  is_commercial_lead:
+                    type: boolean
+                  is_project_manager:
+                    type: boolean
+                  is_workspace_manager:
+                    type: boolean
+                  status:
+                    type: string
+                  warnings:
+                    items:
+                      type: object
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        404:
+          description: Claim not found
+      security:
+      - JWT_v2: []
+      summary: Eligibility to revert a served head contract progress claim to Draft
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
+    post:
+      operationId: v2_revertHeadContractClaimSubmissionToDraft
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            reason:
+              maxLength: 1000
+              type: string
+          required:
+          - reason
+          type: object
+      responses:
+        200:
+          description: Claim reverted to Draft
+        400:
+          description: Missing / too long reason, or the claim is not Submitted
+        403:
+          description: Caller is not a workspace manager, Project Manager or Commercial
+            Lead (or team roles could not be read)
+        409:
+          description: Hard blockers exist (see blockers_detail)
+        502:
+          description: The approval engine refused the revoke
+      security:
+      - JWT_v2: []
+      summary: Revert a served head contract progress claim to Draft
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/revert-to-draft:
     get:
       operationId: v2_getHeadContractClaimRevertEligibility
