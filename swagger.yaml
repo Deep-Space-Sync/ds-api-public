@@ -84286,6 +84286,10 @@ paths:
               type: string
             custom_fields:
               type: object
+            default_offsite_pct_negative:
+              type: number
+            default_png_percent_negative:
+              type: number
             defects_liability_period_days:
               type: integer
             delivery_method:
@@ -84338,6 +84342,11 @@ paths:
                 type: string
               type: array
             notes:
+              type: string
+            overhead_apply_mode:
+              enum:
+              - per_line
+              - total_line
               type: string
             owner_type:
               type: string
