@@ -15195,6 +15195,10 @@ paths:
         required: true
         schema:
           properties:
+            force:
+              type: boolean
+            period:
+              type: string
             project_id:
               type: integer
           type: object
@@ -15208,9 +15212,51 @@ paths:
               ok:
                 type: boolean
             type: object
+        400:
+          description: period is not YYYY-MM or YYYY-MM-DD, or force is not a boolean
       security:
       - JWT_v2: []
       summary: Run a process bundle on demand (manual run via process_automation)
+      tags:
+      - Automation
+  /v2/workspaces/{workspaceId}/automation/bundles/{bundleId}/runs:
+    get:
+      operationId: v2_listAutomationBundleRuns
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: bundleId
+        required: true
+        type: string
+      - in: query
+        name: limit
+        required: false
+        type: integer
+      - in: query
+        name: before
+        required: false
+        type: string
+      responses:
+        200:
+          description: The bundle's recent runs
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+        400:
+          description: limit is not an integer from 1 to 25, or before is not an ISO-8601
+            timestamp
+        404:
+          description: Bundle not found in this workspace
+      security:
+      - JWT_v2: []
+      summary: List a bundle's recent runs (Automation page, workspace-manager read)
       tags:
       - Automation
   /v2/workspaces/{workspaceId}/automation/logs:
@@ -31162,6 +31208,156 @@ paths:
       summary: Re-capture one numbered submission after a change made in Horizon
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/report-sources/channel:
+    get:
+      operationId: v2_getReportSourcesChannel
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: The channel's account id and alias
+        401:
+          description: Unauthorized
+        403:
+          description: The caller is not Deep Space's M2M admin token
+        405:
+          description: Method not allowed
+        409:
+          description: The workspace has no usable DS Site channel (reason no_channel)
+        500:
+          description: Internal Server Error
+        503:
+          description: The channel could not be resolved
+      security:
+      - JWT_v2: []
+      summary: The workspace's linked DS Site channel
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/report-sources/form-types:
+    get:
+      operationId: v2_searchReportSourceFormTypes
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: page
+        required: false
+        type: integer
+      - in: query
+        name: pageSize
+        required: false
+        type: integer
+      - in: query
+        name: abstractType
+        required: false
+        type: boolean
+      - in: query
+        name: topLevel
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: DS Site's search result
+        401:
+          description: Unauthorized
+        403:
+          description: The caller is not Deep Space's M2M admin token
+        405:
+          description: Method not allowed
+        409:
+          description: The workspace has no usable DS Site channel (reason no_channel)
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site failed or did not answer
+        503:
+          description: The channel could not be resolved
+      security:
+      - JWT_v2: []
+      summary: Search the channel's form types
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/report-sources/form-types/{formId}/most-recent:
+    get:
+      operationId: v2_getReportSourceFormTypeMostRecent
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: formId
+        required: true
+        type: string
+      responses:
+        200:
+          description: The form type's most recent version
+        400:
+          description: formId is not a number
+        401:
+          description: Unauthorized
+        403:
+          description: The caller is not Deep Space's M2M admin token
+        404:
+          description: DS Site has no such form type in the channel
+        405:
+          description: Method not allowed
+        409:
+          description: The workspace has no usable DS Site channel (reason no_channel)
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site failed or did not answer
+        503:
+          description: The channel could not be resolved
+      security:
+      - JWT_v2: []
+      summary: The most recent version of one of the channel's form types
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/report-sources/forms:
+    get:
+      operationId: v2_searchReportSourceForms
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: page
+        required: false
+        type: integer
+      - in: query
+        name: pageSize
+        required: false
+        type: integer
+      responses:
+        200:
+          description: DS Site's search result
+        401:
+          description: Unauthorized
+        403:
+          description: The caller is not Deep Space's M2M admin token
+        405:
+          description: Method not allowed
+        409:
+          description: The workspace has no usable DS Site channel (reason no_channel)
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site failed or did not answer
+        503:
+          description: The channel could not be resolved
+      security:
+      - JWT_v2: []
+      summary: Search the channel's form submissions
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/roles:
     get:
       operationId: v2_getDsSiteChannelRoles
@@ -35331,6 +35527,8 @@ paths:
                     type: string
                 type: object
               type: array
+            idempotency_key:
+              type: string
             priority:
               default: normal
               enum:
@@ -35360,6 +35558,49 @@ paths:
           - to_recipients
           type: object
       responses:
+        200:
+          description: 'A repeat of a send with this idempotency_key: nothing was
+            created. data carries the same queue_id, idempotent_replay true, and the
+            item''s current status, attempts and last_error. A failed item is reset
+            to pending and dispatched again (requeued true); a pending item whose
+            dispatch task was never enqueued, or was enqueued more than 15 minutes
+            ago, is dispatched now. cloud_task_enqueued says whether this call enqueued
+            a dispatch task.
+
+            '
+          schema:
+            properties:
+              data:
+                properties:
+                  attempts:
+                    type: integer
+                  cloud_task_enqueued:
+                    type: boolean
+                  dispatch_enqueued_at:
+                    format: date-time
+                    type: string
+                    x-nullable: true
+                  idempotent_replay:
+                    type: boolean
+                  last_error:
+                    type: string
+                    x-nullable: true
+                  queue_id:
+                    type: string
+                  requeued:
+                    type: boolean
+                  status:
+                    enum:
+                    - pending
+                    - processing
+                    - sent
+                    - failed
+                    - cancelled
+                    type: string
+                type: object
+              message:
+                type: string
+            type: object
         201:
           description: Email queued successfully
           schema:
@@ -35368,6 +35609,14 @@ paths:
                 properties:
                   category:
                     type: string
+                  cloud_task_enqueued:
+                    type: boolean
+                  dispatch_enqueued_at:
+                    format: date-time
+                    type: string
+                    x-nullable: true
+                  idempotent_replay:
+                    type: boolean
                   priority:
                     type: string
                   queue_id:
@@ -35384,6 +35633,9 @@ paths:
             type: object
         400:
           description: Validation failed
+        409:
+          description: The queue item for this idempotency_key changed while it was
+            being read; try again
         500:
           description: Internal server error
       security:
@@ -80173,6 +80425,57 @@ paths:
       summary: Update workflow template
       tags:
       - HzWorkflow
+  /v2/workspaces/{workspaceId}/projects/{projectId}/identity:
+    get:
+      operationId: v2_getProjectIdentity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: The project's identity
+          schema:
+            properties:
+              is_archived:
+                type: boolean
+              project_id:
+                type: integer
+              project_identifier:
+                type: string
+                x-nullable: true
+              project_name:
+                type: string
+              project_status:
+                enum:
+                - ACTIVE
+                - ON_HOLD
+                - ARCHIVED
+                type: string
+            type: object
+        400:
+          description: projectId is not a number
+        401:
+          description: Unauthorized
+        403:
+          description: The caller is not Deep Space's M2M admin token
+        404:
+          description: Project not found in this workspace
+        405:
+          description: Method not allowed
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: A project's identity, for Deep Space's own services
+      tags:
+      - Projects
+      x-min-permissions: admin
   /v2/workspaces/{workspaceId}/projects/{projectId}/implementation:
     get:
       operationId: v2_getProjectImplementationChecklist
@@ -101214,6 +101517,8 @@ paths:
           properties:
             form_object_id:
               type: string
+            idempotency_key:
+              type: string
             project_id:
               type: integer
             record_type:
@@ -101228,23 +101533,55 @@ paths:
           - project_id
           type: object
       responses:
+        200:
+          description: 'The publication an earlier call with this idempotency_key
+            made (idempotent_replay true). Nothing was published by this call.
+
+            '
+          schema:
+            properties:
+              id:
+                type: string
+              idempotency_key:
+                type: string
+              idempotent_replay:
+                type: boolean
+              token:
+                type: string
+              url:
+                type: string
+              version:
+                type: integer
+            type: object
         201:
           description: Published record created
           schema:
             properties:
               id:
                 type: string
+              idempotency_key:
+                type: string
+              idempotent_replay:
+                type: boolean
               token:
                 type: string
               url:
                 type: string
+              version:
+                type: integer
             type: object
         400:
-          description: Missing required fields
+          description: Missing required fields, or a malformed idempotency_key
         401:
           description: Unauthorized
         403:
           description: Forbidden
+        409:
+          description: 'Nothing was published by this call. reason publish_in_progress:
+            another call is publishing this idempotency_key. reason record_locked:
+            another publish of the record held its lock for the whole 10 s wait.
+
+            '
       security:
       - JWT_v2: []
       summary: Publish a record
