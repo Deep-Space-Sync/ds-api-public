@@ -2308,6 +2308,297 @@ paths:
       summary: Create Missing Workspaces for Global Companies
       tags:
       - Global Company Directory
+  /v2/global-companies/merge/checks:
+    post:
+      operationId: v2_createMergeCompaniesCheck
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            keep_id:
+              type: number
+            remove_id:
+              type: number
+          required:
+          - keep_id
+          - remove_id
+          type: object
+      responses:
+        201:
+          description: Check created
+          schema:
+            properties:
+              check:
+                type: object
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        404:
+          description: Not found
+        409:
+          description: Conflict
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: CS Admin Merge Companies - start a check (reference scan) for a pair
+      tags:
+      - Global Company Directory
+  /v2/global-companies/merge/checks/{checkId}:
+    get:
+      operationId: v2_getMergeCompaniesCheck
+      parameters:
+      - in: path
+        name: checkId
+        required: true
+        type: number
+      responses:
+        200:
+          description: The check
+          schema:
+            properties:
+              check:
+                type: object
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        404:
+          description: Not found
+        409:
+          description: Conflict
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: CS Admin Merge Companies - get a check
+      tags:
+      - Global Company Directory
+  /v2/global-companies/merge/checks/{checkId}/merge:
+    post:
+      operationId: v2_runMergeCompaniesMerge
+      parameters:
+      - in: path
+        name: checkId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            reason:
+              minLength: 8
+              type: string
+          type: object
+      responses:
+        200:
+          description: The check after this batch
+          schema:
+            properties:
+              check:
+                type: object
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        404:
+          description: Not found
+        409:
+          description: Conflict
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: CS Admin Merge Companies - start or continue the merge (about 20 s
+        per call); call while status is merging
+      tags:
+      - Global Company Directory
+  /v2/global-companies/merge/checks/{checkId}/scan:
+    post:
+      operationId: v2_scanMergeCompaniesCheck
+      parameters:
+      - in: path
+        name: checkId
+        required: true
+        type: number
+      responses:
+        200:
+          description: The check after this batch
+          schema:
+            properties:
+              check:
+                type: object
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        404:
+          description: Not found
+        409:
+          description: Conflict
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: CS Admin Merge Companies - run the next scan batch (about 20 s); call
+        while status is scanning
+      tags:
+      - Global Company Directory
+  /v2/global-companies/merge/compare:
+    get:
+      operationId: v2_mergeCompaniesCompare
+      parameters:
+      - in: query
+        name: a
+        required: true
+        type: number
+      - in: query
+        name: b
+        required: true
+        type: number
+      responses:
+        200:
+          description: Both company cards, the recommendation and the instant blockers
+          schema:
+            properties:
+              blockers:
+                items:
+                  type: object
+                type: array
+              companies:
+                items:
+                  type: object
+                type: array
+              recommendation:
+                type: object
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        404:
+          description: Not found
+        409:
+          description: Conflict
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: CS Admin Merge Companies - compare two copies and recommend which to
+        keep
+      tags:
+      - Global Company Directory
+  /v2/global-companies/merge/duplicates:
+    get:
+      operationId: v2_mergeCompaniesDuplicates
+      parameters:
+      - in: query
+        name: workspace
+        required: true
+        type: string
+      responses:
+        200:
+          description: Groups of companies with the same normalised name
+          schema:
+            properties:
+              builder:
+                type: object
+              groups:
+                items:
+                  type: object
+                type: array
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        404:
+          description: Not found
+        409:
+          description: Conflict
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: CS Admin Merge Companies - likely duplicates in one builder's directory
+      tags:
+      - Global Company Directory
+  /v2/global-companies/merge/history:
+    get:
+      operationId: v2_getMergeCompaniesHistory
+      parameters:
+      - in: query
+        name: limit
+        required: false
+        type: number
+      responses:
+        200:
+          description: Recent merges
+          schema:
+            properties:
+              merges:
+                items:
+                  type: object
+                type: array
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        404:
+          description: Not found
+        409:
+          description: Conflict
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: CS Admin Merge Companies - recent merges (merged or failed), newest
+        first
+      tags:
+      - Global Company Directory
+  /v2/global-companies/merge/search:
+    get:
+      operationId: v2_mergeCompaniesSearch
+      parameters:
+      - in: query
+        name: q
+        required: true
+        type: string
+      responses:
+        200:
+          description: Up to 50 matching companies
+          schema:
+            properties:
+              companies:
+                items:
+                  type: object
+                type: array
+            type: object
+        400:
+          description: Bad request
+        403:
+          description: Forbidden - Requires cs-admin or ds-admin scope
+        404:
+          description: Not found
+        409:
+          description: Conflict
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: CS Admin Merge Companies - search the whole directory (merged-away
+        rows excluded)
+      tags:
+      - Global Company Directory
   /v2/global-companies/name-drift/report:
     get:
       operationId: v2_getNameDriftReport
