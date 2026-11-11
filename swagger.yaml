@@ -6716,6 +6716,31 @@ paths:
       summary: Update subscription
       tags:
       - HzNotifications
+  /v2/onboarding-course/grid:
+    get:
+      operationId: v2_getOnboardingCourseGrid
+      parameters:
+      - in: query
+        name: refresh
+        required: false
+        type: string
+      responses:
+        200:
+          description: Grid payload
+          schema:
+            properties:
+              data:
+                type: object
+              ok:
+                type: boolean
+            type: object
+        403:
+          description: Insufficient permissions (cs-admin required)
+      security:
+      - JWT_v2: []
+      summary: Onboarding course structure, learners and per-module best scores
+      tags:
+      - OnboardingCourse
   /v2/permissions/registry:
     get:
       operationId: v2_getPermissionsRegistry
