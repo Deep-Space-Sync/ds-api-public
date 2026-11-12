@@ -23781,6 +23781,85 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/price-lists/import:
+    post:
+      operationId: v2_postCostPriceListImport
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            dry_run:
+              type: boolean
+            items:
+              items:
+                properties:
+                  category:
+                    type: string
+                  cost_rate:
+                    type: number
+                  default_cost_code:
+                    type: string
+                  default_cost_type:
+                    type: string
+                  item_code:
+                    type: string
+                  item_name:
+                    type: string
+                  notes:
+                    type: string
+                  pricing_mode:
+                    enum:
+                    - rate
+                    - lump_sum
+                    type: string
+                  row:
+                    type: integer
+                  sell_rate:
+                    type: number
+                  supplier_item_code:
+                    type: string
+                  system_id:
+                    type: string
+                  unit:
+                    type: string
+                required:
+                - row
+                type: object
+              type: array
+            price_list:
+              type: object
+            price_list_id:
+              type: string
+          required:
+          - items
+          type: object
+      responses:
+        200:
+          description: The plan (summary, errors, warnings, one plan entry per row);
+            on apply also apply_summary. Check `applied`
+        400:
+          description: No items / over 5,000 rows / both or neither target / invalid
+            new-list header / archived list / row label missing
+        401:
+          description: Unauthorized
+        404:
+          description: Price list not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Import Price List Items (dry run by default; creates and updates, never
+        deletes)
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/cost/price-lists/{priceListId}:
     delete:
       operationId: v2_deleteCostPriceList
@@ -24035,6 +24114,49 @@ paths:
       security:
       - JWT_v2: []
       summary: Bulk Create Price List Items
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/cost/price-lists/{priceListId}/items/bulk-delete:
+    post:
+      operationId: v2_postCostPriceListItemsBulkDelete
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: priceListId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            item_ids:
+              items:
+                type: string
+              type: array
+          required:
+          - item_ids
+          type: object
+      responses:
+        200:
+          description: Deleted count, plus not_found for ids that are not items of
+            this list
+        400:
+          description: Validation error / over cap
+        401:
+          description: Unauthorized
+        404:
+          description: Price list not found
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Bulk Delete Price List Items
       tags:
       - Cost
       x-ds-test-enabled: true
