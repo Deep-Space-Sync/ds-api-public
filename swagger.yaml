@@ -24489,6 +24489,8 @@ paths:
         required: true
         schema:
           properties:
+            archived:
+              type: boolean
             sections:
               items:
                 properties:
