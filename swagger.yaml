@@ -102679,6 +102679,10 @@ paths:
         required: true
         schema:
           properties:
+            action:
+              enum:
+              - create_claim
+              type: string
             email_ids:
               items:
                 type: string
@@ -102691,6 +102695,14 @@ paths:
           description: Emails routed to register
           schema:
             properties:
+              auto_converted:
+                type: integer
+              auto_generation_results:
+                items:
+                  type: object
+                type: array
+              auto_skipped:
+                type: integer
               failed:
                 type: integer
               message:
