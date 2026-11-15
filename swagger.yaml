@@ -21419,6 +21419,16 @@ paths:
               type: array
             name:
               type: string
+            reporting_class:
+              enum:
+              - labour
+              - subcontract
+              - materials
+              - plant_equipment
+              - other_cost
+              - not_a_cost
+              type: string
+              x-nullable: true
           type: object
       responses:
         200:
@@ -21465,6 +21475,16 @@ paths:
               type: array
             name:
               type: string
+            reporting_class:
+              enum:
+              - labour
+              - subcontract
+              - materials
+              - plant_equipment
+              - other_cost
+              - not_a_cost
+              type: string
+              x-nullable: true
           required:
           - name
           type: object
@@ -88864,6 +88884,74 @@ paths:
       security:
       - JWT_v2: []
       summary: Close a commercial period on the WIP report (replaces Save WIP position)
+      tags:
+      - Reports
+  /v2/workspaces/{workspaceId}/reports/wip/period-activity:
+    get:
+      operationId: v2_getWipPeriodActivity
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: period
+        required: false
+        type: string
+      - in: query
+        name: report_date
+        required: false
+        type: string
+      responses:
+        200:
+          description: rows, totals, counts and meta
+        400:
+          description: Invalid period, or report_date not a YYYY-MM-DD within a day
+            of today
+        403:
+          description: VIEW is not enabled for this reporting feature
+        404:
+          description: The period is neither closed nor the open period
+      security:
+      - JWT_v2: []
+      summary: WIP Period Activity summary
+      tags:
+      - Reports
+  /v2/workspaces/{workspaceId}/reports/wip/period-activity/transactions:
+    get:
+      operationId: v2_listWipPeriodActivityTransactions
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: period
+        required: false
+        type: string
+      - in: query
+        name: report_date
+        required: false
+        type: string
+      - in: query
+        name: project_id
+        required: false
+        type: integer
+      responses:
+        200:
+          description: rows and meta
+        400:
+          description: Invalid period, project_id, or report_date not a YYYY-MM-DD
+            within a day of today
+        403:
+          description: VIEW is not enabled for this reporting feature
+        404:
+          description: The period is neither closed nor the open period
+        413:
+          description: Too large for one response; request per project
+      security:
+      - JWT_v2: []
+      summary: WIP Period Activity transactions
       tags:
       - Reports
   /v2/workspaces/{workspaceId}/reports/wip/periods:
