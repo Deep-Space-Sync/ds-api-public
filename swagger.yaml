@@ -92209,6 +92209,75 @@ paths:
       - Timesheets
       x-ds-test-enabled: true
       x-min-permissions: isWorkspaceManager
+  /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/cells/{kindeId}/{date}/on-behalf:
+    post:
+      operationId: v2_addTimesheetsDayOnBehalf
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: weekStart
+        required: true
+        type: string
+      - in: path
+        name: kindeId
+        required: true
+        type: string
+      - in: path
+        name: date
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            mode:
+              enum:
+              - copy
+              - manual
+              type: string
+            reason:
+              type: string
+            rows:
+              items:
+                properties:
+                  break_end:
+                    type: string
+                  break_start:
+                    type: string
+                  end_time:
+                    type: string
+                  project_id:
+                    type: integer
+                  project_name:
+                    type: string
+                  start_time:
+                    type: string
+                type: object
+              type: array
+            source_date:
+              type: string
+          required:
+          - mode
+          - reason
+          type: object
+      responses:
+        200:
+          description: The week (as GET week) plus on_behalf {submission_id, kinde_id,
+            date}
+        409:
+          description: The day already has a record, or the worker's week is locked
+      security:
+      - JWT_v2: []
+      summary: "Add a missing day on the worker's behalf \u2014 copy another day of\
+        \ the week or enter it (DEL-535)"
+      tags:
+      - Timesheets
+      x-ds-test-enabled: true
+      x-min-permissions: isWorkspaceManager
   /v2/workspaces/{workspaceId}/timesheets/weeks/{weekStart}/cells/{kindeId}/{date}/override:
     delete:
       operationId: v2_clearTimesheetsOverride
