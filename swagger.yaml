@@ -6904,6 +6904,31 @@ paths:
         per project
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/project-inductions/me:
+    get:
+      operationId: v2_portalV2ListMyHeldProjects
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - the caller holds no portal role in this workspace
+        500:
+          description: Internal Server Error
+        503:
+          description: The held assignments or the projects could not be read
+      security:
+      - JWT_v2: []
+      summary: The caller's own held projects, with what is left before access and
+        the links to do it
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/project-inductions/projects/{projectId}/onboarding:
     get:
       operationId: v2_portalV2GetProjectOnboarding
