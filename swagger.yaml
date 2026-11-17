@@ -6904,6 +6904,36 @@ paths:
         per project
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/project-inductions/projects/{projectId}/onboarding:
+    get:
+      operationId: v2_portalV2GetProjectOnboarding
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - the caller's role does not allow managing their
+            company's team
+        404:
+          description: Project not found or not manageable by this caller
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Company onboarding journey and worker inductions on one authorised
+        project
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/project-inductions/{kindeId}/projects/{projectId}/remind:
     post:
       operationId: v2_portalV2RemindProjectInductions
