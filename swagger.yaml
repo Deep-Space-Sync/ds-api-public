@@ -31507,6 +31507,38 @@ paths:
       summary: Re-capture one numbered submission after a change made in Horizon
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/permits/{submissionId}/swms-check:
+    get:
+      operationId: v2_dsSitePermitSwmsCheck
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: The permit's SWMS and people
+        401:
+          description: Unauthorized, or a portal user
+        404:
+          description: No such permit, no DS Site channel, or an invalid path
+        405:
+          description: Method not allowed
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site failed
+        503:
+          description: The workspace's DS Site channel could not be resolved
+      security:
+      - JWT_v2: []
+      summary: A permit's Applicable SWMS and its people's licences and SWMS sign-on
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/report-sources/channel:
     get:
       operationId: v2_getReportSourcesChannel
