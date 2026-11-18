@@ -74757,6 +74757,41 @@ paths:
         retry)
       tags:
       - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/resend-to-xero:
+    post:
+      operationId: v2_resendSubcontractPaymentScheduleToXero
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            confirm_update:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: The bill was updated, or already matched
+        409:
+          description: Confirmation needed, or the bill cannot be changed
+      security:
+      - JWT_v2: []
+      summary: Update a pushed Subcontract Payment Schedule's Xero bill to match the
+        schedule (COM-1540)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/revert-to-draft:
     get:
       operationId: v2_getSubcontractPaymentScheduleRevertEligibility
@@ -75085,6 +75120,32 @@ paths:
       tags:
       - Cost
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-payment-schedules/{scheduleId}/xero-bill:
+    get:
+      operationId: v2_getSubcontractPaymentScheduleXeroBill
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Deep Space and Xero figures side by side, with the re-send
+            plan
+      security:
+      - JWT_v2: []
+      summary: Compare an Accepted Subcontract Payment Schedule with its live Xero
+        bill (COM-1540)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/subcontract-retentions:
     get:
       operationId: v2_getSubcontractRetentions
