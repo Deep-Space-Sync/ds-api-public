@@ -8234,6 +8234,29 @@ paths:
       summary: Worker Induction status of everyone in the caller's company
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/worker-inductions/me:
+    get:
+      operationId: v2_portalV2ReadMyWorkerInduction
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        500:
+          description: Internal Server Error
+        503:
+          description: The caller's company or Worker Induction could not be read
+      security:
+      - JWT_v2: []
+      summary: The caller's own Worker Induction with this builder, and the link to
+        fill it in
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/worker-inductions/{kindeId}/decision:
     post:
       operationId: v2_portalV2DecideWorkerInduction
