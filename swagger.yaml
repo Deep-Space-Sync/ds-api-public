@@ -89331,6 +89331,42 @@ paths:
       summary: Version history of a closed WIP period
       tags:
       - Reports
+  /v2/workspaces/{workspaceId}/reports/wip/project-summary:
+    get:
+      operationId: v2_getWipProjectSummary
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: project_id
+        required: true
+        type: integer
+      - in: query
+        name: period
+        required: false
+        type: string
+      - in: query
+        name: report_date
+        required: false
+        type: string
+      responses:
+        200:
+          description: row and meta
+        400:
+          description: Missing or invalid project_id, invalid period, or report_date
+            not a YYYY-MM-DD within a day of today
+        403:
+          description: VIEW is not enabled for the Financial Summary
+        404:
+          description: The period is neither closed for this project nor the open
+            period
+      security:
+      - JWT_v2: []
+      summary: WIP row for one project (Financial Summary tab)
+      tags:
+      - Reports
   /v2/workspaces/{workspaceId}/reports/wip/projects:
     get:
       operationId: v2_getWIPProjects
