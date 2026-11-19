@@ -58105,6 +58105,56 @@ paths:
       tags:
       - Cost - Commercial Periods
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/commercial-periods/claims/{claimId}/posting-date:
+    patch:
+      operationId: v2_setSupplierClaimPostingDate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            posting_date:
+              format: date
+              type: string
+            reason:
+              maxLength: 1000
+              type: string
+          required:
+          - posting_date
+          - reason
+          type: object
+      responses:
+        200:
+          description: The posting date fields, the change record and the re-derived
+            cost period
+        400:
+          description: Invalid date, reason missing or too long, or the date is unchanged
+        403:
+          description: The caller lacks the Move commercial period permission
+        404:
+          description: Not found in this project
+        409:
+          description: The date falls in a closed period, or the invoice is already
+            in Xero
+      security:
+      - JWT_v2: []
+      summary: Set a Supplier Invoice's Posting Date (audited)
+      tags:
+      - Cost - Commercial Periods
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/commercial-periods/late:
     get:
       operationId: v2_getCostCommercialPeriodsLate
@@ -58142,6 +58192,56 @@ paths:
       security:
       - JWT_v2: []
       summary: Late This Period Report for a Project
+      tags:
+      - Cost - Commercial Periods
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/commercial-periods/payment-schedules/{scheduleId}/posting-date:
+    patch:
+      operationId: v2_setPaymentSchedulePostingDate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: scheduleId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            posting_date:
+              format: date
+              type: string
+            reason:
+              maxLength: 1000
+              type: string
+          required:
+          - posting_date
+          - reason
+          type: object
+      responses:
+        200:
+          description: The posting date fields, the change record and the claim's
+            re-derived cost period
+        400:
+          description: Invalid date, reason missing or too long, or the date is unchanged
+        403:
+          description: The caller lacks the Move commercial period permission
+        404:
+          description: Not found in this project
+        409:
+          description: The date falls in a closed period, or the schedule is already
+            in Xero
+      security:
+      - JWT_v2: []
+      summary: Set a Subcontract Payment Schedule's Posting Date (audited)
       tags:
       - Cost - Commercial Periods
       x-min-permissions: isCostUser
