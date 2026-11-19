@@ -8138,6 +8138,48 @@ paths:
       summary: A company's workers on a project, with their onboarding state
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/site-inductions/directory-status:
+    post:
+      operationId: v2_portalV2PostSiteInductionDirectoryStatus
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            submitters:
+              items:
+                properties:
+                  email:
+                    type: string
+                  kinde_id:
+                    type: string
+                type: object
+              type: array
+          type: object
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - the caller holds no Active role in the workspace,
+            or holds a portal role
+        422:
+          description: More than 200 submitters, or a malformed body
+        500:
+          description: Internal Server Error
+        503:
+          description: The caller's role could not be read
+      security:
+      - JWT_v2: []
+      summary: Which site induction submitters are not in the builder's directory
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/subcontracts/{subcontractId}/people:
     get:
       operationId: v2_portalV2GetSubcontractPeople
@@ -10945,6 +10987,29 @@ paths:
       security:
       - JWT_v2: []
       summary: Update member project access
+      tags:
+      - PortalApi
+  /v2/portal/workspaces/{workspaceId}/team/site-induction-submitters:
+    get:
+      operationId: v2_portalApiGetTeamInductionSubmitters
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - the caller may not manage their company's team
+            here
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Site induction submitters not on the caller's team yet
       tags:
       - PortalApi
   /v2/portals/subcontractor-progress-claims:
