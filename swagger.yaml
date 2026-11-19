@@ -31595,6 +31595,71 @@ paths:
       summary: Re-capture one numbered submission after a change made in Horizon
       tags:
       - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/permits/{submissionId}/snapshots:
+    get:
+      operationId: v2_dsSitePermitSnapshots
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: The permit's snapshots as history entries
+        401:
+          description: Unauthorized, or a portal user
+        404:
+          description: Invalid path
+        405:
+          description: Method not allowed
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: A permit's frozen SWMS, people and training snapshots
+      tags:
+      - DS Site Admin Integrations
+  /v2/workspaces/{workspaceId}/ds-site/permits/{submissionId}/snapshots/capture:
+    post:
+      operationId: v2_dsSitePermitSnapshotsCapture
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          type: object
+      responses:
+        200:
+          description: What was taken
+        403:
+          description: Not Deep Space's M2M token
+        404:
+          description: Invalid path
+        405:
+          description: Method not allowed
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site failed
+        503:
+          description: The workspace's DS Site channel could not be resolved
+      security:
+      - JWT_v2: []
+      summary: Take a permit's due snapshots
+      tags:
+      - DS Site Admin Integrations
   /v2/workspaces/{workspaceId}/ds-site/permits/{submissionId}/swms-check:
     get:
       operationId: v2_dsSitePermitSwmsCheck
