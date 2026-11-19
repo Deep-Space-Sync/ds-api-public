@@ -76921,6 +76921,11 @@ paths:
         required: true
         schema:
           properties:
+            document:
+              enum:
+              - pre_let_minutes
+              type: string
+              x-nullable: true
             document_template_id:
               type: string
               x-nullable: true
@@ -77142,6 +77147,11 @@ paths:
           properties:
             contract_template_id:
               type: string
+            document:
+              enum:
+              - pre_let_minutes
+              type: string
+              x-nullable: true
             dry_run:
               type: boolean
           type: object
@@ -93664,6 +93674,7 @@ paths:
         - subcontract
         - head_contract
         - purchase_order
+        - pre_let_minutes
         in: query
         name: applies_to
         required: false
@@ -93728,6 +93739,7 @@ paths:
                       - subcontract
                       - head_contract
                       - purchase_order
+                      - pre_let_minutes
                       type: string
                     created_at:
                       format: date-time
@@ -94206,6 +94218,7 @@ paths:
               - subcontract
               - head_contract
               - purchase_order
+              - pre_let_minutes
               type: string
             document_template_family_id:
               maxLength: 128
@@ -94602,6 +94615,7 @@ paths:
                     - subcontract
                     - head_contract
                     - purchase_order
+                    - pre_let_minutes
                     type: string
                   created_at:
                     format: date-time
@@ -95071,6 +95085,63 @@ paths:
         default)
       tags:
       - HzContractTemplates
+  /v2/workspaces/{workspace_id}/hz-contract-templates/ensure-standard:
+    post:
+      operationId: v2_ensureHzStandardContractTemplates
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: Actions taken or planned
+          schema:
+            properties:
+              data:
+                items:
+                  properties:
+                    action:
+                      enum:
+                      - created
+                      - refreshed
+                      - unchanged
+                      - skipped_customised
+                      - skipped_inactive
+                      - skipped_no_document_template
+                      type: string
+                    detail:
+                      type: string
+                      x-nullable: true
+                    key:
+                      type: string
+                    template_id:
+                      type: string
+                      x-nullable: true
+                  required:
+                  - key
+                  - action
+                  type: object
+                type: array
+              dry_run:
+                type: boolean
+              message:
+                type: string
+            required:
+            - message
+            - dry_run
+            - data
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Not a member of this workspace
+      security:
+      - JWT_v2: []
+      summary: Make sure this workspace has the built-in contract templates (the Contract
+        Templates page calls it when it opens)
+      tags:
+      - HzContractTemplates
   /v2/workspaces/{workspace_id}/hz-contract-templates/import:
     post:
       consumes:
@@ -95231,6 +95302,12 @@ paths:
               minLength: 1
               type: string
               x-nullable: true
+            document:
+              default: contract_details
+              enum:
+              - contract_details
+              - pre_let_minutes
+              type: string
             document_template_id:
               maxLength: 128
               minLength: 1
@@ -95519,6 +95596,7 @@ paths:
                     - subcontract
                     - head_contract
                     - purchase_order
+                    - pre_let_minutes
                     type: string
                   created_at:
                     format: date-time
@@ -95985,6 +96063,7 @@ paths:
               - subcontract
               - head_contract
               - purchase_order
+              - pre_let_minutes
               type: string
               x-nullable: true
             document_template_family_id:
@@ -96388,6 +96467,7 @@ paths:
                     - subcontract
                     - head_contract
                     - purchase_order
+                    - pre_let_minutes
                     type: string
                   created_at:
                     format: date-time
@@ -96861,6 +96941,7 @@ paths:
                     - subcontract
                     - head_contract
                     - purchase_order
+                    - pre_let_minutes
                     type: string
                   created_at:
                     format: date-time
@@ -97531,6 +97612,7 @@ paths:
                     - subcontract
                     - head_contract
                     - purchase_order
+                    - pre_let_minutes
                     type: string
                   created_at:
                     format: date-time
@@ -98076,6 +98158,7 @@ paths:
                     - subcontract
                     - head_contract
                     - purchase_order
+                    - pre_let_minutes
                     type: string
                   created_at:
                     format: date-time
@@ -98695,6 +98778,7 @@ paths:
                       - subcontract
                       - head_contract
                       - purchase_order
+                      - pre_let_minutes
                       type: string
                     created_at:
                       format: date-time
