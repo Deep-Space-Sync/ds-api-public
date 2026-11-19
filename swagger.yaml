@@ -57952,6 +57952,46 @@ paths:
       tags:
       - Cost - Commercial Periods
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/commercial-periods/late:
+    get:
+      operationId: v2_getCostCommercialPeriodsLate
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: period
+        required: false
+        type: string
+      - enum:
+        - open
+        in: query
+        name: roll
+        required: false
+        type: string
+      responses:
+        200:
+          description: The period, the count and total ex GST, and the groups with
+            their items
+        400:
+          description: Invalid period
+        401:
+          description: Unauthorized
+        409:
+          description: No open period within 24 months after the requested one
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Late This Period Report for a Project
+      tags:
+      - Cost - Commercial Periods
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/commercial-periods/preview:
     get:
       operationId: v2_previewCostCommercialPeriod
