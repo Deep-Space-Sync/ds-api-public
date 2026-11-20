@@ -7211,6 +7211,123 @@ paths:
       summary: Get correspondence notice detail
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/observations:
+    get:
+      operationId: v2_portalV2ListObservations
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: include_closed
+        required: false
+        type: boolean
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: The caller's role does not include Observations
+        404:
+          description: The caller is not on this project
+        409:
+          description: The caller has no company
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: The observations on a project against the company or raised by the
+        caller
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/observations/{submissionId}:
+    get:
+      operationId: v2_portalV2GetObservation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submissionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: The caller's role does not include Observations
+        404:
+          description: Not this company's or this caller's observation on this project,
+            or no such observation
+        409:
+          description: DS Site is not connected for this workspace, or the caller
+            has no company
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: One observation against the company or raised by the caller
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/observations/{submissionId}/close-out:
+    post:
+      consumes:
+      - multipart/form-data
+      operationId: v2_portalV2CloseOutObservation
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submissionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Closed out, or already resolved
+        401:
+          description: Unauthorized
+        403:
+          description: The caller's role may not close observations out
+        404:
+          description: Not this company's or this caller's observation on this project,
+            or no such observation
+        409:
+          description: Not against the caller's company, or the form cannot take a
+            close-out; nothing was written
+        413:
+          description: The photo is over 10 MB
+        415:
+          description: The photo is not a JPEG or PNG image
+        422:
+          description: The comment is over 1000 characters
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site refused the close-out; nothing was changed
+      security:
+      - JWT_v2: []
+      summary: Close out one of the company's observations with a photo
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/permits:
     get:
       operationId: v2_portalV2ListPermits
