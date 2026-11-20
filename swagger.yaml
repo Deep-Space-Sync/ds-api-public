@@ -8257,6 +8257,100 @@ paths:
         fill it in
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/worker-inductions/submissions/{submissionId}/approval-complete:
+    post:
+      operationId: v2_portalV2CompleteWorkerInductionApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            actor_user_email:
+              type: string
+            actor_user_id:
+              type: string
+            approval_completed_by_engine:
+              type: boolean
+            approval_id:
+              type: string
+            comment:
+              type: string
+            status:
+              enum:
+              - approved
+              - rejected
+              type: string
+          required:
+          - status
+          - approval_id
+          type: object
+      responses:
+        200:
+          description: OK - decided or already decided
+        400:
+          description: A bad status or submission id
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - not Deep Space's own service
+        404:
+          description: The approval is not this submission's Worker Induction approval
+        409:
+          description: The approval is not decided that way, or not the worker's latest
+            submission
+        500:
+          description: Internal Server Error
+        503:
+          description: A read failed; worth retrying
+      security:
+      - JWT_v2: []
+      summary: Write a decided Worker Induction approval as the worker's decision
+        (service only)
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/worker-inductions/submissions/{submissionId}/request-approval:
+    post:
+      operationId: v2_portalV2RequestWorkerInductionApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: submissionId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK - created or skipped
+        400:
+          description: Not a submission id
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden - not Deep Space's own service
+        404:
+          description: DS Site has no such submission
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site or the approval engine failed; worth retrying
+        503:
+          description: The Worker Induction state could not be read; worth retrying
+      security:
+      - JWT_v2: []
+      summary: Start the approval of a submitted Worker Induction (service only)
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/worker-inductions/{kindeId}/decision:
     post:
       operationId: v2_portalV2DecideWorkerInduction
