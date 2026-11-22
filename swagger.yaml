@@ -7714,6 +7714,113 @@ paths:
       summary: Get portal Site Instruction detail (v2)
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/site-meetings:
+    get:
+      operationId: v2_portalV2ListSiteMeetings
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: The caller's role does not include Meetings (site_meetings)
+        404:
+          description: The caller is not on this project
+        409:
+          description: The caller has no company
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: The meetings on a project against the caller's company
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/site-meetings/{submissionId}:
+    get:
+      operationId: v2_portalV2GetSiteMeeting
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submissionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: The caller's role does not include Meetings (site_meetings)
+        404:
+          description: Not this company's meeting on this project, or no such meeting
+        409:
+          description: DS Site is not connected for this workspace, or the caller
+            has no company
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: One meeting against the caller's company
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/site-meetings/{submissionId}/pdf:
+    get:
+      operationId: v2_portalV2GetSiteMeetingPdf
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submissionId
+        required: true
+        type: integer
+      produces:
+      - application/pdf
+      - application/json
+      responses:
+        200:
+          description: The PDF
+        401:
+          description: Unauthorized
+        403:
+          description: The caller's role does not include Meetings (site_meetings)
+        404:
+          description: Not this company's meeting on this project, or no such meeting
+        409:
+          description: DS Site is not connected for this workspace, or the caller
+            has no company
+        500:
+          description: Internal Server Error
+        502:
+          description: DS Site refused or failed the PDF
+        504:
+          description: DS Site did not finish the PDF in time
+      security:
+      - JWT_v2: []
+      summary: DS Site's PDF of one meeting against the caller's company
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/subcontract-claims:
     get:
       operationId: v2_portalV2ListSubcontractClaims
