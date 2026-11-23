@@ -70257,8 +70257,14 @@ paths:
                           type: integer
                         created_by_user_email:
                           type: string
+                        credited_amount:
+                          type: number
+                        credited_invoiced:
+                          type: number
                         currency:
                           type: string
+                        invoiced_to_date:
+                          type: number
                         issuing_company_id:
                           type: integer
                         order_date:
