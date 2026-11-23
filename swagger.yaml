@@ -67367,6 +67367,10 @@ paths:
                   type: integer
                 line_item_identifier:
                   type: string
+                linked_task_ids:
+                  items:
+                    type: string
+                  type: array
                 qty:
                   type: number
                 related_cost_budget_item_num:
@@ -67417,6 +67421,10 @@ paths:
                     type: string
                   cost_order_num:
                     type: integer
+                  linked_task_ids:
+                    items:
+                      type: string
+                    type: array
                   qty:
                     type: number
                   related_cost_budget_item_num:
@@ -67565,6 +67573,10 @@ paths:
         required: true
         schema:
           properties:
+            linked_task_ids:
+              items:
+                type: string
+              type: array
             related_cost_budget_item_num:
               type: integer
           type: object
