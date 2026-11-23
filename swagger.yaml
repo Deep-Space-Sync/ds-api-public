@@ -89912,6 +89912,41 @@ paths:
       summary: Version history of a closed WIP period
       tags:
       - Reports
+  /v2/workspaces/{workspaceId}/reports/wip/portfolio:
+    get:
+      operationId: v2_getWipPortfolio
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: query
+        name: period
+        required: false
+        type: string
+      - in: query
+        name: report_date
+        required: false
+        type: string
+      - in: query
+        name: status
+        required: false
+        type: string
+      responses:
+        200:
+          description: rows, groups, totals and meta
+        400:
+          description: Unknown status, invalid period, or report_date not a YYYY-MM-DD
+            within a day of today
+        403:
+          description: VIEW is not enabled for this reporting feature
+        404:
+          description: The period is neither closed nor the open period
+      security:
+      - JWT_v2: []
+      summary: WIP portfolio rollup grouped by branch
+      tags:
+      - Reports
   /v2/workspaces/{workspaceId}/reports/wip/project-summary:
     get:
       operationId: v2_getWipProjectSummary
