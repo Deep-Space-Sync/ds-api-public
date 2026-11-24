@@ -63811,6 +63811,107 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/record-client-approval:
+    post:
+      operationId: v2_postHeadContractClaimRecordClientApproval
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: claimId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          properties:
+            approval_date:
+              format: date
+              type: string
+            certificate_document_series_ids:
+              items:
+                type: string
+              type: array
+            due_date:
+              format: date
+              type: string
+            send_to_xero:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: Client approval recorded (check `data.steps` for a failed `xero_push`)
+          schema:
+            properties:
+              data:
+                properties:
+                  claim_id:
+                    type: string
+                  claim_number:
+                    type: string
+                  claim_status:
+                    type: string
+                  completed:
+                    type: boolean
+                  invoice_id:
+                    type: string
+                  invoice_number:
+                    type: string
+                  payment_schedule_id:
+                    type: string
+                  payment_schedule_number:
+                    type: string
+                  steps:
+                    items:
+                      properties:
+                        id:
+                          type: string
+                        message:
+                          type: string
+                        ok:
+                          type: boolean
+                        skipped:
+                          type: boolean
+                        step:
+                          type: string
+                      type: object
+                    type: array
+                type: object
+              message:
+                type: string
+            type: object
+        400:
+          description: Bad request body, or a rule of one of the steps (for example
+            no client on the head contract)
+        403:
+          description: Access denied
+        404:
+          description: Claim not found, or not in this project
+        409:
+          description: The claim is not an internally approved Draft, the same request
+            is already running, the workspace requires its own approval of client
+            payment schedules, the payment schedule is Accepted but its acceptance
+            did not complete in this action (no invoice is created), or a step refused
+            (for example a value cap that needs an override)
+        422:
+          description: The claim is invoiced one tax invoice per client PO, which
+            this path does not cover
+        500:
+          description: A step failed unexpectedly; `data.steps` shows how far it got
+            and the call can be repeated
+      security:
+      - JWT_v2: []
+      summary: Record the client's approval of a head contract progress claim
+      tags:
+      - Cost
+      x-min-permissions: isCostUser
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/head-contract-claims/{claimId}/relink-xero:
     post:
       operationId: v2_postHeadContractClaimRelinkXero
