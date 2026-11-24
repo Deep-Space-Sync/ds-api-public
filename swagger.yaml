@@ -33141,6 +33141,8 @@ paths:
               type: string
             company_type:
               type: string
+            gst_number:
+              type: string
             industry:
               type: string
             name:
@@ -33154,7 +33156,8 @@ paths:
           type: object
       responses:
         200:
-          description: Company created in pending status
+          description: Company created; the company includes gst_number (string or
+            null)
           schema:
             type: object
         401:
@@ -33356,6 +33359,52 @@ paths:
       security:
       - JWT_v2: []
       summary: Request Vendor Sharing
+      tags:
+      - Global Company Directory V2
+  /v2/workspaces/{workspaceId}/global-companies-directory/{globalCompanyId}:
+    patch:
+      operationId: v2_updateGlobalCompanyGstV2
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: globalCompanyId
+        required: true
+        type: number
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            gst_number:
+              type: string
+              x-nullable: true
+          required:
+          - gst_number
+          type: object
+      responses:
+        200:
+          description: Saved; data is the company row including gst_number (string
+            or null)
+          schema:
+            properties:
+              data:
+                type: object
+            type: object
+        400:
+          description: Invalid GST number, body without gst_number, company not in
+            New Zealand, or workspace not linked
+        401:
+          description: Unauthorized
+        403:
+          description: Not cs-admin, ds-admin or workspace manager
+        404:
+          description: Company not found, or not in this workspace's directory
+      security:
+      - JWT_v2: []
+      summary: Set, Change or Clear a Directory Company GST Number (V2)
       tags:
       - Global Company Directory V2
   /v2/workspaces/{workspaceId}/global-companies-directory/{globalCompanyId}/profile:
