@@ -33534,33 +33534,42 @@ paths:
         required: true
         schema:
           properties:
+            country:
+              enum:
+              - Australia
+              - New Zealand
+              type: string
             gst_number:
               type: string
               x-nullable: true
-          required:
-          - gst_number
           type: object
       responses:
         200:
-          description: Saved; data is the company row including gst_number (string
-            or null)
+          description: Saved; data is the company row including country and gst_number
+            (string or null)
           schema:
             properties:
               data:
                 type: object
             type: object
         400:
-          description: Invalid GST number, body without gst_number, company not in
-            New Zealand, or workspace not linked
+          description: Invalid GST number, invalid country, body with neither gst_number
+            nor country, GST number with a company or country that is not New Zealand,
+            or workspace not linked
         401:
           description: Unauthorized
         403:
           description: Not cs-admin, ds-admin or workspace manager
         404:
           description: Company not found, or not in this workspace's directory
+        409:
+          description: The company's country is already set (or its business number
+            is verified), or the country could not be set because of a conflicting
+            company
       security:
       - JWT_v2: []
-      summary: Set, Change or Clear a Directory Company GST Number (V2)
+      summary: Set, Change or Clear a Directory Company GST Number; Set Its Country
+        Once (V2)
       tags:
       - Global Company Directory V2
   /v2/workspaces/{workspaceId}/global-companies-directory/{globalCompanyId}/profile:
