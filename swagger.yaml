@@ -33177,6 +33177,11 @@ paths:
               type: string
             company_type:
               type: string
+            country:
+              enum:
+              - Australia
+              - New Zealand
+              type: string
             gst_number:
               type: string
             industry:
@@ -33189,6 +33194,8 @@ paths:
               type: string
             primary_contact_phone:
               type: string
+            skip_tax_id:
+              type: boolean
           type: object
       responses:
         200:
