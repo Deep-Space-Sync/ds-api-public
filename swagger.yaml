@@ -59816,6 +59816,224 @@ paths:
       - Cost
       x-ds-test-enabled: true
       x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/contract-details/amendments:
+    post:
+      operationId: v2_postHeadContractContractDetailsAmendments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            amendments:
+              items:
+                properties:
+                  clause:
+                    maxLength: 200
+                    type: string
+                    x-nullable: true
+                  id:
+                    type: string
+                  kind:
+                    enum:
+                    - delete
+                    - amend
+                    - add
+                    type: string
+                  text:
+                    type: string
+                    x-nullable: true
+                required:
+                - kind
+                - text
+                type: object
+              maxItems: 500
+              type: array
+          required:
+          - amendments
+          type: object
+      responses:
+        200:
+          description: Saved; the updated head contract
+          schema:
+            properties:
+              data:
+                additionalProperties: true
+                type: object
+              message:
+                type: string
+              summary:
+                additionalProperties: true
+                type: object
+            required:
+            - message
+            type: object
+        400:
+          description: Invalid body
+          or not a head contract: null
+        403:
+          description: Access denied
+        404:
+          description: Head contract not found
+        409:
+          description: Not allowed at the head contract's stage (issued
+          executed: null
+          not Draft: null
+          uploaded mode): null
+      security:
+      - JWT_v2: []
+      summary: Replace a head contract's contract details amendments list (before
+        issue, COR-1265)
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/contract-details/renders:
+    post:
+      operationId: v2_postHeadContractContractDetailsRender
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            document_template_id:
+              type: string
+              x-nullable: true
+            document_template_version:
+              type: integer
+              x-nullable: true
+            docx_cde_document_id:
+              type: string
+              x-nullable: true
+            kind:
+              enum:
+              - preview
+              - generate
+              - issue
+              - upload
+              type: string
+            pdf_cde_document_id:
+              type: string
+              x-nullable: true
+          required:
+          - kind
+          type: object
+      responses:
+        201:
+          description: Recorded; the updated head contract
+          schema:
+            properties:
+              data:
+                additionalProperties: true
+                type: object
+              message:
+                type: string
+              summary:
+                additionalProperties: true
+                type: object
+            required:
+            - message
+            type: object
+        400:
+          description: Invalid body
+          or not a head contract: null
+        403:
+          description: Access denied
+        404:
+          description: Head contract not found
+        409:
+          description: Not allowed at the head contract's stage (issued
+          executed: null
+          not Draft: null
+          uploaded mode): null
+      security:
+      - JWT_v2: []
+      summary: Record a head contract's contract details render (COR-1265)
+      tags:
+      - Cost
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/contract-details/upgrade:
+    post:
+      operationId: v2_postHeadContractContractDetailsUpgrade
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: costContractId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            contract_template_id:
+              type: string
+            dry_run:
+              type: boolean
+          type: object
+      responses:
+        200:
+          description: Moved (or the dry run's summary)
+          schema:
+            properties:
+              data:
+                additionalProperties: true
+                type: object
+              message:
+                type: string
+              summary:
+                additionalProperties: true
+                type: object
+            required:
+            - message
+            type: object
+        400:
+          description: Invalid body
+          or not a head contract: null
+        403:
+          description: Access denied
+        404:
+          description: Head contract not found
+        409:
+          description: Not allowed at the head contract's stage (issued
+          executed: null
+          not Draft: null
+          uploaded mode): null
+      security:
+      - JWT_v2: []
+      summary: Move a Draft head contract onto a newer version of its contract type
+        (COR-1265)
+      tags:
+      - Cost
   /v2/workspaces/{workspaceId}/projects/{projectId}/cost/contracts/{costContractId}/notice-periods/amend:
     post:
       operationId: v2_amendHeadContractNoticePeriod
@@ -95880,6 +96098,11 @@ paths:
             filename:
               type: string
               x-nullable: true
+            head_contract_id:
+              maxLength: 128
+              minLength: 1
+              type: string
+              x-nullable: true
             subcontract_id:
               maxLength: 128
               minLength: 1
@@ -96057,8 +96280,8 @@ paths:
           description: PDF conversion unavailable
       security:
       - JWT_v2: []
-      summary: Render a contract from its Contract Template (a subcontract, or a template
-        with sample details)
+      summary: Render a contract from its Contract Template (a subcontract, a head
+        contract, or a template with sample details)
       tags:
       - HzContractTemplates
   /v2/workspaces/{workspace_id}/hz-contract-templates/{template_id}:
@@ -99148,6 +99371,10 @@ paths:
                     type: integer
                   family_id:
                     type: string
+                  head_contract_ids:
+                    items:
+                      type: string
+                    type: array
                   subcontract_ids:
                     items:
                       type: string
