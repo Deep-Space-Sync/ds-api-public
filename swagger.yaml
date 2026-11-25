@@ -7618,6 +7618,83 @@ paths:
       summary: Get portal RFI detail (v2)
       tags:
       - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/site-inductions/{submissionId}/swms:
+    get:
+      operationId: v2_portalV2GetSiteInductionSwms
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submissionId
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not found
+        422:
+          description: Refused
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: The SWMS a worker is assigned on a project, from their site induction
+      tags:
+      - PortalApi
+    put:
+      operationId: v2_portalV2PutSiteInductionSwms
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: submissionId
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            swms_ids:
+              items:
+                type: integer
+              type: array
+          type: object
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not found
+        422:
+          description: Refused
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Replace the SWMS a worker is assigned on a project
+      tags:
+      - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/site-instructions:
     get:
       operationId: v2_portalV2ListSiteInstructions
@@ -8130,6 +8207,42 @@ paths:
       security:
       - JWT_v2: []
       summary: Create the company's SWMS form for a project
+      tags:
+      - PortalApi
+  /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/swms-assignments:
+    get:
+      operationId: v2_portalV2GetProjectSwmsAssignments
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: query
+        name: company_id
+        required: false
+        type: integer
+      - in: query
+        name: swms_id
+        required: false
+        type: integer
+      responses:
+        200:
+          description: OK
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        422:
+          description: Refused
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Who is assigned which SWMS on a project and whether they signed
       tags:
       - PortalApi
   /v2/portal-v2/workspaces/{workspaceId}/projects/{projectId}/swms/archive:
