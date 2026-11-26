@@ -78790,6 +78790,21 @@ paths:
               type: object
             supersedes_quote_id:
               type: string
+            supporting_files:
+              items:
+                properties:
+                  file_id:
+                    type: string
+                  file_name:
+                    type: string
+                  file_type:
+                    type: string
+                  gcs_path:
+                    type: string
+                  size_bytes:
+                    type: integer
+                type: object
+              type: array
             tender_package_id:
               type: string
             trade_section_id:
@@ -78960,6 +78975,10 @@ paths:
         required: true
         schema:
           properties:
+            add_supporting_files:
+              items:
+                type: object
+              type: array
             amount:
               type: number
             extraction:
@@ -78974,6 +78993,10 @@ paths:
               type: string
             received_at:
               type: string
+            remove_supporting_file_ids:
+              items:
+                type: string
+              type: array
             reviewed_at:
               type: string
             reviewed_by:
@@ -78994,6 +79017,11 @@ paths:
           description: Bad request
         404:
           description: Quote not found
+        409:
+          description: 'PRE-599. The quote is superseded or withdrawn, or the change
+            would remove documents from an awarded bid
+
+            '
       security:
       - JWT_v2: []
       summary: Update Tender Quote By Id
