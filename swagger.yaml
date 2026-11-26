@@ -25681,6 +25681,8 @@ paths:
         required: true
         schema:
           properties:
+            archived:
+              type: boolean
             status:
               enum:
               - Draft
