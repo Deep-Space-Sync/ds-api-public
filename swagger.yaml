@@ -33655,7 +33655,7 @@ paths:
         type: integer
       - default: 50
         in: query
-        maximum: 100
+        maximum: 500
         name: limit
         type: integer
       - enum:
@@ -33668,6 +33668,7 @@ paths:
         type: string
       - enum:
         - summary
+        - count
         in: query
         name: view
         type: string
@@ -33752,6 +33753,71 @@ paths:
       security:
       - JWT_v2: []
       summary: List approval instances across a workspace (inbox)
+      tags:
+      - HzApproval
+  /v2/workspaces/{workspaceId}/hz-approvals/bulk-approve:
+    post:
+      operationId: v2_v2_bulkApproveHzApprovals
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            approval_ids:
+              items:
+                type: string
+              maxItems: 50
+              type: array
+          required:
+          - approval_ids
+          type: object
+      responses:
+        200:
+          description: One result per approval, in the order asked
+          schema:
+            properties:
+              approved:
+                type: integer
+              failed:
+                type: integer
+              results:
+                items:
+                  properties:
+                    approval_id:
+                      type: string
+                    code:
+                      enum:
+                      - approved
+                      - not_clean
+                      - cannot_act
+                      - not_pending
+                      - not_invoice
+                      - error
+                      type: string
+                    entity_id:
+                      type: string
+                      x-nullable: true
+                    message:
+                      type: string
+                    ok:
+                      type: boolean
+                  type: object
+                type: array
+            type: object
+        400:
+          description: approval_ids missing, malformed or more than 50
+        403:
+          description: The caller cannot action approvals in this workspace
+        500:
+          description: Internal server error
+      security:
+      - JWT_v2: []
+      summary: Approve supplier invoices in a run (COM-1590)
       tags:
       - HzApproval
   /v2/workspaces/{workspaceId}/hz-approvals/cancel-for-entity:
@@ -80902,12 +80968,25 @@ paths:
         required: true
         schema:
           properties:
+            acknowledged_flags:
+              items:
+                properties:
+                  code:
+                    type: string
+                  label:
+                    type: string
+                required:
+                - code
+                type: object
+              maxItems: 20
+              type: array
             action:
               enum:
               - APPROVE
               - REJECT
               - COMMENT
               - DELEGATE
+              - SEND_BACK
               type: string
             attachments:
               default: []
@@ -80915,6 +80994,14 @@ paths:
                 type: object
               type: array
             comment:
+              type: string
+            reason_code:
+              enum:
+              - wrong_project
+              - wrong_po
+              - wrong_cost_code
+              - wrong_amount_or_gst
+              - other
               type: string
             role_id:
               type: string
