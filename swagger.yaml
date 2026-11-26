@@ -25757,6 +25757,8 @@ paths:
               type: string
             is_project_scope:
               type: boolean
+            replace:
+              type: boolean
           type: object
       responses:
         201:
