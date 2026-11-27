@@ -79228,6 +79228,10 @@ paths:
               type: string
             reviewed_by:
               type: string
+            schedule_matches:
+              items:
+                type: object
+              type: array
             status:
               type: string
             subcontractor:
@@ -79290,6 +79294,43 @@ paths:
       security:
       - JWT_v2: []
       summary: Read a Tender Quote with KAI
+      tags:
+      - Cost
+      x-ds-test-enabled: true
+      x-min-permissions: isCostUser
+  /v2/workspaces/{workspaceId}/projects/{projectId}/cost/tender-quotes/{quoteId}/match-schedule:
+    post:
+      operationId: v2_matchTenderQuoteSchedule
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: projectId
+        required: true
+        type: integer
+      - in: path
+        name: quoteId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Matched; data is the updated quote with schedule_matches
+          schema:
+            properties:
+              data: {}
+              message:
+                type: string
+            type: object
+        404:
+          description: Quote or tender package not found
+        409:
+          description: KAI has not read the quote yet, or the quote is not on a bid
+            package
+      security:
+      - JWT_v2: []
+      summary: Match a Tender Quote's lines to its package schedule
       tags:
       - Cost
       x-ds-test-enabled: true
