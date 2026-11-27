@@ -104145,6 +104145,198 @@ paths:
       summary: Update an existing sub-form link
       tags:
       - HzSubFormLinks
+  /v2/workspaces/{workspace_id}/invoice-reconciliation/approval-checks:
+    post:
+      operationId: v2_getInvoiceApprovalChecks
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email_ids:
+              items:
+                type: string
+              maxItems: 100
+              type: array
+          required:
+          - email_ids
+          type: object
+      responses:
+        200:
+          description: Checks keyed by invoice id
+          schema:
+            properties:
+              checks:
+                additionalProperties:
+                  properties:
+                    amount_ex_gst:
+                      type: number
+                      x-nullable: true
+                    amount_inc_gst:
+                      type: number
+                      x-nullable: true
+                    clean:
+                      type: boolean
+                    coded_by:
+                      properties:
+                        at:
+                          type: string
+                          x-nullable: true
+                        email:
+                          type: string
+                          x-nullable: true
+                        name:
+                          type: string
+                          x-nullable: true
+                      type: object
+                      x-nullable: true
+                    coding_lines:
+                      items:
+                        properties:
+                          amount_ex_gst:
+                            type: number
+                            x-nullable: true
+                          cost_code:
+                            type: string
+                            x-nullable: true
+                        type: object
+                      type: array
+                    currency:
+                      type: string
+                    due_date:
+                      type: string
+                      x-nullable: true
+                    duplicate:
+                      properties:
+                        label:
+                          type: string
+                        status:
+                          enum:
+                          - clear
+                          - possible_duplicate
+                          - revised_or_resent
+                          type: string
+                      type: object
+                    identity:
+                      properties:
+                        codes:
+                          items:
+                            type: string
+                          type: array
+                        differences:
+                          items:
+                            properties:
+                              directory_value:
+                                type: string
+                                x-nullable: true
+                              field:
+                                enum:
+                                - bank
+                                - tax_id
+                                - gst_number
+                                type: string
+                              invoice_value:
+                                type: string
+                                x-nullable: true
+                            type: object
+                          type: array
+                        label:
+                          type: string
+                        status:
+                          enum:
+                          - green
+                          - amber
+                          - red
+                          - none
+                          type: string
+                      type: object
+                    invoice_number:
+                      type: string
+                      x-nullable: true
+                    last_edited_by:
+                      properties:
+                        at:
+                          type: string
+                          x-nullable: true
+                        email:
+                          type: string
+                          x-nullable: true
+                        name:
+                          type: string
+                          x-nullable: true
+                      type: object
+                      x-nullable: true
+                    po:
+                      properties:
+                        confidence:
+                          type: number
+                          x-nullable: true
+                        po_number:
+                          type: string
+                          x-nullable: true
+                        remaining_after_ex_gst:
+                          type: number
+                          x-nullable: true
+                        remaining_ex_gst:
+                          type: number
+                          x-nullable: true
+                        status:
+                          enum:
+                          - matched
+                          - not_matched
+                          - not_approved
+                          - over_value
+                          type: string
+                        total_ex_gst:
+                          type: number
+                          x-nullable: true
+                      type: object
+                    project_id:
+                      type: string
+                      x-nullable: true
+                    project_name:
+                      type: string
+                      x-nullable: true
+                    reasons:
+                      items:
+                        properties:
+                          code:
+                            type: string
+                          detail_code:
+                            type: string
+                          label:
+                            type: string
+                          severity:
+                            enum:
+                            - red
+                            - amber
+                            type: string
+                        type: object
+                      type: array
+                    record_type:
+                      type: string
+                      x-nullable: true
+                    supplier_name:
+                      type: string
+                      x-nullable: true
+                  type: object
+                type: object
+            type: object
+        400:
+          description: email_ids missing, malformed or more than 100
+        403:
+          description: Unauthorized
+      security:
+      - JWT_v2: []
+      summary: What an approver needs to see about supplier invoices, and whether
+        each is clean
+      tags:
+      - InvoiceReconciliation
   /v2/workspaces/{workspace_id}/invoice-reconciliation/email-accounts:
     get:
       operationId: v2_listInvoiceEmailAccounts
@@ -105294,6 +105486,10 @@ paths:
               type: string
             comment:
               type: string
+            sent_back:
+              type: boolean
+            sent_back_reason_code:
+              type: string
             status:
               enum:
               - Payment Authorised
@@ -105306,7 +105502,8 @@ paths:
           type: object
       responses:
         200:
-          description: Terminal state applied (conversion executed or invoice rejected)
+          description: Terminal state applied (conversion executed, invoice sent back
+            or invoice rejected)
         400:
           description: Invalid body
         403:
