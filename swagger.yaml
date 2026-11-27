@@ -27229,6 +27229,13 @@ paths:
               type: array
             subject:
               type: string
+            tags:
+              properties:
+                template_id:
+                  type: string
+              required:
+              - template_id
+              type: object
             tender_set_id:
               type: string
             withdraw:
@@ -27262,7 +27269,9 @@ paths:
         401:
           description: Unauthorized
         404:
-          description: Tender package not found
+          description: Tender package (or tag set) not found
+        409:
+          description: The package has an award, or its tags changed meanwhile (PRE-608)
         500:
           description: Internal Server Error
       security:
