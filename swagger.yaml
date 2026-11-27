@@ -45245,6 +45245,99 @@ paths:
       summary: Refresh Power BI app in workspace
       tags:
       - Power BI
+  /v2/workspaces/{workspaceId}/preferences/{key}:
+    delete:
+      operationId: v2_deleteWorkspacePreference
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: key
+        required: true
+        type: string
+      responses:
+        200:
+          description: The value was cleared
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Not a Workspace Manager
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Clear a workspace preference
+      tags:
+      - User Preferences
+    get:
+      operationId: v2_getWorkspacePreference
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: key
+        required: true
+        type: string
+      responses:
+        200:
+          description: The workspace value for the key
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Get a workspace preference
+      tags:
+      - User Preferences
+    put:
+      operationId: v2_setWorkspacePreference
+      parameters:
+      - in: path
+        name: workspaceId
+        required: true
+        type: string
+      - in: path
+        name: key
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            value: {}
+          type: object
+      responses:
+        200:
+          description: The stored workspace value
+          schema:
+            type: object
+        401:
+          description: Unauthorized
+        403:
+          description: Not a Workspace Manager
+        422:
+          description: Validation Error
+        500:
+          description: Internal Server Error
+      security:
+      - JWT_v2: []
+      summary: Set a workspace preference
+      tags:
+      - User Preferences
   /v2/workspaces/{workspaceId}/programme/tasks-this-week:
     get:
       operationId: v2_getProgrammeTasksThisWeek
